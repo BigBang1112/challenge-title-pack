@@ -22,27 +22,19 @@ foreach(Env => RelationList, Relation_StartFinish) {
 
 		if(StartLine.IsItem) Problem(Problem_ItemStart(StartLine));
 		else if(StartLine.Block.Name == StartBlockName) {
-			if(TextLib::EndsWith(".Macroblock.Gbx", FinishBlockName)) {
-
-			}
-			else {
-				declare Replacement = ReplaceBlock(StartLine.Block, FinishBlockName, True);
-				if(!Replacement.Removed || !Replacement.Placed) Problem(Problem_CannotReplaceStartLine(StartLine));
-				else SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ FinishBlockName ^ ".");
-			}
+			SetStatusProgress(.5);
+			declare Replacement = ReplaceBlock(StartLine.Block, FinishBlockName, True);
+			if(!Replacement.Removed || !Replacement.Placed) Problem(Problem_CannotReplaceStartLine(StartLine));
+			else SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ FinishBlockName ^ ".");
 		}
 		if(FinishLines.count == 1) {
 			declare FinishLine = FinishLines[0];
 			if(FinishLine.IsItem) Problem(Problem_ItemFinish(FinishLine));
 			else if(FinishLine.Block.Name == FinishBlockName) {
-				if(TextLib::EndsWith(".Macroblock.Gbx", FinishBlockName)) {
-
-				}
-				else {
-					declare Replacement = ReplaceBlock(FinishLine.Block, StartBlockName, True);
-					if(!Replacement.Removed || !Replacement.Placed) Problem(Problem_CannotReplaceFinishLine(FinishLine));
-					else SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ StartBlockName ^ ".");
-				}
+				SetStatusProgress(1.);
+				declare Replacement = ReplaceBlock(FinishLine.Block, StartBlockName, True);
+				if(!Replacement.Removed || !Replacement.Placed) Problem(Problem_CannotReplaceFinishLine(FinishLine));
+				else SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ StartBlockName ^ ".");
 			}
 		}
 	}

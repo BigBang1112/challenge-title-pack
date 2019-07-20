@@ -6,10 +6,10 @@ Relation_StartFinish = [
 		["RoadRaceStartMirror","RoadRaceFinishMirror"],
 		["ArenaStart","ArenaFinish"],
 		["RoadMainStart","RoadMainFinish"],
-		["Canyon/TubeStart.Macroblock.Gbx","TubeFinish"],
-		["Canyon/TubeStartUnderground.Macroblock.Gbx","TubeFinishUnderground"],
-		["Canyon/RoadCaveStart.Macroblock.Gbx","RoadCaveFinish"],
-		["Canyon/RoadCaveDoubleStart.Macroblock.Gbx","RoadCaveDoubleFinish"]
+		["TubeStart","TubeFinish"],
+		["TubeStartUnderground","TubeFinishUnderground"],
+		["RoadCaveStart","RoadCaveFinish"],
+		["RoadCaveDoubleStart","RoadCaveDoubleFinish"]
 	],
 	"Stadium" => [
 		["StadiumRoadMainStartLine","StadiumRoadMainFinishLine"]
@@ -18,17 +18,17 @@ Relation_StartFinish = [
 		["Road2WayStart","Road2WayFinish"],
 		["Road2WayForestStart","Road2WayForestFinish"],
 		["Road4WayStart","Road4WayFinish"],
-		["Valley/TunnelRoad4wayStart.Macroblock.Gbx","TunnelRoad4wayFinish"],
+		["TunnelRoad4wayStart","TunnelRoad4wayFinish"],
 		["RoadForestLargeStart","RoadForestLargeFinish"]
 	],
 	"Lagoon" => [
 		["RoadMainStart","RoadMainFinish"],
 		["FreeWayStart","FreeWayFinish"],
 		["RoadThemeParkStart","RoadThemeParkFinish"],
-		["Lagoon/RoadThemeParkFlipStart.Macroblock.Gbx","RoadThemeParkFlipFinish"],
+		["RoadThemeParkFlipStart","RoadThemeParkFlipFinish"],
 		["ArenaStart","ArenaFinish"],
-		["ArenaStartX2","ArenaFinishX2"], // or Lagoon/ArenaStartX2.Macroblock.Gbx, Tom?
-		["Lagoon/RoadTunnelStart.Macroblock.Gbx","RoadTunnelFinish"]
+		["ArenaStartX2","ArenaFinishX2"], // or ArenaStartX2, Tom?
+		["RoadTunnelStart","RoadTunnelFinish"]
 	]
 ];
 
@@ -38,10 +38,10 @@ Relation_StartMultilap = [
 		["RoadRaceStartMirror","RoadRaceMultilapMirror"],
 		["ArenaStart","ArenaMultilap"],
 		["RoadMainStart","RoadMainMultilap"],
-		["Canyon/TubeStart.Macroblock.Gbx","Canyon/TubeMultilap.Macroblock.Gbx"],
-		["Canyon/TubeStartUnderground.Macroblock.Gbx","Canyon/TubeMultilapUnderground.Macroblock.Gbx"],
-		["Canyon/RoadCaveStart.Macroblock.Gbx","RoadCaveMultiLap"],
-		["Canyon/RoadCaveDoubleStart.Macroblock.Gbx","Canyon/RoadCaveDoubleMultiLap.Macroblock.Gbx"]
+		["TubeStart","TubeMultilap"],
+		["TubeStartUnderground","TubeMultilapUnderground"],
+		["RoadCaveStart","RoadCaveMultiLap"],
+		["RoadCaveDoubleStart","RoadCaveDoubleMultiLap"]
 	],
 	"Stadium" => [
 		["StadiumRoadMainStartLine","StadiumRoadMainStartFinishLine"]
@@ -50,17 +50,17 @@ Relation_StartMultilap = [
 		["Road2WayStart","Road2WayMultilap"],
 		["Road2WayForestStart","Road2WayForestMultilap"],
 		["Road4WayStart","Road4WayMultiLap"],
-		["Valley/TunnelRoad4wayStart.Macroblock.Gbx","Valley/TunnelRoad4wayMultilap.Macroblock.Gbx"],
+		["TunnelRoad4wayStart","TunnelRoad4wayMultilap"],
 		["RoadForestLargeStart","RoadForestLargeMultilap"]
 	],
 	"Lagoon" => [
 		["RoadMainStart","RoadMainMultilap"],
 		["FreeWayStart","FreeWayMultilap"],
 		["RoadThemeParkStart","RoadThemeParkMultilap"],
-		["Lagoon/RoadThemeParkFlipStart.Macroblock.Gbx","Lagoon/RoadThemeParkFlipMultilap.Macroblock.Gbx"],
+		["RoadThemeParkFlipStart","RoadThemeParkFlipMultilap"],
 		["ArenaStart","ArenaMultilap"],
-		["ArenaStartX2","ArenaMultilapX2"], // or Lagoon/ArenaStartX2.Macroblock.Gbx, Tom?
-		["Lagoon/RoadTunnelStart.Macroblock.Gbx","Lagoon/RoadTunnelMultilap.Macroblock.Gbx"]
+		["ArenaStartX2","ArenaMultilapX2"], // or ArenaStartX2, Tom?
+		["RoadTunnelStart","RoadTunnelMultilap"]
 	]
 ];
 
