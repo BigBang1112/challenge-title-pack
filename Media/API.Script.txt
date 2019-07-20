@@ -4,6 +4,7 @@ declare Text[][][Text] Relation_StartFinish;
 declare Text[][][Text] Relation_StartMultilap;
 declare Text[][][Text] Relation_FinishCheckpoint;
 declare Text[][][Text] Relation_CheckpointRoad;
+declare Text[][][Text] Relation_MultilapStartTwoway;
 
 SResponse Request(Text _Command, Text[] _Arguments) {
 	declare SResponse Response;
@@ -264,12 +265,6 @@ Void Aboveground() {
 Boolean PlaceGhostBlock(Text _BlockName, Int3 _Coord, Text _Direction) {
 	declare Params = [_BlockName, _Coord^"", _Direction];
 	declare Response = Request("Ch_PlaceGhostBlock", Params);
-	return Response.Values[0] == "True";
-}
-
-Boolean PlaceWaypointBlock(Text _BlockName, Int3 _Coord, Text _Direction) {
-	declare Params = [_BlockName, _Coord^"", _Direction];
-	declare Response = Request("Ch_PlaceWaypointBlock", Params);
 	return Response.Values[0] == "True";
 }
 
@@ -564,6 +559,13 @@ SChProblem Problem_ItemFinish(SChAnchor _Anchor) {
 	return Problem;
 }
 
+SChProblem Problem_ItemMultilap(SChAnchor _Anchor) {
+	declare SChProblem Problem;
+	Problem.Name = "ItemMultilap";
+	Problem.Anchor = _Anchor;
+	return Problem;
+}
+
 SChProblem Problem_MultipleFinishes(SChAnchor[] _Anchors) {
 	declare SChProblem Problem;
 	Problem.Name = "MultipleFinishes";
@@ -581,6 +583,13 @@ SChProblem Problem_CannotReplaceStartLine(SChAnchor _Anchor) {
 SChProblem Problem_CannotReplaceFinishLine(SChAnchor _Anchor) {
 	declare SChProblem Problem;
 	Problem.Name = "CannotReplaceFinishLine";
+	Problem.Anchor = _Anchor;
+	return Problem;
+}
+
+SChProblem Problem_CannotReplaceMultilap(SChAnchor _Anchor) {
+	declare SChProblem Problem;
+	Problem.Name = "CannotReplaceMultilap";
 	Problem.Anchor = _Anchor;
 	return Problem;
 }

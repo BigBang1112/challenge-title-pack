@@ -8,7 +8,28 @@ Script.Description = "{{{{CHECKPOINTLESS_DESCRIPTION}}}}";
 ***Main***
 ***
 declare Multilaps = GetMultilaps();
-if(Multilaps.count > 0) Problem(Problem_MultilapTrack(Multilaps[0]));
+declare FinishLines = GetFinishLines();
+declare MapInfo = GetOriginalMapInfo();
+
+declare IsOneLapWithFinish = FinishLines.count == 1 && MapInfo.TMObjective_IsLapRace;
+declare IsMultilap = Multilaps.count > 0 && !IsOneLapWithFinish;
+if(IsMultilap) Problem(Problem_MultilapTrack(Multilaps[0]));
+if(IsOneLapWithFinish) {
+	declare Multilap = Multilaps[0];
+	if(Multilap.IsItem) Problem(Problem_ItemMultilap(Multilap));
+	else {
+		foreach(Env => RelationList, Relation_MultilapStartTwoway) {
+			foreach(Relation, RelationList) {
+				declare MultilapBlockName = Relation[0];
+				declare StartTwowayBlockName = Relation[1];
+				if(Multilap.Block.Name == MultilapBlockName) {
+					declare Replacement = ReplaceBlock(Multilap.Block, StartTwowayBlockName, False);
+					if(!Replacement.Removed || !Replacement.Placed) Problem(Problem_CannotReplaceMultilap(Multilap));
+				}
+			}
+		}
+	}
+}
 
 declare Checkpoints = GetCheckpoints();
 

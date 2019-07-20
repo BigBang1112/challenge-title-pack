@@ -27,7 +27,7 @@ Relation_StartFinish = [
 		["RoadThemeParkStart","RoadThemeParkFinish"],
 		["Lagoon/RoadThemeParkFlipStart.Macroblock.Gbx","RoadThemeParkFlipFinish"],
 		["ArenaStart","ArenaFinish"],
-		["ArenaStart","ArenaFinishX2"], // or Lagoon/ArenaStartX2.Macroblock.Gbx, Tom?
+		["ArenaStartX2","ArenaFinishX2"], // or Lagoon/ArenaStartX2.Macroblock.Gbx, Tom?
 		["Lagoon/RoadTunnelStart.Macroblock.Gbx","RoadTunnelFinish"]
 	]
 ];
@@ -59,7 +59,7 @@ Relation_StartMultilap = [
 		["RoadThemeParkStart","RoadThemeParkMultilap"],
 		["Lagoon/RoadThemeParkFlipStart.Macroblock.Gbx","Lagoon/RoadThemeParkFlipMultilap.Macroblock.Gbx"],
 		["ArenaStart","ArenaMultilap"],
-		["ArenaStart","ArenaMultilapX2"], // or Lagoon/ArenaStartX2.Macroblock.Gbx, Tom?
+		["ArenaStartX2","ArenaMultilapX2"], // or Lagoon/ArenaStartX2.Macroblock.Gbx, Tom?
 		["Lagoon/RoadTunnelStart.Macroblock.Gbx","Lagoon/RoadTunnelMultilap.Macroblock.Gbx"]
 	]
 ];
@@ -91,8 +91,43 @@ Relation_FinishCheckpoint = [
 		["RoadThemeParkFinish", "RoadThemeParkCheckpoint"],
 		["RoadThemeParkFlipFinish", "RoadThemeParkFlip-Checkpoint"],
 		["ArenaFinish", "ArenaCheckpoint"],
-		["ArenaFinishX2", "ArenaCheckpointX2"], // or Lagoon/ArenaStartX2.Macroblock.Gbx, Tom?
+		["ArenaFinishX2", "ArenaCheckpointX2"],
 		["RoadTunnelFinish", "RoadTunnelCheckpoint"]
+	]
+];
+
+Relation_MultilapStartTwoway = [
+	"Canyon" => [
+		["RoadRaceMultilap", "RoadRaceStartTwoway"],
+		["RoadRaceMultilapMirror", "RoadRaceStartMirrorTwoway"],
+		["ArenaMultilap", "ArenaStartTwoway"],
+		["RoadMainMultilap", "RoadMainStartTwoway"],
+		["TubeMultilap", "TubeStart"],
+		["TubeMultilapUnderground", "TubeStartUnderground"],
+		["RoadCaveMultiLap", "RoadCaveStart"],
+		["RoadCaveDoubleMultiLap", "RoadCaveDoubleStart"]
+	],
+	"Stadium" => [
+		["StadiumRoadMainStartFinishLine", "StadiumRoadMainStartLineTwoway"],
+		["StadiumPlatformMultilap", "StadiumPlatformStartTwoway"],
+		["StadiumRoadDirtMutliLap", "StadiumRoadDirtStartTwoway"],
+		["StadiumTrenchMutliLap", "StadiumTrenchStartTwoway"]
+	],
+	"Valley" => [
+		["Road2WayMultilap", "Road2WayStartTwoway"],
+		["Road2WayForestMultilap", "Road2WayForestStartTwoway"],
+		["Road4WayMultiLap", "Road4WayStartTwoway"],
+		["TunnelRoad4wayMultilap", "TunnelRoad4wayStartTwoway"],
+		["RoadForestLargeMultilap", "RoadForestLargeStartTwoway"]
+	],
+	"Lagoon" => [
+		["RoadMainMultilap", "RoadMainStartTwoway"],
+		["FreeWayMultilap", "FreeWayStartTwoway"],
+		["RoadThemeParkMultilap", "RoadThemeParkStartTwoway"],
+		["RoadThemeParkFlipMultilap", "RoadThemeParkFlipStartTwoway"],
+		["ArenaMultilap", "ArenaStartTwoway"],
+		["ArenaMultilapX2", "ArenaStartX2Twoway"],
+		["RoadTunnelMultilap", "RoadTunnelStartTwoway"]
 	]
 ];
 
