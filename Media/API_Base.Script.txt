@@ -73,6 +73,7 @@
 
 #Struct SChProblem {
 	Text Name;
+	Int3 Coord;
 	SChAnchor Anchor;
 	SChAnchor[] Anchors;
 	SChBlock Block;
@@ -84,6 +85,7 @@
 
 #Struct SChNote {
 	Text Name;
+	Int3 Coord;
 	SChAnchor Anchor;
 	SChAnchor[] Anchors;
 	SChBlock Block;

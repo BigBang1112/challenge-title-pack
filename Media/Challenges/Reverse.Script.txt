@@ -9,31 +9,31 @@ Script.Description = "{{{{REVERSE_DESCRIPTION}}}}";
 ***
 declare StartLines = GetStartLines();
 declare Multilaps = GetMultilaps();
-if(Multilaps.count > 0) Problem(Problem_MultilapTrack(Multilaps[0]));
+if(Multilaps.count > 0) Problem_MultilapTrack(Multilaps[0]);
 declare StartLine = StartLines[0];
 declare FinishLines = GetFinishLines();
 
-if(FinishLines.count > 1) Problem(Problem_MultipleFinishes(FinishLines));
+if(FinishLines.count > 1) Problem_MultipleFinishes(FinishLines);
 
 foreach(Env => RelationList, Relation_StartFinish) {
 	foreach(Relation, RelationList) {
 		declare StartBlockName = Relation[0];
 		declare FinishBlockName = Relation[1];
 
-		if(StartLine.IsItem) Problem(Problem_ItemStart(StartLine));
+		if(StartLine.IsItem) Problem_ItemStart(StartLine);
 		else if(StartLine.Block.Name == StartBlockName) {
 			SetStatusProgress(.5);
 			declare Replacement = ReplaceBlock(StartLine.Block, FinishBlockName, True);
-			if(!Replacement.Removed || !Replacement.Placed) Problem(Problem_CannotReplaceStartLine(StartLine));
+			if(!Replacement.Removed || !Replacement.Placed) Problem_CannotReplaceStartLine(StartLine);
 			else SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ FinishBlockName ^ ".");
 		}
 		if(FinishLines.count == 1) {
 			declare FinishLine = FinishLines[0];
-			if(FinishLine.IsItem) Problem(Problem_ItemFinish(FinishLine));
+			if(FinishLine.IsItem) Problem_ItemFinish(FinishLine);
 			else if(FinishLine.Block.Name == FinishBlockName) {
 				SetStatusProgress(1.);
 				declare Replacement = ReplaceBlock(FinishLine.Block, StartBlockName, True);
-				if(!Replacement.Removed || !Replacement.Placed) Problem(Problem_CannotReplaceFinishLine(FinishLine));
+				if(!Replacement.Removed || !Replacement.Placed) Problem_CannotReplaceFinishLine(FinishLine);
 				else SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ StartBlockName ^ ".");
 			}
 		}

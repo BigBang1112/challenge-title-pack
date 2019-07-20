@@ -530,66 +530,94 @@ Void Chill() {
 /* Pre-made problem functions */
 //
 
-SChProblem Problem_MultilapTrack(SChAnchor _Anchor) {
+Void Problem_MultilapTrack(SChAnchor _Anchor) {
 	declare SChProblem Problem;
 	Problem.Name = "MultilapTrack";
 	Problem.Anchor = _Anchor;
 	Problem.IsUnsolvable = True;
-	return Problem;
+	Problem(Problem);
 }
 
-SChProblem Problem_CannotRemoveCheckpoint(SChAnchor _Anchor) {
+Void Problem_CannotRemoveStartLine(SChAnchor _Anchor) {
+	declare SChProblem Problem;
+	Problem.Name = "CannotRemoveStartLine";
+	Problem.Anchor = _Anchor;
+	Problem(Problem);
+}
+
+Void Problem_CannotRemoveFinishLine(SChAnchor _Anchor) {
+	declare SChProblem Problem;
+	Problem.Name = "CannotRemoveFinishLine";
+	Problem.Anchor = _Anchor;
+	Problem(Problem);
+}
+
+Void Problem_CannotRemoveCheckpoint(SChAnchor _Anchor) {
 	declare SChProblem Problem;
 	Problem.Name = "CannotRemoveCheckpoint";
 	Problem.Anchor = _Anchor;
-	return Problem;
+	Problem(Problem);
 }
 
-SChProblem Problem_ItemStart(SChAnchor _Anchor) {
+Void Problem_CannotRemoveMultilap(SChAnchor _Anchor) {
+	declare SChProblem Problem;
+	Problem.Name = "CannotRemoveMultilap";
+	Problem.Anchor = _Anchor;
+	Problem(Problem);
+}
+
+Void Problem_ItemStart(SChAnchor _Anchor) {
 	declare SChProblem Problem;
 	Problem.Name = "ItemStart";
 	Problem.Anchor = _Anchor;
-	return Problem;
+	Problem(Problem);
 }
 
-SChProblem Problem_ItemFinish(SChAnchor _Anchor) {
+Void Problem_ItemFinish(SChAnchor _Anchor) {
 	declare SChProblem Problem;
 	Problem.Name = "ItemFinish";
 	Problem.Anchor = _Anchor;
-	return Problem;
+	Problem(Problem);
 }
 
-SChProblem Problem_ItemMultilap(SChAnchor _Anchor) {
+Void Problem_ItemMultilap(SChAnchor _Anchor) {
 	declare SChProblem Problem;
 	Problem.Name = "ItemMultilap";
 	Problem.Anchor = _Anchor;
-	return Problem;
+	Problem(Problem);
 }
 
-SChProblem Problem_MultipleFinishes(SChAnchor[] _Anchors) {
+Void Problem_MultipleFinishes(SChAnchor[] _Anchors) {
 	declare SChProblem Problem;
 	Problem.Name = "MultipleFinishes";
 	declare JsonSuccess = Problem.Anchors.fromjson(_Anchors.tojson());
-	return Problem;
+	Problem(Problem);
 }
 
-SChProblem Problem_CannotReplaceStartLine(SChAnchor _Anchor) {
+Void Problem_CannotReplaceStartLine(SChAnchor _Anchor) {
 	declare SChProblem Problem;
 	Problem.Name = "CannotReplaceStartLine";
 	Problem.Anchor = _Anchor;
-	return Problem;
+	Problem(Problem);
 }
 
-SChProblem Problem_CannotReplaceFinishLine(SChAnchor _Anchor) {
+Void Problem_CannotReplaceFinishLine(SChAnchor _Anchor) {
 	declare SChProblem Problem;
 	Problem.Name = "CannotReplaceFinishLine";
 	Problem.Anchor = _Anchor;
-	return Problem;
+	Problem(Problem);
 }
 
-SChProblem Problem_CannotReplaceMultilap(SChAnchor _Anchor) {
+Void Problem_CannotReplaceMultilap(SChAnchor _Anchor) {
 	declare SChProblem Problem;
 	Problem.Name = "CannotReplaceMultilap";
 	Problem.Anchor = _Anchor;
-	return Problem;
+	Problem(Problem);
+}
+
+Void Problem_CannotPlaceGhostBlock(Int3 _Coord) {
+	declare SChProblem Problem;
+	Problem.Name = "CannotPlaceGhostBlock";
+	Problem.Coord = _Coord;
+	Problem(Problem);
 }

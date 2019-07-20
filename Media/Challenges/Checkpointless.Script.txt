@@ -13,10 +13,10 @@ declare MapInfo = GetOriginalMapInfo();
 
 declare IsOneLapWithFinish = FinishLines.count == 1 && MapInfo.TMObjective_IsLapRace;
 declare IsMultilap = Multilaps.count > 0 && !IsOneLapWithFinish;
-if(IsMultilap) Problem(Problem_MultilapTrack(Multilaps[0]));
+if(IsMultilap) Problem_MultilapTrack(Multilaps[0]);
 if(IsOneLapWithFinish) {
 	declare Multilap = Multilaps[0];
-	if(Multilap.IsItem) Problem(Problem_ItemMultilap(Multilap));
+	if(Multilap.IsItem) Problem_ItemMultilap(Multilap);
 	else {
 		foreach(Env => RelationList, Relation_MultilapStartTwoway) {
 			foreach(Relation, RelationList) {
@@ -24,7 +24,7 @@ if(IsOneLapWithFinish) {
 				declare StartTwowayBlockName = Relation[1];
 				if(Multilap.Block.Name == MultilapBlockName) {
 					declare Replacement = ReplaceBlock(Multilap.Block, StartTwowayBlockName, False);
-					if(!Replacement.Removed || !Replacement.Placed) Problem(Problem_CannotReplaceMultilap(Multilap));
+					if(!Replacement.Removed || !Replacement.Placed) Problem_CannotReplaceMultilap(Multilap);
 				}
 			}
 		}
@@ -46,7 +46,7 @@ for(i,0,Checkpoints.count-1) {
 		SetStatusProgress((i+1.0)/(Checkpoints.count));
 
 		declare Removed = RemoveAnchor(Anchor);
-		if(!Removed) Problem(Problem_CannotRemoveCheckpoint(Anchor)); // Announce the problem to the Modifier
+		if(!Removed) Problem_CannotRemoveCheckpoint(Anchor); // Announce the problem to the Modifier
 	}
 	yield;
 }
