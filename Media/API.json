@@ -898,29 +898,6 @@
 				]
 			}
 		],
-		"PlaceWaypointBlock": [
-			{
-				"Return": "Boolean",
-				"ReturnsArray": false,
-				"Kind": "Regular",
-				"Parameters": [
-					[
-						{
-							"Type": "Text",
-							"Name": "_BlockName"
-						},
-						{
-							"Type": "Int3",
-							"Name": "_Coord"
-						},
-						{
-							"Type": "Text",
-							"Name": "_Direction"
-						}
-					]
-				]
-			}
-		],
 		"ReplaceBlock": [
 			{
 				"Return": "SReplacementResult",

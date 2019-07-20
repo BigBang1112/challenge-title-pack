@@ -76,6 +76,18 @@ Text CBlockCardinalDirectionsToText(CBlock::CardinalDirections _Direction) {
 	return ::CardinalDirections::North;
 }
 
+Text GetVariant(Int3 _Coord) {
+	declare Variant = "Air";
+	if(GetGroundHeight(_Coord.X, _Coord.Z) == _Coord.Y) {
+		Variant = "Ground";
+		declare Block = GetBlock(_Coord);
+		if(Block != Null) {
+			if(Block.BlockModel.Name == "Forest") Variant = "Forest";
+		}
+	}
+	return Variant;
+}
+
 Boolean SafeRemoveBlock(CBlock _Block) {
 	if(_Block == Null) return False;
 	if(GetBlock(_Block.Coord) == Null) return False;
@@ -89,6 +101,16 @@ Boolean SafeRemoveBlock(ModifierBase::SChBlock _ChBlock) {
 	for(i,0,Blocks.count-1)
 		if(Blocks[i].BlockScriptId == _ChBlock.Id) return SafeRemoveBlock(Blocks[i]);
 	return False;
+}
+
+Boolean PlaceBlockSpecial(Text _BlockModelName, Int3 _Coord, ::CardinalDirections _Direction) {
+	declare BlockModel = GetBlockModelFromName(_BlockModelName);
+	if(BlockModel == Null) {
+		declare MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\{{{_BlockModelName}}}-{{{GetVariant(_Coord)}}}.Macroblock.Gbx""");
+		if(MacroblockModel == Null) return False;
+		return PlaceMacroblock(MacroblockModel, _Coord, _Direction);
+	}
+	return PlaceBlock(BlockModel, _Coord, _Direction);
 }
 
 Void Prepare(ModifierBase::SChMap _Map) {
@@ -255,8 +277,7 @@ Void ProcessRequest(CMapEditorPluginEvent _Event) {
 			declare Coord = Conversion::ToInt3(Event.CustomEventData[1]);
 			declare Direction = Conversion::ToDirectionMap(Event.CustomEventData[2]);
 
-			declare BlockModel = GetBlockModelFromName(BlockName);
-			declare Response = PlaceBlock(BlockModel, Coord, Direction);
+			declare Response = PlaceBlockSpecial(BlockName, Coord, Direction);
 			Respond(Event, [""^Response]);
 		}
 		case "Ch_PlaceBlock_NoDestruction": {
@@ -505,8 +526,7 @@ Void ProcessRequest(CMapEditorPluginEvent _Event) {
 			declare Coord = Conversion::ToInt3(Event.CustomEventData[1]);
 			declare Direction = Conversion::ToDirectionMap(Event.CustomEventData[2]);
 
-			declare Variant = "Air";
-			if(GetGroundHeight(Coord.X, Coord.Z) == Coord.Y) Variant = "Ground";
+			declare Variant = GetVariant(Coord);
 			
 			declare MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\Ghost\{{{BlockName}}}-{{{Variant}}}-Ghost.Macroblock.Gbx""");
 			declare Response = PlaceMacroblock(MacroblockModel, Coord, Direction);
@@ -515,7 +535,7 @@ Void ProcessRequest(CMapEditorPluginEvent _Event) {
 		case "Ch_ReplaceBlock": {
 			declare ModifierBase::SChBlock Block;
 			declare JsonSuccess = Block.fromjson(Event.CustomEventData[0]);
-			declare Replacement = GetBlockModelFromName(Event.CustomEventData[1]);
+			declare Replacement = Event.CustomEventData[1];
 			declare OppositeDirection = Conversion::ToBoolean(Event.CustomEventData[2]);
 			
 			declare Direction = Conversion::ToDirectionMap(Block.Direction);
@@ -523,12 +543,12 @@ Void ProcessRequest(CMapEditorPluginEvent _Event) {
 			if(OppositeDirection) Direction = MapUnits::GetOpposedDir(Direction);
 			
 			declare Removed = SafeRemoveBlock(Block);
-			declare Placed = PlaceBlock(Replacement, Coord, Direction);
+			declare Placed = PlaceBlockSpecial(Replacement, Coord, Direction);
 			Respond(Event, [""^Removed, ""^Placed]);
 		}
 		case "Ch_ReplaceAllBlocks": {
 			declare BlockName = Event.CustomEventData[0];
-			declare Replacement = GetBlockModelFromName(Event.CustomEventData[1]);
+			declare Replacement = Event.CustomEventData[1];
 
 			foreach(Block, Blocks) {
 				if(Block.BlockModel.Name == BlockName) {
@@ -536,7 +556,7 @@ Void ProcessRequest(CMapEditorPluginEvent _Event) {
 					declare Coord = Block.Coord;
 			
 					declare Removed = RemoveBlock(Coord);
-					declare Placed = PlaceBlock(Replacement, Coord, Direction);
+					declare Placed = PlaceBlockSpecial(Replacement, Coord, Direction);
 				}
 			}
 
@@ -551,8 +571,8 @@ Void ProcessRequest(CMapEditorPluginEvent _Event) {
 			declare RemovedBlock1 = RemoveBlock(Block1.Coord);
 			declare RemovedBlock2 = RemoveBlock(Block2.Coord);
 
-			declare PlacedBlock1 = PlaceBlock(GetBlockModelFromName(Block2.Name), Block1.Coord, Conversion::ToDirectionMap(Block1.Direction));
-			declare PlacedBlock2 = PlaceBlock(GetBlockModelFromName(Block1.Name), Block2.Coord, Conversion::ToDirectionMap(Block2.Direction));
+			declare PlacedBlock1 = PlaceBlockSpecial(Block2.Name, Block1.Coord, Conversion::ToDirectionMap(Block1.Direction));
+			declare PlacedBlock2 = PlaceBlockSpecial(Block1.Name, Block2.Coord, Conversion::ToDirectionMap(Block2.Direction));
 
 			Respond(Event, [""^(RemovedBlock1 && RemovedBlock2 && PlacedBlock1 && PlacedBlock2)]);
 		}
