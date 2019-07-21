@@ -26,6 +26,7 @@ main() {
 	while(True) { // Restart mechanism
 		Restart::Restart(False);
 		
+		Layers::Create("Background", "file://Media/Manialinks/Background.xml", True, False);
 		Layers::Create("Loading", "file://Media/Manialinks/Loading.xml", True, False, CUILayer::EUILayerType::LoadingScreen);
 		
 		//Auth::AuthorizeInManialink("b1a3d10ba7", "basic maps", "http://localhost/challenge/auth");

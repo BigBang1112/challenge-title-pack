@@ -1,10 +1,42 @@
+#Include "TextLib" as TextLib
+
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
+#Include "Libs/BigBang1112/Task.Script.txt" as Task
 
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Time.Script.txt" as Time
+
+#Include "Libs/Challenge/Backend.Script.txt" as Backend
+#Include "Libs/Challenge/Scope.Script.txt" as Scope
+
+#Struct SPublicMap {
+	Text Name;
+	Text Uid;
+	Text Author;
+	Text OriginalName;
+	Text OriginalUid;
+	Text OriginalAuthor;
+}
+
+#Struct SUser {
+	Text Login;
+	Text Nickname;
+}
+
+#Struct SPlaysession {
+	SPublicMap Map;
+	SUser[] Users;
+}
+
+declare SPlaysession[] Playsessions;
+declare SPlaysession SelectedPlaysession;
 
 Void Start() {
 	Layers::Create("Playsessions", Manialink::FromFile("Media/Manialinks/Playsessions", True, [], Settings::Get().Theme), True, True);
+	
+	declare Success = Http::AsyncGET("Playsessions", """{{{Backend::GetHost()}}}/playsessions.php?titleid={{{LoadedTitle.TitleId}}}""");
 }
 
 Void Event(CManiaAppEvent _Event) {
@@ -12,17 +44,43 @@ Void Event(CManiaAppEvent _Event) {
 
 	if(Event.Type == CManiaAppEvent::EType::LayerCustomEvent) {
 		switch(Event.CustomEventType) {
-			case "": {
-				
+			case "JoinPlaysession": {
+				SelectedPlaysession = Playsessions[TextLib::ToInteger(Event.CustomEventData[0])];
+				Task::Async_DataFileMgr("PLAYSESSION_MAP",DataFileMgr.Map_GetFilteredGameList(Scope::C_BrowserScope, "", True));
 			}
 		}
 	}
 }
 
 Void Async() {
-
+	if(Http::IsCompleted("Playsessions")) {
+		if(Http::IsSuccessful("Playsessions")) {
+			declare JsonSuccess = Playsessions.fromjson(Http::GetResult("Playsessions"));
+			Layers::SendEvent("Playsessions", "UpdatePlaysessions", Playsessions.tojson());
+		}
+		else {
+			
+		}
+		Http::Destroy("Playsessions");
+	}
+	
+	if(Task::IsCompleted("PLAYSESSION_MAP")) {
+		if(Task::IsSuccessful("PLAYSESSION_MAP")) {
+			declare MapList = (Task::Get("PLAYSESSION_MAP") as CTaskResult_MapList);
+			declare CMapInfo PlayableMap;
+			foreach(MapInfo,MapList.MapInfos)
+				if(MapInfo.MapUid == SelectedPlaysession.Map.Uid)
+					PlayableMap <=> MapInfo;
+			TitleControl.PlayMap(PlayableMap.FileName,"","");
+			Task::Destroy_DataFileMgr("PLAYSESSION_MAP");
+		}
+	}
 }
 
 Void Loop() {
-	
+	if(!Time::Stamp_CreateOnce("PLAYSESSION_REFRESH", 10*1000)) {
+		if(Time::Stamp_Reached("PLAYSESSION_REFRESH")) {
+			declare Success = Http::AsyncGET("Playsessions", """{{{Backend::GetHost()}}}/playsessions.php?titleid={{{LoadedTitle.TitleId}}}""");
+		}
+	}
 }

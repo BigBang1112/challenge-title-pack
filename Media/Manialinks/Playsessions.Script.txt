@@ -1,7 +1,49 @@
+#Struct SPublicMap {
+	Text Name;
+	Text Uid;
+	Text Author;
+	Text OriginalName;
+	Text OriginalUid;
+	Text OriginalAuthor;
+}
+
+#Struct SUser {
+	Text Login;
+	Text Nickname;
+}
+
+#Struct SPlaysession {
+	SPublicMap Map;
+	SUser[] Users;
+}
+
+declare SPlaysession[] Playsessions;
+
+Void UpdatePlaysessions() {
+	declare Offset = 0;
+	declare List = (Page.GetFirstChild("FRAME_LIST") as CMlFrame);
+	for(i,0,List.Controls.count-1) {
+		declare Selector = (List.Controls[i] as CMlFrame);
+		if(Playsessions.existskey(i)) {
+			declare Playsession = Playsessions[i];
+			declare Frame_Button = ((Selector.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).GetFirstChild("LABEL_BUTTON") as CMlLabel);
+			Frame_Button.SetText(Playsession.Map.Name);
+			(Selector.GetFirstChild("LABEL_COUNT") as CMlLabel).SetText(Playsession.Users.count^"");
+			Selector.DataAttributeSet("playsession",i^"");
+			Selector.Show();
+		}
+		else {
+			Selector.Hide();
+		}
+	}
+}
+
 ***Start***
 ***
 declare Start = Now;
 declare End = -1;
+
+
 ***
 
 ***Loop***
@@ -10,8 +52,8 @@ foreach(Event,PendingEvents) {
 	switch(Event.Type) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
-				case "": {
-					
+				case "QUAD_BUTTON": {
+					SendCustomEvent("JoinPlaysession", [Event.Control.Parent.DataAttributeGet("playsession")]);
 				}
 			}
 		}
@@ -35,14 +77,24 @@ foreach(Event,PendingEvents) {
 
 					declare Delay = 0;
 					foreach(Control,(Page.GetFirstChild("FRAME_LIST") as CMlFrame).Controls) {
-						Control.Hide();
-						AnimMgr.Add(Control, "<frame hidden=\"0\"/>", Now + 500 + 500 + Delay, 500, CAnimManager::EAnimManagerEasing::QuadOut);
+						declare Frame = (Control as CMlFrame);
+						(Frame.GetFirstChild("QUAD_BUTTON") as CMlQuad).Hide();
+						AnimMgr.Add(Frame.GetFirstChild("QUAD_BUTTON"), "<quad hidden=\"0\"/>", Now + 1500 + Delay, 200, CAnimManager::EAnimManagerEasing::QuadOut);
+						((Frame.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).GetFirstChild("LABEL_BUTTON") as CMlLabel).Opacity = 0.;
+						AnimMgr.Add((Frame.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).GetFirstChild("LABEL_BUTTON"), "<label opacity=\"1\"/>", Now + 1500 + Delay, 200, CAnimManager::EAnimManagerEasing::QuadOut);
+						(Frame.GetFirstChild("LABEL_COUNT") as CMlLabel).Opacity = 0.;
+						AnimMgr.Add(Frame.GetFirstChild("LABEL_COUNT"), "<label opacity=\"1\"/>", Now + 1500 + Delay, 200, CAnimManager::EAnimManagerEasing::QuadOut);
+
 						Delay += 100;
 					}
 				}
 				case "Hide": {
 					End = Now;
 					AnimMgr.Add(Page.GetFirstChild("FRAME_PLAYSESSIONS"), "<frame pos=\"200 35\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+				}
+				case "UpdatePlaysessions": {
+					declare JsonSuccess = Playsessions.fromjson(Event.CustomEventData[0]);
+					UpdatePlaysessions();
 				}
 			}
 		}

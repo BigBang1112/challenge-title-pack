@@ -24,7 +24,7 @@ SAccess GetAccess() {
 
 Void Start() {
 	Layers::Create("AuthBeta", Manialink::FromFile("Media/Manialinks/AuthBeta", True, [], Settings::Get().Theme), True);
-	declare Success = Auth2::AsyncAuthorize("Authorize", "b1a3d10ba7", "basic maps", Backend::GetHost()^"/auth");
+	declare Success = Auth2::AsyncAuthorize("Authorize", "b1a3d10ba7", "basic maps", Backend::GetHost()^"/auth.php");
 }
 
 Void Event(CManiaAppEvent _Event) {
