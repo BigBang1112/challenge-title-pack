@@ -10,7 +10,7 @@
 			<quad pos="0 7.5" z-index="0" size="29 0.5" bgcolor="FFFA" halign="left" valign="bottom" id="QUAD_STEER_RIGHT"/>
 			<quad pos="0 -7.5" z-index="1" size="58 1" halign="center" valign="bottom" id="QUAD_BRAKE" opacity="0" style="Bgs1InRace" substyle="BgMetalBar" colorize="F00"/>
 		</frame>
-		<frame pos="-45 -77.5" id="FRAME_CHECKPOINT" clip="True" clipsizen="30 15">
+		<frame pos="-45 -77.5" id="FRAME_CHECKPOINT" clip="True" clipsizen="40 15">
 			<quad z-index="0" size="30 10" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCardList"/>
 			<quad z-index="1" size="30 10" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgGradV"/>
 			
@@ -25,7 +25,7 @@
 			<label pos="0 -0.4" z-index="3" size="20 5" text="0:00.000" halign="center" valign="center2" textfont="RajdhaniMono" textsize="3" textcolor="D0F" opacity=".9" hidden="1" id="LABEL_CP_PURPLE"/>
 			<quad z-index="2" size="30 20" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="ProgressBarSmall" opacity="1" hidden="1" colorize="F0F" id="QUAD_CP_PURPLE"/>
 		</frame>
-		<frame pos="45 -77.5" id="FRAME_SPEED" clip="True" clipsizen="30 15">
+		<frame pos="45 -77.5" id="FRAME_SPEED" clip="True" clipsizen="40 15">
 			<quad z-index="0" size="30 10" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCardList"/>
 			<quad z-index="1" size="30 10" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgGradV"/>
 			<label pos="0 0.5" z-index="3" size="25 5" text="123" halign="center" valign="center2" textfont="RajdhaniMono" textsize="3" id="LABEL_SPEED" textcolor="EEE"/>

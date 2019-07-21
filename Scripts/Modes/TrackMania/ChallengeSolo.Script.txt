@@ -1,8 +1,15 @@
 #RequireContext CTmMode
 
-#Const  CompatibleMapTypes  "Challenge"
-#Const  Version             "1.0.0"
-#Const  ScriptName          "Modes/TrackMania/ChallengeSolo.Script.txt"
+#Include "TextLib" as TextLib
+
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
+#Include "Libs/BigBang1112/Random.Script.txt" as Random
+
+#Include "Libs/Challenge/Backend.Script.txt" as Backend
+
+#Const CompatibleMapTypes  "Challenge"
+#Const Version             "1.0.0"
+#Const ScriptName          "Modes/TrackMania/ChallengeSolo.Script.txt"
 
 ItemList_Begin();
 declare CanyonCar = ItemList_Add("CanyonCar");
@@ -11,9 +18,11 @@ declare ValleyCar = ItemList_Add("ValleyCar");
 declare LagoonCar = ItemList_Add("LagoonCar");
 ItemList_End();
 
-RequestLoadMap();
-
 ClientManiaAppUrl = "file://Media/ManiaApps/ChallengeSoloClient.Script.txt";
+
+RequestLoadMap();
+wait(MapLoaded);
+wait(Players.count>0);
 
 while(True) {
 	foreach(Player,PlayersWaiting) {

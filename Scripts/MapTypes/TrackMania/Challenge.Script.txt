@@ -1,64 +1,100 @@
 #RequireContext CTmMapType
 
-EnableEditorInputsCustomProcessing = True;
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 
-declare Player <=> Mode.AllPlayers[0];
-declare UI <=> Mode.UIManager.GetUI(Player);
-
-Mode.UIManager.UIAll.OverlayHideBackground           = True;
-Mode.UIManager.UIAll.OverlayHideNotices              = True;
-Mode.UIManager.UIAll.OverlayHideMapInfo              = True;
-Mode.UIManager.UIAll.OverlayHideOpponentsInfo        = True;
-Mode.UIManager.UIAll.OverlayHideChat                 = True;
-Mode.UIManager.UIAll.OverlayHideCheckPointList       = True;
-Mode.UIManager.UIAll.OverlayHideCountdown            = True;
-Mode.UIManager.UIAll.OverlayHideChrono               = True;
-Mode.UIManager.UIAll.OverlayHideSpeedAndDist         = True;
-Mode.UIManager.UIAll.OverlayHidePersonnalBestAndRank = True;
-Mode.UIManager.UIAll.OverlayHidePosition             = True;
-Mode.UIManager.UIAll.OverlayHideMultilapInfos        = True;
-Mode.UIManager.UIAll.OverlayHideSpectatorControllers = True;
-Mode.UIManager.UIAll.OverlayHideSpectatorInfos       = True;
-Mode.UIManager.UIAll.OverlayChatHideAvatar           = True;
-
-Mode.ClientManiaAppUrl = "file://Media/ManiaApps/ChallengeSoloClient.Script.txt";
-
-while(True) {
-	foreach(Event,PendingEvents) {
-		switch(Event.Type) {
-			case CMapEditorPluginEvent::Type::MapModified: {
-				declare FinishCount = 0;
-				foreach(Block,Blocks)
-					if(Block != Null)
-						if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Finish || Block.BlockModel.WaypointType == CBlockModel::EWayPointType::StartFinish)
-							FinishCount += 1;
-				if(FinishCount > 0)
-					ValidationStatus = CMapType::ValidationStatus::Validated;
-				else
-					ValidationStatus = CMapType::ValidationStatus::NotValidable;
+Void CheckValidability() {
+	declare StartsFinishes = 0;
+	declare Starts = 0;
+	declare Finishes = 0;
+	declare Checkpoints = 0;
+	foreach (Anchor in AnchorData) {
+		if(Anchor.Block != Null) {
+			switch(Anchor.Block.BlockModel.WaypointType) {
+				case CBlockModel::EWayPointType::StartFinish: StartsFinishes += 1;
+				case CBlockModel::EWayPointType::Start: Starts += 1;
+				case CBlockModel::EWayPointType::Finish: Finishes += 1;
+				case CBlockModel::EWayPointType::Checkpoint: Checkpoints += 1;
 			}
-			case CMapEditorPluginEvent::Type::StartValidation: {
-				RequestEnterPlayground();
-				Player.RaceStartTime = -1;
-				Player.IsSpawned = True;
-				Player.Score.Clear();
-				Mode.UIManager.UIAll.UISequence = CUIConfig::EUISequence::Intro;
-				wait(Mode.UIManager.UIAll.UISequenceIsCompleted);
-				Mode.CutOffTimeLimit = -1;
-				Mode.UIManager.UIAll.UISequence = CUIConfig::EUISequence::Playing;
-				
-				while(True) {
-					if(ValidationEndRequested) RequestLeavePlayground();
+		}
+		else {
+			if(Anchor.DefaultTag == "Spawn") Starts += 1;
+			else if(Anchor.DefaultTag == "Goal") Finishes += 1;
+			else if(Anchor.DefaultTag == "Checkpoint") Checkpoints += 1;
+			else if(Anchor.DefaultTag == "StartFinish") StartsFinishes += 1;
+		}
+	}
+	
+	if(Finishes > 0 || (StartsFinishes == 1 && Checkpoints > 0)) {
+		ValidationStatus = CMapType::ValidationStatus::Validated;
+		Map.TMObjective_AuthorTime = 2147483647;
+		Map.TMObjective_GoldTime = 2147483647;
+		Map.TMObjective_SilverTime = 2147483647;
+		Map.TMObjective_BronzeTime = 2147483647;
+	}
+	else
+		ValidationStatus = CMapType::ValidationStatus::NotValidable;
+}
+
+main() {
+	EnableEditorInputsCustomProcessing = True;
+	
+	wait(AllPlayers.count>0);
+	declare Player <=> Mode.AllPlayers[0];
+	declare UI <=> Mode.UIManager.GetUI(Player);
+	
+	Mode.UIManager.UIAll.OverlayHideBackground = True;
+	Mode.UIManager.UIAll.OverlayHideNotices = True;
+	Mode.UIManager.UIAll.OverlayHideMapInfo = True;
+	Mode.UIManager.UIAll.OverlayHideOpponentsInfo = True;
+	Mode.UIManager.UIAll.OverlayHideChat = True;
+	Mode.UIManager.UIAll.OverlayHideCheckPointList = True;
+	Mode.UIManager.UIAll.OverlayHideCountdown = True;
+	Mode.UIManager.UIAll.OverlayHideChrono = True;
+	Mode.UIManager.UIAll.OverlayHideSpeedAndDist = True;
+	Mode.UIManager.UIAll.OverlayHidePersonnalBestAndRank = True;
+	Mode.UIManager.UIAll.OverlayHidePosition = True;
+	Mode.UIManager.UIAll.OverlayHideMultilapInfos = True;
+	Mode.UIManager.UIAll.OverlayHideSpectatorControllers = True;
+	Mode.UIManager.UIAll.OverlayHideSpectatorInfos = True;
+	Mode.UIManager.UIAll.OverlayChatHideAvatar = True;
+	Mode.UIManager.UIAll.ScoreTableVisibility = CUIConfig::EVisibility::ForcedHidden;
+	Mode.UIManager.UIAll.SmallScoreTableVisibility = CUIConfig::EVisibility::ForcedHidden;
+	Mode.UIManager.UIAll.ScoreTableOnlyManialink = True;
+	
+	Mode.ClientManiaAppUrl = "file://Media/ManiaApps/ChallengeSoloClient.Script.txt";
+	
+	CheckValidability();
+	
+	while(True) {
+		foreach(Event,PendingEvents) {
+			switch(Event.Type) {
+				case CMapEditorPluginEvent::Type::MapModified: {
+					CheckValidability();
+				}
+				case CMapEditorPluginEvent::Type::StartValidation: {
+					RequestEnterPlayground();
+					Player.RaceStartTime = -1;
+					Player.IsSpawned = True;
+					Player.Score.Clear();
+					Mode.UIManager.UIAll.UISequence = CUIConfig::EUISequence::Intro;
+					wait(Mode.UIManager.UIAll.UISequenceIsCompleted);
+					Mode.CutOffTimeLimit = -1;
 					
-					foreach(PlayerWaiting,Mode.PlayersWaiting) {
-						Mode.SpawnPlayer(PlayerWaiting, 0, Mode.Now+2500);
+					Mode.UIManager.UIAll.UISequence = CUIConfig::EUISequence::Playing;
+					
+					while(IsSwitchedToPlayground) {
+						if(ValidationEndRequested) RequestLeavePlayground();
+						
+						foreach(PlayerWaiting,Mode.PlayersWaiting) {
+							Mode.SpawnPlayer(Player, 0, Mode.Now+2500);
+						}
+						
+						yield;
 					}
-					
-					yield;
 				}
 			}
 		}
+	
+		yield;
 	}
-
-	yield;
 }
