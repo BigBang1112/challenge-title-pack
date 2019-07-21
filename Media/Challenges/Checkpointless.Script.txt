@@ -11,7 +11,7 @@ declare Multilaps = GetMultilaps();
 declare FinishLines = GetFinishLines();
 declare MapInfo = GetOriginalMapInfo();
 
-declare IsOneLapWithFinish = FinishLines.count == 1 && MapInfo.TMObjective_IsLapRace;
+declare IsOneLapWithFinish = FinishLines.count > 0 && MapInfo.TMObjective_IsLapRace;
 declare IsMultilap = Multilaps.count > 0 && !IsOneLapWithFinish;
 if(IsMultilap) Problem_MultilapTrack(Multilaps[0]);
 if(IsOneLapWithFinish) {
