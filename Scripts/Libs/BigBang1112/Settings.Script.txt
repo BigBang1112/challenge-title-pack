@@ -3,9 +3,22 @@
 	Text Language;
 }
 
+declare Boolean Restart;
+
 SSettings Get() {
 	declare SSettings Settings;
-	//Settings.Theme = "White";
 	Settings.Language = LocalUser.Language;
 	return Settings;
+}
+
+Boolean IsRestarting() {
+	return Restart;
+}
+
+Void Restart(Boolean _Do) {
+	Restart = _Do;
+}
+
+Void Restart() {
+	Restart(True);
 }

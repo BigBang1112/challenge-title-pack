@@ -18,13 +18,12 @@
 #Include "Libs/Challenge/Menu/AuthBeta.Script.txt" as Menu_AuthBeta
 
 #Include "Libs/Challenge/Devmode.Script.txt" as Devmode
-#Include "Libs/Challenge/Restart.Script.txt" as Restart
 
-#Setting S_Devmode True
+#Setting S_Devmode False
 
 main() {
 	while(True) { // Restart mechanism
-		Restart::Restart(False);
+		Settings::Restart(False);
 		
 		Layers::Create("Background", "file://Media/Manialinks/Background.xml", True, False);
 		Layers::Create("Loading", "file://Media/Manialinks/Loading.xml", True, False, CUILayer::EUILayerType::LoadingScreen);
@@ -63,7 +62,7 @@ main() {
 		
 		//EnableMenuNavigationInputs = True;
 	
-		while(!Restart::IsRestarting()) {
+		while(!Settings::IsRestarting()) {
 			foreach(Event,PendingEvents) {
 				Layers::Event(Event);
 				Menu_Quickplay::Event(Event);
