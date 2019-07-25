@@ -10,7 +10,7 @@
 		<quad pos="0 0" z-index="-1" size="100 110" bgcolor="FFFA" halign="center" valign="center" style="Bgs1" substyle="BgCardList" class="opacity"/>
 		<quad pos="0 0" z-index="0" size="100 110" bgcolor="FFFA" halign="center" valign="center" style="Bgs1" substyle="BgGradV" class="opacity"/>
 		<label pos="0 45" z-index="1" size="90 10" text="{{{{AUTHBETA_WELCOME}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="4"/>
-		<label pos="0 39" z-index="1" size="90 10" text="{{{{AUTHBETA_GIVEINFO}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="2"/>
+		<label pos="0 39" z-index="1" size="90 10" text="{{{{AUTHBETA_GIVEINFO}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="1"/>
 		<quad z-index="1" size="100 10" bgcolor="FFF" style="Bgs1" substyle="NavButtonBlink" hidden="0" modulatecolor="AAA" pos="0 27.5" valign="center" halign="center"/>
 		<label pos="-40 25" z-index="2" size="40 5" text="{{{{AUTHBETA_YOURLOGIN}}}}:" valign="bottom" textfont="BiryaniDemiBold"/>
 		<frame z-index="2" pos="0 25" clip="True" clipsizen="40 10" clipposn="20 0" class="SC_SLIDELABEL" id="SC_SLIDELABEL_LOGIN">

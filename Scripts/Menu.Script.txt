@@ -9,12 +9,13 @@
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 
-#Include "Libs/Challenge/Menu/Quickplay.Script.txt" as Menu_Quickplay
-#Include "Libs/Challenge/Menu/Main.Script.txt" as Menu_Main
-#Include "Libs/Challenge/Menu/Top.Script.txt" as Menu_Top
-#Include "Libs/Challenge/Menu/Editor.Script.txt" as Menu_Editor
-#Include "Libs/Challenge/Menu/Playsessions.Script.txt" as Menu_Playsessions
-#Include "Libs/Challenge/Menu/News.Script.txt" as Menu_News
+#Include "Libs/Sandbox/Menu/Quickplay.Script.txt" as Menu_Quickplay
+#Include "Libs/Sandbox/Menu/Main.Script.txt" as Menu_Main
+#Include "Libs/Sandbox/Menu/Top.Script.txt" as Menu_Top
+#Include "Libs/Sandbox/Menu/Editor.Script.txt" as Menu_Editor
+#Include "Libs/Sandbox/Menu/Playsessions.Script.txt" as Menu_Playsessions
+#Include "Libs/Sandbox/Menu/News.Script.txt" as Menu_News
+
 #Include "Libs/Challenge/Menu/AuthBeta.Script.txt" as Menu_AuthBeta
 
 #Include "Libs/Challenge/Devmode.Script.txt" as Devmode
