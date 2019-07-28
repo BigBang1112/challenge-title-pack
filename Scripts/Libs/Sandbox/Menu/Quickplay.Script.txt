@@ -327,10 +327,12 @@ Void Async() {
 					if(!TextLib::Find(Filter.Name, MapInfo.Name, False, False)) continue;
 				if(Filter.Author != "")
 					if(!TextLib::Find(Filter.Author, MapInfo.AuthorLogin ^ MapInfo.AuthorNickName, False, False)) continue;
-			
-				declare Map::SMapInfo Info;
-				Info = Map::ToSMapInfo(MapInfo);
-				MapInfos.add(Info);
+				
+				if(MapInfo.IsPlayable) {
+					declare Map::SMapInfo Info;
+					Info = Map::ToSMapInfo(MapInfo);
+					MapInfos.add(Info);
+				}
 			}
 					
 			Layers::SendEvent("Quickplay", "MapList_Local_Update", [MapList.Path,SubFolders.tojson(),MapInfos.tojson()]);
