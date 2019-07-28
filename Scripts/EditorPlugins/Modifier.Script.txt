@@ -31,8 +31,6 @@
 declare CUILayer LayerAPI;
 declare Boolean Terminate;
 
-declare ModifierBase::SChProblem[] Problems;
-
 declare ::ShadowsQuality LastShadowsQuality;
 
 declare ModifierBase::SChMap ChMap;
@@ -171,6 +169,8 @@ Void Finish() {
 	Layers::Hide("ModifierMetadata");
 	sleep(500);
 	Layers::Show("ModifierResult");
+
+	declare metadata ModifierBase::SChProblem[] Problems for Map;
 
 	if(Terminate) Layers::SendEvent("ModifierResult", "Unsolvable");
 	else {
@@ -682,6 +682,7 @@ Void ProcessRequest(CMapEditorPluginEvent _Event) {
 		case "Ch_Problem": {
 			declare ModifierBase::SChProblem Problem;
 			declare JsonSuccess = Problem.fromjson(Event.CustomEventData[0]);
+			declare metadata ModifierBase::SChProblem[] Problems for Map;
 			Problems.add(Problem);
 			if(Problem.IsUnsolvable) TerminateScript();
 			else Respond(Event, []);
@@ -764,6 +765,9 @@ main() {
 	
 	declare MapInfo = TextLib::Replace(S_OriginalMapInfo,"'","\"");
 	declare JsonSuccess = ChMap.fromjson(MapInfo);
+
+	declare metadata ModifierBase::SChMap OriginalMap for Map;
+	OriginalMap = ChMap;
 	
 	declare ScriptNames = TextLib::Replace(S_ScriptNames,"'","\"");
 	declare SChScriptInfo[] Scripts;
@@ -821,6 +825,8 @@ main() {
 						Validate();
 					}
 					case "Button_Save": {
+						declare metadata ModifierBase::SChProblem[] Problems for Map;
+
 						if(Problems.count == 0) {
 							if(CurrentShadowsQuality == ::ShadowsQuality::Fast
 							|| CurrentShadowsQuality == ::ShadowsQuality::Default

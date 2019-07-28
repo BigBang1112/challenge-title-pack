@@ -2,6 +2,8 @@
 
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 
+#Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
+
 Void CheckValidability() {
 	declare StartsFinishes = 0;
 	declare Starts = 0;
@@ -24,12 +26,16 @@ Void CheckValidability() {
 		}
 	}
 	
-	if(Finishes > 0 || (StartsFinishes == 1 && Checkpoints > 0)) {
+	declare metadata ModifierBase::SChProblem[] Problems for Map;
+	
+	if((Finishes > 0 || (StartsFinishes == 1 && Checkpoints > 0)) && Problems.count == 0) {
 		ValidationStatus = CMapType::ValidationStatus::Validated;
-		Map.TMObjective_AuthorTime = 2147483647;
-		Map.TMObjective_GoldTime = 2147483647;
-		Map.TMObjective_SilverTime = 2147483647;
-		Map.TMObjective_BronzeTime = 2147483647;
+		if(Map.TMObjective_AuthorTime == -1) {
+			Map.TMObjective_AuthorTime = 2147483647;
+			Map.TMObjective_BronzeTime = 2147483647;
+			Map.TMObjective_SilverTime = 2147483647;
+			Map.TMObjective_GoldTime = 2147483647;
+		}
 	}
 	else
 		ValidationStatus = CMapType::ValidationStatus::NotValidable;
@@ -63,14 +69,9 @@ main() {
 	
 	Mode.ClientManiaAppUrl = "file://Media/ManiaApps/ChallengeSoloClient.Script.txt";
 	
-	CheckValidability();
-	
 	while(True) {
 		foreach(Event,PendingEvents) {
 			switch(Event.Type) {
-				case CMapEditorPluginEvent::Type::MapModified: {
-					CheckValidability();
-				}
 				case CMapEditorPluginEvent::Type::StartValidation: {
 					RequestEnterPlayground();
 					Player.RaceStartTime = -1;
@@ -94,6 +95,8 @@ main() {
 				}
 			}
 		}
+		
+		CheckValidability();
 	
 		yield;
 	}
