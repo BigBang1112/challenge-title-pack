@@ -45,7 +45,7 @@
 		</frame>
 		<frame pos="30 0" z-index="1">
 			<quad z-index="0" size="70 10" halign="left" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="060" id="QUAD_BUTTON_VALIDATE" class="opacity"/>
-			<label pos="35 -5.25" z-index="1" size="70 10" text="{{{{VALIDATE}}}}" halign="center" valign="center2" textfont="RajdhaniMono" class="opacity"/>
+			<label pos="35 -5.25" z-index="1" size="70 10" text="{{{{VALIDATE}}}}" halign="center" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON_VALIDATE"/>
 		</frame>
 		<frame pos="100 0" z-index="1">
 			<quad z-index="0" size="50 10" halign="left" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="800" id="QUAD_BUTTON_EXIT" class="opacity"/>

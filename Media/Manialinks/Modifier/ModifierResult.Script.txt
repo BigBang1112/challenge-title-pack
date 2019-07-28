@@ -28,6 +28,9 @@ declare Quad_Button_Shadows_Ultra = (Page.GetFirstChild("QUAD_BUTTON_SHADOWS_ULT
 
 declare Quad_Button_Save_Block = (Page.GetFirstChild("QUAD_BUTTON_SAVE_BLOCK") as CMlQuad);
 declare Label_Button_Save = (Page.GetFirstChild("LABEL_BUTTON_SAVE") as CMlLabel);
+
+declare Quad_Button_Validate = (Page.GetFirstChild("QUAD_BUTTON_VALIDATE") as CMlQuad);
+declare Label_Button_Validate = (Page.GetFirstChild("LABEL_BUTTON_VALIDATE") as CMlLabel);
 ***
 
 ***Loop***
@@ -96,6 +99,14 @@ foreach(Event,PendingEvents) {
 							AnimMgr.Add(Element, "<quad opacity=\"0\" hidden=\"1\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 						}
 					}
+				}
+				case "Problems": {
+					Quad_Button_Validate.ModulateColor = <0.6,0.4,0.0>;
+					Label_Button_Validate.SetText("{{{{SOLVE_PROBLEMS}}}}");
+				}
+				case "Solved": {
+					Quad_Button_Validate.ModulateColor = <0.0,0.4,0.0>;
+					Label_Button_Validate.SetText("{{{{VALIDATE}}}}");
 				}
 				case "Shadows": {
 					declare Quality = Event.CustomEventData[0];

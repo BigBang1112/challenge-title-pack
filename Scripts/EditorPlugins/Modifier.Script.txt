@@ -173,7 +173,10 @@ Void Finish() {
 	Layers::Show("ModifierResult");
 
 	if(Terminate) Layers::SendEvent("ModifierResult", "Unsolvable");
-	else Layers::SendEvent("ModifierResult", "Success");
+	else {
+		Layers::SendEvent("ModifierResult", "Success");
+		if(Problems.count > 0) Layers::SendEvent("ModifierResult", "Problems");
+	}
 	
 	if(CurrentShadowsQuality == ::ShadowsQuality::NotComputed) Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("NOT_COMPUTED"), ""^IsUltraShadowsQualityAvailable]);
 	else if(CurrentShadowsQuality == ::ShadowsQuality::VeryFast) Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("VERY_FAST"), ""^IsUltraShadowsQualityAvailable]);
