@@ -27,7 +27,6 @@ declare Quad_Button_Shadows_High = (Page.GetFirstChild("QUAD_BUTTON_SHADOWS_HIGH
 declare Quad_Button_Shadows_Ultra = (Page.GetFirstChild("QUAD_BUTTON_SHADOWS_ULTRA") as CMlQuad);
 
 declare Quad_Button_Save_Block = (Page.GetFirstChild("QUAD_BUTTON_SAVE_BLOCK") as CMlQuad);
-declare Label_Button_Save = (Page.GetFirstChild("LABEL_BUTTON_SAVE") as CMlLabel);
 
 declare Quad_Button_Validate = (Page.GetFirstChild("QUAD_BUTTON_VALIDATE") as CMlQuad);
 declare Label_Button_Validate = (Page.GetFirstChild("LABEL_BUTTON_VALIDATE") as CMlLabel);
@@ -133,24 +132,17 @@ foreach(Event,PendingEvents) {
 					}
 
 					if(Quality == "{{{{NOT_COMPUTED}}}}") {
-						Quad_Button_Save_Block.Show();
-						Label_Button_Save.Opacity = .5;
+						
 					}
 					else if(Quality == "{{{{VERY_FAST}}}}") {
 						Label_Button_Shadows_VeryFast.Opacity = .5;
 						Quad_Button_Shadows_VeryFast.Hide();
-
-						Quad_Button_Save_Block.Show();
-						Label_Button_Save.Opacity = .5;
 					}
 					else if(Quality == "{{{{FAST}}}}") {
 						Label_Button_Shadows_VeryFast.Opacity = .5;
 						Label_Button_Shadows_Fast.Opacity = .5;
 						Quad_Button_Shadows_VeryFast.Hide();
 						Quad_Button_Shadows_Fast.Hide();
-
-						Quad_Button_Save_Block.Hide();
-						Label_Button_Save.Opacity = 1.;
 					}
 					else if(Quality == "{{{{DEFAULT}}}}") {
 						Label_Button_Shadows_VeryFast.Opacity = .5;
@@ -159,9 +151,6 @@ foreach(Event,PendingEvents) {
 						Quad_Button_Shadows_VeryFast.Hide();
 						Quad_Button_Shadows_Fast.Hide();
 						Quad_Button_Shadows_Default.Hide();
-
-						Quad_Button_Save_Block.Hide();
-						Label_Button_Save.Opacity = 1.;
 					}
 					else if(Quality == "{{{{HIGH}}}}" || Quality == "{{{{ULTRA}}}}") {
 						Label_Button_Shadows_VeryFast.Opacity = .5;
@@ -172,9 +161,6 @@ foreach(Event,PendingEvents) {
 						Quad_Button_Shadows_Fast.Hide();
 						Quad_Button_Shadows_Default.Hide();
 						Quad_Button_Shadows_High.Hide();
-
-						Quad_Button_Save_Block.Hide();
-						Label_Button_Save.Opacity = 1.;
 					}
 				}
 				case "Success": {
