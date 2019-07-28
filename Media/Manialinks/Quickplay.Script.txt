@@ -197,7 +197,6 @@ Void UpdateLocalMapsFolder(Integer _Offset) {
 	if(SelectedMapInfo.MapUid != "") {
 		(Page.GetFirstChild("QUAD_MAPLIST_THUMBNAIL") as CMlQuad).ChangeImageUrl("file://Thumbnails/MapUid/"^SelectedMapInfo.MapUid);
 		(Page.GetFirstChild("LABEL_MAPLIST_MAPNAME") as CMlLabel).SetText(SelectedMapInfo.Name);
-		(Page.GetFirstChild("LABEL_MAPLIST_AUTHORNAME") as CMlLabel).SetText("{{{{by}}}} "^SelectedMapInfo.AuthorNickName);
 		(Page.GetFirstChild("ENTRY_MAPLIST_UID") as CMlEntry).Value = SelectedMapInfo.MapUid;
 
 		if(SelectedMapInfo.TMObjective_AuthorTime == -1) (Page.GetFirstChild("LABEL_MAPLIST_MEDALNADEO") as CMlLabel).SetText("None");
@@ -216,11 +215,13 @@ Void UpdateLocalMapsFolder(Integer _Offset) {
 
 			AnimMgr.Add(Page.GetFirstChild("FRAME_CHALLENGE_SCRIPT"), "<frame pos=\"0 0\" hidden=\"1\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 			Page.GetFirstChild("FRAME_CHALLENGE_SCRIPT").DataAttributeSet("open","0");
+			(Page.GetFirstChild("LABEL_MAPLIST_AUTHORNAME") as CMlLabel).SetText("{{{{modified_by}}}} "^SelectedMapInfo.AuthorNickName);
 		}
 		else {
 			//AnimMgr.Add(Page.GetFirstChild("LABEL_SCRIPT_NAME"), "<label opacity=\"1\" hidden=\"0\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 			Page.GetFirstChild("LABEL_SCRIPT_NAME").Show();
 			Page.GetFirstChild("QUAD_BUTTON_CHALLENGE_SCRIPT_DISABLE").Hide();
+			(Page.GetFirstChild("LABEL_MAPLIST_AUTHORNAME") as CMlLabel).SetText("{{{{by}}}} "^SelectedMapInfo.AuthorNickName);
 		}
 	}
 	
