@@ -1039,9 +1039,9 @@ if(OldMapScrollPos != (Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollOf
 // Scroll bar stuff
 if((Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollMax.Y > 0) {
 	declare ScrollRatio = OldMapScrollPos/(Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollMax.Y;
-
+	log((Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollMax.Y);
 	Page.GetFirstChild("QUAD_MAPLIST_BAR").Show();
-	Page.GetFirstChild("QUAD_MAPLIST_BAR").Size.Y = 80/((Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollMax.Y/10.0);
+	Page.GetFirstChild("QUAD_MAPLIST_BAR").Size.Y = 70/((Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollMax.Y/10.0);
 	Page.GetFirstChild("QUAD_MAPLIST_BAR").RelativePosition_V3.Y = -20.0-ScrollRatio*(80.0-Page.GetFirstChild("QUAD_MAPLIST_BAR").Size.Y);
 
 	//(Page.GetFirstChild("QUAD_MAPLIST_BAR") as CMlGauge).Ratio = OldMapScrollPos/(Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollMax.Y;
