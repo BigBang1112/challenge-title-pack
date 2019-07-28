@@ -6,22 +6,26 @@
 		<frame pos="-125" clip="True" clipposn="0 30" clipsizen="82 60">
 			<frame pos="0 0" id="FRAME_SHADOWS" hidden="1">
 				<quad z-index="-2" size="50 51" bgcolor="000A" valign="top" style="Bgs1" substyle="BgCardList" scriptevents="1" halign="center"/>
-				<quad z-index="-1" size="50 51" bgcolor="FFFA" style="Bgs1" substyle="BgGradV" halign="center"/>
-				<quad z-index="-1" size="50 51" bgcolor="FFFA" style="Bgs1" substyle="BgGradV" halign="center"/>
+				<quad z-index="-1" size="50 51" bgcolor="FFFA" style="Bgs1InRace" substyle="BgGradV" halign="center"/>
+				<quad z-index="-1" size="50 51" bgcolor="FFFA" style="Bgs1InRace" substyle="BgGradV" halign="center"/>
 				<frame>
 					<frame>
+						<quad z-index="-1" size="50 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCard" modulatecolor="369" opacity="0" halign="center" id="QUAD_HIGHLIGHT_SHADOWS_ULTRA"/>
 						<quad z-index="0" size="50 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON_SHADOWS_ULTRA" pos="0 0" halign="center"/>
 						<label pos="0 -5.25" z-index="1" size="80 10" text="{{{{ULTRA}}}}" halign="center" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON_SHADOWS_ULTRA" textcolor="EEE"/>
 					</frame>
 					<frame pos="0 -10">
+						<quad z-index="-1" size="50 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCard" modulatecolor="369" opacity="0" halign="center" id="QUAD_HIGHLIGHT_SHADOWS_HIGH"/>
 						<quad z-index="0" size="50 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON_SHADOWS_HIGH" pos="0 0" halign="center"/>
 						<label pos="0 -5.25" z-index="1" size="80 10" text="{{{{HIGH}}}}" halign="center" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON_SHADOWS_HIGH" textcolor="EEE"/>
 					</frame>
 					<frame pos="0 -20">
+						<quad z-index="-1" size="50 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCard" modulatecolor="369" opacity="0" halign="center" id="QUAD_HIGHLIGHT_SHADOWS_DEFAULT"/>
 						<quad z-index="0" size="50 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON_SHADOWS_DEFAULT" pos="0 0" halign="center"/>
 						<label pos="0 -5.25" z-index="1" size="40 10" text="{{{{DEFAULT}}}}" halign="center" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON_SHADOWS_DEFAULT" textcolor="EEE"/>
 					</frame>
 					<frame pos="0 -30">
+						<quad z-index="-1" size="50 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCard" modulatecolor="369" opacity="0" halign="center" id="QUAD_HIGHLIGHT_SHADOWS_FAST"/>
 						<quad z-index="0" size="50 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON_SHADOWS_FAST" pos="0 0" halign="center"/>
 						<label pos="0 -5.25" z-index="1" size="40 10" text="{{{{FAST}}}}" halign="center" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON_SHADOWS_FAST" textcolor="EEE"/>
 					</frame>
@@ -33,8 +37,8 @@
 			</frame>
 		</frame>
 		<frame pos="-125 0" z-index="1">
-			<quad z-index="0" size="50 10" bgcolor="FFFA" style="Bgs1" substyle="BgGradV" halign="center"/>
-			<quad z-index="0" size="50 10" bgcolor="FFFA" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON_SHADOWS" pos="0 0" halign="center"/>
+			<quad z-index="0" size="50 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgGradV" halign="center"/>
+			<quad z-index="0" size="50 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON_SHADOWS" pos="0 0" halign="center"/>
 			<label pos="0 -5.25" z-index="1" size="40 10" text="{{{{NOT_COMPUTED}}}}" halign="center" valign="center2" textfont="RajdhaniMono" class="opacity" id="LABEL_BUTTON_SHADOWS" textcolor="EEE"/>
 		</frame>
 		<label pos="-98 -5.25" z-index="1" size="50 5" text="{{{{SHADOW_QUALITY}}}}" valign="center2" textfont="Oswald" halign="left" textsize="2" textcolor="EEE"/>

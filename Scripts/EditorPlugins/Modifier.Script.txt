@@ -821,7 +821,20 @@ main() {
 						Validate();
 					}
 					case "Button_Save": {
-						SaveMap("");
+						if(Problems.count == 0) {
+							if(CurrentShadowsQuality == ::ShadowsQuality::Fast
+							|| CurrentShadowsQuality == ::ShadowsQuality::Default
+							|| CurrentShadowsQuality == ::ShadowsQuality::High
+							|| CurrentShadowsQuality == ::ShadowsQuality::Ultra) {
+								SaveMap("");
+							}
+							else {
+								Layers::SendEvent("ModifierResult", "SuggestShadows");
+							}
+						}
+						else {
+							SaveMap("");
+						}
 					}
 					case "Button_Shadows_VeryFast": {
 						ComputeShadows(::ShadowsQuality::VeryFast);
