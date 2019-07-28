@@ -328,7 +328,7 @@ Void Async() {
 				if(Filter.Author != "")
 					if(!TextLib::Find(Filter.Author, MapInfo.AuthorLogin ^ MapInfo.AuthorNickName, False, False)) continue;
 				
-				if(MapInfo.IsPlayable) {
+				if(MapInfo.IsPlayable || MapInfo.MapType == "TrackMania\\Challenge") {
 					declare Map::SMapInfo Info;
 					Info = Map::ToSMapInfo(MapInfo);
 					MapInfos.add(Info);
