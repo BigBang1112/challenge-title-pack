@@ -40,37 +40,6 @@ declare ::ShadowsQuality LastShadowsQuality;
 	return "";
 }*/
 
-Void Prepare(ModifierBase::SChMap _Map) {	
-	Layers::Create("ModifierIntro",Manialink::FromFile("Media/Manialinks/Modifier/ModifierIntro", True, ["TextAnimation"], Settings::Get().Theme));
-	Layers::Create("ModifierScript",Manialink::FromFile("Media/Manialinks/Modifier/ModifierScript", True, ["TextAnimation"], Settings::Get().Theme));
-	Layers::Create("ModifierStatus",Manialink::FromFile("Media/Manialinks/Modifier/ModifierStatus", True, ["TextAnimation"], Settings::Get().Theme));
-	Layers::Create("ModifierMetadata",Manialink::FromFile("Media/Manialinks/Modifier/ModifierMetadata", True, ["TextAnimation"], Settings::Get().Theme));
-	Layers::Create("ModifierActions",Manialink::FromFile("Media/Manialinks/Modifier/ModifierActions", True, ["TextAnimation"], Settings::Get().Theme));
-	
-	Layers::SetAnimationInOut("ModifierScript",CUILayer::EUILayerAnimation::DownSlow);
-	Layers::SetAnimationInOut("ModifierStatus",CUILayer::EUILayerAnimation::DownSlow);
-	Layers::SetAnimationInOut("ModifierActions",CUILayer::EUILayerAnimation::RightSlow);
-	Layers::SetAnimationInOut("ModifierMetadata",CUILayer::EUILayerAnimation::UpSlow);
-	
-	Layers::SetAnimationInOut("ModifierResult",CUILayer::EUILayerAnimation::DownSlow);
-	
-	Layers::Show("ModifierIntro");
-	sleep(500);
-	LayerCustomEvent(Layers::Get("ModifierIntro"), "Map", [_Map.Name]);
-	LayerCustomEvent(Layers::Get("ModifierIntro"), "Show", []);
-	sleep(2000);
-	LayerCustomEvent(Layers::Get("ModifierIntro"), "Hide", []);
-
-	Layers::Show("ModifierScript");
-	sleep(100);
-	Layers::Show("ModifierStatus");
-	sleep(100);
-	Layers::Show("ModifierActions");
-	sleep(100);
-	Layers::Show("ModifierMetadata");
-	sleep(200);
-}
-
 Void ValidateScript() {
 
 }
@@ -197,9 +166,11 @@ main() {
 	
 	declare metadata ModifierBase::SChProblem[] Problems for Map;
 	
-	declare ScriptNames = TextLib::Replace(S_ScriptNames,"'","\"");
 	declare SChScriptInfo[] Scripts;
-	if(!Scripts.fromjson(ScriptNames) && !S_TestMode && Problems.count == 0) return;
+	if(Problems.count == 0) {
+		declare ScriptNames = TextLib::Replace(S_ScriptNames,"'","\"");
+		if(!Scripts.fromjson(ScriptNames) && !S_TestMode) return;
+	}
 	
 	CameraTargetPosition = <Map.Size.X*32./2,5.,Map.Size.Z*32./3>;
 	CameraToTargetDistance = 24.*Map.Size.X;
@@ -214,7 +185,46 @@ main() {
 		
 	}
 	else {
-		Prepare(OriginalMap);
+		Layers::Create("ModifierIntro",Manialink::FromFile("Media/Manialinks/Modifier/ModifierIntro", True, ["TextAnimation"], Settings::Get().Theme));
+		Layers::Create("ModifierScript",Manialink::FromFile("Media/Manialinks/Modifier/ModifierScript", True, ["TextAnimation"], Settings::Get().Theme));
+		Layers::Create("ModifierStatus",Manialink::FromFile("Media/Manialinks/Modifier/ModifierStatus", True, ["TextAnimation"], Settings::Get().Theme));
+		Layers::Create("ModifierMetadata",Manialink::FromFile("Media/Manialinks/Modifier/ModifierMetadata", True, ["TextAnimation"], Settings::Get().Theme));
+		Layers::Create("ModifierActions",Manialink::FromFile("Media/Manialinks/Modifier/ModifierActions", True, ["TextAnimation"], Settings::Get().Theme));
+		
+		Layers::SetAnimationInOut("ModifierScript",CUILayer::EUILayerAnimation::DownSlow);
+		Layers::SetAnimationInOut("ModifierStatus",CUILayer::EUILayerAnimation::DownSlow);
+		Layers::SetAnimationInOut("ModifierActions",CUILayer::EUILayerAnimation::RightSlow);
+		Layers::SetAnimationInOut("ModifierMetadata",CUILayer::EUILayerAnimation::UpSlow);
+		
+		Layers::SetAnimationInOut("ModifierResult",CUILayer::EUILayerAnimation::DownSlow);
+		
+		LayerCustomEvent(Layers::Get("ModifierIntro"), "Map", [OriginalMap.Name]);
+		Layers::Show("ModifierIntro");
+		
+		declare Continue = False;
+		while(!Continue) {
+			foreach(Event,PendingEvents) {
+				if(Event.Type == CMapEditorPluginEvent::Type::LayerCustomEvent) {
+					switch(Event.CustomEventType) {
+						case "Start": {
+							Continue = True;
+						}
+					}
+				}
+			}
+			yield;
+		}
+		
+		LayerCustomEvent(Layers::Get("ModifierIntro"), "Hide", []);
+	
+		Layers::Show("ModifierScript");
+		sleep(100);
+		Layers::Show("ModifierStatus");
+		sleep(100);
+		Layers::Show("ModifierActions");
+		sleep(100);
+		Layers::Show("ModifierMetadata");
+		sleep(200);
 		
 		if(S_TestMode) {
 			declare persistent Text PERSISTENT_CHALLENGE_CODE for LocalUser;

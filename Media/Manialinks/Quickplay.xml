@@ -375,6 +375,6 @@
 	
 	<frame pos="100 0">
 		<quad z-index="0" size="50 10" halign="left" style="Bgs1" substyle="BgCard" scriptevents="1" modulatecolor="060" valign="center" id="QUAD_BUTTON_START"/>
-		<label pos="24.75 -0.25" z-index="1" size="49.5 10" text="{{{{START}}}}" halign="center" valign="center2" textfont="RajdhaniMono"/>
+		<label pos="24.75 -0.25" z-index="1" size="49.5 10" text="{{{{START}}}}" halign="center" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON_START"/>
 	</frame>
 </frame>

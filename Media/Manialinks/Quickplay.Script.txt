@@ -223,6 +223,15 @@ Void UpdateLocalMapsFolder(Integer _Offset) {
 			Page.GetFirstChild("QUAD_BUTTON_CHALLENGE_SCRIPT_DISABLE").Hide();
 			(Page.GetFirstChild("LABEL_MAPLIST_AUTHORNAME") as CMlLabel).SetText("{{{{by}}}} "^SelectedMapInfo.AuthorNickName);
 		}
+
+		if(SelectedMapInfo.IsPlayable) {
+			(Page.GetFirstChild("LABEL_BUTTON_START") as CMlLabel).SetText("{{{{START}}}}");
+			(Page.GetFirstChild("QUAD_BUTTON_START") as CMlQuad).ModulateColor = <0.0,0.4,0.0>;
+		}
+		else {
+			(Page.GetFirstChild("LABEL_BUTTON_START") as CMlLabel).SetText("{{{{SOLVE}}}}");
+			(Page.GetFirstChild("QUAD_BUTTON_START") as CMlQuad).ModulateColor = <0.6,0.4,0.0>;
+		}
 	}
 	
 	declare Pos = 0;
@@ -339,6 +348,9 @@ Void UpdateManiaExchange(Integer _Offset) {
 		}
 	}
 
+	(Page.GetFirstChild("LABEL_BUTTON_START") as CMlLabel).SetText("{{{{START}}}}");
+	(Page.GetFirstChild("QUAD_BUTTON_START") as CMlQuad).ModulateColor = <0.0,0.4,0.0>;
+
 	declare Pos = 0;
 	foreach(TrackInfo,MXTrackInfos) {
 		if(Pos < 8) {
@@ -416,6 +428,9 @@ Void UpdateMapManager(Integer _Offset) {
 			Maps.removekey(0);
 		}
 	}
+
+	(Page.GetFirstChild("LABEL_BUTTON_START") as CMlLabel).SetText("{{{{START}}}}");
+	(Page.GetFirstChild("QUAD_BUTTON_START") as CMlQuad).ModulateColor = <0.0,0.4,0.0>;
 
 	if(SelectedManagerMapInfo.Uid != "") {
 		(Page.GetFirstChild("QUAD_MAPLIST_THUMBNAIL") as CMlQuad).ChangeImageUrl(SelectedManagerMapInfo.ThumbnailUrl);
