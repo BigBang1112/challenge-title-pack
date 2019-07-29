@@ -33,22 +33,27 @@ if(IsOneLapWithFinish) {
 
 declare Checkpoints = GetCheckpoints();
 
-for(i,0,Checkpoints.count-1) {
-	declare Anchor = Checkpoints[i];
-	if(Anchor.DefaultTag == "Checkpoint") {
-		if(Anchor.IsBlock) {
-			SetStatusMessage("{{{{CHECKPOINT_FOUND}}}} " ^ Anchor.Block.Name);
-		}
-		else if(Anchor.IsItem) {
-			SetStatusMessage("{{{{CHECKPOINT_FOUND}}}} " ^ Anchor.Item.Position);
-		}
-		
-		SetStatusProgress((i+1.0)/(Checkpoints.count));
+if(Checkpoints.count == 0) {
+	Problem_NoCheckpoint();
+}
+else {
+	for(i,0,Checkpoints.count-1) {
+		declare Anchor = Checkpoints[i];
+		if(Anchor.DefaultTag == "Checkpoint") {
+			if(Anchor.IsBlock) {
+				SetStatusMessage("{{{{CHECKPOINT_FOUND}}}} " ^ Anchor.Block.Name);
+			}
+			else if(Anchor.IsItem) {
+				SetStatusMessage("{{{{CHECKPOINT_FOUND}}}} " ^ Anchor.Item.Position);
+			}
+			
+			SetStatusProgress((i+1.0)/(Checkpoints.count));
 
-		declare Removed = RemoveAnchor(Anchor);
-		if(!Removed) Problem_CannotRemoveCheckpoint(Anchor); // Announce the problem to the Modifier
+			declare Removed = RemoveAnchor(Anchor);
+			if(!Removed) Problem_CannotRemoveCheckpoint(Anchor); // Announce the problem to the Modifier
+		}
+		yield;
 	}
-	yield;
 }
 ***
 

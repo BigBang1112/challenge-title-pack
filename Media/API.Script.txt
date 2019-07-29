@@ -621,3 +621,10 @@ Void Problem_CannotPlaceGhostBlock(Int3 _Coord) {
 	Problem.Coord = _Coord;
 	Problem(Problem);
 }
+
+Void Problem_NoCheckpoint() {
+	declare SChProblem Problem;
+	Problem.Name = "NoCheckpoint";
+	Problem.IsUnsolvable = True;
+	Problem(Problem);
+}
