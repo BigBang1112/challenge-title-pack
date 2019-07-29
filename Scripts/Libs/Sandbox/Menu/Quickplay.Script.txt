@@ -162,8 +162,12 @@ Void Event(CManiaAppEvent _Event) {
 					declare JsonSuccessMapInfo = MapInfo.fromjson(Event.CustomEventData[1]);
 					declare SScriptInfo[] Scripts;
 					declare JsonSuccessScripts = Scripts.fromjson(Event.CustomEventData[2]);
-					if(MapInfo.MapType == "TrackMania\\Challenge")
-						TitleControl.PlayMap(MapInfo.FileName,"","");
+					if(MapInfo.MapType == "TrackMania\\Challenge") {
+						if(MapInfo.IsPlayable)
+							TitleControl.PlayMap(MapInfo.FileName,"","");
+						else
+							TitleControl.EditMap(MapInfo.FileName,"","");
+					}
 					else
 						StartMap(MapLocation, MapInfo, Scripts);
 				}
