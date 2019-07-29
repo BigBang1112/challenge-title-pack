@@ -241,6 +241,7 @@ Void UpdateLocalMapsFolder(Integer _Offset) {
 			LabelAuthor.SetText("");
 			Frame.GetFirstChild("QUAD_SELECTOR").Show();
 			(Frame.GetFirstChild("QUAD_SELECTOR") as CMlQuad).ModulateColor = <1.0,0.75,0.0>;
+			Frame.GetFirstChild("QUAD_INVALID").Hide();
 
 			Frame.DataAttributeSet("folder",Folder);
 			Frame.DataAttributeSet("mapinfo","");
@@ -276,6 +277,11 @@ Void UpdateLocalMapsFolder(Integer _Offset) {
 			else
 				(Frame.GetFirstChild("QUAD_SELECTOR") as CMlQuad).Substyle = "BgCardInventoryItem";
 
+			if(MapInfo.IsPlayable)
+				Frame.GetFirstChild("QUAD_INVALID").Hide();
+			else
+				Frame.GetFirstChild("QUAD_INVALID").Show();
+
 			//VisibleMapInfos.add(MapInfo);
 
 			Pos+=1;
@@ -288,6 +294,7 @@ Void UpdateLocalMapsFolder(Integer _Offset) {
 		Frame.GetFirstChild("QUAD_SELECTOR").Hide();
 		Frame.GetFirstChild("LABEL_DOWNLOADED").Hide();
 		Frame.GetFirstChild("LABEL_AWARDS").Hide();
+		Frame.GetFirstChild("QUAD_INVALID").Hide();
 	}
 
 	if(SelectedMapInfo.Name == "") (Page.GetFirstChild("LABEL_MAP_NAME") as CMlLabel).SetText("{{{{LOCAL_MAPS}}}} / $888{{{{no_map_selected}}}}");
@@ -365,6 +372,7 @@ Void UpdateManiaExchange(Integer _Offset) {
 				(Frame.GetFirstChild("QUAD_SELECTOR") as CMlQuad).Substyle = "BgCardInventoryItem";
 
 			//VisibleMapInfos.add(MapInfo);
+			Frame.GetFirstChild("QUAD_INVALID").Hide();
 
 			Pos+=1;
 		}
@@ -374,6 +382,7 @@ Void UpdateManiaExchange(Integer _Offset) {
 		(Frame.GetFirstChild("LABEL_MAPNAME") as CMlLabel).SetText("");
 		(Frame.GetFirstChild("LABEL_AUTHOR") as CMlLabel).SetText("");
 		Frame.GetFirstChild("QUAD_SELECTOR").Hide();
+		Frame.GetFirstChild("QUAD_INVALID").Hide();
 	}
 
 	(Page.GetFirstChild("LABEL_MAPLIST_MEDALNADEO") as CMlLabel).SetText("???");
@@ -401,8 +410,6 @@ Void UpdateMapManager(Integer _Offset) {
 	Frame_MapList.ScrollGridSnap = True;
 	Frame_MapList.ScrollGrid = <0.,10.>;
 	Frame_MapList.ScrollOffset = <0.,_Offset*10.0>;
-
-
 
 	if(_Offset != 0) {
 		for(i,0,_Offset-1) {
@@ -472,6 +479,8 @@ Void UpdateMapManager(Integer _Offset) {
 
 			//VisibleMapInfos.add(MapInfo);
 
+			Frame.GetFirstChild("QUAD_INVALID").Hide();
+
 			Pos+=1;
 		}
 	}
@@ -480,6 +489,7 @@ Void UpdateMapManager(Integer _Offset) {
 		(Frame.GetFirstChild("LABEL_MAPNAME") as CMlLabel).SetText("");
 		(Frame.GetFirstChild("LABEL_AUTHOR") as CMlLabel).SetText("");
 		Frame.GetFirstChild("QUAD_SELECTOR").Hide();
+		Frame.GetFirstChild("QUAD_INVALID").Hide();
 	}
 
 	(Page.GetFirstChild("LABEL_MAPLIST_MEDALNADEO") as CMlLabel).SetText("???");
@@ -1039,7 +1049,6 @@ if(OldMapScrollPos != (Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollOf
 // Scroll bar stuff
 if((Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollMax.Y > 0) {
 	declare ScrollRatio = OldMapScrollPos/(Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollMax.Y;
-	log((Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollMax.Y);
 	Page.GetFirstChild("QUAD_MAPLIST_BAR").Show();
 	Page.GetFirstChild("QUAD_MAPLIST_BAR").Size.Y = 70/((Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollMax.Y/10.0);
 	Page.GetFirstChild("QUAD_MAPLIST_BAR").RelativePosition_V3.Y = -20.0-ScrollRatio*(80.0-Page.GetFirstChild("QUAD_MAPLIST_BAR").Size.Y);

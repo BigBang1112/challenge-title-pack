@@ -125,6 +125,7 @@
 				<frame pos="0 -20" clip="True" clipposn="50 -40" clipsizen="100 80" z-index="1" id="FRAME_MAPLIST">
 					<frame pos="0 -5" data-index="0">
 						<quad z-index="0" size="99.5 10" bgcolor="FFFA" valign="center" pos="0" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" opacity="0.5" id="QUAD_SELECTOR"/>
+						<quad z-index="-1" size="99.5 10" modulatecolor="630A" valign="center" pos="0" opacity="0.5" style="Bgs1InRace" substyle="BgCard" id="QUAD_INVALID" hidden="1"/>
 						<frame z-index="1" clip="True" clipsizen="130 10">
 							<label size="150 10" text="Map Name Map Name Map Name Map Name" valign="center2" pos="5" textfont="BiryaniDemiBold" id="LABEL_MAPNAME"/>
 						</frame>
@@ -136,6 +137,7 @@
 					</frame>
 					<frame pos="0 -15" data-index="1">
 						<quad z-index="0" size="99.5 10" bgcolor="FFFA" valign="center" pos="0" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="960" opacity="0.5" id="QUAD_SELECTOR"/>
+						<quad z-index="-1" size="99.5 10" modulatecolor="630A" valign="center" pos="0" opacity="0.5" style="Bgs1InRace" substyle="BgCard" id="QUAD_INVALID" hidden="1"/>
 						<frame z-index="1" clip="True" clipsizen="130 10">
 							<label size="150 10" text="Map Name Map Name Map Name Map Name" valign="center2" pos="5" textfont="BiryaniDemiBold" id="LABEL_MAPNAME"/>
 						</frame>
@@ -147,6 +149,7 @@
 					</frame>
 					<frame pos="0 -25" data-index="2">
 						<quad z-index="0" size="99.5 10" bgcolor="FFFA" valign="center" pos="0" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="960" opacity="0.5" id="QUAD_SELECTOR"/>
+						<quad z-index="-1" size="99.5 10" modulatecolor="630A" valign="center" pos="0" opacity="0.5" style="Bgs1InRace" substyle="BgCard" id="QUAD_INVALID" hidden="1"/>
 						<frame z-index="1" clip="True" clipsizen="130 10">
 							<label size="150 10" text="Map Name Map Name Map Name Map Name" valign="center2" pos="5" textfont="BiryaniDemiBold" id="LABEL_MAPNAME"/>
 						</frame>
@@ -158,6 +161,7 @@
 					</frame>
 					<frame pos="0 -35" data-index="3">
 						<quad z-index="0" size="99.5 10" bgcolor="FFFA" valign="center" pos="0" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="960" opacity="0.5" id="QUAD_SELECTOR"/>
+						<quad z-index="-1" size="99.5 10" modulatecolor="630A" valign="center" pos="0" opacity="0.5" style="Bgs1InRace" substyle="BgCard" id="QUAD_INVALID" hidden="1"/>
 						<frame z-index="1" clip="True" clipsizen="130 10">
 							<label size="150 10" text="Map Name Map Name Map Name Map Name" valign="center2" pos="5" textfont="BiryaniDemiBold" id="LABEL_MAPNAME"/>
 						</frame>
@@ -169,6 +173,7 @@
 					</frame>
 					<frame pos="0 -45" data-index="4">
 						<quad z-index="0" size="99.5 10" bgcolor="FFFA" valign="center" pos="0" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="960" opacity="0.5" id="QUAD_SELECTOR"/>
+						<quad z-index="-1" size="99.5 10" modulatecolor="630A" valign="center" pos="0" opacity="0.5" style="Bgs1InRace" substyle="BgCard" id="QUAD_INVALID" hidden="1"/>
 						<frame z-index="1" clip="True" clipsizen="130 10">
 							<label size="150 10" text="Map Name Map Name Map Name Map Name" valign="center2" pos="5" textfont="BiryaniDemiBold" id="LABEL_MAPNAME"/>
 						</frame>
@@ -180,6 +185,7 @@
 					</frame>
 					<frame pos="0 -55" data-index="5">
 						<quad z-index="0" size="99.5 10" bgcolor="FFFA" valign="center" pos="0" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="960" opacity="0.5" id="QUAD_SELECTOR"/>
+						<quad z-index="-1" size="99.5 10" modulatecolor="630A" valign="center" pos="0" opacity="0.5" style="Bgs1InRace" substyle="BgCard" id="QUAD_INVALID" hidden="1"/>
 						<frame z-index="1" clip="True" clipsizen="130 10">
 							<label size="150 10" text="Map Name Map Name Map Name Map Name" valign="center2" pos="5" textfont="BiryaniDemiBold" id="LABEL_MAPNAME"/>
 						</frame>
@@ -191,6 +197,7 @@
 					</frame>
 					<frame pos="0 -65" data-index="6">
 						<quad z-index="0" size="99.5 10" bgcolor="FFFA" valign="center" pos="0" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="960" opacity="0.5" id="QUAD_SELECTOR"/>
+						<quad z-index="-1" size="99.5 10" modulatecolor="630A" valign="center" pos="0" opacity="0.5" style="Bgs1InRace" substyle="BgCard" id="QUAD_INVALID" hidden="1"/>
 						<frame z-index="1" clip="True" clipsizen="130 10">
 							<label size="150 10" text="Map Name Map Name Map Name Map Name" valign="center2" pos="5" textfont="BiryaniDemiBold" id="LABEL_MAPNAME"/>
 						</frame>
@@ -202,6 +209,7 @@
 					</frame>
 					<frame pos="0 -75" data-index="7">
 						<quad z-index="0" size="99.5 10" bgcolor="FFFA" valign="center" pos="0" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="960" opacity="0.5" id="QUAD_SELECTOR"/>
+						<quad z-index="-1" size="99.5 10" modulatecolor="630A" valign="center" pos="0" opacity="0.5" style="Bgs1InRace" substyle="BgCard" id="QUAD_INVALID" hidden="1"/>
 						<frame z-index="1" clip="True" clipsizen="130 10">
 							<label size="150 10" text="Map Name Map Name Map Name Map Name" valign="center2" pos="5" textfont="BiryaniDemiBold" id="LABEL_MAPNAME"/>
 						</frame>
