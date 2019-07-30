@@ -168,6 +168,8 @@ main() {
 	HideEditorInterface = S_HideUI;
 	EditMode = CMapEditorPlugin::EditMode::FreeLook;
 	
+	Map.MapName = """Waiting to modify... ({{{OriginalMap.Name}}})""";
+	
 	if(Problems.count > 0) {
 		
 	}
@@ -203,6 +205,8 @@ main() {
 			}
 			yield;
 		}
+		
+		Map.MapName = """Modifying... ({{{OriginalMap.Name}}})""";
 		
 		LayerCustomEvent(Layers::Get("ModifierIntro"), "Hide", []);
 	
@@ -251,6 +255,8 @@ main() {
 		}
 	}
 	
+	Map.MapName = OriginalMap.Name ^ "$z (" ^ OriginalMap.CollectionName ^ ", " ^ TextLib::Replace(Map.MapStyle, "+", " ")^ ")";
+	
 	Finish();
 	
 	while(True) {
@@ -271,6 +277,7 @@ main() {
 							|| CurrentShadowsQuality == ::ShadowsQuality::Default
 							|| CurrentShadowsQuality == ::ShadowsQuality::High
 							|| CurrentShadowsQuality == ::ShadowsQuality::Ultra) {
+								Map.MapName = OriginalMap.Name ^ "$z (" ^ TextLib::Replace(Map.MapStyle, "+", " ")^ ")";
 								SaveMap("");
 							}
 							else {

@@ -1,3 +1,5 @@
+#Include "TextLib" as TextLib
+
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/File.Script.txt" as File
@@ -44,7 +46,7 @@ Void Loop() {
 		TitleControl.EditNewMapFromBaseMap(Map.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt","""<settings>
 	<setting name="S_Build" type="boolean" value="True"/>
 	<setting name="S_TestMode" type="boolean" value="True"/>
-	<setting name="S_OriginalMapName" type="text" value="{{{Map.Name}}}"/>
+	<setting name="S_OriginalMapInfo" type="text" value="{{{TextLib::Replace(Map.tojson(), "\"", "'")}}}"/>
 </settings>""");
 		
 		StartTest = False;
