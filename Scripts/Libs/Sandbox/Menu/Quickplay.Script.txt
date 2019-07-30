@@ -35,6 +35,8 @@
 	Text Author;
 }
 
+#Const C_Manialink "Media/Manialinks/Sandbox/Quickplay"
+
 declare CUILayer[Text] LayerAPIs;
 
 declare Text MapDownloadApproximateLocation;
@@ -122,7 +124,7 @@ Boolean StartMapIfExists() {
 }
 
 Void Start() {
-	Layers::Create("Quickplay", Manialink::FromFile("Media/Manialinks/Quickplay", True, ["TextAnimation"], Settings::Get().Theme), True, True);
+	Layers::Create("Quickplay", Manialink::FromFile(C_Manialink, True, ["TextAnimation"], Settings::Get().Theme), True, True);
 
 	declare OfficialScripts = [
 		"Reverse.Script.txt",

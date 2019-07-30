@@ -30,11 +30,13 @@
 	SUser[] Users;
 }
 
+#Const C_Manialink "Media/Manialinks/Sandbox/Playsessions"
+
 declare SPlaysession[] Playsessions;
 declare SPlaysession SelectedPlaysession;
 
 Void Start() {
-	Layers::Create("Playsessions", Manialink::FromFile("Media/Manialinks/Playsessions", True, [], Settings::Get().Theme), True, True);
+	Layers::Create("Playsessions", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme), True, True);
 	
 	declare Success = Http::AsyncGET("Playsessions", """{{{Backend::GetHost()}}}/playsessions.php?titleid={{{LoadedTitle.TitleId}}}""");
 }

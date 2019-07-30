@@ -15,10 +15,17 @@
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 
-#Setting S_Build True
+#Setting S_Build False
 #Setting S_TestMode False
 
 #Const S_HideUI True
+
+#Const C_Manialink_ModifierResult "Media/Manialinks/Sandbox/Modifier/ModifierResult"
+#Const C_Manialink_ModifierIntro "Media/Manialinks/Sandbox/Modifier/ModifierIntro"
+#Const C_Manialink_ModifierScript "Media/Manialinks/Sandbox/Modifier/ModifierScript"
+#Const C_Manialink_ModifierStatus "Media/Manialinks/Sandbox/Modifier/ModifierStatus"
+#Const C_Manialink_ModifierMetadata "Media/Manialinks/Sandbox/Modifier/ModifierMetadata"
+#Const C_Manialink_ModifierActions "Media/Manialinks/Sandbox/Modifier/ModifierActions"
 
 #Struct SMetadata {
 	Text Name;
@@ -55,7 +62,7 @@ Void Finish() {
 	
 	sleep(500);
 	
-	Layers::Create("ModifierResult",Manialink::FromFile("Media/Manialinks/Modifier/ModifierResult", True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierResult",Manialink::FromFile(C_Manialink_ModifierResult, True, ["TextAnimation"], Settings::Get().Theme));
 	Layers::Show("ModifierResult");
 
 	declare metadata ModifierBase::SChProblem[] Problems for Map;
@@ -178,11 +185,11 @@ main() {
 		
 	}
 	else {
-		Layers::Create("ModifierIntro",Manialink::FromFile("Media/Manialinks/Modifier/ModifierIntro", True, ["TextAnimation"], Settings::Get().Theme));
-		Layers::Create("ModifierScript",Manialink::FromFile("Media/Manialinks/Modifier/ModifierScript", True, ["TextAnimation"], Settings::Get().Theme));
-		Layers::Create("ModifierStatus",Manialink::FromFile("Media/Manialinks/Modifier/ModifierStatus", True, ["TextAnimation"], Settings::Get().Theme));
-		Layers::Create("ModifierMetadata",Manialink::FromFile("Media/Manialinks/Modifier/ModifierMetadata", True, ["TextAnimation"], Settings::Get().Theme));
-		Layers::Create("ModifierActions",Manialink::FromFile("Media/Manialinks/Modifier/ModifierActions", True, ["TextAnimation"], Settings::Get().Theme));
+		Layers::Create("ModifierIntro",Manialink::FromFile(C_Manialink_ModifierIntro, True, ["TextAnimation"], Settings::Get().Theme));
+		Layers::Create("ModifierScript",Manialink::FromFile(C_Manialink_ModifierScript, True, ["TextAnimation"], Settings::Get().Theme));
+		Layers::Create("ModifierStatus",Manialink::FromFile(C_Manialink_ModifierStatus, True, ["TextAnimation"], Settings::Get().Theme));
+		Layers::Create("ModifierMetadata",Manialink::FromFile(C_Manialink_ModifierMetadata, True, ["TextAnimation"], Settings::Get().Theme));
+		Layers::Create("ModifierActions",Manialink::FromFile(C_Manialink_ModifierActions, True, ["TextAnimation"], Settings::Get().Theme));
 		
 		Layers::SetAnimationInOut("ModifierScript",CUILayer::EUILayerAnimation::DownSlow);
 		Layers::SetAnimationInOut("ModifierStatus",CUILayer::EUILayerAnimation::DownSlow);

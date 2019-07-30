@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<manialink version="3">
+	<frame z-index="-100">
+		<quad pos="0 0" size="320 180" bgcolor="FFFA" halign="center" valign="center" image="file://Media/Images/MenuBg.jpg"/>
+	</frame>
+</manialink>

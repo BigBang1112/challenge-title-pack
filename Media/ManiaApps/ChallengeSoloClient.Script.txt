@@ -12,6 +12,10 @@
 #Include "Libs/Challenge/Backend.Script.txt" as Backend
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 
+#Const C_Manialink_Dashboard "Media/Manialinks/Base/Ingame/Dashboard"
+#Const C_Manialink_Stunts "Media/Manialinks/Base/Ingame/Stunts"
+#Const C_Manialink_Spotify "Media/Manialinks/Base/Ingame/Spotify"
+
 #Struct SPlaysession {
 	Text Login;
 	Text Token;
@@ -39,7 +43,9 @@ ClientUI.OverlayHidePersonnalBestAndRank = True;
 ClientUI.OverlayHideChrono = True;
 ClientUI.OverlayHidePosition = True;
 
-Layers::Create("Ingame", Manialink::FromFile("Media/Manialinks/SoloIngame", True, ["TextAnimation"], Settings::Get().Theme), True);
+Layers::Create("Dashboard", Manialink::FromFile(C_Manialink_Dashboard, True, ["TextAnimation"], Settings::Get().Theme), True);
+Layers::Create("Stunts", Manialink::FromFile(C_Manialink_Stunts, True, ["TextAnimation"], Settings::Get().Theme), True);
+Layers::Create("Spotify", Manialink::FromFile(C_Manialink_Spotify, True, ["TextAnimation"], Settings::Get().Theme), True);
 
 declare SAuthToken INGAME_TOKEN for LocalUser;
 

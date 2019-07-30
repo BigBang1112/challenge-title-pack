@@ -15,6 +15,8 @@
 	Text Token;
 }
 
+#Const C_Manialink "Media/Manialinks/Base/AuthBeta"
+
 declare Text AcceptUrl;
 declare SAccess Access;
 
@@ -23,7 +25,7 @@ SAccess GetAccess() {
 }
 
 Void Start() {
-	Layers::Create("AuthBeta", Manialink::FromFile("Media/Manialinks/AuthBeta", True, [], Settings::Get().Theme), True);
+	Layers::Create("AuthBeta", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme), True);
 	declare Success = Auth2::AsyncAuthorize("Authorize", "b1a3d10ba7", "basic maps", Backend::GetHost()^"/auth.php");
 }
 

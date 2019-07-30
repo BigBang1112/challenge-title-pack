@@ -20,14 +20,14 @@
 
 #Include "Libs/Challenge/Devmode.Script.txt" as Devmode
 
-#Setting S_Devmode False
+#Setting S_Devmode True
 
 main() {
 	while(True) { // Restart mechanism
 		Settings::Restart(False);
 		
 		Layers::Create("Background", "file://Media/Manialinks/Background.xml", True, False);
-		Layers::Create("Loading", "file://Media/Manialinks/Loading.xml", True, False, CUILayer::EUILayerType::LoadingScreen);
+		Layers::Create("Loading", "file://Media/Manialinks/Base/Loading.xml", True, False, CUILayer::EUILayerType::LoadingScreen);
 		
 		//Auth::AuthorizeInManialink("b1a3d10ba7", "basic maps", "http://localhost/challenge/auth");
 		

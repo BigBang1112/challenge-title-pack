@@ -3,8 +3,10 @@
 
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 
+#Const C_Manialink "Media/Manialinks/Sandbox/Top"
+
 Void Start() {
-	Layers::Create("Top", Manialink::FromFile("Media/Manialinks/Top", True, [], Settings::Get().Theme), True, True);
+	Layers::Create("Top", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme), True, True);
 }
 
 Void Event(CManiaAppEvent _Event) {

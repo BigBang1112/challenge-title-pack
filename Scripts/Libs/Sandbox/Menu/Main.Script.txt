@@ -2,8 +2,10 @@
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 
+#Const C_Manialink "Media/Manialinks/Sandbox/Menu"
+
 Void Start() {
-	Layers::Create("Menu", Manialink::FromFile("Media/Manialinks/Menu", True, ["TextAnimation"], Settings::Get().Theme), True, True);
+	Layers::Create("Menu", Manialink::FromFile(C_Manialink, True, ["TextAnimation"], Settings::Get().Theme), True, True);
 }
 
 Void Event(CManiaAppEvent _Event) {

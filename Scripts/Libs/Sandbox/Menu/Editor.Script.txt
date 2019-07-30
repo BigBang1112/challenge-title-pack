@@ -6,8 +6,10 @@
 #Include "Libs/BigBang1112/Map.Script.txt" as Map
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 
+#Const C_Manialink "Media/Manialinks/Sandbox/Editor"
+
 Void Start() {
-	Layers::Create("Editor", Manialink::FromFile("Media/Manialinks/Editor", True, [], Settings::Get().Theme));
+	Layers::Create("Editor", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme));
 
 	Layers::SendEvent("Editor", "Code_SetText", [File::Read("Media/Challenges/Default.Script.txt")]);
 }
@@ -42,11 +44,11 @@ Void Async() {
 
 Void Loop() {
 	if(StartTest) {
-		declare Map = Map::MapInfo("2FRV EXCLUSIVE 001.Map.Gbx", 2);
-		TitleControl.EditNewMapFromBaseMap(Map.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt","""<settings>
+		declare Map::SMapInfo OriginalMapInfo for LocalUser;
+		OriginalMapInfo = Map::MapInfo("2FRV EXCLUSIVE 001.Map.Gbx", 2);
+		TitleControl.EditNewMapFromBaseMap(OriginalMapInfo.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt","""<settings>
 	<setting name="S_Build" type="boolean" value="True"/>
 	<setting name="S_TestMode" type="boolean" value="True"/>
-	<setting name="S_OriginalMapInfo" type="text" value="{{{TextLib::Replace(Map.tojson(), "\"", "'")}}}"/>
 </settings>""");
 		
 		StartTest = False;
