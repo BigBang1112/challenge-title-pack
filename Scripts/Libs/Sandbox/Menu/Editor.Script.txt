@@ -19,13 +19,6 @@ Void Event(CManiaAppEvent _Event) {
 		switch(Event.CustomEventType) {
 			case "Test": {
 				if(TitleControl.IsReady) {
-					declare Map = Map::MapInfo("2FRV EXCLUSIVE 001.Map.Gbx", 2);
-				
-					TitleControl.EditNewMapFromBaseMap(Map.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt","""<settings>
-	<setting name="S_Build" type="boolean" value="True"/>
-	<setting name="S_TestMode" type="boolean" value="True"/>
-	<setting name="S_OriginalMapName" type="text" value="{{{Map.Name}}}"/>
-</settings>""");
 					StartTest = True;
 				}
 			}
@@ -46,8 +39,18 @@ Void Async() {
 }
 
 Void Loop() {
-	if(StartTest && TitleControl.IsReady) {
-		Layers::SendEvent("Editor", "Loading_End_Test", []);
+	if(StartTest) {
+		declare Map = Map::MapInfo("2FRV EXCLUSIVE 001.Map.Gbx", 2);
+		TitleControl.EditNewMapFromBaseMap(Map.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt","""<settings>
+	<setting name="S_Build" type="boolean" value="True"/>
+	<setting name="S_TestMode" type="boolean" value="True"/>
+	<setting name="S_OriginalMapName" type="text" value="{{{Map.Name}}}"/>
+</settings>""");
+		
 		StartTest = False;
+	}
+	
+	if(TitleControl.IsReady) {
+		Layers::SendEvent("Editor", "Loading_End_Test", []);
 	}
 }
