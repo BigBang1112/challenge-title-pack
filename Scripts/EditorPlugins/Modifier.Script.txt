@@ -6,6 +6,7 @@
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/File.Script.txt" as File
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+#Include "Libs/BigBang1112/Map.Script.txt" as Map
 
 #Include "Libs/Challenge/Conversion.Script.txt" as Conversion
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
@@ -15,18 +16,21 @@
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 
 #Setting S_Build True
-
-#Setting S_OriginalMapInfo ""
-#Setting S_ScriptNames ""
-#Setting S_ScriptTypes ""
-
 #Setting S_TestMode False
 
 #Const S_HideUI True
 
-#Struct SChScriptInfo {
+#Struct SMetadata {
+	Text Name;
+	Text AuthorLogin;
+	Text AuthorNickname;
+	Text Description;
+}
+
+#Struct SScriptInfo {
 	Text Name;
 	Text Type;
+	SMetadata Metadata;
 }
 
 declare CUILayer LayerAPI;
@@ -148,16 +152,16 @@ main() {
 	Dictionary::SetTranslationFolder("Media/Translations");
 	Dictionary::SetTranslationLanguage(Settings::Get().Language);
 	
-	declare MapInfo = TextLib::Replace(S_OriginalMapInfo,"'","\"");
+	declare Map::SMapInfo OriginalMapInfo for LocalUser;
 	declare metadata ModifierBase::SChMap OriginalMap for Map;
-	declare JsonSuccess = OriginalMap.fromjson(MapInfo);
+	declare JsonSuccess = OriginalMap.fromjson(OriginalMapInfo.tojson());
 	
 	declare metadata ModifierBase::SChProblem[] Problems for Map;
 	
-	declare SChScriptInfo[] Scripts;
+	declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
+	
 	if(Problems.count == 0) {
-		declare ScriptNames = TextLib::Replace(S_ScriptNames,"'","\"");
-		if(!Scripts.fromjson(ScriptNames) && !S_TestMode) return;
+		if(CHALLENGE_SCRIPTS.count == 0 && !S_TestMode) return;
 	}
 	
 	CameraTargetPosition = <Map.Size.X*32./2,5.,Map.Size.Z*32./3>;
@@ -227,11 +231,11 @@ main() {
 		}
 		else {
 			declare Text[] _Scripts;
-			foreach(Script,Scripts)
+			foreach(Script,CHALLENGE_SCRIPTS)
 				_Scripts.add(TextLib::SubText(Script.Name, 0, TextLib::Length(Script.Name)-11));
 			SetMapStyle(TextLib::Join("+",_Scripts));
 		
-			foreach(Script,Scripts) {
+			foreach(Script,CHALLENGE_SCRIPTS) {
 				Begin(Script.Name);
 				ValidateScript();
 	

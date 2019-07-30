@@ -81,10 +81,13 @@ Void StartMap(Text _MapLocation, Map::SMapInfo _MapInfo, SScriptInfo[] _Scripts)
 	}
 
 	if(TitleControl.IsReady) {
+		declare Map::SMapInfo OriginalMapInfo for LocalUser;
+		OriginalMapInfo = _MapInfo;
+		declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
+		CHALLENGE_SCRIPTS = _Scripts;
+	
 		TitleControl.EditNewMapFromBaseMap(_MapInfo.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt", """<settings>
 		<setting name="S_Build" type="boolean" value="True"/>
-		<setting name="S_ScriptNames" type="text" value="{{{TextLib::Replace(_Scripts.tojson(), "\"", "'")}}}"/>
-		<setting name="S_OriginalMapInfo" type="text" value="{{{TextLib::Replace(_MapInfo.tojson(), "\"", "'")}}}"/>
 	</settings>""");
 	}
 }
@@ -94,10 +97,14 @@ Boolean StartMapIfExists() {
 	foreach(MapInfo,List.MapInfos) {
 		if(MapInfo.MapUid == MapDownloadUid) {
 			wait(TitleControl.IsReady);
+			
+			declare Map::SMapInfo OriginalMapInfo for LocalUser;
+			OriginalMapInfo = Map::ToSMapInfo(MapInfo);
+			declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
+			CHALLENGE_SCRIPTS = MapDownloadScripts;
+			
 			TitleControl.EditNewMapFromBaseMap(MapInfo.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt", """<settings>
 	<setting name="S_Build" type="boolean" value="True"/>
-	<setting name="S_ScriptNames" type="text" value="{{{TextLib::Replace(MapDownloadScripts.tojson(), "\"", "'")}}}"/>
-	<setting name="S_OriginalMapInfo" type="text" value="{{{TextLib::Replace(Map::ToSMapInfo(MapInfo).tojson(), "\"", "'")}}}"/>
 </settings>""");
 			
 			MapDownloadApproximateLocation = "";
