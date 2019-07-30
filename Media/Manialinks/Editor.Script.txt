@@ -7,7 +7,7 @@ foreach(Control,Page.GetClassChildren_Result) Loadings.add(Control);
 declare Start = Now;
 declare End = -1;
 
-declare persistent Text PERSISTENT_CHALLENGE_CODE for LocalUser;
+declare Text CHALLENGE_CODE for LocalUser;
 ***
 
 ***Loop***
@@ -15,7 +15,7 @@ declare persistent Text PERSISTENT_CHALLENGE_CODE for LocalUser;
 foreach(Event,PendingEvents) {
 	if(Event.Type == CMlScriptEvent::Type::MouseClick) {
 		if(Event.ControlId == "QUAD_BUTTON_TEST") {
-			PERSISTENT_CHALLENGE_CODE = (Page.GetFirstChild("Script") as CMlTextEdit).Value;
+			CHALLENGE_CODE = (Page.GetFirstChild("Script") as CMlTextEdit).Value;
 			Page.GetFirstChild("LABEL_BUTTON_TEST").Hide();
 			Page.GetFirstChild("QUAD_LOADING_TEST").Show();
 			SendCustomEvent("Test", []);

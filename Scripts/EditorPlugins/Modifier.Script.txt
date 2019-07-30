@@ -34,12 +34,6 @@ declare Boolean Terminate;
 
 declare ::ShadowsQuality LastShadowsQuality;
 
-/*Text GetScriptFileName(Text _ScriptFullName) {
-	declare Path = TextLib::Split("\\", S_ScriptNames);
-	if(Path.count != 0) return Path[Path.count-1];
-	return "";
-}*/
-
 Void ValidateScript() {
 
 }
@@ -50,12 +44,6 @@ Void Begin(Text _ScriptName) {
 }
 
 Void Finish() {
-	/*sleep(500);
-	Layers::SendEvent("ModifierStatus", "Status", ["COMPUTING SHADOWS..."]);
-	Layers::SendEvent("ModifierStatus", "Message", [""]);
-	sleep(200);
-	//ComputeShadows();
-	//wait(CurrentShadowsQuality != CMapEditorPlugin::ShadowsQuality::NotComputed);*/
 	Layers::Hide("ModifierScript");
 	Layers::Hide("ModifierStatus");
 	Layers::Hide("ModifierActions");
@@ -106,7 +94,7 @@ Void TerminateScript() {
 
 Void ProcessScript(Text _ScriptName, Text _ScriptContent) {
 	LayerAPI = UILayerCreate();
-			LayerAPI.ManialinkPage = Manialink::Construct("","""#RequireContext CMapEditorPluginLayer
+	LayerAPI.ManialinkPage = Manialink::Construct("","""#RequireContext CMapEditorPluginLayer
 
 """^File::Read("Media/API_Base.Script.txt")^"""
 			
@@ -179,7 +167,6 @@ main() {
 	
 	HideEditorInterface = S_HideUI;
 	EditMode = CMapEditorPlugin::EditMode::FreeLook;
-	Map.MapName = OriginalMap.Name^"$z -";
 	
 	if(Problems.count > 0) {
 		
@@ -200,6 +187,8 @@ main() {
 		
 		LayerCustomEvent(Layers::Get("ModifierIntro"), "Map", [OriginalMap.Name]);
 		Layers::Show("ModifierIntro");
+	
+		PreloadAllBlocks();
 		
 		declare Continue = False;
 		while(!Continue) {
@@ -227,17 +216,20 @@ main() {
 		sleep(200);
 		
 		if(S_TestMode) {
-			declare persistent Text PERSISTENT_CHALLENGE_CODE for LocalUser;
-			Map.MapName ^= " Test Script";
+			declare Text CHALLENGE_CODE for LocalUser;
+			SetMapStyle("Test Script");
 			Begin(Dictionary::Get("TEST_SCRIPT"));
-			ProcessScript("TEST SCRIPT", PERSISTENT_CHALLENGE_CODE);
+			ProcessScript("TEST SCRIPT", CHALLENGE_CODE);
 		}
 		else {
+			declare Text[] _Scripts;
+			foreach(Script,Scripts)
+				_Scripts.add(TextLib::SubText(Script.Name, 0, TextLib::Length(Script.Name)-11));
+			SetMapStyle(TextLib::Join("+",_Scripts));
+		
 			foreach(Script,Scripts) {
 				Begin(Script.Name);
 				ValidateScript();
-				
-				Map.MapName ^= " "^TextLib::SubText(Script.Name, 0, TextLib::Length(Script.Name)-11);
 	
 				declare Text BuildScript;
 				
