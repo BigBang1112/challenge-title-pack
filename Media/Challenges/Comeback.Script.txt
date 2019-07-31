@@ -23,13 +23,15 @@ if(IsMultilap) {
 	Problem(Problem_MultilapTrack);
 }
 
-declare StartLines = GetStartLines();
-declare StartLine = StartLines[0];
+
 
 if(IsOneLapWithFinish) {
 
 }
 else {
+	declare StartLines = GetStartLines();
+	declare StartLine = StartLines[0];
+
 	foreach(Relation, Relation_StartMultilap[Environment]) {
 		declare StartBlockName = Relation[0];
 		declare MultilapBlockName = Relation[1];

@@ -54,10 +54,10 @@ SPlaceBlockResult PlaceBlockSpecial(Text _BlockModelName, Int3 _Coord, ::Cardina
 	}
 	Result.Placed = PlaceBlock(BlockModel, _Coord, _Direction);
 	if(Result.Placed) {
-		Result.Block = GetBlock(_Coord);
 		yield; //Required so that AnchorData actually updates, thanks Nadeo
+		Result.Block = GetBlock(_Coord);
 		foreach(Anchor, AnchorData) {
-			if(Anchor.Block != Null)
+			if(Anchor.Block != Null && Result.Block != Null)
 			if(Anchor.Block.BlockScriptId == Result.Block.BlockScriptId) {
 				Result.IsAnchor = True;
 				Result.Anchor = Anchor.Id;
