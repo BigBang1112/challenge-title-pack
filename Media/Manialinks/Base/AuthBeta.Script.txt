@@ -32,6 +32,7 @@ foreach(Event,PendingEvents) {
 				AnimMgr.Add(Page.GetFirstChild("FRAME_AUTH"), "<frame scale=\"0\" hidden=\"1\" />", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 				Page.GetFirstChild("FRAME_NOACCESS").RelativeScale = 0.;
 				AnimMgr.Add(Page.GetFirstChild("FRAME_NOACCESS"), "<frame scale=\"1\" hidden=\"0\" />", 500, CAnimManager::EAnimManagerEasing::QuadIn);
+				AnimMgr.Flush(Page.GetFirstChild("FRAME_CONNECTIONLONG"));
 				Page.GetFirstChild("FRAME_CONNECTIONLONG").Hide();
 			}
 			if(Event.CustomEventType == "ShowConnectionError") {
@@ -39,6 +40,7 @@ foreach(Event,PendingEvents) {
 				((Page.GetFirstChild("FRAME_CONNECTIONERROR") as CMlFrame).Controls[0] as CMlLabel).SetText("{{{{AUTHBETA_CONNECTIONERROR}}}}: "^Event.CustomEventData[0]);
 				Page.GetFirstChild("FRAME_CONNECTIONERROR").RelativeScale = 0.;
 				AnimMgr.Add(Page.GetFirstChild("FRAME_CONNECTIONERROR"), "<frame scale=\"1\" hidden=\"0\" />", 500, CAnimManager::EAnimManagerEasing::QuadIn);
+				AnimMgr.Flush(Page.GetFirstChild("FRAME_CONNECTIONLONG"));
 				Page.GetFirstChild("FRAME_CONNECTIONLONG").Hide();
 			}
 		}
