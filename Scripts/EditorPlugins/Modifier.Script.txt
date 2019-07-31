@@ -103,7 +103,7 @@ Void TerminateScript() {
 	Terminate = True;
 }
 
-Void ProcessScript(Text _ScriptName, Text _ScriptContent) {
+Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 	LayerAPI = UILayerCreate();
 	LayerAPI.ManialinkPage = Manialink::Construct("","""#RequireContext CMapEditorPluginLayer
 
@@ -156,6 +156,8 @@ Void ProcessScript(Text _ScriptName, Text _ScriptContent) {
 	else Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED"));
 	
 	Layers::SendEvent("ModifierStatus", "Progress", "1");
+
+	return !Terminate;
 }
 
 main() {
@@ -239,34 +241,37 @@ main() {
 			declare Text CHALLENGE_CODE for LocalUser;
 			SetMapStyle("Test Script");
 			Begin(Dictionary::Get("TEST_SCRIPT"));
-			ProcessScript("TEST SCRIPT", CHALLENGE_CODE);
+			declare Continue = ProcessScript("TEST SCRIPT", CHALLENGE_CODE);
 		}
 		else {
 			declare Text[] _Scripts;
 			foreach(Script,CHALLENGE_SCRIPTS)
 				_Scripts.add(TextLib::SubText(Script.Name, 0, TextLib::Length(Script.Name)-11));
 			SetMapStyle(TextLib::Join("+",_Scripts));
-		
+
+			declare Continue = True;
 			foreach(Script,CHALLENGE_SCRIPTS) {
-				Begin(Script.Name);
-				ValidateScript();
-	
-				declare Text BuildScript;
-				
-				switch(Script.Type) {
-					case "Official": {
-						BuildScript = File::Read("Media/Challenges/"^Script.Name);
+				if(Continue) {
+					Begin(Script.Name);
+					ValidateScript();
+					
+					declare Text BuildScript;
+					
+					switch(Script.Type) {
+						case "Official": {
+							BuildScript = File::Read("Media/Challenges/"^Script.Name);
+						}
+						case "Local": {
+							
+						}
+						case "Online": {
+							
+						}
 					}
-					case "Local": {
-						
-					}
-					case "Online": {
-						
-					}
+					
+					Continue = ProcessScript(Script.Name, BuildScript);
+					sleep(500);
 				}
-				
-				ProcessScript(Script.Name, BuildScript);
-				sleep(500);
 			}
 		}
 	}
