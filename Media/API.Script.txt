@@ -399,6 +399,11 @@ Void UpdateAnchor(SChAnchor _Anchor) {
 	declare Response = Request("Ch_UpdateAnchor", Params);
 }
 
+Void LinkCheckpoints(SChAnchor[] _Checkpoints) {
+	declare Params = [_Checkpoints.tojson()];
+	declare Response = Request("Ch_LinkCheckpoints", Params);
+}
+
 Boolean RemoveAnchorItem(SChAnchorItem _AnchorItem) {
 	declare Params = [_AnchorItem.tojson()];
 	declare Response = Request("Ch_RemoveAnchorItem", Params);

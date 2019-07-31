@@ -43,6 +43,19 @@ Boolean PlaceBlockSpecial(Text _BlockModelName, Int3 _Coord, ::CardinalDirection
 	return PlaceBlock(BlockModel, _Coord, _Direction);
 }
 
+Integer GetNewOrder() {
+	declare Integer[] UsedOrders;
+	foreach(Anchor,AnchorData)
+		if(!UsedOrders.exists(Anchor.Order))
+			UsedOrders.add(Anchor.Order);
+	
+	declare NewOrder = 0;
+	while(UsedOrders.exists(NewOrder)) {
+		NewOrder+=1;
+	}
+	return NewOrder;
+}
+
 Void Respond(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 	LayerCustomEvent(_LayerAPI, _Type^"_Response", _Data);
 }
@@ -519,6 +532,23 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			foreach(Anchor, AnchorData)
 				if(Anchor.Id^"" == ChAnchor.Id)
 					declare Success = Conversion::SetCAnchorData(Anchor, ChAnchor);
+			Respond(_LayerAPI, _Type, []);
+		}
+		case "Ch_LinkCheckpoints": {
+			declare ModifierBase::SChAnchor[] ChAnchors;
+			declare JsonSuccess = ChAnchors.fromjson(_Data[0]);
+			declare Order = GetNewOrder();
+			foreach(Anchor, AnchorData) {
+				foreach(ChAnchor, ChAnchors) {
+					if(Anchor.Id^"" == ChAnchor.Id) {
+						if(Anchor.DefaultTag == "Checkpoint") {
+							Anchor.Tag = "LinkedCheckpoint";
+							Anchor.Order = Order;
+						}
+					}
+				}
+			}
+			
 			Respond(_LayerAPI, _Type, []);
 		}
 		case "Ch_Problem": {
