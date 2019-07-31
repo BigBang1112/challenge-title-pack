@@ -149,8 +149,12 @@ Void ProcessScript(Text _ScriptName, Text _ScriptContent) {
 	UILayerDestroy(LayerAPI);
 
 	Layers::SendEvent("ModifierStatus", "Status", Dictionary::Get("DONE"));
+	
+	declare metadata ModifierBase::SChProblem[] Problems for Map;
 	if(Terminate) Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED_UNSUCCESSFULLY"));
+	else if(Problems.count == 0) Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED_SUCCESSFULLY"));
 	else Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED"));
+	
 	Layers::SendEvent("ModifierStatus", "Progress", "1");
 }
 
