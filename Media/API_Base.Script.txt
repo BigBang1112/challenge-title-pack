@@ -11,7 +11,7 @@
 }
 
 #Struct SChBlock {
-	Integer Id;
+	Text Id;
 	Text Name;
 	Int3 Coord;
 	Text Direction;

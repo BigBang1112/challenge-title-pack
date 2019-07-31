@@ -28,16 +28,27 @@ Text GetVariant(Int3 _Coord) {
 
 Boolean SafeRemoveBlock(CBlock _Block) {
 	if(_Block == Null) return False;
-	if(GetBlock(_Block.Coord) == Null) return False;
+	declare Block = GetBlock(_Block.Coord);
+	if(Block == Null) return False;
 	
-	if(GetBlock(_Block.Coord).BlockScriptId == _Block.BlockScriptId) 
+	if(Block.BlockScriptId == _Block.BlockScriptId) 
 		return RemoveBlock(_Block.Coord);
+	return False;
+}
+
+Boolean SafeRemoveMacroblock(CMacroblockInstance _Macroblock) {
+	if(_Macroblock == Null) return False;
+	declare Macroblock = GetMacroblockInstanceFromUnitCoord(_Macroblock.Coord);
+	if(Macroblock == Null) return False;
+	
+	if(Macroblock.Id == _Macroblock.Id)
+		return RemoveMacroblock(_Macroblock.MacroblockModel, _Macroblock.Coord, _Macroblock.Dir);
 	return False;
 }
 
 Boolean SafeRemoveBlock(ModifierBase::SChBlock _ChBlock) {
 	for(i,0,Blocks.count-1)
-		if(Blocks[i].BlockScriptId == _ChBlock.Id) return SafeRemoveBlock(Blocks[i]);
+		if(Blocks[i].Id^"" == _ChBlock.Id) return SafeRemoveBlock(Blocks[i]);
 	return False;
 }
 
@@ -49,7 +60,7 @@ SPlaceBlockResult PlaceBlockSpecial(Text _BlockModelName, Int3 _Coord, ::Cardina
 		declare MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\{{{_BlockModelName}}}-{{{GetVariant(_Coord)}}}.Macroblock.Gbx""");
 		if(MacroblockModel == Null) return Result;
 		Result.Placed = PlaceMacroblock(MacroblockModel, _Coord, _Direction);
-		Result.SpecialBlock = GetMacroblockInstanceFromUnitCoord(_Coord);
+		Result.SpecialBlock = CreateMacroblockInstance(MacroblockModel, _Coord, _Direction);
 		return Result;
 	}
 	Result.Placed = PlaceBlock(BlockModel, _Coord, _Direction);
@@ -393,6 +404,13 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 				}
 			}
 			
+			Respond(_LayerAPI, _Type, [Removed^""]);
+		}
+		case "Ch_RemoveSpecificBlock": {
+			declare ModifierBase::SChBlock ChBlock;
+			declare JsonSuccess = ChBlock.fromjson(_Data[0]);
+			
+			declare Removed = SafeRemoveBlock(ChBlock);
 			Respond(_LayerAPI, _Type, [Removed^""]);
 		}
 		case "Ch_GetMapInfo": {

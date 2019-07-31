@@ -77,7 +77,7 @@ ModifierBase::SChBlock ToSChBlock(CBlock _Block) {
 	declare ModifierBase::SChBlock ChBlock;
 	if(_Block == Null) return ChBlock;
 	
-	ChBlock.Id = _Block.BlockScriptId;
+	ChBlock.Id = _Block.Id^"";
 	ChBlock.Name = _Block.BlockModel.Name;
 	ChBlock.Coord = _Block.Coord;
 	ChBlock.Direction = ToText(_Block.Direction);
@@ -94,6 +94,18 @@ ModifierBase::SChBlock ToSChBlock(CBlock _Block) {
 	ChBlock.IsRoad = _Block.BlockModel.IsRoad;
 	ChBlock.IsTerrain = _Block.BlockModel.IsTerrain;
 	ChBlock.IsPodium = _Block.BlockModel.IsPodium;
+	
+	return ChBlock;
+}
+
+ModifierBase::SChBlock ToSChBlock(CMacroblockInstance _Macroblock) {
+	declare ModifierBase::SChBlock ChBlock;
+	if(_Macroblock == Null) return ChBlock;
+	
+	ChBlock.Id = _Macroblock.Id^"";
+	ChBlock.Name = _Macroblock.MacroblockModel.Name;
+	ChBlock.Coord = _Macroblock.Coord;
+	ChBlock.Direction = ToText(_Macroblock.Dir);
 	
 	return ChBlock;
 }
@@ -201,7 +213,7 @@ Boolean ToBoolean(Text _Boolean) {
 Boolean SChBlockEquals(ModifierBase::SChBlock _ChBlock, CBlock _Block) {
 	if(_Block == Null) return False;
 	
-	if(_ChBlock.Id != _Block.BlockScriptId) return False;
+	if(_ChBlock.Id != _Block.Id^"") return False;
 	if(_ChBlock.Name != _Block.BlockModel.Name) return False;
 	if(_ChBlock.Coord != _Block.Coord) return False;
 	if(_ChBlock.Direction != ToText(_Block.Direction)) return False;

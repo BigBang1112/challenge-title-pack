@@ -423,8 +423,10 @@ Boolean RemoveAnchorBlock(SChAnchorBlock _AnchorBlock) {
 	return Response.Values[0] == "True";
 }
 
-Boolean RemoveBlock(SChBlock _Block) {
-	return False;
+Boolean RemoveSpecificBlock(SChBlock _Block) {
+	declare Params = [_Block.tojson()];
+	declare Response = Request("Ch_RemoveSpecificBlock", Params);
+	return Response.Values[0] == "True";
 }
 
 Integer Random(Integer _Min, Integer _Max) { // Consistent randomizer
