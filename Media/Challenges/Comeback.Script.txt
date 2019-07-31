@@ -7,7 +7,6 @@ Script.Description = "{{{{COMEBACK_DESCRIPTION}}}}";
 
 ***Main***
 ***
-declare StartLines = GetStartLines();
 declare Multilaps = GetMultilaps();
 declare FinishLines = GetFinishLines();
 declare MapInfo = GetMapInfo();
@@ -24,6 +23,7 @@ if(IsMultilap) {
 	Problem(Problem_MultilapTrack);
 }
 
+declare StartLines = GetStartLines();
 declare StartLine = StartLines[0];
 
 if(IsOneLapWithFinish) {
@@ -37,7 +37,8 @@ else {
 		else if(StartLine.Block.Name == StartBlockName) {
 			SetStatusProgress(.5);
 			if(RemoveAnchor(StartLine)) {
-				if(PlaceBlock(MultilapBlockName, StartLine.Block.Coord, StartLine.Block.Direction)
+				declare PlaceBlockResult = PlaceBlock(MultilapBlockName, StartLine.Block.Coord, StartLine.Block.Direction);
+				if(PlaceBlockResult.Placed
 				|| PlaceGhostBlock(MultilapBlockName, StartLine.Block.Coord, StartLine.Block.Direction)) {
 					SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ MultilapBlockName ^ ".");
 				}
@@ -68,6 +69,8 @@ else {
 	}
 }
 
+declare SChAnchor[] CheckpointsToLink;
+
 foreach(FinishLine, FinishLines) {
 	foreach(Relation, Relation_FinishCheckpoint[Environment]) {
 		declare FinishBlockName = Relation[0];
@@ -77,9 +80,11 @@ foreach(FinishLine, FinishLines) {
 		else if(FinishLine.Block.Name == FinishBlockName) {
 			SetStatusProgress(1.);
 			if(RemoveAnchor(FinishLine)) {
-				if(PlaceBlock(CheckpointBlockName, FinishLine.Block.Coord, FinishLine.Block.Direction)
+				declare PlaceBlockResult = PlaceBlock(CheckpointBlockName, FinishLine.Block.Coord, FinishLine.Block.Direction);
+				if(PlaceBlockResult.Placed
 				|| PlaceGhostBlock(CheckpointBlockName, FinishLine.Block.Coord, FinishLine.Block.Direction)) {
 					SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ CheckpointBlockName ^ ".");
+					CheckpointsToLink.add(PlaceBlockResult.Anchor);
 				}
 				else {
 					declare SChProblem Problem_CannotPlaceGhostBlock;
@@ -106,6 +111,11 @@ foreach(FinishLine, FinishLines) {
 			}
 		}
 	}
+}
+
+if(CheckpointsToLink.count > 1) {
+	SetStatusMessage("{{{{LINKING_CHECKPOINTS}}}}: " ^ CheckpointsToLink.count);
+	LinkCheckpoints(CheckpointsToLink);
 }
 ***
 
