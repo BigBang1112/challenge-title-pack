@@ -54,6 +54,7 @@
 #Struct SChProblem {
 	Text Name;
 	Int3 Coord;
+	Text Direction;
 	SChAnchor Anchor;
 	SChAnchor[] Anchors;
 	SChBlock Block;

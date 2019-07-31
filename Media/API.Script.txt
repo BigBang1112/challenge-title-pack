@@ -525,6 +525,10 @@ Void Problem() {
 	Problem(Problem);
 }
 
+Void Problem_FromBase(SChProblem _Problem) {
+	
+}
+
 Void Note(SChNote _Note) {
 	
 }

@@ -9,14 +9,28 @@ Script.Description = "{{{{COMEBACK_DESCRIPTION}}}}";
 ***
 declare StartLines = GetStartLines();
 declare Multilaps = GetMultilaps();
-if(Multilaps.count > 0) Problem_MultilapTrack(Multilaps[0]);
-declare StartLine = StartLines[0];
 declare FinishLines = GetFinishLines();
+declare MapInfo = GetMapInfo();
+declare Environment = MapInfo.CollectionName;
 
-if(FinishLines.count > 1) Problem_MultipleFinishes(FinishLines);
+declare IsOneLapWithFinish = Multilaps.count == 1 && FinishLines.count > 0 && MapInfo.TMObjective_NbLaps == 1;
+declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
+if(IsMultilap) {
+	declare SChProblem Problem_MultilapTrack;
+	Problem_MultilapTrack.Name = "MULTILAP_TRACK";
+	Problem_MultilapTrack.Anchor = Multilaps[0];
+	Problem_MultilapTrack.ShortDescription = "{{{{MULTILAP_TRACK}}}}";
+	Problem_MultilapTrack.LongDescription = "This track has a multilap which isn't considered as one lap with 1 or more finishes. This map can't be made Checkpointless.";
+	Problem(Problem_MultilapTrack);
+}
 
-foreach(Env => RelationList, Relation_StartMultilap) {
-	foreach(Relation, RelationList) {
+declare StartLine = StartLines[0];
+
+if(IsOneLapWithFinish) {
+
+}
+else {
+	foreach(Relation, Relation_StartMultilap[Environment]) {
 		declare StartBlockName = Relation[0];
 		declare MultilapBlockName = Relation[1];
 		if(StartLine.IsItem) Problem_ItemStart(StartLine);
@@ -27,36 +41,66 @@ foreach(Env => RelationList, Relation_StartMultilap) {
 					SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ MultilapBlockName ^ ".");
 				}
 				else {
-					Problem_CannotPlaceGhostBlock(StartLine.Block.Coord);
+					declare SChProblem Problem_CannotPlaceGhostBlock;
+					Problem_CannotPlaceGhostBlock.Name = "CANNOT_PLACE_GHOSTBLOCK";
+					Problem_CannotPlaceGhostBlock.Coord = StartLine.Block.Coord;
+					Problem_CannotPlaceGhostBlock.Direction = StartLine.Block.Direction;
+					Problem_CannotPlaceGhostBlock.BlockName = MultilapBlockName;
+					Problem_CannotPlaceGhostBlock.ShortDescription = "{{{{CANNOT_PLACE_GHOSTBLOCK}}}} - " ^ MultilapBlockName;
+					Problem_CannotPlaceGhostBlock.LongDescription = "This block is not possible to place in ghost variant.";
+					Problem_CannotPlaceGhostBlock.Solutions.add("Contact the authors of Challenge to add the ghost variant of the block.");
+					Problem_CannotPlaceGhostBlock.Solutions.add("Place the ghost block manually.");
+					Problem(Problem_CannotPlaceGhostBlock);
 				}
 			}
 			else {
-				Problem_CannotRemoveStartLine(StartLine);
+				declare SChProblem Problem_CannotRemoveStartLine;
+				Problem_CannotRemoveStartLine.Name = "CANNOT_REMOVE_STARTLINE";
+				Problem_CannotRemoveStartLine.Anchor = StartLine;
+				Problem_CannotRemoveStartLine.ShortDescription = "{{{{CANNOT_REMOVE_STARTLINE}}}} - " ^ StartBlockName;
+				Problem_CannotRemoveStartLine.LongDescription = "This start anchor can't be removed via script. The anchor is possibly ghost block or weirdly placed.";
+				Problem_CannotRemoveStartLine.Solutions.add("Replace the start manually with possible multilap variant.");
+				Problem_CannotRemoveStartLine.Solutions.add("Replace the start manually with possible multilap ghost variant.");
+				Problem(Problem_CannotRemoveStartLine);
 			}
 		}
 	}
 }
 
-foreach(Env => RelationList, Relation_FinishCheckpoint) {
-	foreach(Relation, RelationList) {
+foreach(FinishLine, FinishLines) {
+	foreach(Relation, Relation_FinishCheckpoint[Environment]) {
 		declare FinishBlockName = Relation[0];
 		declare CheckpointBlockName = Relation[1];
-		if(FinishLines.count == 1) {
-			declare FinishLine = FinishLines[0];
-			if(FinishLine.IsItem) Problem_ItemFinish(FinishLine);
-			else if(FinishLine.Block.Name == FinishBlockName) {
-				SetStatusProgress(1.);
-				if(RemoveAnchor(FinishLine)) {
-					if(PlaceGhostBlock(CheckpointBlockName, FinishLine.Block.Coord, FinishLine.Block.Direction)) {
-						SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ CheckpointBlockName ^ ".");
-					}
-					else {
-						Problem_CannotPlaceGhostBlock(StartLine.Block.Coord);
-					}
+
+		if(FinishLine.IsItem) Problem_ItemFinish(FinishLine);
+		else if(FinishLine.Block.Name == FinishBlockName) {
+			SetStatusProgress(1.);
+			if(RemoveAnchor(FinishLine)) {
+				if(PlaceGhostBlock(CheckpointBlockName, FinishLine.Block.Coord, FinishLine.Block.Direction)) {
+					SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ CheckpointBlockName ^ ".");
 				}
 				else {
-					Problem_CannotRemoveFinishLine(FinishLine);
+					declare SChProblem Problem_CannotPlaceGhostBlock;
+					Problem_CannotPlaceGhostBlock.Name = "CANNOT_PLACE_GHOSTBLOCK";
+					Problem_CannotPlaceGhostBlock.Coord = FinishLine.Block.Coord;
+					Problem_CannotPlaceGhostBlock.Direction = FinishLine.Block.Direction;
+					Problem_CannotPlaceGhostBlock.BlockName = CheckpointBlockName;
+					Problem_CannotPlaceGhostBlock.ShortDescription = "{{{{CANNOT_PLACE_GHOSTBLOCK}}}} - " ^ CheckpointBlockName;
+					Problem_CannotPlaceGhostBlock.LongDescription = "This block is not possible to place in ghost variant.";
+					Problem_CannotPlaceGhostBlock.Solutions.add("Contact the authors of Challenge to add the ghost variant of the block.");
+					Problem_CannotPlaceGhostBlock.Solutions.add("Place the ghost block manually.");
+					Problem(Problem_CannotPlaceGhostBlock);
 				}
+			}
+			else {
+				declare SChProblem Problem_CannotRemoveFinishLine;
+				Problem_CannotRemoveFinishLine.Name = "CANNOT_REMOVE_FINISHLINE";
+				Problem_CannotRemoveFinishLine.Anchor = FinishLine;
+				Problem_CannotRemoveFinishLine.ShortDescription = "{{{{CANNOT_REMOVE_FINISHLINE}}}} -  " ^ FinishBlockName;
+				Problem_CannotRemoveFinishLine.LongDescription = "This finish anchor can't be removed via script. The anchor is possibly ghost block or weirdly placed.";
+				Problem_CannotRemoveFinishLine.Solutions.add("Replace the finish manually with possible checkpoint variant.");
+				Problem_CannotRemoveFinishLine.Solutions.add("Replace the finish manually with possible checkpoint ghost variant.");
+				Problem(Problem_CannotRemoveFinishLine);
 			}
 		}
 	}

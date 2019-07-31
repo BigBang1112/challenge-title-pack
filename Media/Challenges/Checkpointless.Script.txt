@@ -10,6 +10,7 @@ Script.Description = "{{{{CHECKPOINTLESS_DESCRIPTION}}}}";
 declare Multilaps = GetMultilaps();
 declare FinishLines = GetFinishLines();
 declare MapInfo = GetMapInfo();
+declare Environment = MapInfo.CollectionName;
 
 declare IsOneLapWithFinish = Multilaps.count == 1 && FinishLines.count > 0 && MapInfo.TMObjective_NbLaps == 1;
 declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
@@ -34,27 +35,25 @@ if(IsOneLapWithFinish) {
 		Problem(Problem_ItemMultilap);
 	}
 	else {
-		foreach(Env => RelationList, Relation_MultilapStartTwoway) {
-			foreach(Relation, RelationList) {
-				declare MultilapBlockName = Relation[0];
-				declare StartTwowayBlockName = Relation[1];
-				if(Multilap.Block.Name == MultilapBlockName) {
-					declare Replacement = ReplaceBlock(Multilap.Block, StartTwowayBlockName, False);
-					if(!Replacement.Removed) Problem();
-					else if(!Replacement.Placed) {
-						declare SChProblem Problem_BlockMissing;
-						Problem_BlockMissing.Name = "BLOCK_MISSING";
-						Problem_BlockMissing.BlockName = StartTwowayBlockName;
-						Problem_BlockMissing.ShortDescription = "{{{{BLOCK_MISSING}}}}: " ^ StartTwowayBlockName;
-						Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
-						Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
-						Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
-						Problem_BlockMissing.Solutions.add("Place a similar block that will function the same.");
-						Problem_BlockMissing.Solutions.add("Wait before Nadeo will add the block.");
-						Problem(Problem_BlockMissing);
-					}
-					else SetStatusMessage(MultilapBlockName ^ " {{{{replaced_with}}}} " ^ StartTwowayBlockName ^ ".");
+		foreach(Relation, Relation_MultilapStartTwoway[Environment]) {
+			declare MultilapBlockName = Relation[0];
+			declare StartTwowayBlockName = Relation[1];
+			if(Multilap.Block.Name == MultilapBlockName) {
+				declare Replacement = ReplaceBlock(Multilap.Block, StartTwowayBlockName, False);
+				if(!Replacement.Removed) Problem();
+				else if(!Replacement.Placed) {
+					declare SChProblem Problem_BlockMissing;
+					Problem_BlockMissing.Name = "BLOCK_MISSING";
+					Problem_BlockMissing.BlockName = StartTwowayBlockName;
+					Problem_BlockMissing.ShortDescription = "{{{{BLOCK_MISSING}}}} - " ^ StartTwowayBlockName;
+					Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
+					Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
+					Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
+					Problem_BlockMissing.Solutions.add("Place a similar block that will function the same.");
+					Problem_BlockMissing.Solutions.add("Wait before Nadeo will add the block.");
+					Problem(Problem_BlockMissing);
 				}
+				else SetStatusMessage(MultilapBlockName ^ " {{{{replaced_with}}}} " ^ StartTwowayBlockName ^ ".");
 			}
 		}
 	}
