@@ -13,8 +13,8 @@ declare FinishLines = GetFinishLines();
 declare MapInfo = GetOriginalMapInfo();
 declare Environment = MapInfo.CollectionName;
 
-declare IsOneLapWithFinish = FinishLines.count > 0 && MapInfo.TMObjective_IsLapRace && MapInfo.TMObjective_NbLaps == 1;
-declare IsMultilap = Multilaps.count > 0 && !IsOneLapWithFinish;
+declare IsOneLapWithFinish = Multilaps.count == 1 && FinishLines.count > 0 && MapInfo.TMObjective_NbLaps == 1;
+declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
 if(IsMultilap) {
 	declare SChProblem Problem_MultilapTrack;
 	Problem_MultilapTrack.Name = "MULTILAP_TRACK";
@@ -62,6 +62,7 @@ if(IsOneLapWithFinish) {
 					Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
 					Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
 					Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
+					Problem_BlockMissing.Solutions.add("Place a similar block that will function the same.");
 					Problem_BlockMissing.Solutions.add("Wait before Nadeo will add the block.");
 					Problem(Problem_BlockMissing);
 				}
@@ -98,6 +99,7 @@ else {
 					Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
 					Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
 					Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
+					Problem_BlockMissing.Solutions.add("Place a similar block that will function the same.");
 					Problem_BlockMissing.Solutions.add("Wait before Nadeo will add the block.");
 				}
 				else SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ FinishBlockName ^ ".");
@@ -134,6 +136,7 @@ if(FinishLines.count == 1) {
 					Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
 					Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
 					Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
+					Problem_BlockMissing.Solutions.add("Place a similar block that will function the same.");
 					Problem_BlockMissing.Solutions.add("Wait before Nadeo will add the block.");
 					Problem(Problem_BlockMissing);
 				}
