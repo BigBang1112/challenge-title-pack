@@ -71,6 +71,13 @@
 	Boolean Placed;
 }
 
+#Struct SPlaceBlockResult {
+	Boolean Placed;
+	SChBlock Block;
+	Boolean IsAnchor;
+	SChAnchor Anchor;
+}
+
 #Struct SChProblem {
 	Text Name;
 	Int3 Coord;

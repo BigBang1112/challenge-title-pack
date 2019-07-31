@@ -6,6 +6,14 @@
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 #Include "Libs/Challenge/Conversion.Script.txt" as Conversion
 
+#Struct SPlaceBlockResult {
+	Boolean Placed;
+	CBlock Block;
+	CMacroblockInstance SpecialBlock;
+	Boolean IsAnchor;
+	Ident Anchor;
+}
+
 Text GetVariant(Int3 _Coord) {
 	declare Variant = "Air";
 	if(GetGroundHeight(_Coord.X, _Coord.Z) == _Coord.Y) {
@@ -33,14 +41,30 @@ Boolean SafeRemoveBlock(ModifierBase::SChBlock _ChBlock) {
 	return False;
 }
 
-Boolean PlaceBlockSpecial(Text _BlockModelName, Int3 _Coord, ::CardinalDirections _Direction) {
+SPlaceBlockResult PlaceBlockSpecial(Text _BlockModelName, Int3 _Coord, ::CardinalDirections _Direction) {
+	declare SPlaceBlockResult Result;
+
 	declare BlockModel = GetBlockModelFromName(_BlockModelName);
 	if(BlockModel == Null) {
 		declare MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\{{{_BlockModelName}}}-{{{GetVariant(_Coord)}}}.Macroblock.Gbx""");
-		if(MacroblockModel == Null) return False;
-		return PlaceMacroblock(MacroblockModel, _Coord, _Direction);
+		if(MacroblockModel == Null) return Result;
+		Result.Placed = PlaceMacroblock(MacroblockModel, _Coord, _Direction);
+		Result.SpecialBlock = GetMacroblockInstanceFromUnitCoord(_Coord);
+		return Result;
 	}
-	return PlaceBlock(BlockModel, _Coord, _Direction);
+	Result.Placed = PlaceBlock(BlockModel, _Coord, _Direction);
+	if(Result.Placed) {
+		Result.Block = GetBlock(_Coord);
+		yield; //Required so that AnchorData actually updates, thanks Nadeo
+		foreach(Anchor, AnchorData) {
+			if(Anchor.Block != Null)
+			if(Anchor.Block.BlockScriptId == Result.Block.BlockScriptId) {
+				Result.IsAnchor = True;
+				Result.Anchor = Anchor.Id;
+			}
+		}
+	}
+	return Result;
 }
 
 Integer GetNewOrder() {
@@ -127,16 +151,31 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			declare Direction = Conversion::ToDirectionMap(_Data[2]);
 
 			declare Response = PlaceBlockSpecial(BlockName, Coord, Direction);
-			Respond(_LayerAPI, _Type, [""^Response]);
+			declare IsSpecial = Response.SpecialBlock != Null;
+			declare ModifierBase::SPlaceBlockResult Result;
+			Result.Placed = Response.Placed;
+			Result.Block = Conversion::ToSChBlock(Response.Block);
+			Result.IsAnchor = Response.IsAnchor;
+			foreach(Anchor, AnchorData)
+				if(Anchor.Id == Response.Anchor)
+					Result.Anchor = Conversion::ToSChAnchor(Anchor);
+			Respond(_LayerAPI, _Type, [Result.tojson()]);
 		}
 		case "Ch_PlaceBlock_NoDestruction": {
 			declare BlockName = _Data[0];
 			declare Coord = Conversion::ToInt3(_Data[1]);
 			declare Direction = Conversion::ToDirectionMap(_Data[2]);
 
-			declare BlockModel = GetBlockModelFromName(BlockName);
-			declare Response = PlaceBlock_NoDestruction(BlockModel, Coord, Direction);
-			Respond(_LayerAPI, _Type, [""^Response]);
+			declare Response = PlaceBlockSpecial(BlockName, Coord, Direction);
+			declare IsSpecial = Response.SpecialBlock != Null;
+			declare ModifierBase::SPlaceBlockResult Result;
+			Result.Placed = Response.Placed;
+			Result.Block = Conversion::ToSChBlock(Response.Block);
+			Result.IsAnchor = Response.IsAnchor;
+			foreach(Anchor, AnchorData)
+				if(Anchor.Id == Response.Anchor)
+					Result.Anchor = Conversion::ToSChAnchor(Anchor);
+			Respond(_LayerAPI, _Type, [Result.tojson()]);
 		}
 		case "Ch_CanPlaceRoadBlocks": {
 			declare BlockName = _Data[0];
@@ -394,7 +433,7 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			
 			declare Removed = SafeRemoveBlock(Block);
 			declare Placed = PlaceBlockSpecial(Replacement, Coord, Direction);
-			Respond(_LayerAPI, _Type, [""^Removed, ""^Placed]);
+			Respond(_LayerAPI, _Type, [""^Removed, ""^Placed.Placed]);
 		}
 		case "Ch_ReplaceAllBlocks": {
 			declare BlockName = _Data[0];
@@ -424,7 +463,7 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			declare PlacedBlock1 = PlaceBlockSpecial(Block2.Name, Block1.Coord, Conversion::ToDirectionMap(Block1.Direction));
 			declare PlacedBlock2 = PlaceBlockSpecial(Block1.Name, Block2.Coord, Conversion::ToDirectionMap(Block2.Direction));
 
-			Respond(_LayerAPI, _Type, [""^(RemovedBlock1 && RemovedBlock2 && PlacedBlock1 && PlacedBlock2)]);
+			Respond(_LayerAPI, _Type, [""^(RemovedBlock1 && RemovedBlock2 && PlacedBlock1.Placed && PlacedBlock2.Placed)]);
 		}
 		case "Ch_GetStartLines": {
 			declare ModifierBase::SChAnchor[] ChAnchors;

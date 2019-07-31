@@ -74,7 +74,7 @@ Void PreloadAllItems() {
 	declare Response = Request("Ch_PreloadAllItems", []);
 }
  
-Boolean CanPlaceBlock(Text _BlockName, Int3 _Coord, Text _Direction, Boolean _OnGround, Integer _VariantIndex) {    
+Boolean CanPlaceBlock(Text _BlockName, Int3 _Coord, Text _Direction, Boolean _OnGround, Integer _VariantIndex) {
 	declare Params = [_BlockName, _Coord^"", _Direction, _OnGround^"", _VariantIndex^""];
 	declare Response = Request("Ch_CanPlaceBlock", Params);
 	return Response.Values[0] == "True";
@@ -86,16 +86,23 @@ Boolean CanPlaceBlock_NoDestruction(Text _BlockName, Int3 _Coord, Text _Directio
 	return Response.Values[0] == "True";
 }
  
-Boolean PlaceBlock(Text _BlockName, Int3 _Coord, Text _Direction) {
+SPlaceBlockResult PlaceBlock(Text _BlockName, Int3 _Coord, Text _Direction) {
 	declare Params = [_BlockName, _Coord^"", _Direction];
 	declare Response = Request("Ch_PlaceBlock", Params);
-	return Response.Values[0] == "True";
+
+	declare SPlaceBlockResult Result;
+	declare Success = Result.fromjson(Response.Values[0]);
+	return Result;
 }
  
-Boolean PlaceBlock_NoDestruction(Text _BlockName, Int3 _Coord, Text _Direction) {
+SPlaceBlockResult PlaceBlock_NoDestruction(Text _BlockName, Int3 _Coord, Text _Direction) {
 	declare Params = [_BlockName, _Coord^"", _Direction];
 	declare Response = Request("Ch_PlaceBlock_NoDestruction", Params);
-	return Response.Values[0] == "True";
+
+	declare SPlaceBlockResult Result;
+	Result.Placed = Response.Values[0] == "True";
+	declare Success = Result.Block.fromjson(Response.Values[1]);
+	return Result;
 }
  
 Boolean CanPlaceRoadBlocks(Text _BlockName, Int3 _StartCoord, Int3 _EndCoord) {
