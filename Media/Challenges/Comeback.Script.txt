@@ -37,7 +37,8 @@ else {
 		else if(StartLine.Block.Name == StartBlockName) {
 			SetStatusProgress(.5);
 			if(RemoveAnchor(StartLine)) {
-				if(PlaceGhostBlock(MultilapBlockName, StartLine.Block.Coord, StartLine.Block.Direction)) {
+				if(PlaceBlock(MultilapBlockName, StartLine.Block.Coord, StartLine.Block.Direction)
+				|| PlaceGhostBlock(MultilapBlockName, StartLine.Block.Coord, StartLine.Block.Direction)) {
 					SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ MultilapBlockName ^ ".");
 				}
 				else {
@@ -76,7 +77,8 @@ foreach(FinishLine, FinishLines) {
 		else if(FinishLine.Block.Name == FinishBlockName) {
 			SetStatusProgress(1.);
 			if(RemoveAnchor(FinishLine)) {
-				if(PlaceGhostBlock(CheckpointBlockName, FinishLine.Block.Coord, FinishLine.Block.Direction)) {
+				if(PlaceBlock(CheckpointBlockName, FinishLine.Block.Coord, FinishLine.Block.Direction)
+				|| PlaceGhostBlock(CheckpointBlockName, FinishLine.Block.Coord, FinishLine.Block.Direction)) {
 					SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ CheckpointBlockName ^ ".");
 				}
 				else {
