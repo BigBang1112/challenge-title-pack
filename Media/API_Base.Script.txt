@@ -80,7 +80,10 @@
 	SChBlock[] Blocks;
 	SChItem Item;
 	SChItem[] Items;
-	Boolean IsUnsolvable;
+	Text BlockName;
+	Text ShortDescription;
+	Text LongDescription;
+	Text[] Solutions;
 }
 
 #Struct SChNote {

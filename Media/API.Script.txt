@@ -5,6 +5,7 @@ declare Text[][][Text] Relation_StartMultilap;
 declare Text[][][Text] Relation_FinishCheckpoint;
 declare Text[][][Text] Relation_CheckpointRoad;
 declare Text[][][Text] Relation_MultilapStartTwoway;
+declare Text[][][Text] Relation_MultilapFinishTwoway;
 
 SResponse Request(Text _Command, Text[] _Arguments) {
 	declare SResponse Response;
@@ -503,15 +504,25 @@ Void Complete() { // Shouldn't be normally called
 Void Problem(SChProblem _Problem) {
 	Problems.add(_Problem);
 
-	if(_Problem.IsUnsolvable) {
+	if(_Problem.Solutions.count == 0) {
 		SetStatusColor(<1.,0.,0.>);
 		SetStatusProgress(1.);
+		SetStatusMessage("{{{{FATAL_PROBLEM}}}}: " ^ _Problem.ShortDescription);
 	}
-	else
+	else {
 		SetStatusColor(<1.,.5,0.>);
+		SetStatusMessage("{{{{PROBLEM}}}}: " ^ _Problem.ShortDescription);
+	}
+	
+	sleep(1500);
 	declare Response = Request("Ch_Problem", [_Problem.tojson()]);
-	sleep(2000);
 	SetStatusColor(<1.,1.,1.>);
+}
+
+Void Problem() {
+	declare SChProblem Problem;
+	Problem.Name = "Unknown";
+	Problem(Problem);
 }
 
 Void Note(SChNote _Note) {
@@ -534,7 +545,6 @@ Void Problem_MultilapTrack(SChAnchor _Anchor) {
 	declare SChProblem Problem;
 	Problem.Name = "MultilapTrack";
 	Problem.Anchor = _Anchor;
-	Problem.IsUnsolvable = True;
 	Problem(Problem);
 }
 
@@ -625,6 +635,5 @@ Void Problem_CannotPlaceGhostBlock(Int3 _Coord) {
 Void Problem_NoCheckpoint() {
 	declare SChProblem Problem;
 	Problem.Name = "NoCheckpoint";
-	Problem.IsUnsolvable = True;
 	Problem(Problem);
 }

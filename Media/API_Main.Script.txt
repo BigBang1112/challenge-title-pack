@@ -131,6 +131,41 @@ Relation_MultilapStartTwoway = [
 	]
 ];
 
+Relation_MultilapFinishTwoway = [
+	"Canyon" => [
+		["RoadRaceMultilap", "RoadRaceFinishTwoway"],
+		["RoadRaceMultilapMirror", "RoadRaceFinishMirrorTwoway"],
+		["ArenaMultilap", "ArenaFinishTwoway"],
+		["RoadMainMultilap", "RoadMainFinishTwoway"],
+		["TubeMultilap", "TubeFinish"],
+		["TubeMultilapUnderground", "TubeFinishUnderground"],
+		["RoadCaveMultiLap", "RoadCaveFinish"],
+		["RoadCaveDoubleMultiLap", "RoadCaveDoubleFinish"]
+	],
+	"Stadium" => [
+		["StadiumRoadMainFinishFinishLine", "StadiumRoadMainFinishLineTwoway"],
+		["StadiumPlatformMultilap", "StadiumPlatformFinishTwoway"],
+		["StadiumRoadDirtMutliLap", "StadiumRoadDirtFinishTwoway"],
+		["StadiumTrenchMutliLap", "StadiumTrenchFinishTwoway"]
+	],
+	"Valley" => [
+		["Road2WayMultilap", "Road2WayFinishTwoway"],
+		["Road2WayForestMultilap", "Road2WayForestFinishTwoway"],
+		["Road4WayMultiLap", "Road4WayFinishTwoway"],
+		["TunnelRoad4wayMultilap", "TunnelRoad4wayFinishTwoway"],
+		["RoadForestLargeMultilap", "RoadForestLargeFinishTwoway"]
+	],
+	"Lagoon" => [
+		["RoadMainMultilap", "RoadMainFinishTwoway"],
+		["FreeWayMultilap", "FreeWayFinishTwoway"],
+		["RoadThemeParkMultilap", "RoadThemeParkFinishTwoway"],
+		["RoadThemeParkFlipMultilap", "RoadThemeParkFlipFinishTwoway"],
+		["ArenaMultilap", "ArenaFinishTwoway"],
+		["ArenaMultilapX2", "ArenaFinishX2Twoway"],
+		["RoadTunnelMultilap", "RoadTunnelFinishTwoway"]
+	]
+];
+
 +++Metadata+++
 SendCustomEvent("ScriptMetadata", [Script.tojson()]);
 +++Main+++

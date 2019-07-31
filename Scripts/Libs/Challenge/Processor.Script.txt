@@ -518,7 +518,7 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			declare JsonSuccess = Problem.fromjson(_Data[0]);
 			declare metadata ModifierBase::SChProblem[] Problems for Map;
 			Problems.add(Problem);
-			if(Problem.IsUnsolvable) return False;
+			if(Problem.Solutions.count == 0) return False;
 			else Respond(_LayerAPI, _Type, []);
 		}
 		case "Ch_Message": {

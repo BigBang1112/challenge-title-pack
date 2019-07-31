@@ -149,7 +149,8 @@ Void ProcessScript(Text _ScriptName, Text _ScriptContent) {
 	UILayerDestroy(LayerAPI);
 
 	Layers::SendEvent("ModifierStatus", "Status", Dictionary::Get("DONE"));
-	Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED"));
+	if(Terminate) Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED_UNSUCCESSFULLY"));
+	else Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED"));
 	Layers::SendEvent("ModifierStatus", "Progress", "1");
 }
 
