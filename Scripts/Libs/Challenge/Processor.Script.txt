@@ -513,6 +513,14 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 					ChItems.add(Conversion::ToSChAnchorItem(Anchor));
 			Respond(_LayerAPI, _Type, [ChItems.tojson()]);
 		}
+		case "Ch_UpdateAnchor": {
+			declare ModifierBase::SChAnchor ChAnchor;
+			declare JsonSuccess = ChAnchor.fromjson(_Data[0]);
+			foreach(Anchor, AnchorData)
+				if(Anchor.Id^"" == ChAnchor.Id)
+					declare Success = Conversion::SetCAnchorData(Anchor, ChAnchor);
+			Respond(_LayerAPI, _Type, []);
+		}
 		case "Ch_Problem": {
 			declare ModifierBase::SChProblem Problem;
 			declare JsonSuccess = Problem.fromjson(_Data[0]);

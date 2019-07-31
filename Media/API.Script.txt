@@ -394,6 +394,11 @@ SChAnchorItem[] GetMultilapItems() {
 	return Items;
 }
 
+Void UpdateAnchor(SChAnchor _Anchor) {
+	declare Params = [_Anchor.tojson()];
+	declare Response = Request("Ch_UpdateAnchor", Params);
+}
+
 Boolean RemoveAnchorItem(SChAnchorItem _AnchorItem) {
 	declare Params = [_AnchorItem.tojson()];
 	declare Response = Request("Ch_RemoveAnchorItem", Params);
@@ -526,7 +531,7 @@ Void Problem() {
 }
 
 Void Problem_FromBase(SChProblem _Problem) {
-	
+
 }
 
 Void Note(SChNote _Note) {

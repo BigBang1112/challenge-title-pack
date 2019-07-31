@@ -24,6 +24,7 @@
 }
 
 #Struct SChAnchor {
+	Text Id;
 	Text DefaultTag;
 	Integer DefaultOrder;
 	Text Tag;
@@ -36,6 +37,7 @@
 }
 
 #Struct SChAnchorBlock {
+	Text Id;
 	Text DefaultTag;
 	Integer DefaultOrder;
 	Text Tag;
@@ -44,6 +46,7 @@
 }
 
 #Struct SChAnchorItem {
+	Text Id;
 	Text DefaultTag;
 	Integer DefaultOrder;
 	Text Tag;

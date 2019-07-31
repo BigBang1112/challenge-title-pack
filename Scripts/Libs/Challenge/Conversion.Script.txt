@@ -110,6 +110,7 @@ ModifierBase::SChAnchor ToSChAnchor(CAnchorData _Anchor) {
 	declare ModifierBase::SChAnchor ChAnchor;
 	if(_Anchor == Null) return ChAnchor;
 	
+	ChAnchor.Id = _Anchor.Id^"";
 	ChAnchor.DefaultTag = _Anchor.DefaultTag;
 	ChAnchor.DefaultOrder = _Anchor.DefaultOrder;
 	ChAnchor.Tag = _Anchor.Tag;
@@ -131,6 +132,7 @@ ModifierBase::SChAnchorBlock ToSChAnchorBlock(CAnchorData _Anchor) {
 	declare ModifierBase::SChAnchorBlock ChAnchor;
 	if(_Anchor == Null) return ChAnchor;
 	
+	ChAnchor.Id = _Anchor.Id^"";
 	ChAnchor.DefaultTag = _Anchor.DefaultTag;
 	ChAnchor.DefaultOrder = _Anchor.DefaultOrder;
 	ChAnchor.Tag = _Anchor.Tag;
@@ -146,6 +148,7 @@ ModifierBase::SChAnchorBlock ToSChAnchorBlock(CAnchorData _Anchor) {
 ModifierBase::SChAnchorBlock ToSChAnchorBlock(ModifierBase::SChAnchor _Anchor) {
 	declare ModifierBase::SChAnchorBlock ChAnchor;
 	
+	ChAnchor.Id = _Anchor.Id^"";
 	ChAnchor.DefaultTag = _Anchor.DefaultTag;
 	ChAnchor.DefaultOrder = _Anchor.DefaultOrder;
 	ChAnchor.Tag = _Anchor.Tag;
@@ -159,6 +162,7 @@ ModifierBase::SChAnchorItem ToSChAnchorItem(CAnchorData _Anchor) {
 	declare ModifierBase::SChAnchorItem ChAnchor;
 	if(_Anchor == Null) return ChAnchor;
 	
+	ChAnchor.Id = _Anchor.Id^"";
 	ChAnchor.DefaultTag = _Anchor.DefaultTag;
 	ChAnchor.DefaultOrder = _Anchor.DefaultOrder;
 	ChAnchor.Tag = _Anchor.Tag;
@@ -174,6 +178,7 @@ ModifierBase::SChAnchorItem ToSChAnchorItem(CAnchorData _Anchor) {
 ModifierBase::SChAnchorItem ToSChAnchorItem(ModifierBase::SChAnchor _Anchor) {
 	declare ModifierBase::SChAnchorItem ChAnchor;
 	
+	ChAnchor.Id = _Anchor.Id^"";
 	ChAnchor.DefaultTag = _Anchor.DefaultTag;
 	ChAnchor.DefaultOrder = _Anchor.DefaultOrder;
 	ChAnchor.Tag = _Anchor.Tag;
@@ -227,42 +232,42 @@ Boolean SChItemEquals(ModifierBase::SChItem _ChAnchor, CItemAnchor _Item) {
 
 Boolean SChAnchorEquals(ModifierBase::SChAnchor _ChAnchor, CAnchorData _Anchor) {
 	if(_Anchor == Null) return False;
-
-	if(_ChAnchor.DefaultTag != _Anchor.DefaultTag) return False;
-	if(_ChAnchor.DefaultOrder != _Anchor.DefaultOrder) return False;
-	if(_ChAnchor.Tag != _Anchor.Tag) return False;
-	if(_ChAnchor.Order != _Anchor.Order) return False;
-	
-	if(SChItemEquals(_ChAnchor.Item, _Anchor.Item)) return True;
-	if(SChBlockEquals(_ChAnchor.Block, _Anchor.Block)) return True;
-	
-	return False;
+	return _Anchor.Id^"" == _ChAnchor.Id;
 }
 
 Boolean SChAnchorItemEquals(ModifierBase::SChAnchorItem _ChAnchor, CAnchorData _Anchor) {
 	if(_Anchor == Null) return False;
-
-	if(_ChAnchor.DefaultTag != _Anchor.DefaultTag) return False;
-	if(_ChAnchor.DefaultOrder != _Anchor.DefaultOrder) return False;
-	if(_ChAnchor.Tag != _Anchor.Tag) return False;
-	if(_ChAnchor.Order != _Anchor.Order) return False;
-	
-	if(_Anchor.Item == Null) return False;
-	if(!SChItemEquals(_ChAnchor.Item, _Anchor.Item)) return False;
-	
-	return True;
+	return _Anchor.Id^"" == _ChAnchor.Id;
 }
 
 Boolean SChAnchorBlockEquals(ModifierBase::SChAnchorBlock _ChAnchor, CAnchorData _Anchor) {
 	if(_Anchor == Null) return False;
+	return _Anchor.Id^"" == _ChAnchor.Id;
+}
 
-	if(_ChAnchor.DefaultTag != _Anchor.DefaultTag) return False;
-	if(_ChAnchor.DefaultOrder != _Anchor.DefaultOrder) return False;
-	if(_ChAnchor.Tag != _Anchor.Tag) return False;
-	if(_ChAnchor.Order != _Anchor.Order) return False;
+Boolean SetCAnchorData(CAnchorData _Anchor, ModifierBase::SChAnchor _ChAnchor) {
+	if(_Anchor == Null) return False;
+	if(_Anchor.Id^"" != _ChAnchor.Id) return False;
 	
-	if(_Anchor.Block == Null) return False;
-	if(!SChBlockEquals(_ChAnchor.Block, _Anchor.Block)) return False;
+	_Anchor.Tag = _ChAnchor.Tag;
+	_Anchor.Order = _ChAnchor.Order;
+	return True;
+}
+
+Boolean SetCAnchorData(CAnchorData _Anchor, ModifierBase::SChAnchorBlock _ChAnchor) {
+	if(_Anchor == Null) return False;
+	if(_Anchor.Id^"" != _ChAnchor.Id) return False;
 	
+	_Anchor.Tag = _ChAnchor.Tag;
+	_Anchor.Order = _ChAnchor.Order;
+	return True;
+}
+
+Boolean SetCAnchorData(CAnchorData _Anchor, ModifierBase::SChAnchorItem _ChAnchor) {
+	if(_Anchor == Null) return False;
+	if(_Anchor.Id^"" != _ChAnchor.Id) return False;
+	
+	_Anchor.Tag = _ChAnchor.Tag;
+	_Anchor.Order = _ChAnchor.Order;
 	return True;
 }
