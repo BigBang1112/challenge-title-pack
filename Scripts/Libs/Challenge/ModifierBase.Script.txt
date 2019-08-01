@@ -1,3 +1,11 @@
+#Struct SChAnchor {
+	Text Id;
+	Text DefaultTag;
+	Integer DefaultOrder;
+	Text Tag;
+	Integer Order;
+}
+
 #Struct SChBlock {
 	Text Id;
 	Text Name;
@@ -6,22 +14,22 @@
 	Boolean IsRoad; 
 	Boolean IsTerrain;
 	Boolean IsPodium;
-	Text Waypoint;  
-	Boolean NoRespawn;
-}
-
-#Struct SChSpecialBlock {
-	Text Id;
-	Text Name;
-	Int3 Coord;
-	Text Direction;
-	Text Variant;
 	Text Waypoint;
+	SChAnchor[] Anchors;
+	Boolean NoRespawn;
+	Boolean IsSpecial;
 }
 
-#Struct SChVariousBlocks {
-	SChBlock[] Blocks;
-	SChSpecialBlock[] SpecialBlocks;
+#Struct SChItem {
+	Vec3 Position;
+	SChAnchor Anchor;
+}
+
+#Struct SChWaypoint {
+	Boolean IsBlock;
+	SChBlock Block;
+	Boolean IsItem;
+	SChItem Item;
 }
 
 #Struct SChMacroblock {
@@ -33,59 +41,15 @@
 	Text Name;
 }
 
-#Struct SChItem {
-	Vec3 Position;
-}
-
-#Struct SChAnchor {
-	Text Id;
-	Text DefaultTag;
-	Integer DefaultOrder;
-	Text Tag;
-	Integer Order;
-
-	Boolean IsBlock;
-	SChBlock Block;
-	Boolean IsItem;
-	SChItem Item;
-}
-
-#Struct SChAnchorBlock {
-	Text Id;
-	Text DefaultTag;
-	Integer DefaultOrder;
-	Text Tag;
-	Integer Order;
-	SChBlock Block;
-}
-
-#Struct SChAnchorItem {
-	Text Id;
-	Text DefaultTag;
-	Integer DefaultOrder;
-	Text Tag;
-	Integer Order;
-	SChItem Item;
-}
-
 #Struct SPlaceBlockResult {
 	Boolean Placed;
 	SChBlock Block;
-	Boolean IsAnchor;
-	SChAnchor Anchor;
-}
-
-#Struct SPlaceSpecialBlockResult {
-	Boolean Placed;
-	SChSpecialBlock Block;
 }
 
 #Struct SChProblem {
 	Text Name;
 	Int3 Coord;
 	Text Direction;
-	SChAnchor Anchor;
-	SChAnchor[] Anchors;
 	SChBlock Block;
 	SChBlock[] Blocks;
 	SChItem Item;
@@ -98,8 +62,6 @@
 
 #Struct SChNote {
 	Text Name;
-	SChAnchor Anchor;
-	SChAnchor[] Anchors;
 	SChBlock Block;
 	SChBlock[] Blocks;
 	SChItem Item;

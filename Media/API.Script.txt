@@ -231,24 +231,9 @@ SChBlock[] GetBlocks() {
 	return Blocks;
 }
 
-SChSpecialBlock[] GetSpecialBlocks() {
-	declare Response = Request("Ch_GetSpecialBlocks", []);
-	declare SChSpecialBlock[] Blocks;
-	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
-	return Blocks;
-}
-
-SChAnchor[] GetAnchorData() {
-	declare Response = Request("Ch_GetAnchorData", []);
-	declare SChAnchor[] Anchor;
-	declare JsonSuccess = Anchor.fromjson(Response.Values[0]);
-	return Anchor;
-}
-
-// under RemoveItem in Maniascript API
-Boolean RemoveAnchor(SChAnchor _Anchor) {
-	declare Params = [_Anchor.tojson()];
-	declare Response = Request("Ch_RemoveAnchor", Params);
+Boolean RemoveItem(SChItem _Item) {
+	declare Params = [_Item.tojson()];
+	declare Response = Request("Ch_RemoveItem", Params);
 	return Response.Values[0] == "True";
 }
 
@@ -284,15 +269,6 @@ Boolean PlaceGhostBlock(Text _BlockName, Int3 _Coord, Text _Direction) {
 	return Response.Values[0] == "True";
 }
 
-SPlaceSpecialBlockResult PlaceSpecialBlock(Text _BlockName, Int3 _Coord, Text _Direction) {
-	declare Params = [_BlockName, _Coord^"", _Direction];
-	declare Response = Request("Ch_PlaceSpecialBlock", Params);
-
-	declare SPlaceSpecialBlockResult Result;
-	declare Success = Result.fromjson(Response.Values[0]);
-	return Result;
-}
-
 SReplacementResult ReplaceBlock(SChBlock _Block, Text _ReplacementBlockName, Boolean _OppositeDirection) {
 	declare Params = [_Block.tojson(),_ReplacementBlockName,_OppositeDirection^""];
 	declare Response = Request("Ch_ReplaceBlock", Params);
@@ -318,67 +294,60 @@ Boolean SwapBlock(SChBlock _Block1, SChBlock _Block2) {
 	return Response.Values[0] == "True";
 }
 
-SChAnchor[] GetStartLines() {
+SChWaypoint[] GetStartLines() {
 	declare Response = Request("Ch_GetStartLines", []);
-	declare SChAnchor[] Anchors;
-	declare JsonSuccess = Anchors.fromjson(Response.Values[0]);
-	return Anchors;
+	declare SChWaypoint[] Waypoints;
+	declare JsonSuccess = Waypoints.fromjson(Response.Values[0]);
+	return Waypoints;
 }
 
-SChAnchor[] GetFinishLines() {
+SChWaypoint[] GetFinishLines() {
 	declare Response = Request("Ch_GetFinishLines", []);
-	declare SChAnchor[] Anchors;
-	declare JsonSuccess = Anchors.fromjson(Response.Values[0]);
-	return Anchors;
+	declare SChWaypoint[] Waypoints;
+	declare JsonSuccess = Waypoints.fromjson(Response.Values[0]);
+	return Waypoints;
 }
 
-SChAnchor[] GetCheckpoints() {
+SChWaypoint[] GetCheckpoints() {
 	declare Response = Request("Ch_GetCheckpoints", []);
-	declare SChAnchor[] Anchors;
-	declare JsonSuccess = Anchors.fromjson(Response.Values[0]);
-	return Anchors;   
+	declare SChWaypoint[] Waypoints;
+	declare JsonSuccess = Waypoints.fromjson(Response.Values[0]);
+	return Waypoints;   
 }
 
-SChAnchor[] GetMultilaps() {
+SChWaypoint[] GetMultilaps() {
 	declare Response = Request("Ch_GetMultilaps", []);
-	declare SChAnchor[] Anchors;
-	declare JsonSuccess = Anchors.fromjson(Response.Values[0]);
-	return Anchors;   
+	declare SChWaypoint[] Waypoints;
+	declare JsonSuccess = Waypoints.fromjson(Response.Values[0]);
+	return Waypoints;   
 }
 
-SChAnchorBlock[] GetStartLineBlocks() {
+SChBlock[] GetStartLineBlocks() {
 	declare Response = Request("Ch_GetStartLineBlocks", []);
-	declare SChAnchorBlock[] Blocks;
+	declare SChBlock[] Blocks;
 	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
 	return Blocks;
 }
 
-SChAnchorBlock[] GetFinishLineBlocks() {
+SChBlock[] GetFinishLineBlocks() {
 	declare Response = Request("Ch_GetFinishLineBlocks", []);
-	declare SChAnchorBlock[] Blocks;
+	declare SChBlock[] Blocks;
 	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
 	return Blocks;
 }
 
-SChAnchorBlock[] GetCheckpointBlocks() {
+SChBlock[] GetCheckpointBlocks() {
 	declare Response = Request("Ch_GetCheckpointBlocks", []);
-	declare SChAnchorBlock[] Blocks;
+	declare SChBlock[] Blocks;
 	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
 	return Blocks;   
 }
 
-SChAnchorBlock[] GetMultilapBlocks() {
+SChBlock[] GetMultilapBlocks() {
 	declare Response = Request("Ch_GetMultilapBlocks", []);
-	declare SChAnchorBlock[] Blocks;
+	declare SChBlock[] Blocks;
 	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
 	return Blocks;   
-}
-
-SChSpecialBlock[] GetStartLineSpecialBlocks() {
-	declare Response = Request("Ch_GetStartLineSpecialBlocks", []);
-	declare SChSpecialBlock[] Blocks;
-	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
-	return Blocks;
 }
 
 SChBlock[] GetBlocksByBlockName(Text _BlockName) {
@@ -397,30 +366,30 @@ SChBlock[] MultipleBlocks(Int3 _Coord) {
 	return Blocks;
 }
 
-SChAnchorItem[] GetStartLineItems() {
+SChItem[] GetStartLineItems() {
 	declare Response = Request("Ch_GetStartLineItems", []);
-	declare SChAnchorItem[] Items;
+	declare SChItem[] Items;
 	declare JsonSuccess = Items.fromjson(Response.Values[0]);
 	return Items;
 }
 
-SChAnchorItem[] GetCheckpointItems() {
+SChItem[] GetCheckpointItems() {
 	declare Response = Request("Ch_GetCheckpointItems", []);
-	declare SChAnchorItem[] Items;
+	declare SChItem[] Items;
 	declare JsonSuccess = Items.fromjson(Response.Values[0]);
 	return Items;
 }
 
-SChAnchorItem[] GetFinishLineItems() {
+SChItem[] GetFinishLineItems() {
 	declare Response = Request("Ch_GetFinishLineItems", []);
-	declare SChAnchorItem[] Items;
+	declare SChItem[] Items;
 	declare JsonSuccess = Items.fromjson(Response.Values[0]);
 	return Items;
 }
 
-SChAnchorItem[] GetMultilapItems() {
+SChItem[] GetMultilapItems() {
 	declare Response = Request("Ch_GetMultilapItems", []);
-	declare SChAnchorItem[] Items;
+	declare SChItem[] Items;
 	declare JsonSuccess = Items.fromjson(Response.Values[0]);
 	return Items;
 }
@@ -441,27 +410,9 @@ Boolean IsSpecialBlock(Text _BlockName) {
 	return Response.Values[0] == "True";
 }
 
-Boolean RemoveAnchorItem(SChAnchorItem _AnchorItem) {
-	declare Params = [_AnchorItem.tojson()];
-	declare Response = Request("Ch_RemoveAnchorItem", Params);
-	return Response.Values[0] == "True";
-}
-
-Boolean RemoveAnchorBlock(SChAnchorBlock _AnchorBlock) {
-	declare Params = [_AnchorBlock.tojson()];
-	declare Response = Request("Ch_RemoveAnchorBlock", Params);
-	return Response.Values[0] == "True";
-}
-
 Boolean RemoveSpecificBlock(SChBlock _Block) {
 	declare Params = [_Block.tojson()];
 	declare Response = Request("Ch_RemoveSpecificBlock", Params);
-	return Response.Values[0] == "True";
-}
-
-Boolean RemoveSpecialBlock(SChSpecialBlock _Block) {
-	declare Params = [_Block.tojson()];
-	declare Response = Request("Ch_RemoveSpecialBlock", Params);
 	return Response.Values[0] == "True";
 }
 
@@ -526,18 +477,6 @@ Void SetStatusColor(Vec3 _Color) {
 
 Void Focus(SChBlock _Block) {
 
-}
-
-Void Focus(SChAnchor _Anchor) {
-	
-}
-
-Void Focus(SChAnchorBlock _Anchor) {
-	
-}
-
-Void Focus(SChAnchorItem _Anchor) {
-	
 }
 
 Void Focus(Vec3 _Position) {
@@ -608,7 +547,7 @@ Void Chill() {
 /* Pre-made problem functions */
 //
 
-Void Problem_MultilapTrack(SChAnchor _Anchor) {
+/*Void Problem_MultilapTrack(SChAnchor _Anchor) {
 	declare SChProblem Problem;
 	Problem.Name = "MultilapTrack";
 	Problem.Anchor = _Anchor;
@@ -703,4 +642,4 @@ Void Problem_NoCheckpoint() {
 	declare SChProblem Problem;
 	Problem.Name = "NoCheckpoint";
 	Problem(Problem);
-}
+}*/

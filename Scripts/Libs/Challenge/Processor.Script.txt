@@ -7,11 +7,12 @@
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 #Include "Libs/Challenge/Conversion.Script.txt" as Conversion
 
-#Struct SPlaceBlockResult {
+#Struct SChallengeBlock {
 	Boolean Placed;
-	CMacroblockInstance Block;
-	Text Variant;
-	Ident Anchor;
+	CBlock Block;
+	CMacroblockInstance Macroblock;
+	CAnchorData[] Anchors;
+	Text Waypoint;
 }
 
 Text GetVariant(Int3 _Coord) {
@@ -24,6 +25,71 @@ Text GetVariant(Int3 _Coord) {
 		}
 	}
 	return Variant;
+}
+
+SChallengeBlock[] GetBlocks() {
+	declare SChallengeBlock[] ChallengeBlocks;
+
+	declare ModifierBase::SChWaypoints Waypoints;
+	declare JsonSuccess = Waypoints.fromjson(File::Read("Media/Waypoints.json"));
+	declare Int3[] Coords;
+
+	foreach(Instance, MacroblockInstances) {
+		declare SChallengeBlock Block;
+		Block.Placed = True;
+		Block.Macroblock = Instance;
+		Coords.add(Instance.Coord);
+		foreach(Anchor, AnchorData)
+			if(Anchor.Block != Null)
+				if(Anchor.Block.Coord == Instance.Coord)
+					Block.Anchors.add(Anchor);
+		
+		declare IsStart = Waypoints.Starts.exists(Conversion::GetBlockNameFromMacroblockName(Instance.MacroblockModel.Name));
+		declare IsCheckpoint = Waypoints.Checkpoints.exists(Conversion::GetBlockNameFromMacroblockName(Instance.MacroblockModel.Name));
+		declare IsFinish = Waypoints.Finishes.exists(Conversion::GetBlockNameFromMacroblockName(Instance.MacroblockModel.Name));
+		declare IsMultilap = Waypoints.Multilaps.exists(Conversion::GetBlockNameFromMacroblockName(Instance.MacroblockModel.Name));
+
+		if(IsStart) Block.Waypoint = "Start";
+		if(IsCheckpoint) Block.Waypoint = "Checkpoint";
+		if(IsFinish) Block.Waypoint = "Finish";
+		if(IsMultilap) Block.Waypoint = "Multilap";
+		
+		ChallengeBlocks.add(Block);
+	}
+
+	foreach(Block, Blocks) {
+		if(!Coords.exists(Block.Coord)) {
+			declare SChallengeBlock ChBlock;
+			ChBlock.Placed = True;
+			ChBlock.Block = Block;
+
+			foreach(Anchor, AnchorData)
+				if(Anchor.Block != Null)
+					if(Anchor.Block.Id == Block.Id)
+						ChBlock.Anchors.add(Anchor);
+
+			if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Start) ChBlock.Waypoint = "Start";
+			else if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Checkpoint) ChBlock.Waypoint = "Checkpoint";
+			else if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Finish) ChBlock.Waypoint = "Finish";
+			else if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::StartFinish) ChBlock.Waypoint = "Multilap";
+			
+			ChallengeBlocks.add(ChBlock);
+		}
+	}
+
+	return ChallengeBlocks;
+}
+
+Boolean IsSpecialBlock(Text _BlockName) {
+	declare IsSpecial = False;
+	foreach(MacroblockModel,MacroblockModels) {
+		if(MacroblockModel.Name == """{{{_BlockName}}}-Ground"""
+		|| MacroblockModel.Name == """{{{_BlockName}}}-Air"""
+		|| MacroblockModel.Name == """{{{_BlockName}}}-Forest"""
+		|| MacroblockModel.Name == """{{{_BlockName}}}-Field""")
+			IsSpecial = True;
+	}
+	return IsSpecial;
 }
 
 Boolean SafeRemoveBlock(CBlock _Block) {
@@ -47,26 +113,67 @@ Boolean SafeRemoveMacroblock(CMacroblockInstance _Macroblock) {
 	return False;
 }
 
-Boolean SafeRemoveSpecialBlock(ModifierBase::SChSpecialBlock _ChBlock) {
-	for(i,0,MacroblockInstances.count-1)
-		if(MacroblockInstances[i].Id^"" == _ChBlock.Id) return SafeRemoveMacroblock(MacroblockInstances[i]);
-	return False;
-}
-
 Boolean SafeRemoveBlock(ModifierBase::SChBlock _ChBlock) {
+	if(_ChBlock.IsSpecial) {
+		for(i,0,MacroblockInstances.count-1)
+			if(MacroblockInstances[i].Id^"" == _ChBlock.Id) return SafeRemoveMacroblock(MacroblockInstances[i]);
+		return False;
+	}
+	
 	for(i,0,Blocks.count-1)
 		if(Blocks[i].Id^"" == _ChBlock.Id) return SafeRemoveBlock(Blocks[i]);
 	return False;
 }
 
-SPlaceBlockResult PlaceBlockSpecial(Text _BlockName, Int3 _Coord, ::CardinalDirections _Direction) {
-	declare SPlaceBlockResult Result;
+SChallengeBlock PlaceBlockSpecial(Text _BlockName, Int3 _Coord, ::CardinalDirections _Direction) {
+	declare SChallengeBlock Result;
 	
-	declare MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\{{{_BlockName}}}-{{{GetVariant(_Coord)}}}.Macroblock.Gbx""");
-	if(MacroblockModel == Null) return Result;
-	Result.Placed = PlaceMacroblock(MacroblockModel, _Coord, _Direction);
-	Result.Block = CreateMacroblockInstance(MacroblockModel, _Coord, _Direction);
-	Result.Variant = GetVariant(_Coord);
+	if(IsSpecialBlock(_BlockName)) {
+		declare ModifierBase::SChWaypoints Waypoints;
+		declare JsonSuccess = Waypoints.fromjson(File::Read("Media/Waypoints.json"));
+
+		declare MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\{{{_BlockName}}}-{{{GetVariant(_Coord)}}}.Macroblock.Gbx""");
+		if(MacroblockModel == Null) return Result;
+		Result.Placed = PlaceMacroblock(MacroblockModel, _Coord, _Direction);
+		Result.Macroblock = CreateMacroblockInstance(MacroblockModel, _Coord, _Direction);
+
+		foreach(Anchor, AnchorData)
+			if(Anchor.Block != Null)
+				if(Anchor.Block.Coord == Result.Macroblock.Coord)
+					Result.Anchors.add(Anchor);
+
+		declare IsStart = Waypoints.Starts.exists(Conversion::GetBlockNameFromMacroblockName(MacroblockModel.Name));
+		declare IsCheckpoint = Waypoints.Checkpoints.exists(Conversion::GetBlockNameFromMacroblockName(MacroblockModel.Name));
+		declare IsFinish = Waypoints.Finishes.exists(Conversion::GetBlockNameFromMacroblockName(MacroblockModel.Name));
+		declare IsMultilap = Waypoints.Multilaps.exists(Conversion::GetBlockNameFromMacroblockName(MacroblockModel.Name));
+
+		if(IsStart) Result.Waypoint = "Start";
+		if(IsCheckpoint) Result.Waypoint = "Checkpoint";
+		if(IsFinish) Result.Waypoint = "Finish";
+		if(IsMultilap) Result.Waypoint = "Multilap";
+	}
+	else {
+		declare BlockModel = GetBlockModelFromName(_BlockName);
+		declare Response = PlaceBlock(BlockModel, _Coord, _Direction);
+
+		yield; //Required so that AnchorData actually updates, thanks Nadeo
+
+		declare Block = GetBlock(_Coord);
+		if(Block != Null) {
+			Result.Placed = True;
+			Result.Block = Block;
+		}
+
+		foreach(Anchor, AnchorData)
+			if(Anchor.Block != Null)
+				if(Anchor.Block.Id == Block.Id)
+					Result.Anchors.add(Anchor);
+
+		if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Start) Result.Waypoint = "Start";
+		else if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Checkpoint) Result.Waypoint = "Checkpoint";
+		else if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Finish) Result.Waypoint = "Finish";
+		else if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::StartFinish) Result.Waypoint = "Multilap";
+	}
 	return Result;
 }
 
@@ -153,24 +260,11 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			declare Coord = Conversion::ToInt3(_Data[1]);
 			declare Direction = Conversion::ToDirectionMap(_Data[2]);
 
-			declare BlockModel = GetBlockModelFromName(BlockName);
-			declare Response = PlaceBlock(BlockModel, Coord, Direction);
-			
-			yield; //Required so that AnchorData actually updates, thanks Nadeo
-			
-			declare Block = GetBlock(Coord);
+			declare Response = PlaceBlockSpecial(BlockName, Coord, Direction);
 			
 			declare ModifierBase::SPlaceBlockResult Result;
-			Result.Placed = Response;
-			Result.Block = Conversion::ToSChBlock(Block);
-			
-			foreach(Anchor, AnchorData) {
-				if(Anchor.Block != Null && Block != Null)
-				if(Anchor.Block.BlockScriptId == Block.BlockScriptId) {
-					Result.IsAnchor = True;
-					Result.Anchor = Conversion::ToSChAnchor(Anchor);
-				}
-			}
+			Result.Placed = Response.Placed;
+			Result.Block = Conversion::ToSChBlock(Response);
 			
 			Respond(_LayerAPI, _Type, [Result.tojson()]);
 		}
@@ -179,24 +273,11 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			declare Coord = Conversion::ToInt3(_Data[1]);
 			declare Direction = Conversion::ToDirectionMap(_Data[2]);
 
-			declare BlockModel = GetBlockModelFromName(BlockName);
-			declare Response = PlaceBlock_NoDestruction(BlockModel, Coord, Direction);
-			
-			yield; //Required so that AnchorData actually updates, thanks Nadeo
-			
-			declare Block = GetBlock(Coord);
+			declare Response = PlaceBlockSpecial(BlockName, Coord, Direction);
 			
 			declare ModifierBase::SPlaceBlockResult Result;
-			Result.Placed = Response;
-			Result.Block = Conversion::ToSChBlock(Block);
-			
-			foreach(Anchor, AnchorData) {
-				if(Anchor.Block != Null && Block != Null)
-				if(Anchor.Block.BlockScriptId == Block.BlockScriptId) {
-					Result.IsAnchor = True;
-					Result.Anchor = Conversion::ToSChAnchor(Anchor);
-				}
-			}
+			Result.Placed = Response.Placed;
+			Result.Block = Conversion::ToSChBlock(Response);
 			
 			Respond(_LayerAPI, _Type, [Result.tojson()]);
 		}
@@ -362,79 +443,19 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 		}
 		case "Ch_GetBlocks": {
 			declare ModifierBase::SChBlock[] ChBlocks;
-			foreach(Block, Blocks) ChBlocks.add(Conversion::ToSChBlock(Block));
+			foreach(Block, GetBlocks()) ChBlocks.add(Conversion::ToSChBlock(Block));
 			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
-		}
-		case "Ch_GetSpecialBlocks": {
-			declare ModifierBase::SChSpecialBlock[] ChSpecialBlocks;
-			foreach(Macroblock, MacroblockInstances) ChSpecialBlocks.add(Conversion::ToSChSpecialBlock(Macroblock));
-			Respond(_LayerAPI, _Type, [ChSpecialBlocks.tojson()]);
 		}
 		case "Ch_GetAnchorData": {
 			declare ModifierBase::SChAnchor[] Anchor;
 			foreach(Data, AnchorData) Anchor.add(Conversion::ToSChAnchor(Data));
 			Respond(_LayerAPI, _Type, [Anchor.tojson()]);
 		}
-		case "Ch_RemoveAnchor": {
-			declare ModifierBase::SChAnchor ChAnchor;
-			declare JsonSuccess = ChAnchor.fromjson(_Data[0]);
-			declare Boolean Removed;
-			for(i,0,AnchorData.count-1) {
-				if(AnchorData.existskey(i)) {
-					declare Data <=> AnchorData[i];
-					if(Conversion::SChAnchorEquals(ChAnchor, Data)) {
-						if(ChAnchor.IsItem) Removed = RemoveItem(Data);
-						if(ChAnchor.IsBlock) Removed = SafeRemoveBlock(Data.Block);
-					}
-				}
-			}
-			Respond(_LayerAPI, _Type, [Removed^""]);
-		}
-		
-		case "Ch_RemoveAnchorItem": {
-			declare ModifierBase::SChAnchorItem ChAnchor;
-			declare JsonSuccess = ChAnchor.fromjson(_Data[0]);
-			declare Boolean Removed;
-			
-			for(i,0,AnchorData.count-1) {
-				if(AnchorData.existskey(i)) {
-					declare Data <=> AnchorData[i];
-					if(Conversion::SChAnchorItemEquals(ChAnchor, Data)) {
-						Removed = RemoveItem(Data);
-					}
-				}
-			}
-			
-			Respond(_LayerAPI, _Type, [Removed^""]);
-		}
-		case "Ch_RemoveAnchorBlock": {
-			declare ModifierBase::SChAnchorBlock ChAnchor;
-			declare JsonSuccess = ChAnchor.fromjson(_Data[0]);
-			declare Boolean Removed;
-			
-			for(i,0,AnchorData.count-1) {
-				if(AnchorData.existskey(i)) {
-					declare Data <=> AnchorData[i];
-					if(Conversion::SChAnchorBlockEquals(ChAnchor, Data)) {
-						Removed = SafeRemoveBlock(Data.Block);
-					}
-				}
-			}
-			
-			Respond(_LayerAPI, _Type, [Removed^""]);
-		}
 		case "Ch_RemoveSpecificBlock": {
 			declare ModifierBase::SChBlock ChBlock;
 			declare JsonSuccess = ChBlock.fromjson(_Data[0]);
 			
 			declare Removed = SafeRemoveBlock(ChBlock);
-			Respond(_LayerAPI, _Type, [Removed^""]);
-		}
-		case "Ch_RemoveSpecialBlock": {
-			declare ModifierBase::SChSpecialBlock ChBlock;
-			declare JsonSuccess = ChBlock.fromjson(_Data[0]);
-			
-			declare Removed = SafeRemoveSpecialBlock(ChBlock);
 			Respond(_LayerAPI, _Type, [Removed^""]);
 		}
 		case "Ch_GetMapInfo": {
@@ -462,24 +483,6 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			declare MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\Ghost\{{{BlockName}}}-{{{Variant}}}-Ghost.Macroblock.Gbx""");
 			declare Response = PlaceMacroblock(MacroblockModel, Coord, Direction);
 			Respond(_LayerAPI, _Type, [""^Response]);
-		}
-		case "Ch_PlaceSpecialBlock": {
-			declare BlockName = _Data[0];
-			declare Coord = Conversion::ToInt3(_Data[1]);
-			declare Direction = Conversion::ToDirectionMap(_Data[2]);
-
-			declare Variant = GetVariant(Coord);
-			
-			declare Response = PlaceBlockSpecial(BlockName, Coord, Direction);
-			declare ModifierBase::SPlaceSpecialBlockResult Result;
-			Result.Placed = Response.Placed;
-			Result.Block = Conversion::ToSChSpecialBlock(Response.Block);
-			/*Result.IsAnchor = Response.IsAnchor;
-			foreach(Anchor, AnchorData)
-				if(Anchor.Id == Response.Anchor)
-					Result.Anchor = Conversion::ToSChAnchor(Anchor);*/
-			log(Result);
-			Respond(_LayerAPI, _Type, [Result.tojson()]);
 		}
 		case "Ch_ReplaceBlock": {
 			declare ModifierBase::SChBlock Block;
@@ -526,88 +529,139 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			Respond(_LayerAPI, _Type, [""^(RemovedBlock1 && RemovedBlock2 && PlacedBlock1.Placed && PlacedBlock2.Placed)]);
 		}
 		case "Ch_GetStartLines": {
-			declare ModifierBase::SChAnchor[] ChAnchors;
-			foreach(Anchor, AnchorData)
-				if(Anchor.DefaultTag == "Spawn")
-					ChAnchors.add(Conversion::ToSChAnchor(Anchor));
-			Respond(_LayerAPI, _Type, [ChAnchors.tojson()]);
+			declare ModifierBase::SChWaypoint[] Waypoints;
+
+			foreach(Block, GetBlocks()) {
+				if(Block.Waypoint == "Start") {
+					declare ModifierBase::SChWaypoint Waypoint;
+					Waypoint.Type = "Start";
+					Waypoint.Block = Conversion::ToSChBlock(Block);
+					Waypoint.IsBlock = True;
+					Waypoints.add(Waypoint);
+				}
+			}
+				
+			foreach(Anchor, AnchorData) {
+				if(Anchor.Item != Null) {
+					if(Anchor.DefaultTag == "Spawn") {
+						declare ModifierBase::SChWaypoint Waypoint;
+						Waypoint.Type = "Finish";
+						Waypoint.Item = Conversion::ToSChItem(Anchor);
+						Waypoint.IsItem = True;
+						Waypoints.add(Waypoint);
+					}
+				}
+			}
+			
+			Respond(_LayerAPI, _Type, [Waypoints.tojson()]);
 		}
 		case "Ch_GetFinishLines": {
-			declare ModifierBase::SChAnchor[] ChAnchors;
-			foreach(Anchor, AnchorData)
-				if(Anchor.DefaultTag == "Goal")
-					ChAnchors.add(Conversion::ToSChAnchor(Anchor));
-			Respond(_LayerAPI, _Type, [ChAnchors.tojson()]);
+			declare ModifierBase::SChWaypoint[] Waypoints;
+
+			foreach(Block, GetBlocks()) {
+				if(Block.Waypoint == "Finish") {
+					declare ModifierBase::SChWaypoint Waypoint;
+					Waypoint.Type = "Finish";
+					Waypoint.Block = Conversion::ToSChBlock(Block);
+					Waypoint.IsBlock = True;
+					Waypoints.add(Waypoint);
+				}
+			}
+				
+			foreach(Anchor, AnchorData) {
+				if(Anchor.Item != Null) {
+					if(Anchor.DefaultTag == "Goal") {
+						declare ModifierBase::SChWaypoint Waypoint;
+						Waypoint.Type = "Finish";
+						Waypoint.Item = Conversion::ToSChItem(Anchor);
+						Waypoint.IsItem = True;
+						Waypoints.add(Waypoint);
+					}
+				}
+			}
+			
+			Respond(_LayerAPI, _Type, [Waypoints.tojson()]);
 		}
 		case "Ch_GetCheckpoints": {
-			declare ModifierBase::SChAnchor[] ChAnchors;
-			foreach(Anchor, AnchorData)
-				if(Anchor.DefaultTag == "Checkpoint")
-					ChAnchors.add(Conversion::ToSChAnchor(Anchor));
-			Respond(_LayerAPI, _Type, [ChAnchors.tojson()]);
+			declare ModifierBase::SChWaypoint[] Waypoints;
+
+			foreach(Block, GetBlocks()) {
+				if(Block.Waypoint == "Checkpoint") {
+					declare ModifierBase::SChWaypoint Waypoint;
+					Waypoint.Type = "Checkpoint";
+					Waypoint.Block = Conversion::ToSChBlock(Block);
+					Waypoint.IsBlock = True;
+					Waypoints.add(Waypoint);
+				}
+			}
+				
+			foreach(Anchor, AnchorData) {
+				if(Anchor.Item != Null) {
+					if(Anchor.DefaultTag == "Checkpoint") {
+						declare ModifierBase::SChWaypoint Waypoint;
+						Waypoint.Type = "Checkpoint";
+						Waypoint.Item = Conversion::ToSChItem(Anchor);
+						Waypoint.IsItem = True;
+						Waypoints.add(Waypoint);
+					}
+				}
+			}
+			
+			Respond(_LayerAPI, _Type, [Waypoints.tojson()]);
 		}
 		case "Ch_GetMultilaps": {
-			declare ModifierBase::SChAnchor[] ChAnchors;
-			foreach(Anchor, AnchorData)
-				if(Anchor.DefaultTag == "StartFinish")
-					ChAnchors.add(Conversion::ToSChAnchor(Anchor));
-			Respond(_LayerAPI, _Type, [ChAnchors.tojson()]);
+			declare ModifierBase::SChWaypoint[] Waypoints;
+
+			foreach(Block, GetBlocks()) {
+				if(Block.Waypoint == "Multilap") {
+					declare ModifierBase::SChWaypoint Waypoint;
+					Waypoint.Type = "Multilap";
+					Waypoint.Block = Conversion::ToSChBlock(Block);
+					Waypoint.IsBlock = True;
+					Waypoints.add(Waypoint);
+				}
+			}
+				
+			foreach(Anchor, AnchorData) {
+				if(Anchor.Item != Null) {
+					if(Anchor.DefaultTag == "StartFinish") {
+						declare ModifierBase::SChWaypoint Waypoint;
+						Waypoint.Type = "Multilap";
+						Waypoint.Item = Conversion::ToSChItem(Anchor);
+						Waypoint.IsItem = True;
+						Waypoints.add(Waypoint);
+					}
+				}
+			}
+			
+			Respond(_LayerAPI, _Type, [Waypoints.tojson()]);
 		}
 		case "Ch_GetStartLineBlocks": {
-			declare ModifierBase::SChAnchorBlock[] ChBlocks;
-			foreach(Anchor, AnchorData)
-				if(Anchor.DefaultTag == "Spawn" && Anchor.Block != Null)
-					ChBlocks.add(Conversion::ToSChAnchorBlock(Anchor));
+			declare ModifierBase::SChBlock[] ChBlocks;
+			foreach(Block, GetBlocks())
+				if(Block.Waypoint == "Start")
+					ChBlocks.add(Conversion::ToSChBlock(Block));
 			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
 		}
 		case "Ch_GetFinishLineBlocks": {
-			declare ModifierBase::SChAnchorBlock[] ChBlocks;
-			foreach(Anchor, AnchorData)
-				if(Anchor.DefaultTag == "Goal" && Anchor.Block != Null)
-					ChBlocks.add(Conversion::ToSChAnchorBlock(Anchor));
+			declare ModifierBase::SChBlock[] ChBlocks;
+			foreach(Block, GetBlocks())
+				if(Block.Waypoint == "Finish")
+					ChBlocks.add(Conversion::ToSChBlock(Block));
 			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
 		}
 		case "Ch_GetCheckpointBlocks": {
-			declare ModifierBase::SChAnchorBlock[] ChBlocks;
-			foreach(Anchor, AnchorData)
-				if(Anchor.DefaultTag == "Checkpoint" && Anchor.Block != Null)
-					ChBlocks.add(Conversion::ToSChAnchorBlock(Anchor));
+			declare ModifierBase::SChBlock[] ChBlocks;
+			foreach(Block, GetBlocks())
+				if(Block.Waypoint == "Checkpoint")
+					ChBlocks.add(Conversion::ToSChBlock(Block));
 			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
 		}
 		case "Ch_GetMultilapBlocks": {
-			declare ModifierBase::SChAnchorBlock[] ChBlocks;
-			foreach(Anchor, AnchorData)
-				if(Anchor.DefaultTag == "StartFinish" && Anchor.Block != Null)
-					ChBlocks.add(Conversion::ToSChAnchorBlock(Anchor));
-			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
-		}
-		case "Ch_GetStartLineSpecialBlocks": {
-			declare ModifierBase::SChSpecialBlock[] ChBlocks;
-			declare ModifierBase::SChWaypoints Waypoints;
-			declare JsonSuccess = Waypoints.fromjson(File::Read("Media/Waypoints.json"));
-			
-			foreach(Macroblock, MacroblockInstances) {
-				declare Separation = TextLib::Split("-", Macroblock.MacroblockModel.Name);
-				declare Variant = Separation[Separation.count-1];
-				declare Removed = Separation.removekey(Separation.count-1);
-				declare Name = TextLib::Join("-", Separation);
-				
-				if(Waypoints.Starts.exists(Name))
-					ChBlocks.add(Conversion::ToSChSpecialBlock(Macroblock));
-			}
-			
-			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
-		}
-		case "Ch_GetFinishLineSpecialBlocks": {
-			declare ModifierBase::SChAnchorBlock[] ChBlocks;
-			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
-		}
-		case "Ch_GetCheckpointSpecialBlocks": {
-			declare ModifierBase::SChAnchorBlock[] ChBlocks;
-			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
-		}
-		case "Ch_GetMultilapSpecialBlocks": {
-			declare ModifierBase::SChAnchorBlock[] ChBlocks;
+			declare ModifierBase::SChBlock[] ChBlocks;
+			foreach(Block, GetBlocks())
+				if(Block.Waypoint == "Multilap")
+					ChBlocks.add(Conversion::ToSChBlock(Block));
 			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
 		}
 		case "Ch_GetBlocksByBlockName": {
@@ -627,31 +681,31 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
 		}
 		case "Ch_GetStartLineItems": {
-			declare ModifierBase::SChAnchorItem[] ChItems;
+			declare ModifierBase::SChAnchor[] ChItems;
 			foreach(Anchor, AnchorData)
 				if(Anchor.DefaultTag == "Spawn" && Anchor.Item != Null)
-					ChItems.add(Conversion::ToSChAnchorItem(Anchor));
+					ChItems.add(Conversion::ToSChAnchor(Anchor));
 			Respond(_LayerAPI, _Type, [ChItems.tojson()]);
 		}
 		case "Ch_GetCheckpointItems": {
-			declare ModifierBase::SChAnchorItem[] ChItems;
+			declare ModifierBase::SChAnchor[] ChItems;
 			foreach(Anchor, AnchorData)
 				if(Anchor.DefaultTag == "Checkpoint" && Anchor.Item != Null)
-					ChItems.add(Conversion::ToSChAnchorItem(Anchor));
+					ChItems.add(Conversion::ToSChAnchor(Anchor));
 			Respond(_LayerAPI, _Type, [ChItems.tojson()]);
 		}
 		case "Ch_GetFinishLineItems": {
-			declare ModifierBase::SChAnchorItem[] ChItems;
+			declare ModifierBase::SChAnchor[] ChItems;
 			foreach(Anchor, AnchorData)
 				if(Anchor.DefaultTag == "Goal" && Anchor.Item != Null)
-					ChItems.add(Conversion::ToSChAnchorItem(Anchor));
+					ChItems.add(Conversion::ToSChAnchor(Anchor));
 			Respond(_LayerAPI, _Type, [ChItems.tojson()]);
 		}
 		case "Ch_GetMultilapItems": {
-			declare ModifierBase::SChAnchorItem[] ChItems;
+			declare ModifierBase::SChAnchor[] ChItems;
 			foreach(Anchor, AnchorData)
 				if(Anchor.DefaultTag == "StartFinish" && Anchor.Item != Null)
-					ChItems.add(Conversion::ToSChAnchorItem(Anchor));
+					ChItems.add(Conversion::ToSChAnchor(Anchor));
 			Respond(_LayerAPI, _Type, [ChItems.tojson()]);
 		}
 		case "Ch_UpdateAnchor": {
@@ -682,14 +736,7 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 		case "Ch_IsSpecialBlock": {
 			declare BlockName = _Data[0];
 			
-			declare IsSpecial = False;
-			foreach(MacroblockModel,MacroblockModels) {
-				if(MacroblockModel.Name == """{{{BlockName}}}-Ground"""
-				|| MacroblockModel.Name == """{{{BlockName}}}-Air"""
-				|| MacroblockModel.Name == """{{{BlockName}}}-Forest"""
-				|| MacroblockModel.Name == """{{{BlockName}}}-Field""")
-					IsSpecial = True;
-			}
+			declare IsSpecial = IsSpecialBlock(BlockName);
 			Respond(_LayerAPI, _Type, [IsSpecial^""]);
 		}
 		case "Ch_Problem": {

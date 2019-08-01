@@ -4,6 +4,14 @@
 
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 
+#Struct SChallengeBlock {
+	Boolean Placed;
+	CBlock Block;
+	CMacroblockInstance Macroblock;
+	CAnchorData[] Anchors;
+	Text Waypoint;
+}
+
 Int3 ToInt3(Text _Text) {
 	declare Txt = TextLib::Replace(_Text,",","");
 	Txt = TextLib::Replace(Txt,"<","");
@@ -11,6 +19,12 @@ Int3 ToInt3(Text _Text) {
 	declare Txts = TextLib::Split(" ",Txt);
 	
 	return <TextLib::ToInteger(Txts[0]),TextLib::ToInteger(Txts[1]),TextLib::ToInteger(Txts[2])>;
+}
+
+Text GetBlockNameFromMacroblockName(Text _Name) {
+	declare Separate = TextLib::Split("-",_Name);
+	declare Removed = Separate.removekey(Separate.count-1);
+	return TextLib::Join("-",Separate);
 }
 
 CMapEditorPlugin::CardinalDirections ToDirectionMap(Text _Direction) {
@@ -98,21 +112,57 @@ ModifierBase::SChBlock ToSChBlock(CBlock _Block) {
 	return ChBlock;
 }
 
-ModifierBase::SChSpecialBlock ToSChSpecialBlock(CMacroblockInstance _Macroblock) {
-	declare ModifierBase::SChSpecialBlock ChBlock;
-	if(_Macroblock == Null) return ChBlock;
+ModifierBase::SChAnchor ToSChAnchor(CAnchorData _Anchor) {
+	declare ModifierBase::SChAnchor ChAnchor;
+	if(_Anchor == Null) return ChAnchor;
 	
-	ChBlock.Id = _Macroblock.Id^"";
+	ChAnchor.DefaultTag = _Anchor.DefaultTag;
+	ChAnchor.DefaultOrder = _Anchor.DefaultOrder;
+	ChAnchor.Tag = _Anchor.Tag;
+	ChAnchor.Order = _Anchor.Order;
 	
-	declare Separation = TextLib::Split("-",_Macroblock.MacroblockModel.Name);
-	ChBlock.Variant = Separation[Separation.count-1];
-	declare Removed = Separation.removekey(Separation.count-1);
-	ChBlock.Name = TextLib::Join("-",Separation);
-	
-	ChBlock.Coord = _Macroblock.Coord;
-	ChBlock.Direction = ToText(_Macroblock.Dir);
+	return ChAnchor;
+}
+
+ModifierBase::SChBlock ToSChBlock(SChallengeBlock _Block) {
+	declare ModifierBase::SChBlock ChBlock;
+
+	if(_Block.Block != Null) {
+		ChBlock.Id = _Block.Block.Id^"";
+		ChBlock.Name = _Block.Block.BlockModel.Name;
+		ChBlock.Coord = _Block.Block.Coord;
+		ChBlock.Direction = ToText(_Block.Block.Direction);
+		ChBlock.Waypoint = _Block.Waypoint;
+		
+		ChBlock.IsRoad = _Block.Block.BlockModel.IsRoad;
+		ChBlock.IsTerrain = _Block.Block.BlockModel.IsTerrain;
+		ChBlock.IsPodium = _Block.Block.BlockModel.IsPodium;
+
+		foreach(Anchor,_Block.Anchors)
+			ChBlock.Anchors.add(ToSChAnchor(Anchor));
+	}
+	else {
+		ChBlock.Id = _Block.Macroblock.Id^"";
+		ChBlock.Name = GetBlockNameFromMacroblockName(_Block.Macroblock.MacroblockModel.Name);
+		ChBlock.Coord = _Block.Macroblock.Coord;
+		ChBlock.Direction = ToText(_Block.Macroblock.Dir);
+		ChBlock.Waypoint = _Block.Waypoint;
+		ChBlock.IsSpecial = True;
+
+		foreach(Anchor,_Block.Anchors)
+			ChBlock.Anchors.add(ToSChAnchor(Anchor));
+	}
 	
 	return ChBlock;
+}
+
+ModifierBase::SChItem ToSChItem(CAnchorData _Anchor) {
+	declare ModifierBase::SChItem ChItem;
+	if(_Anchor == Null || _Anchor.Item == Null) return ChItem;
+
+	ChItem.Position = _Anchor.Item.Position;
+	ChItem.Anchor = ToSChAnchor(_Anchor);
+	return ChItem;
 }
 
 ModifierBase::SChItem ToSChItem(CItemAnchor _Item) {
@@ -121,88 +171,6 @@ ModifierBase::SChItem ToSChItem(CItemAnchor _Item) {
 
 	ChItem.Position = _Item.Position;
 	return ChItem;
-}
-
-ModifierBase::SChAnchor ToSChAnchor(CAnchorData _Anchor) {
-	declare ModifierBase::SChAnchor ChAnchor;
-	if(_Anchor == Null) return ChAnchor;
-	
-	ChAnchor.Id = _Anchor.Id^"";
-	ChAnchor.DefaultTag = _Anchor.DefaultTag;
-	ChAnchor.DefaultOrder = _Anchor.DefaultOrder;
-	ChAnchor.Tag = _Anchor.Tag;
-	ChAnchor.Order = _Anchor.Order;
-	
-	if(_Anchor.Block != Null) {
-		ChAnchor.IsBlock = True;
-		ChAnchor.Block = ToSChBlock(_Anchor.Block);
-	}
-	if(_Anchor.Item != Null) {
-		ChAnchor.IsItem = True;
-		ChAnchor.Item = ToSChItem(_Anchor.Item);
-	}
-	
-	return ChAnchor;
-}
-
-ModifierBase::SChAnchorBlock ToSChAnchorBlock(CAnchorData _Anchor) {
-	declare ModifierBase::SChAnchorBlock ChAnchor;
-	if(_Anchor == Null) return ChAnchor;
-	
-	ChAnchor.Id = _Anchor.Id^"";
-	ChAnchor.DefaultTag = _Anchor.DefaultTag;
-	ChAnchor.DefaultOrder = _Anchor.DefaultOrder;
-	ChAnchor.Tag = _Anchor.Tag;
-	ChAnchor.Order = _Anchor.Order;
-	
-	if(_Anchor.Block != Null && _Anchor.Item == Null) {
-		ChAnchor.Block = ToSChBlock(_Anchor.Block);
-	}
-	
-	return ChAnchor;
-}
-
-ModifierBase::SChAnchorBlock ToSChAnchorBlock(ModifierBase::SChAnchor _Anchor) {
-	declare ModifierBase::SChAnchorBlock ChAnchor;
-	
-	ChAnchor.Id = _Anchor.Id^"";
-	ChAnchor.DefaultTag = _Anchor.DefaultTag;
-	ChAnchor.DefaultOrder = _Anchor.DefaultOrder;
-	ChAnchor.Tag = _Anchor.Tag;
-	ChAnchor.Order = _Anchor.Order;
-	ChAnchor.Block = _Anchor.Block;
-	
-	return ChAnchor;
-}
-
-ModifierBase::SChAnchorItem ToSChAnchorItem(CAnchorData _Anchor) {
-	declare ModifierBase::SChAnchorItem ChAnchor;
-	if(_Anchor == Null) return ChAnchor;
-	
-	ChAnchor.Id = _Anchor.Id^"";
-	ChAnchor.DefaultTag = _Anchor.DefaultTag;
-	ChAnchor.DefaultOrder = _Anchor.DefaultOrder;
-	ChAnchor.Tag = _Anchor.Tag;
-	ChAnchor.Order = _Anchor.Order;
-	
-	if(_Anchor.Item != Null && _Anchor.Block == Null) {
-		ChAnchor.Item = ToSChItem(_Anchor.Item);
-	}
-	
-	return ChAnchor;
-}
-
-ModifierBase::SChAnchorItem ToSChAnchorItem(ModifierBase::SChAnchor _Anchor) {
-	declare ModifierBase::SChAnchorItem ChAnchor;
-	
-	ChAnchor.Id = _Anchor.Id^"";
-	ChAnchor.DefaultTag = _Anchor.DefaultTag;
-	ChAnchor.DefaultOrder = _Anchor.DefaultOrder;
-	ChAnchor.Tag = _Anchor.Tag;
-	ChAnchor.Order = _Anchor.Order;
-	ChAnchor.Item = _Anchor.Item;
-	
-	return ChAnchor;
 }
 
 ModifierBase::SChMap ToSChMap(CMapInfo _MapInfo) {
@@ -252,35 +220,7 @@ Boolean SChAnchorEquals(ModifierBase::SChAnchor _ChAnchor, CAnchorData _Anchor) 
 	return _Anchor.Id^"" == _ChAnchor.Id;
 }
 
-Boolean SChAnchorItemEquals(ModifierBase::SChAnchorItem _ChAnchor, CAnchorData _Anchor) {
-	if(_Anchor == Null) return False;
-	return _Anchor.Id^"" == _ChAnchor.Id;
-}
-
-Boolean SChAnchorBlockEquals(ModifierBase::SChAnchorBlock _ChAnchor, CAnchorData _Anchor) {
-	if(_Anchor == Null) return False;
-	return _Anchor.Id^"" == _ChAnchor.Id;
-}
-
 Boolean SetCAnchorData(CAnchorData _Anchor, ModifierBase::SChAnchor _ChAnchor) {
-	if(_Anchor == Null) return False;
-	if(_Anchor.Id^"" != _ChAnchor.Id) return False;
-	
-	_Anchor.Tag = _ChAnchor.Tag;
-	_Anchor.Order = _ChAnchor.Order;
-	return True;
-}
-
-Boolean SetCAnchorData(CAnchorData _Anchor, ModifierBase::SChAnchorBlock _ChAnchor) {
-	if(_Anchor == Null) return False;
-	if(_Anchor.Id^"" != _ChAnchor.Id) return False;
-	
-	_Anchor.Tag = _ChAnchor.Tag;
-	_Anchor.Order = _ChAnchor.Order;
-	return True;
-}
-
-Boolean SetCAnchorData(CAnchorData _Anchor, ModifierBase::SChAnchorItem _ChAnchor) {
 	if(_Anchor == Null) return False;
 	if(_Anchor.Id^"" != _ChAnchor.Id) return False;
 	
