@@ -98,12 +98,17 @@ ModifierBase::SChBlock ToSChBlock(CBlock _Block) {
 	return ChBlock;
 }
 
-ModifierBase::SChBlock ToSChBlock(CMacroblockInstance _Macroblock) {
-	declare ModifierBase::SChBlock ChBlock;
+ModifierBase::SChSpecialBlock ToSChSpecialBlock(CMacroblockInstance _Macroblock) {
+	declare ModifierBase::SChSpecialBlock ChBlock;
 	if(_Macroblock == Null) return ChBlock;
 	
 	ChBlock.Id = _Macroblock.Id^"";
-	ChBlock.Name = _Macroblock.MacroblockModel.Name;
+	
+	declare Separation = TextLib::Split("-",_Macroblock.MacroblockModel.Name);
+	ChBlock.Variant = Separation[Separation.count-1];
+	declare Removed = Separation.removekey(Separation.count-1);
+	ChBlock.Name = TextLib::Join("-",Separation);
+	
 	ChBlock.Coord = _Macroblock.Coord;
 	ChBlock.Direction = ToText(_Macroblock.Dir);
 	

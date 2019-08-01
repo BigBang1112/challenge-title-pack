@@ -6,6 +6,7 @@ declare Text[][][Text] Relation_FinishCheckpoint;
 declare Text[][][Text] Relation_CheckpointRoad;
 declare Text[][][Text] Relation_MultilapStartTwoway;
 declare Text[][][Text] Relation_MultilapFinishTwoway;
+declare Text[][][Text] Relation_StartTwowayFinishTwoway;
 
 SResponse Request(Text _Command, Text[] _Arguments) {
 	declare SResponse Response;
@@ -230,6 +231,13 @@ SChBlock[] GetBlocks() {
 	return Blocks;
 }
 
+SChSpecialBlock[] GetSpecialBlocks() {
+	declare Response = Request("Ch_GetSpecialBlocks", []);
+	declare SChSpecialBlock[] Blocks;
+	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
+	return Blocks;
+}
+
 SChAnchor[] GetAnchorData() {
 	declare Response = Request("Ch_GetAnchorData", []);
 	declare SChAnchor[] Anchor;
@@ -274,6 +282,15 @@ Boolean PlaceGhostBlock(Text _BlockName, Int3 _Coord, Text _Direction) {
 	declare Params = [_BlockName, _Coord^"", _Direction];
 	declare Response = Request("Ch_PlaceGhostBlock", Params);
 	return Response.Values[0] == "True";
+}
+
+SPlaceSpecialBlockResult PlaceSpecialBlock(Text _BlockName, Int3 _Coord, Text _Direction) {
+	declare Params = [_BlockName, _Coord^"", _Direction];
+	declare Response = Request("Ch_PlaceSpecialBlock", Params);
+
+	declare SPlaceSpecialBlockResult Result;
+	declare Success = Result.fromjson(Response.Values[0]);
+	return Result;
 }
 
 SReplacementResult ReplaceBlock(SChBlock _Block, Text _ReplacementBlockName, Boolean _OppositeDirection) {
@@ -357,6 +374,13 @@ SChAnchorBlock[] GetMultilapBlocks() {
 	return Blocks;   
 }
 
+SChSpecialBlock[] GetStartLineSpecialBlocks() {
+	declare Response = Request("Ch_GetStartLineSpecialBlocks", []);
+	declare SChSpecialBlock[] Blocks;
+	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
+	return Blocks;
+}
+
 SChBlock[] GetBlocksByBlockName(Text _BlockName) {
 	declare Params = [_BlockName];
 	declare Response = Request("Ch_GetBlocksByBlockName", Params);
@@ -411,6 +435,12 @@ Void LinkCheckpoints(SChAnchor[] _Checkpoints) {
 	declare Response = Request("Ch_LinkCheckpoints", Params);
 }
 
+Boolean IsSpecialBlock(Text _BlockName) {
+	declare Params = [_BlockName];
+	declare Response = Request("Ch_IsSpecialBlock", Params);
+	return Response.Values[0] == "True";
+}
+
 Boolean RemoveAnchorItem(SChAnchorItem _AnchorItem) {
 	declare Params = [_AnchorItem.tojson()];
 	declare Response = Request("Ch_RemoveAnchorItem", Params);
@@ -426,6 +456,12 @@ Boolean RemoveAnchorBlock(SChAnchorBlock _AnchorBlock) {
 Boolean RemoveSpecificBlock(SChBlock _Block) {
 	declare Params = [_Block.tojson()];
 	declare Response = Request("Ch_RemoveSpecificBlock", Params);
+	return Response.Values[0] == "True";
+}
+
+Boolean RemoveSpecialBlock(SChSpecialBlock _Block) {
+	declare Params = [_Block.tojson()];
+	declare Response = Request("Ch_RemoveSpecialBlock", Params);
 	return Response.Values[0] == "True";
 }
 
@@ -459,6 +495,14 @@ Boolean Chance(Real _Percentage) {
 
 Void Message(Text _Message) {
 	declare Response = Request("Ch_Message",[_Message]);
+}
+
+Text OppositeDirection(Text _Direction) {
+	if(_Direction == "North") return "South";
+	if(_Direction == "South") return "North";
+	if(_Direction == "West") return "East";
+	if(_Direction == "East") return "West";
+	return "";
 }
 
 //

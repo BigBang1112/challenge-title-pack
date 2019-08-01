@@ -10,6 +10,20 @@
 	Boolean NoRespawn;
 }
 
+#Struct SChSpecialBlock {
+	Text Id;
+	Text Name;
+	Int3 Coord;
+	Text Direction;
+	Text Variant;
+	Text Waypoint;
+}
+
+#Struct SChVariousBlocks {
+	SChBlock[] Blocks;
+	SChSpecialBlock[] SpecialBlocks;
+}
+
 #Struct SChMacroblock {
 	Boolean IsGround;
 	Boolean HasStart;
@@ -59,6 +73,11 @@
 	SChBlock Block;
 	Boolean IsAnchor;
 	SChAnchor Anchor;
+}
+
+#Struct SPlaceSpecialBlockResult {
+	Boolean Placed;
+	SChSpecialBlock Block;
 }
 
 #Struct SChProblem {
@@ -112,4 +131,11 @@
 	Text Name;
 	Text Path;
 	Text FileName;
+}
+
+#Struct SChWaypoints {
+	Text[] Starts;
+	Text[] Finishes;
+	Text[] Checkpoints;
+	Text[] Multilaps;
 }

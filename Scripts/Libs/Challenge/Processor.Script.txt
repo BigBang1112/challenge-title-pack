@@ -2,15 +2,15 @@
 #Include "MapUnits" as MapUnits
 
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+#Include "Libs/BigBang1112/File.Script.txt" as File
 
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 #Include "Libs/Challenge/Conversion.Script.txt" as Conversion
 
 #Struct SPlaceBlockResult {
 	Boolean Placed;
-	CBlock Block;
-	CMacroblockInstance SpecialBlock;
-	Boolean IsAnchor;
+	CMacroblockInstance Block;
+	Text Variant;
 	Ident Anchor;
 }
 
@@ -41,8 +41,15 @@ Boolean SafeRemoveMacroblock(CMacroblockInstance _Macroblock) {
 	declare Macroblock = GetMacroblockInstanceFromUnitCoord(_Macroblock.Coord);
 	if(Macroblock == Null) return False;
 	
-	if(Macroblock.Id == _Macroblock.Id)
-		return RemoveMacroblock(_Macroblock.MacroblockModel, _Macroblock.Coord, _Macroblock.Dir);
+	if(Macroblock.Id == _Macroblock.Id) {
+		return RemoveMacroblock(_Macroblock.MacroblockModel, _Macroblock.Coord, _Macroblock.Dir) && RemoveMacroblockInstance(_Macroblock);
+	}
+	return False;
+}
+
+Boolean SafeRemoveSpecialBlock(ModifierBase::SChSpecialBlock _ChBlock) {
+	for(i,0,MacroblockInstances.count-1)
+		if(MacroblockInstances[i].Id^"" == _ChBlock.Id) return SafeRemoveMacroblock(MacroblockInstances[i]);
 	return False;
 }
 
@@ -52,29 +59,14 @@ Boolean SafeRemoveBlock(ModifierBase::SChBlock _ChBlock) {
 	return False;
 }
 
-SPlaceBlockResult PlaceBlockSpecial(Text _BlockModelName, Int3 _Coord, ::CardinalDirections _Direction) {
+SPlaceBlockResult PlaceBlockSpecial(Text _BlockName, Int3 _Coord, ::CardinalDirections _Direction) {
 	declare SPlaceBlockResult Result;
-
-	declare BlockModel = GetBlockModelFromName(_BlockModelName);
-	if(BlockModel == Null) {
-		declare MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\{{{_BlockModelName}}}-{{{GetVariant(_Coord)}}}.Macroblock.Gbx""");
-		if(MacroblockModel == Null) return Result;
-		Result.Placed = PlaceMacroblock(MacroblockModel, _Coord, _Direction);
-		Result.SpecialBlock = CreateMacroblockInstance(MacroblockModel, _Coord, _Direction);
-		return Result;
-	}
-	Result.Placed = PlaceBlock(BlockModel, _Coord, _Direction);
-	if(Result.Placed) {
-		yield; //Required so that AnchorData actually updates, thanks Nadeo
-		Result.Block = GetBlock(_Coord);
-		foreach(Anchor, AnchorData) {
-			if(Anchor.Block != Null && Result.Block != Null)
-			if(Anchor.Block.BlockScriptId == Result.Block.BlockScriptId) {
-				Result.IsAnchor = True;
-				Result.Anchor = Anchor.Id;
-			}
-		}
-	}
+	
+	declare MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\{{{_BlockName}}}-{{{GetVariant(_Coord)}}}.Macroblock.Gbx""");
+	if(MacroblockModel == Null) return Result;
+	Result.Placed = PlaceMacroblock(MacroblockModel, _Coord, _Direction);
+	Result.Block = CreateMacroblockInstance(MacroblockModel, _Coord, _Direction);
+	Result.Variant = GetVariant(_Coord);
 	return Result;
 }
 
@@ -161,15 +153,25 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			declare Coord = Conversion::ToInt3(_Data[1]);
 			declare Direction = Conversion::ToDirectionMap(_Data[2]);
 
-			declare Response = PlaceBlockSpecial(BlockName, Coord, Direction);
-			declare IsSpecial = Response.SpecialBlock != Null;
+			declare BlockModel = GetBlockModelFromName(BlockName);
+			declare Response = PlaceBlock(BlockModel, Coord, Direction);
+			
+			yield; //Required so that AnchorData actually updates, thanks Nadeo
+			
+			declare Block = GetBlock(Coord);
+			
 			declare ModifierBase::SPlaceBlockResult Result;
-			Result.Placed = Response.Placed;
-			Result.Block = Conversion::ToSChBlock(Response.Block);
-			Result.IsAnchor = Response.IsAnchor;
-			foreach(Anchor, AnchorData)
-				if(Anchor.Id == Response.Anchor)
+			Result.Placed = Response;
+			Result.Block = Conversion::ToSChBlock(Block);
+			
+			foreach(Anchor, AnchorData) {
+				if(Anchor.Block != Null && Block != Null)
+				if(Anchor.Block.BlockScriptId == Block.BlockScriptId) {
+					Result.IsAnchor = True;
 					Result.Anchor = Conversion::ToSChAnchor(Anchor);
+				}
+			}
+			
 			Respond(_LayerAPI, _Type, [Result.tojson()]);
 		}
 		case "Ch_PlaceBlock_NoDestruction": {
@@ -177,15 +179,25 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			declare Coord = Conversion::ToInt3(_Data[1]);
 			declare Direction = Conversion::ToDirectionMap(_Data[2]);
 
-			declare Response = PlaceBlockSpecial(BlockName, Coord, Direction);
-			declare IsSpecial = Response.SpecialBlock != Null;
+			declare BlockModel = GetBlockModelFromName(BlockName);
+			declare Response = PlaceBlock_NoDestruction(BlockModel, Coord, Direction);
+			
+			yield; //Required so that AnchorData actually updates, thanks Nadeo
+			
+			declare Block = GetBlock(Coord);
+			
 			declare ModifierBase::SPlaceBlockResult Result;
-			Result.Placed = Response.Placed;
-			Result.Block = Conversion::ToSChBlock(Response.Block);
-			Result.IsAnchor = Response.IsAnchor;
-			foreach(Anchor, AnchorData)
-				if(Anchor.Id == Response.Anchor)
+			Result.Placed = Response;
+			Result.Block = Conversion::ToSChBlock(Block);
+			
+			foreach(Anchor, AnchorData) {
+				if(Anchor.Block != Null && Block != Null)
+				if(Anchor.Block.BlockScriptId == Block.BlockScriptId) {
+					Result.IsAnchor = True;
 					Result.Anchor = Conversion::ToSChAnchor(Anchor);
+				}
+			}
+			
 			Respond(_LayerAPI, _Type, [Result.tojson()]);
 		}
 		case "Ch_CanPlaceRoadBlocks": {
@@ -353,6 +365,11 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			foreach(Block, Blocks) ChBlocks.add(Conversion::ToSChBlock(Block));
 			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
 		}
+		case "Ch_GetSpecialBlocks": {
+			declare ModifierBase::SChSpecialBlock[] ChSpecialBlocks;
+			foreach(Macroblock, MacroblockInstances) ChSpecialBlocks.add(Conversion::ToSChSpecialBlock(Macroblock));
+			Respond(_LayerAPI, _Type, [ChSpecialBlocks.tojson()]);
+		}
 		case "Ch_GetAnchorData": {
 			declare ModifierBase::SChAnchor[] Anchor;
 			foreach(Data, AnchorData) Anchor.add(Conversion::ToSChAnchor(Data));
@@ -413,6 +430,13 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			declare Removed = SafeRemoveBlock(ChBlock);
 			Respond(_LayerAPI, _Type, [Removed^""]);
 		}
+		case "Ch_RemoveSpecialBlock": {
+			declare ModifierBase::SChSpecialBlock ChBlock;
+			declare JsonSuccess = ChBlock.fromjson(_Data[0]);
+			
+			declare Removed = SafeRemoveSpecialBlock(ChBlock);
+			Respond(_LayerAPI, _Type, [Removed^""]);
+		}
 		case "Ch_GetMapInfo": {
 			Respond(_LayerAPI, _Type, [Conversion::ToSChMap(Map.MapInfo).tojson()]);
 		}
@@ -438,6 +462,24 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			declare MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\Ghost\{{{BlockName}}}-{{{Variant}}}-Ghost.Macroblock.Gbx""");
 			declare Response = PlaceMacroblock(MacroblockModel, Coord, Direction);
 			Respond(_LayerAPI, _Type, [""^Response]);
+		}
+		case "Ch_PlaceSpecialBlock": {
+			declare BlockName = _Data[0];
+			declare Coord = Conversion::ToInt3(_Data[1]);
+			declare Direction = Conversion::ToDirectionMap(_Data[2]);
+
+			declare Variant = GetVariant(Coord);
+			
+			declare Response = PlaceBlockSpecial(BlockName, Coord, Direction);
+			declare ModifierBase::SPlaceSpecialBlockResult Result;
+			Result.Placed = Response.Placed;
+			Result.Block = Conversion::ToSChSpecialBlock(Response.Block);
+			/*Result.IsAnchor = Response.IsAnchor;
+			foreach(Anchor, AnchorData)
+				if(Anchor.Id == Response.Anchor)
+					Result.Anchor = Conversion::ToSChAnchor(Anchor);*/
+			log(Result);
+			Respond(_LayerAPI, _Type, [Result.tojson()]);
 		}
 		case "Ch_ReplaceBlock": {
 			declare ModifierBase::SChBlock Block;
@@ -539,6 +581,35 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 					ChBlocks.add(Conversion::ToSChAnchorBlock(Anchor));
 			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
 		}
+		case "Ch_GetStartLineSpecialBlocks": {
+			declare ModifierBase::SChSpecialBlock[] ChBlocks;
+			declare ModifierBase::SChWaypoints Waypoints;
+			declare JsonSuccess = Waypoints.fromjson(File::Read("Media/Waypoints.json"));
+			
+			foreach(Macroblock, MacroblockInstances) {
+				declare Separation = TextLib::Split("-", Macroblock.MacroblockModel.Name);
+				declare Variant = Separation[Separation.count-1];
+				declare Removed = Separation.removekey(Separation.count-1);
+				declare Name = TextLib::Join("-", Separation);
+				
+				if(Waypoints.Starts.exists(Name))
+					ChBlocks.add(Conversion::ToSChSpecialBlock(Macroblock));
+			}
+			
+			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
+		}
+		case "Ch_GetFinishLineSpecialBlocks": {
+			declare ModifierBase::SChAnchorBlock[] ChBlocks;
+			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
+		}
+		case "Ch_GetCheckpointSpecialBlocks": {
+			declare ModifierBase::SChAnchorBlock[] ChBlocks;
+			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
+		}
+		case "Ch_GetMultilapSpecialBlocks": {
+			declare ModifierBase::SChAnchorBlock[] ChBlocks;
+			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
+		}
 		case "Ch_GetBlocksByBlockName": {
 			declare BlockName = _Data[0];
 			declare ModifierBase::SChBlock[] ChBlocks;
@@ -607,6 +678,19 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			}
 			
 			Respond(_LayerAPI, _Type, []);
+		}
+		case "Ch_IsSpecialBlock": {
+			declare BlockName = _Data[0];
+			
+			declare IsSpecial = False;
+			foreach(MacroblockModel,MacroblockModels) {
+				if(MacroblockModel.Name == """{{{BlockName}}}-Ground"""
+				|| MacroblockModel.Name == """{{{BlockName}}}-Air"""
+				|| MacroblockModel.Name == """{{{BlockName}}}-Forest"""
+				|| MacroblockModel.Name == """{{{BlockName}}}-Field""")
+					IsSpecial = True;
+			}
+			Respond(_LayerAPI, _Type, [IsSpecial^""]);
 		}
 		case "Ch_Problem": {
 			declare ModifierBase::SChProblem Problem;

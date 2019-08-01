@@ -9,17 +9,30 @@ Relation_StartFinish = [
 		["TubeStart","TubeFinish"],
 		["TubeStartUnderground","TubeFinishUnderground"],
 		["RoadCaveStart","RoadCaveFinish"],
-		["RoadCaveDoubleStart","RoadCaveDoubleFinish"]
+		["RoadCaveDoubleStart","RoadCaveDoubleFinish"],
+		["RoadRaceStartTwoway", "RoadRaceFinishTwoway"],
+		["RoadRaceStartMirrorTwoway", "RoadRaceFinishMirrorTwoway"],
+		["ArenaStartTwoway", "ArenaFinishTwoway"],
+		["RoadMainStartTwoway", "RoadMainFinishTwoway"]
 	],
 	"Stadium" => [
-		["StadiumRoadMainStartLine","StadiumRoadMainFinishLine"]
+		["StadiumRoadMainStartLine","StadiumRoadMainFinishLine"],
+		["StadiumRoadMainStartLineTwoway", "StadiumRoadMainFinishLineTwoway"],
+		["StadiumPlatformStartTwoway", "StadiumPlatformFinishTwoway"],
+		["StadiumRoadDirtStartTwoway", "StadiumRoadDirtFinishTwoway"],
+		["StadiumTrenchStartTwoway", "StadiumTrenchFinishTwoway"]
 	],
 	"Valley" => [
 		["Road2WayStart","Road2WayFinish"],
 		["Road2WayForestStart","Road2WayForestFinish"],
 		["Road4WayStart","Road4WayFinish"],
 		["TunnelRoad4wayStart","TunnelRoad4wayFinish"],
-		["RoadForestLargeStart","RoadForestLargeFinish"]
+		["RoadForestLargeStart","RoadForestLargeFinish"],
+		["Road2WayStartTwoway", "Road2WayFinishTwoway"],
+		["Road2WayForestStartTwoway", "Road2WayForestFinishTwoway"],
+		["Road4WayStartTwoway", "Road4WayFinishTwoway"],
+		["TunnelRoad4wayStartTwoway", "TunnelRoad4wayFinishTwoway"],
+		["RoadForestLargeStartTwoway", "RoadForestLargeFinishTwoway"]
 	],
 	"Lagoon" => [
 		["RoadMainStart","RoadMainFinish"],
@@ -28,7 +41,14 @@ Relation_StartFinish = [
 		["RoadThemeParkFlipStart","RoadThemeParkFlipFinish"],
 		["ArenaStart","ArenaFinish"],
 		["ArenaStartX2","ArenaFinishX2"], // or ArenaStartX2, Tom?
-		["RoadTunnelStart","RoadTunnelFinish"]
+		["RoadTunnelStart","RoadTunnelFinish"],
+		["RoadMainStartTwoway", "RoadMainFinishTwoway"],
+		["FreeWayStartTwoway", "FreeWayFinishTwoway"],
+		["RoadThemeParkStartTwoway", "RoadThemeParkFinishTwoway"],
+		["RoadThemeParkFlipStartTwoway", "RoadThemeParkFlipFinishTwoway"],
+		["ArenaStartTwoway", "ArenaFinishTwoway"],
+		["ArenaStartX2Twoway", "ArenaFinishX2Twoway"],
+		["RoadTunnelStartTwoway", "RoadTunnelFinishTwoway"]
 	]
 ];
 

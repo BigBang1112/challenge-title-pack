@@ -22,6 +22,15 @@
 	Boolean NoRespawn;
 }
 
+#Struct SChSpecialBlock {
+	Text Id;
+	Text Name;
+	Int3 Coord;
+	Text Direction;
+	Text Variant;
+	Text Waypoint;
+}
+
 #Struct SChMacroblock {
 	Boolean IsGround;
 	Boolean HasStart;
@@ -76,6 +85,11 @@
 	SChBlock Block;
 	Boolean IsAnchor;
 	SChAnchor Anchor;
+}
+
+#Struct SPlaceSpecialBlockResult {
+	Boolean Placed;
+	SChSpecialBlock Block;
 }
 
 #Struct SChProblem {
