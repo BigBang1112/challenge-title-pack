@@ -170,6 +170,11 @@ main() {
 	declare metadata ModifierBase::SChMap OriginalMap for Map;
 	declare JsonSuccess = OriginalMap.fromjson(OriginalMapInfo.tojson());
 	
+	Map.MapName = OriginalMap.Name;
+	Map.Comments = OriginalMap.Comments;
+	Map.TMObjective_NbLaps = OriginalMap.TMObjective_NbLaps;
+	Map.TMObjective_IsLapRace = OriginalMap.TMObjective_IsLapRace;
+	
 	declare metadata ModifierBase::SChProblem[] Problems for Map;
 	
 	declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;

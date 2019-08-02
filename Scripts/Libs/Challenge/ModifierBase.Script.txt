@@ -26,6 +26,7 @@
 }
 
 #Struct SChWaypoint {
+	Text Type;
 	Boolean IsBlock;
 	SChBlock Block;
 	Boolean IsItem;
@@ -50,6 +51,8 @@
 	Text Name;
 	Int3 Coord;
 	Text Direction;
+	SChWaypoint Waypoint;
+	SChWaypoint[] Waypoints;
 	SChBlock Block;
 	SChBlock[] Blocks;
 	SChItem Item;
@@ -62,6 +65,8 @@
 
 #Struct SChNote {
 	Text Name;
+	SChWaypoint Waypoint;
+	SChWaypoint[] Waypoints;
 	SChBlock Block;
 	SChBlock[] Blocks;
 	SChItem Item;

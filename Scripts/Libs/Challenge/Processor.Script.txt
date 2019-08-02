@@ -459,7 +459,7 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			Respond(_LayerAPI, _Type, [Removed^""]);
 		}
 		case "Ch_GetMapInfo": {
-			Respond(_LayerAPI, _Type, [Conversion::ToSChMap(Map.MapInfo).tojson()]);
+			Respond(_LayerAPI, _Type, [Conversion::ToSChMap(Map).tojson()]);
 		}
 		case "Ch_GetOriginalMapInfo": {
 			declare metadata ModifierBase::SChMap OriginalMap for Map;
@@ -472,6 +472,21 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 		case "Ch_Aboveground": {
 			UndergroundMode = False;
 			Respond(_LayerAPI, _Type, []);
+		}
+		case "Ch_RemoveItem": {
+			declare ModifierBase::SChItem Item;
+			declare JsonSuccess = Item.fromjson(_Data[0]);
+			log(Item);
+			declare CAnchorData Anch;
+			foreach(Anchor, AnchorData) {
+				if(Anchor.Item != Null) {
+					if(Anchor.Id^"" == Item.Anchor.Id) {
+						Anch <=> Anchor;
+					}
+				}
+			}
+			declare Removed = Anch != Null && RemoveItem(Anch);
+			Respond(_LayerAPI, _Type, [Removed^""]);
 		}
 		case "Ch_PlaceGhostBlock": {
 			declare BlockName = _Data[0];
@@ -681,31 +696,31 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
 		}
 		case "Ch_GetStartLineItems": {
-			declare ModifierBase::SChAnchor[] ChItems;
+			declare ModifierBase::SChItem[] ChItems;
 			foreach(Anchor, AnchorData)
 				if(Anchor.DefaultTag == "Spawn" && Anchor.Item != Null)
-					ChItems.add(Conversion::ToSChAnchor(Anchor));
+					ChItems.add(Conversion::ToSChItem(Anchor));
 			Respond(_LayerAPI, _Type, [ChItems.tojson()]);
 		}
 		case "Ch_GetCheckpointItems": {
-			declare ModifierBase::SChAnchor[] ChItems;
+			declare ModifierBase::SChItem[] ChItems;
 			foreach(Anchor, AnchorData)
 				if(Anchor.DefaultTag == "Checkpoint" && Anchor.Item != Null)
-					ChItems.add(Conversion::ToSChAnchor(Anchor));
+					ChItems.add(Conversion::ToSChItem(Anchor));
 			Respond(_LayerAPI, _Type, [ChItems.tojson()]);
 		}
 		case "Ch_GetFinishLineItems": {
-			declare ModifierBase::SChAnchor[] ChItems;
+			declare ModifierBase::SChItem[] ChItems;
 			foreach(Anchor, AnchorData)
 				if(Anchor.DefaultTag == "Goal" && Anchor.Item != Null)
-					ChItems.add(Conversion::ToSChAnchor(Anchor));
+					ChItems.add(Conversion::ToSChItem(Anchor));
 			Respond(_LayerAPI, _Type, [ChItems.tojson()]);
 		}
 		case "Ch_GetMultilapItems": {
-			declare ModifierBase::SChAnchor[] ChItems;
+			declare ModifierBase::SChItem[] ChItems;
 			foreach(Anchor, AnchorData)
 				if(Anchor.DefaultTag == "StartFinish" && Anchor.Item != Null)
-					ChItems.add(Conversion::ToSChAnchor(Anchor));
+					ChItems.add(Conversion::ToSChItem(Anchor));
 			Respond(_LayerAPI, _Type, [ChItems.tojson()]);
 		}
 		case "Ch_UpdateAnchor": {

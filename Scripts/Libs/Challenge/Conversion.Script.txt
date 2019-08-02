@@ -116,6 +116,7 @@ ModifierBase::SChAnchor ToSChAnchor(CAnchorData _Anchor) {
 	declare ModifierBase::SChAnchor ChAnchor;
 	if(_Anchor == Null) return ChAnchor;
 	
+	ChAnchor.Id = _Anchor.Id^"";
 	ChAnchor.DefaultTag = _Anchor.DefaultTag;
 	ChAnchor.DefaultOrder = _Anchor.DefaultOrder;
 	ChAnchor.Tag = _Anchor.Tag;
@@ -162,6 +163,7 @@ ModifierBase::SChItem ToSChItem(CAnchorData _Anchor) {
 
 	ChItem.Position = _Anchor.Item.Position;
 	ChItem.Anchor = ToSChAnchor(_Anchor);
+	
 	return ChItem;
 }
 
@@ -176,6 +178,35 @@ ModifierBase::SChItem ToSChItem(CItemAnchor _Item) {
 ModifierBase::SChMap ToSChMap(CMapInfo _MapInfo) {
 	declare ModifierBase::SChMap ChMap;
 	declare JsonSuccess = ChMap.fromjson(Map::ToSMapInfo(_MapInfo).tojson());
+	return ChMap;
+}
+
+ModifierBase::SChMap ToSChMap(CMap _Map) {
+	declare ModifierBase::SChMap ChMap;
+	ChMap.MapUid = _Map.MapInfo.MapUid;
+	ChMap.Comments = _Map.Comments;
+	ChMap.CopperPrice = _Map.CopperPrice;
+	ChMap.CollectionName = _Map.CollectionName;
+	ChMap.AuthorLogin = _Map.AuthorLogin;
+	ChMap.AuthorNickName = _Map.AuthorNickName;
+	ChMap.AuthorZonePath = _Map.AuthorZonePath;
+	ChMap.AuthorZoneFlagUrl = _Map.MapInfo.AuthorZoneFlagUrl;
+	ChMap.AuthorCountryFlagUrl = _Map.MapInfo.AuthorCountryFlagUrl;
+	ChMap.MapType = _Map.MapType;
+	ChMap.MapStyle = _Map.MapStyle;
+	ChMap.Unlocked = _Map.MapInfo.Unlocked;
+	ChMap.IsPlayable = _Map.MapInfo.IsPlayable;
+	ChMap.CreatedWithSimpleEditor = _Map.MapInfo.CreatedWithSimpleEditor;
+	ChMap.CreatedWithPartyEditor = _Map.MapInfo.CreatedWithPartyEditor;
+	ChMap.TMObjective_AuthorTime = _Map.TMObjective_AuthorTime;
+	ChMap.TMObjective_GoldTime = _Map.TMObjective_GoldTime;
+	ChMap.TMObjective_SilverTime = _Map.TMObjective_SilverTime;
+	ChMap.TMObjective_BronzeTime = _Map.TMObjective_BronzeTime;
+	ChMap.TMObjective_NbLaps = _Map.TMObjective_NbLaps;
+	ChMap.TMObjective_IsLapRace = _Map.TMObjective_IsLapRace;
+	ChMap.Name = _Map.MapName;
+	ChMap.Path = _Map.MapInfo.Path;
+	ChMap.FileName = _Map.MapInfo.FileName;
 	return ChMap;
 }
 
