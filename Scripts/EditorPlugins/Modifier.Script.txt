@@ -190,6 +190,7 @@ main() {
 	
 	HideEditorInterface = S_HideUI;
 	EditMode = CMapEditorPlugin::EditMode::FreeLook;
+	EnableEditorInputsCustomProcessing = True;
 	
 	Map.MapName = """Waiting to modify... ({{{OriginalMap.Name}}})""";
 	
