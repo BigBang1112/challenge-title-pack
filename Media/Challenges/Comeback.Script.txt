@@ -14,41 +14,48 @@ declare Environment = MapInfo.CollectionName;
 
 declare IsOneLapWithFinish = Multilaps.count == 1 && FinishLines.count > 0 && MapInfo.TMObjective_NbLaps == 1;
 declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
+
 if(IsMultilap) {
 	declare SChProblem Problem_MultilapTrack;
 	Problem_MultilapTrack.Name = "MULTILAP_TRACK";
-	Problem_MultilapTrack.Anchor = Multilaps[0];
+	Problem_MultilapTrack.Waypoint = Multilaps[0];
 	Problem_MultilapTrack.ShortDescription = "{{{{MULTILAP_TRACK}}}}";
 	Problem_MultilapTrack.LongDescription = "This track has a multilap which isn't considered as one lap with 1 or more finishes. This map can't be made Checkpointless.";
 	Problem(Problem_MultilapTrack);
 }
-
-
 
 if(IsOneLapWithFinish) {
 
 }
 else {
 	declare StartLines = GetStartLines();
-	declare StartLine = StartLines[0];
+	declare Start = StartLines[0];
 
 	foreach(Relation, Relation_StartMultilap[Environment]) {
 		declare StartBlockName = Relation[0];
 		declare MultilapBlockName = Relation[1];
-		if(StartLine.IsItem) Problem_ItemStart(StartLine);
-		else if(StartLine.Block.Name == StartBlockName) {
+		if(Start.IsItem) {
+			declare SChProblem Problem_ItemStart;
+			Problem_ItemStart.Name = "ITEM_START";
+			Problem_ItemStart.Waypoint = Start;
+			Problem_ItemStart.ShortDescription = "";
+			Problem_ItemStart.LongDescription = "Start is an item. Script can't replace it with any multilap variant. Replacing it with multilap variant is needed to make Comeback valid.";
+			Problem_ItemStart.Solutions.add("Replace the start item manually with a possible multilap variant.");
+			Problem(Problem_ItemStart);
+		}
+		else if(Start.Block.Name == StartBlockName) {
 			SetStatusProgress(.5);
-			if(RemoveAnchor(StartLine)) {
-				declare PlaceBlockResult = PlaceBlock(MultilapBlockName, StartLine.Block.Coord, StartLine.Block.Direction);
+			if(RemoveSpecificBlock(Start.Block)) {
+				declare PlaceBlockResult = PlaceBlock(MultilapBlockName, Start.Block.Coord, Start.Block.Direction);
 				if(PlaceBlockResult.Placed
-				|| PlaceGhostBlock(MultilapBlockName, StartLine.Block.Coord, StartLine.Block.Direction)) {
+				|| PlaceGhostBlock(MultilapBlockName, Start.Block.Coord, Start.Block.Direction)) {
 					SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ MultilapBlockName ^ ".");
 				}
 				else {
 					declare SChProblem Problem_CannotPlaceGhostBlock;
 					Problem_CannotPlaceGhostBlock.Name = "CANNOT_PLACE_GHOSTBLOCK";
-					Problem_CannotPlaceGhostBlock.Coord = StartLine.Block.Coord;
-					Problem_CannotPlaceGhostBlock.Direction = StartLine.Block.Direction;
+					Problem_CannotPlaceGhostBlock.Coord = Start.Block.Coord;
+					Problem_CannotPlaceGhostBlock.Direction = Start.Block.Direction;
 					Problem_CannotPlaceGhostBlock.BlockName = MultilapBlockName;
 					Problem_CannotPlaceGhostBlock.ShortDescription = "{{{{CANNOT_PLACE_GHOSTBLOCK}}}} - " ^ MultilapBlockName;
 					Problem_CannotPlaceGhostBlock.LongDescription = "This block is not possible to place in ghost variant.";
@@ -60,7 +67,7 @@ else {
 			else {
 				declare SChProblem Problem_CannotRemoveStartLine;
 				Problem_CannotRemoveStartLine.Name = "CANNOT_REMOVE_STARTLINE";
-				Problem_CannotRemoveStartLine.Anchor = StartLine;
+				Problem_CannotRemoveStartLine.Waypoint = Start;
 				Problem_CannotRemoveStartLine.ShortDescription = "{{{{CANNOT_REMOVE_STARTLINE}}}} - " ^ StartBlockName;
 				Problem_CannotRemoveStartLine.LongDescription = "This start anchor can't be removed via script. The anchor is possibly ghost block or weirdly placed.";
 				Problem_CannotRemoveStartLine.Solutions.add("Replace the start manually with possible multilap variant.");
@@ -73,26 +80,36 @@ else {
 
 declare SChAnchor[] CheckpointsToLink;
 
-foreach(FinishLine, FinishLines) {
+foreach(Finish, FinishLines) {
 	foreach(Relation, Relation_FinishCheckpoint[Environment]) {
 		declare FinishBlockName = Relation[0];
 		declare CheckpointBlockName = Relation[1];
 
-		if(FinishLine.IsItem) Problem_ItemFinish(FinishLine);
-		else if(FinishLine.Block.Name == FinishBlockName) {
+		if(Finish.IsItem) {
+			declare SChProblem Problem_ItemFinish;
+			Problem_ItemFinish.Name = "ITEM_FINISH";
+			Problem_ItemFinish.Waypoint = Finish;
+			Problem_ItemFinish.ShortDescription = "";
+			Problem_ItemFinish.LongDescription = "Finish is an item. Script can't replace it with any checkpoint variant. Replacing it with checkpoint variant is needed to make Comeback valid.";
+			Problem_ItemFinish.Solutions.add("Replace the finish item manually with a possible checkpoint variant.");
+			Problem(Problem_ItemFinish);
+		}
+		else if(Finish.Block.Name == FinishBlockName) {
 			SetStatusProgress(1.);
-			if(RemoveAnchor(FinishLine)) {
-				declare PlaceBlockResult = PlaceBlock(CheckpointBlockName, FinishLine.Block.Coord, FinishLine.Block.Direction);
+			if(RemoveSpecificBlock(Finish.Block)) {
+				declare PlaceBlockResult = PlaceBlock(CheckpointBlockName, Finish.Block.Coord, Finish.Block.Direction);
 				if(PlaceBlockResult.Placed
-				|| PlaceGhostBlock(CheckpointBlockName, FinishLine.Block.Coord, FinishLine.Block.Direction)) {
+				|| PlaceGhostBlock(CheckpointBlockName, Finish.Block.Coord, Finish.Block.Direction)) {
 					SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ CheckpointBlockName ^ ".");
-					CheckpointsToLink.add(PlaceBlockResult.Anchor);
+					foreach(Anchor, PlaceBlockResult.Block.Anchors)
+						if(Anchor.DefaultTag == "Checkpoint")
+							CheckpointsToLink.add(Anchor);
 				}
 				else {
 					declare SChProblem Problem_CannotPlaceGhostBlock;
 					Problem_CannotPlaceGhostBlock.Name = "CANNOT_PLACE_GHOSTBLOCK";
-					Problem_CannotPlaceGhostBlock.Coord = FinishLine.Block.Coord;
-					Problem_CannotPlaceGhostBlock.Direction = FinishLine.Block.Direction;
+					Problem_CannotPlaceGhostBlock.Coord = Finish.Block.Coord;
+					Problem_CannotPlaceGhostBlock.Direction = Finish.Block.Direction;
 					Problem_CannotPlaceGhostBlock.BlockName = CheckpointBlockName;
 					Problem_CannotPlaceGhostBlock.ShortDescription = "{{{{CANNOT_PLACE_GHOSTBLOCK}}}} - " ^ CheckpointBlockName;
 					Problem_CannotPlaceGhostBlock.LongDescription = "This block is not possible to place in ghost variant.";
@@ -104,9 +121,9 @@ foreach(FinishLine, FinishLines) {
 			else {
 				declare SChProblem Problem_CannotRemoveFinishLine;
 				Problem_CannotRemoveFinishLine.Name = "CANNOT_REMOVE_FINISHLINE";
-				Problem_CannotRemoveFinishLine.Anchor = FinishLine;
+				Problem_CannotRemoveFinishLine.Waypoint = Finish;
 				Problem_CannotRemoveFinishLine.ShortDescription = "{{{{CANNOT_REMOVE_FINISHLINE}}}} -  " ^ FinishBlockName;
-				Problem_CannotRemoveFinishLine.LongDescription = "This finish anchor can't be removed via script. The anchor is possibly ghost block or weirdly placed.";
+				Problem_CannotRemoveFinishLine.LongDescription = "This finish can't be removed via script. The block is possibly ghost or weirdly placed.";
 				Problem_CannotRemoveFinishLine.Solutions.add("Replace the finish manually with possible checkpoint variant.");
 				Problem_CannotRemoveFinishLine.Solutions.add("Replace the finish manually with possible checkpoint ghost variant.");
 				Problem(Problem_CannotRemoveFinishLine);
@@ -121,7 +138,7 @@ if(CheckpointsToLink.count > 1) {
 }
 ***
 
-***Problems***
+***Solver***
 ***
 foreach(Problem,Problems) {
 

@@ -7,14 +7,6 @@
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 #Include "Libs/Challenge/Conversion.Script.txt" as Conversion
 
-#Struct SChallengeBlock {
-	Boolean Placed;
-	CBlock Block;
-	CMacroblockInstance Macroblock;
-	CAnchorData[] Anchors;
-	Text Waypoint;
-}
-
 Text GetVariant(Int3 _Coord) {
 	declare Variant = "Air";
 	if(GetGroundHeight(_Coord.X, _Coord.Z) == _Coord.Y) {
@@ -27,15 +19,15 @@ Text GetVariant(Int3 _Coord) {
 	return Variant;
 }
 
-SChallengeBlock[] GetBlocks() {
-	declare SChallengeBlock[] ChallengeBlocks;
+ModifierBase::SChallengeBlock[] GetBlocks() {
+	declare ModifierBase::SChallengeBlock[] ChallengeBlocks;
 
 	declare ModifierBase::SChWaypoints Waypoints;
 	declare JsonSuccess = Waypoints.fromjson(File::Read("Media/Waypoints.json"));
 	declare Int3[] Coords;
 
 	foreach(Instance, MacroblockInstances) {
-		declare SChallengeBlock Block;
+		declare ModifierBase::SChallengeBlock Block;
 		Block.Placed = True;
 		Block.Macroblock = Instance;
 		Coords.add(Instance.Coord);
@@ -59,9 +51,9 @@ SChallengeBlock[] GetBlocks() {
 
 	foreach(Block, Blocks) {
 		if(!Coords.exists(Block.Coord)) {
-			declare SChallengeBlock ChBlock;
+			declare ModifierBase::SChallengeBlock ChBlock;
 			ChBlock.Placed = True;
-			ChBlock.Block = Block;
+			ChBlock.Block <=> Block;
 
 			foreach(Anchor, AnchorData)
 				if(Anchor.Block != Null)
@@ -125,8 +117,8 @@ Boolean SafeRemoveBlock(ModifierBase::SChBlock _ChBlock) {
 	return False;
 }
 
-SChallengeBlock PlaceBlockSpecial(Text _BlockName, Int3 _Coord, ::CardinalDirections _Direction) {
-	declare SChallengeBlock Result;
+ModifierBase::SChallengeBlock PlaceBlockSpecial(Text _BlockName, Int3 _Coord, ::CardinalDirections _Direction) {
+	declare ModifierBase::SChallengeBlock Result;
 	
 	if(IsSpecialBlock(_BlockName)) {
 		declare ModifierBase::SChWaypoints Waypoints;
@@ -154,7 +146,9 @@ SChallengeBlock PlaceBlockSpecial(Text _BlockName, Int3 _Coord, ::CardinalDirect
 	}
 	else {
 		declare BlockModel = GetBlockModelFromName(_BlockName);
-		declare Response = PlaceBlock(BlockModel, _Coord, _Direction);
+		declare BlockPlaced = PlaceBlock(BlockModel, _Coord, _Direction);
+		
+		if(!BlockPlaced) return Result;
 
 		yield; //Required so that AnchorData actually updates, thanks Nadeo
 
@@ -574,6 +568,7 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			declare ModifierBase::SChWaypoint[] Waypoints;
 
 			foreach(Block, GetBlocks()) {
+				if(Block.Macroblock != Null) log(Block ^ " " ^ Block.Macroblock);
 				if(Block.Waypoint == "Finish") {
 					declare ModifierBase::SChWaypoint Waypoint;
 					Waypoint.Type = "Finish";

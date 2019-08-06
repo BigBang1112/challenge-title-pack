@@ -103,7 +103,8 @@ Relation_FinishCheckpoint = [
 		["Road2WayForestFinish", "Road2WayForestCheckpoint"],
 		["Road4WayFinish", "Road4WayCheckpoint"],
 		["TunnelRoad4wayFinish", "TunnelRoad4wayCheckpoint"],
-		["RoadForestLargeFinish", "RoadForestLargeCheckpoint"]
+		["RoadForestLargeFinish", "RoadForestLargeCheckpoint"],
+		["RoadForestLargeFinishTwoway", "RoadForestLargeCheckpoint"]
 	],
 	"Lagoon" => [ //Ghostblocks not finished
 		["RoadMainFinish", "RoadMainCheckpoint"],

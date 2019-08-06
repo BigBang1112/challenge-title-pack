@@ -10,17 +10,16 @@ Script.Description = "{{{{REVERSE_DESCRIPTION}}}}";
 declare StartLines = GetStartLines();
 declare Multilaps = GetMultilaps();
 declare FinishLines = GetFinishLines();
-declare MapInfo = GetOriginalMapInfo();
+declare MapInfo = GetMapInfo();
 declare Environment = MapInfo.CollectionName;
-
-declare StartSpecialBlocks = GetStartLineSpecialBlocks();
 
 declare IsOneLapWithFinish = Multilaps.count == 1 && FinishLines.count > 0 && MapInfo.TMObjective_NbLaps == 1;
 declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
+
 if(IsMultilap) {
 	declare SChProblem Problem_MultilapTrack;
 	Problem_MultilapTrack.Name = "MULTILAP_TRACK";
-	Problem_MultilapTrack.Anchor = Multilaps[0];
+	Problem_MultilapTrack.Waypoint = Multilaps[0];
 	Problem_MultilapTrack.ShortDescription = "{{{{MULTILAP_TRACK}}}}";
 	Problem_MultilapTrack.LongDescription = "This track has a multilap which isn't considered as one lap with 1 or more finishes. This map can't be reversed.";
 	Problem(Problem_MultilapTrack);
@@ -29,7 +28,7 @@ if(IsMultilap) {
 if(FinishLines.count > 1) {
 	declare SChProblem Problem_MultipleFinishes;
 	Problem_MultipleFinishes.Name = "MULTILAP_TRACK";
-	Problem_MultipleFinishes.Anchors = FinishLines;
+	Problem_MultipleFinishes.Waypoints = FinishLines;
 	Problem_MultipleFinishes.ShortDescription = "{{{{MULTIPLE_FINISHES}}}}";
 	Problem_MultipleFinishes.LongDescription = "This track has multiple finishes. Script is not able to automate the finish replacement process.";
 	Problem_MultipleFinishes.Solutions.add("Delete the finish you want to replace with its start variant.");
@@ -41,30 +40,28 @@ if(IsOneLapWithFinish) {
 	if(Multilap.IsItem) {
 		declare SChProblem Problem_ItemMultilap;
 		Problem_ItemMultilap.Name = "ITEM_MULTILAP";
-		Problem_ItemMultilap.Anchor = Multilap;
+		Problem_ItemMultilap.Waypoint = Multilap;
 		Problem_ItemMultilap.ShortDescription = "{{{{CANNOT_REPLACE_MULTILAP}}}}";
 		Problem_ItemMultilap.LongDescription = "Multilap is an item. Script can't replace those.";
 		Problem_ItemMultilap.Solutions.add("Replace the multilap item manually with a possible finish variant.");
 		Problem(Problem_ItemMultilap);
 	}
-	else {
+	else if(Multilap.IsBlock) {
 		foreach(Relation, Relation_MultilapFinishTwoway[Environment]) {
 			declare MultilapBlockName = Relation[0];
 			declare FinishTwowayBlockName = Relation[1];
-
 			if(Multilap.Block.Name == MultilapBlockName) {
-				SetStatusProgress(.5);
-				declare Removed = RemoveAnchor(Multilap);
+				declare Removed = RemoveSpecificBlock(Multilap.Block);
 				if(Removed) {
 					if(IsSpecialBlock(FinishTwowayBlockName)) {
-						declare Block = PlaceSpecialBlock(FinishTwowayBlockName, Multilap.Block.Coord, OppositeDirection(Multilap.Block.Direction));
+						declare Block = PlaceBlock(FinishTwowayBlockName, Multilap.Block.Coord, Multilap.Block.Direction);
 						if(Block.Placed)
 							SetStatusMessage(MultilapBlockName ^ " {{{{replaced_with}}}} " ^ FinishTwowayBlockName ^ ".");
 						else {
 							declare SChProblem Problem_BlockMissing;
 							Problem_BlockMissing.Name = "BLOCK_MISSING";
 							Problem_BlockMissing.BlockName = FinishTwowayBlockName;
-							Problem_BlockMissing.ShortDescription = "{{{{BLOCK_MISSING}}}}: " ^ FinishTwowayBlockName;
+							Problem_BlockMissing.ShortDescription = "{{{{BLOCK_MISSING}}}} - " ^ FinishTwowayBlockName;
 							Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
 							Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
 							Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
@@ -77,14 +74,16 @@ if(IsOneLapWithFinish) {
 			}
 		}
 	}
+	else {
+		
+	}
 }
 else {
-	declare IsSpecialStartLine = StartSpecialBlocks.count == 1;
-
-	if(!IsSpecialStartLine && StartLines[0].IsItem) {
+	declare Start = StartLines[0];
+	if(StartLines[0].IsItem) {
 		declare SChProblem Problem_ItemStart;
 		Problem_ItemStart.Name = "ITEM_START";
-		Problem_ItemStart.Anchor = StartLines[0];
+		Problem_ItemStart.Waypoint = Start;
 		Problem_ItemStart.ShortDescription = "{{{{CANNOT_REPLACE_START}}}}";
 		Problem_ItemStart.LongDescription = "Start is an item. Script can't replace those.";
 		Problem_ItemStart.Solutions.add("Replace the start item manually with a possible finish variant.");
@@ -95,43 +94,24 @@ else {
 			declare StartBlockName = Relation[0];
 			declare FinishBlockName = Relation[1];
 
-			if((IsSpecialStartLine && StartSpecialBlocks[0].Name == StartBlockName) || (!IsSpecialStartLine && StartLines[0].Block.Name == StartBlockName)) {
+			if(Start.Block.Name == StartBlockName) {
 				SetStatusProgress(.5);
-				declare Removed = (IsSpecialStartLine && RemoveSpecialBlock(StartSpecialBlocks[0])) || (!IsSpecialStartLine && RemoveAnchor(StartLines[0]));
+				declare Removed = RemoveSpecificBlock(Start.Block);
 				if(Removed) {
-					if(IsSpecialBlock(FinishBlockName)) {
-						declare Block = PlaceSpecialBlock(FinishBlockName, StartLines[0].Block.Coord, OppositeDirection(StartLines[0].Block.Direction));
-						if(Block.Placed)
-							SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ FinishBlockName ^ ".");
-						else {
-							declare SChProblem Problem_BlockMissing;
-							Problem_BlockMissing.Name = "BLOCK_MISSING";
-							Problem_BlockMissing.BlockName = FinishBlockName;
-							Problem_BlockMissing.ShortDescription = "{{{{BLOCK_MISSING}}}}: " ^ FinishBlockName;
-							Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
-							Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
-							Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
-							Problem_BlockMissing.Solutions.add("Place a similar block that will function the same.");
-							Problem_BlockMissing.Solutions.add("Wait before Nadeo will add the block.");
-							Problem(Problem_BlockMissing);
-						}
-					}
+					declare Block = PlaceBlock(FinishBlockName, Start.Block.Coord, OppositeDirection(Start.Block.Direction));
+					if(Block.Placed)
+						SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ FinishBlockName ^ ".");
 					else {
-						declare Block = PlaceBlock(FinishBlockName, StartLines[0].Block.Coord, OppositeDirection(StartLines[0].Block.Direction));
-						if(Block.Placed)
-							SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ FinishBlockName ^ ".");
-						else {
-							declare SChProblem Problem_BlockMissing;
-							Problem_BlockMissing.Name = "BLOCK_MISSING";
-							Problem_BlockMissing.BlockName = FinishBlockName;
-							Problem_BlockMissing.ShortDescription = "{{{{BLOCK_MISSING}}}}: " ^ FinishBlockName;
-							Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
-							Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
-							Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
-							Problem_BlockMissing.Solutions.add("Place a similar block that will function the same.");
-							Problem_BlockMissing.Solutions.add("Wait before Nadeo will add the block.");
-							Problem(Problem_BlockMissing);
-						}
+						declare SChProblem Problem_BlockMissing;
+						Problem_BlockMissing.Name = "BLOCK_MISSING";
+						Problem_BlockMissing.BlockName = FinishBlockName;
+						Problem_BlockMissing.ShortDescription = "{{{{BLOCK_MISSING}}}}: " ^ FinishBlockName;
+						Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
+						Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
+						Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
+						Problem_BlockMissing.Solutions.add("Place a similar block that will function the same.");
+						Problem_BlockMissing.Solutions.add("Wait before Nadeo will add the block.");
+						Problem(Problem_BlockMissing);
 					}
 				}
 			}
@@ -139,12 +119,13 @@ else {
 	}
 }
 
-if(FinishLines.count == 1) { // Finishe nejsou ještě accurate
-	declare FinishLine = FinishLines[0];
-	if(FinishLine.IsItem) {
+if(FinishLines.count == 1) {
+	declare Finish = FinishLines[0];
+
+	if(Finish.IsItem) {
 		declare SChProblem Problem_ItemFinish;
 		Problem_ItemFinish.Name = "ITEM_FINISH";
-		Problem_ItemFinish.Anchor = FinishLine;
+		Problem_ItemFinish.Waypoint = Finish;
 		Problem_ItemFinish.ShortDescription = "{{{{CANNOT_REPLACE_FINISH}}}}";
 		Problem_ItemFinish.LongDescription = "Finish is an item. Script can't replace those.";
 		Problem_ItemFinish.Solutions.add("Replace the finish item manually with a possible start variant.");
@@ -155,43 +136,24 @@ if(FinishLines.count == 1) { // Finishe nejsou ještě accurate
 			declare StartBlockName = Relation[0];
 			declare FinishBlockName = Relation[1];
 			
-			if(FinishLine.Block.Name == FinishBlockName) {
+			if(Finish.Block.Name == FinishBlockName) {
 				SetStatusProgress(1.);
-				declare Removed = RemoveAnchor(FinishLine);
+				declare Removed = RemoveSpecificBlock(Finish.Block);
 				if(Removed) {
-					if(IsSpecialBlock(StartBlockName)) {
-						declare Block = PlaceSpecialBlock(StartBlockName, FinishLine.Block.Coord, OppositeDirection(FinishLine.Block.Direction));
-						if(Block.Placed)
-							SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ StartBlockName ^ ".");
-						else {
-							declare SChProblem Problem_BlockMissing;
-							Problem_BlockMissing.Name = "BLOCK_MISSING";
-							Problem_BlockMissing.BlockName = StartBlockName;
-							Problem_BlockMissing.ShortDescription = "{{{{BLOCK_MISSING}}}}: " ^ StartBlockName;
-							Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
-							Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
-							Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
-							Problem_BlockMissing.Solutions.add("Place a similar block that will function the same.");
-							Problem_BlockMissing.Solutions.add("Wait before Nadeo will add the block.");
-							Problem(Problem_BlockMissing);
-						}
-					}
+					declare Block = PlaceBlock(StartBlockName, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
+					if(Block.Placed)
+						SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ StartBlockName ^ ".");
 					else {
-						declare Block = PlaceBlock(StartBlockName, FinishLine.Block.Coord, OppositeDirection(FinishLine.Block.Direction));
-						if(Block.Placed)
-							SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ StartBlockName ^ ".");
-						else {
-							declare SChProblem Problem_BlockMissing;
-							Problem_BlockMissing.Name = "BLOCK_MISSING";
-							Problem_BlockMissing.BlockName = StartBlockName;
-							Problem_BlockMissing.ShortDescription = "{{{{BLOCK_MISSING}}}}: " ^ StartBlockName;
-							Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
-							Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
-							Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
-							Problem_BlockMissing.Solutions.add("Place a similar block that will function the same.");
-							Problem_BlockMissing.Solutions.add("Wait before Nadeo will add the block.");
-							Problem(Problem_BlockMissing);
-						}
+						declare SChProblem Problem_BlockMissing;
+						Problem_BlockMissing.Name = "BLOCK_MISSING";
+						Problem_BlockMissing.BlockName = StartBlockName;
+						Problem_BlockMissing.ShortDescription = "{{{{BLOCK_MISSING}}}}: " ^ StartBlockName;
+						Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
+						Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
+						Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
+						Problem_BlockMissing.Solutions.add("Place a similar block that will function the same.");
+						Problem_BlockMissing.Solutions.add("Wait before Nadeo will add the block.");
+						Problem(Problem_BlockMissing);
 					}
 				}
 			}

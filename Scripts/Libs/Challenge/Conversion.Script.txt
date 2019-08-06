@@ -142,7 +142,7 @@ ModifierBase::SChBlock ToSChBlock(SChallengeBlock _Block) {
 		foreach(Anchor,_Block.Anchors)
 			ChBlock.Anchors.add(ToSChAnchor(Anchor));
 	}
-	else {
+	else if(_Block.Macroblock != Null) {
 		ChBlock.Id = _Block.Macroblock.Id^"";
 		ChBlock.Name = GetBlockNameFromMacroblockName(_Block.Macroblock.MacroblockModel.Name);
 		ChBlock.Coord = _Block.Macroblock.Coord;

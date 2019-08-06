@@ -18,14 +18,17 @@
 #Setting S_Build False
 #Setting S_TestMode False
 
-#Const S_HideUI True
-
 #Const C_Manialink_ModifierResult "Media/Manialinks/Sandbox/Modifier/ModifierResult"
 #Const C_Manialink_ModifierIntro "Media/Manialinks/Sandbox/Modifier/ModifierIntro"
 #Const C_Manialink_ModifierScript "Media/Manialinks/Sandbox/Modifier/ModifierScript"
 #Const C_Manialink_ModifierStatus "Media/Manialinks/Sandbox/Modifier/ModifierStatus"
 #Const C_Manialink_ModifierMetadata "Media/Manialinks/Sandbox/Modifier/ModifierMetadata"
 #Const C_Manialink_ModifierActions "Media/Manialinks/Sandbox/Modifier/ModifierActions"
+
+#Struct SCommand {
+	Text Name;
+	Text[] Parameters;
+}
 
 #Struct SMetadata {
 	Text Name;
@@ -117,20 +120,19 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 			
 	declare Completed = False;
 	while(!Completed && !Terminate) {
+		declare SCommand[] Commands;
 		foreach(Event,PendingEvents) {
-			if(Terminate) break;
-			
 			if(Event.Type == CMapEditorPluginEvent::Type::LayerCustomEvent) {
 				if(Event.CustomEventType == "Ch_Complete") {
 					Completed = True;
 					log("[MODIFIER] "^_ScriptName^" completed");
 				}
 				else if(TextLib::StartsWith("Ch_", Event.CustomEventType)) {
-					log("[MODIFIER] Request: "^Event.CustomEventType);
-					declare Text[] Data;
-					foreach(D,Event.CustomEventData)
-						Data.add(D);
-					if(!Processor::Command(LayerAPI, Event.CustomEventType, Data)) TerminateScript();
+					declare SCommand Command;
+					Command.Name = Event.CustomEventType;
+					foreach(Data, Event.CustomEventData)
+						Command.Parameters.add(Data);
+					Commands.add(Command);
 				}
 				if(Event.CustomEventType == "ScriptMetadata") {
 					Layers::SendEvent("ModifierMetadata", "Metadata", Event.CustomEventData[0]);
@@ -138,10 +140,12 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 			}
 		}
 		
-		CameraTargetPosition = <Map.Size.X*32./2,5.,Map.Size.Z*32./3>;
-		CameraToTargetDistance = 24.*Map.Size.X;
-		CameraHAngle = 0.;
-		CameraVAngle = 1.;
+		foreach(Command,Commands) {
+			if(Terminate) break;
+		
+			log("[MODIFIER] Request: "^Command.Name);
+			if(!Processor::Command(LayerAPI, Command.Name, Command.Parameters)) TerminateScript();
+		}
 	
 		yield;
 	}
@@ -182,15 +186,18 @@ main() {
 	if(Problems.count == 0) {
 		if(CHALLENGE_SCRIPTS.count == 0 && !S_TestMode) return;
 	}
+
+	declare BlockSize = 32.;
+	if(Map.CollectionName == "Canyon") BlockSize = 64.;
 	
-	CameraTargetPosition = <Map.Size.X*32./2,5.,Map.Size.Z*32./3>;
-	CameraToTargetDistance = 24.*Map.Size.X;
+	CameraTargetPosition = <Map.Size.X*BlockSize/2,5.,Map.Size.Z*BlockSize/3>;
+	CameraToTargetDistance = BlockSize*.75*Map.Size.X;
 	CameraHAngle = 0.;
 	CameraVAngle = 1.;
 	
-	HideEditorInterface = S_HideUI;
+	HideEditorInterface = True;
+	EnableEditorInputsCustomProcessing = False;
 	EditMode = CMapEditorPlugin::EditMode::FreeLook;
-	EnableEditorInputsCustomProcessing = True;
 	
 	Map.MapName = """Waiting to modify... ({{{OriginalMap.Name}}})""";
 	
@@ -286,10 +293,14 @@ main() {
 	
 	Finish();
 	
-	while(True) {
+	declare Abort = False;
+	while(!Abort) {
 		foreach(Event,PendingEvents) {
 			if(Event.Type == CMapEditorPluginEvent::Type::LayerCustomEvent) {
 				switch(Event.CustomEventType) {
+					case "Button_Interface": {
+						Abort = True;
+					}
 					case "Button_Exit": {
 						Quit();
 					}
@@ -312,6 +323,7 @@ main() {
 							}
 						}
 						else {
+							Map.MapName = OriginalMap.Name ^ "$z (" ^ TextLib::Replace(Map.MapStyle, "+", " ")^ ")";
 							SaveMap("");
 						}
 					}
@@ -353,4 +365,7 @@ main() {
 	
 		yield;
 	}
+	
+	Layers::DestroyAll();
+	UILayerDestroyAll();
 }

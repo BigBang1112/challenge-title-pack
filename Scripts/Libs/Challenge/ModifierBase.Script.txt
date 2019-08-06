@@ -106,3 +106,11 @@
 	Text[] Checkpoints;
 	Text[] Multilaps;
 }
+
+#Struct SChallengeBlock {
+	Boolean Placed;
+	CBlock Block;
+	CMacroblockInstance Macroblock;
+	CAnchorData[] Anchors;
+	Text Waypoint;
+}

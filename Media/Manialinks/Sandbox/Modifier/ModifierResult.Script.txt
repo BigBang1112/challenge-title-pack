@@ -41,7 +41,7 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "LABEL_INTERFACE": {
-					Editor.HideEditorInterface = False;
+					SendCustomEvent("Button_Interface",[]);
 				}
 				case "QUAD_BUTTON_SAVE": {
 					SendCustomEvent("Button_Save",[]);
