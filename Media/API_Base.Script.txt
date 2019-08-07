@@ -64,6 +64,12 @@
 	SChBlock Block;
 }
 
+#Struct SChSolution {
+	Text Value;
+	Text AdditionalInfo;
+	Boolean IsInteractive;
+}
+
 #Struct SChProblem {
 	Text Name;
 	Int3 Coord;
@@ -77,7 +83,7 @@
 	Text BlockName;
 	Text ShortDescription;
 	Text LongDescription;
-	Text[] Solutions;
+	SChSolution[] Solutions;
 }
 
 #Struct SChNote {

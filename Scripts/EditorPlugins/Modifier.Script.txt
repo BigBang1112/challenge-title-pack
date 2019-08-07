@@ -24,6 +24,9 @@
 #Const C_Manialink_ModifierStatus "Media/Manialinks/Sandbox/Modifier/ModifierStatus"
 #Const C_Manialink_ModifierMetadata "Media/Manialinks/Sandbox/Modifier/ModifierMetadata"
 #Const C_Manialink_ModifierActions "Media/Manialinks/Sandbox/Modifier/ModifierActions"
+#Const C_Manialink_ModifierProblems "Media/Manialinks/Sandbox/Modifier/ModifierProblems"
+#Const C_Manialink_ModifierSolver "Media/Manialinks/Sandbox/Modifier/ModifierSolver"
+#Const C_Manialink_ModifierSolutions "Media/Manialinks/Sandbox/Modifier/ModifierSolutions"
 
 #Struct SCommand {
 	Text Name;
@@ -45,16 +48,12 @@
 
 declare CUILayer LayerAPI;
 declare Boolean Terminate;
+declare Boolean Abort;
 
 declare ::ShadowsQuality LastShadowsQuality;
 
 Void ValidateScript() {
 
-}
-
-Void Begin(Text _ScriptName) {
-	Layers::SendEvent("ModifierScript", "ScriptName", [_ScriptName]);
-	Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
 }
 
 Void Finish() {
@@ -66,14 +65,22 @@ Void Finish() {
 	sleep(500);
 	
 	Layers::Create("ModifierResult",Manialink::FromFile(C_Manialink_ModifierResult, True, ["TextAnimation"], Settings::Get().Theme));
-	Layers::Show("ModifierResult");
+	Layers::Create("ModifierProblems",Manialink::FromFile(C_Manialink_ModifierProblems, True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierSolver",Manialink::FromFile(C_Manialink_ModifierSolver, True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierSolutions",Manialink::FromFile(C_Manialink_ModifierSolutions, True, ["TextAnimation"], Settings::Get().Theme));
 
+	declare metadata ModifierBase::SChMap OriginalMap for Map;
 	declare metadata ModifierBase::SChProblem[] Problems for Map;
+	declare metadata Integer CurrentScript for Map;
 
 	if(Terminate) Layers::SendEvent("ModifierResult", "Unsolvable");
 	else {
 		Layers::SendEvent("ModifierResult", "Success");
-		if(Problems.count > 0) Layers::SendEvent("ModifierResult", "Problems");
+		if(Problems.count > 0) {
+			Layers::SendEvent("ModifierResult", "Problems");
+			Layers::Show("ModifierProblems", True);
+			Layers::SendEvent("ModifierProblems", "UpdateProblems", Problems.tojson());
+		}
 	}
 	
 	if(CurrentShadowsQuality == ::ShadowsQuality::NotComputed) Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("NOT_COMPUTED"), ""^IsUltraShadowsQualityAvailable]);
@@ -83,7 +90,124 @@ Void Finish() {
 	else if(CurrentShadowsQuality == ::ShadowsQuality::High) Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("HIGH"), ""^IsUltraShadowsQualityAvailable]);
 	else if(CurrentShadowsQuality == ::ShadowsQuality::Ultra) Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("ULTRA"), ""^IsUltraShadowsQualityAvailable]);
 	
-	Layers::SendEvent("ModifierResult", "Show");
+	Layers::Show("ModifierResult", True);
+	
+	declare Solver = False;
+	
+	while(!Abort) {
+		foreach(Event,PendingEvents) {
+			Layers::Event(Event);
+		
+			if(Event.Type == CMapEditorPluginEvent::Type::LayerCustomEvent) {
+				switch(Event.CustomEventType) {
+					case "Button_Interface": {
+						Abort = True;
+					}
+					case "Button_Exit": {
+						Quit();
+					}
+					case "Button_Validate": {
+						Validate();
+					}
+					case "Button_Solve": {
+						Solver = True;
+						Layers::SendEvent("ModifierProblems", "SelectProblem", "0");
+						Layers::SendEvent("ModifierSolver", "Problem", Problems[0].tojson());
+						Layers::Show("ModifierSolutions", True);
+					}
+					case "Button_Save": {
+						declare metadata ModifierBase::SChProblem[] Problems for Map;
+
+						if(Problems.count == 0) {
+							if(CurrentShadowsQuality == ::ShadowsQuality::Fast
+							|| CurrentShadowsQuality == ::ShadowsQuality::Default
+							|| CurrentShadowsQuality == ::ShadowsQuality::High
+							|| CurrentShadowsQuality == ::ShadowsQuality::Ultra) {
+								Map.MapName = OriginalMap.Name ^ "$z - " ^ TextLib::Replace(Map.MapStyle, "+", " + ");
+								SaveMap("");
+							}
+							else {
+								Layers::SendEvent("ModifierResult", "SuggestShadows");
+							}
+						}
+						else {
+							Map.MapName = OriginalMap.Name ^ "$z - " ^ TextLib::Replace(Map.MapStyle, "+", " + ");
+							SaveMap("");
+						}
+					}
+					case "Button_Shadows_VeryFast": {
+						ComputeShadows(::ShadowsQuality::VeryFast);
+					}
+					case "Button_Shadows_Fast": {
+						ComputeShadows(::ShadowsQuality::Fast);
+					}
+					case "Button_Shadows_Default": {
+						ComputeShadows(::ShadowsQuality::Default);
+					}
+					case "Button_Shadows_High": {
+						ComputeShadows(::ShadowsQuality::High);
+					}
+					case "Button_Shadows_Ultra": {
+						ComputeShadows(::ShadowsQuality::Ultra);
+					}
+					case "SelectProblem": {
+						Solver = True;
+					}
+				}
+			}
+		}
+		
+		if(LastShadowsQuality != CurrentShadowsQuality) {
+			wait(IsEditorReadyForRequest);
+			sleep(200);
+			if(CurrentShadowsQuality == ::ShadowsQuality::VeryFast)
+				Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("VERY_FAST"), ""^IsUltraShadowsQualityAvailable]);
+			else if(CurrentShadowsQuality == ::ShadowsQuality::Fast)
+				Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("FAST"), ""^IsUltraShadowsQualityAvailable]);
+			else if(CurrentShadowsQuality == ::ShadowsQuality::Default)
+				Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("DEFAULT"), ""^IsUltraShadowsQualityAvailable]);
+			else if(CurrentShadowsQuality == ::ShadowsQuality::High)
+				Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("HIGH"), ""^IsUltraShadowsQualityAvailable]);
+			else if(CurrentShadowsQuality == ::ShadowsQuality::Ultra)
+				Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("ULTRA"), ""^IsUltraShadowsQualityAvailable]);
+			
+			LastShadowsQuality = CurrentShadowsQuality;
+		}
+		
+		if(Solver) {
+			Layers::Hide("ModifierResult", True);
+			Layers::Show("ModifierSolver", True);
+			while(Solver) {
+				foreach(Event,PendingEvents) {
+					Layers::Event(Event);
+					
+					switch(Event.Type) {
+						case CMapEditorPluginEvent::Type::LayerCustomEvent: {
+							switch(Event.CustomEventType) {
+								case "SelectProblem": {
+									Layers::SendEvent("ModifierSolver", "Problem", Problems[TextLib::ToInteger(Event.CustomEventData[0])].tojson());
+									Layers::Show("ModifierSolutions", True);
+								}
+								case "Button_Leave": {
+									Solver = False;
+									Layers::SendEvent("ModifierProblems", "SelectProblem", "-1");
+								}
+								case "Button_Next": {
+									Layers::SendEvent("ModifierProblems", "NextProblem");
+								}
+							}
+						}
+					}
+				}
+				yield;
+			}
+			Layers::Hide("ModifierSolver", True);
+			Layers::Hide("ModifierSolutions", True);
+			Layers::Show("ModifierResult", True);
+		}
+	
+		yield;
+	}
 }
 
 Void Success() {
@@ -112,9 +236,9 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 
 {{{File::Read("Media/API_Base.Script.txt")}}}
 			
-{{{Dictionary::TranslateAllPhrases(_ScriptContent)}}}
-			
 {{{Dictionary::TranslateAllPhrases(File::Read("Media/API.Script.txt"))}}}
+			
+{{{Dictionary::TranslateAllPhrases(_ScriptContent)}}}
 			
 {{{File::Read("Media/API_Main.Script.txt")}}}""");
 			
@@ -170,16 +294,9 @@ main() {
 	Dictionary::SetTranslationFolder("Media/Translations");
 	Dictionary::SetTranslationLanguage(Settings::Get().Language);
 	
-	declare Map::SMapInfo OriginalMapInfo for LocalUser;
 	declare metadata ModifierBase::SChMap OriginalMap for Map;
-	declare JsonSuccess = OriginalMap.fromjson(OriginalMapInfo.tojson());
-	
-	Map.MapName = OriginalMap.Name;
-	Map.Comments = OriginalMap.Comments;
-	Map.TMObjective_NbLaps = OriginalMap.TMObjective_NbLaps;
-	Map.TMObjective_IsLapRace = OriginalMap.TMObjective_IsLapRace;
-	
 	declare metadata ModifierBase::SChProblem[] Problems for Map;
+	declare metadata Integer CurrentScript for Map;
 	
 	declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
 	
@@ -199,8 +316,6 @@ main() {
 	EnableEditorInputsCustomProcessing = False;
 	EditMode = CMapEditorPlugin::EditMode::FreeLook;
 	
-	Map.MapName = """Waiting to modify... ({{{OriginalMap.Name}}})""";
-	
 	if(Problems.count > 0) {
 		
 	}
@@ -217,6 +332,14 @@ main() {
 		Layers::SetAnimationInOut("ModifierMetadata",CUILayer::EUILayerAnimation::UpSlow);
 		
 		Layers::SetAnimationInOut("ModifierResult",CUILayer::EUILayerAnimation::DownSlow);
+		
+		declare Map::SMapInfo OriginalMapInfo for LocalUser;
+		declare JsonSuccess = OriginalMap.fromjson(OriginalMapInfo.tojson());
+		
+		Map.MapName = """Waiting to modify... ({{{OriginalMap.Name}}})""";
+		Map.Comments = OriginalMap.Comments;
+		Map.TMObjective_NbLaps = OriginalMap.TMObjective_NbLaps;
+		Map.TMObjective_IsLapRace = OriginalMap.TMObjective_IsLapRace;
 		
 		LayerCustomEvent(Layers::Get("ModifierIntro"), "Map", [OriginalMap.Name]);
 		Layers::Show("ModifierIntro");
@@ -253,7 +376,8 @@ main() {
 		if(S_TestMode) {
 			declare Text CHALLENGE_CODE for LocalUser;
 			SetMapStyle("Test Script");
-			Begin(Dictionary::Get("TEST_SCRIPT"));
+			Layers::SendEvent("ModifierScript", "ScriptName", [Dictionary::Get("TEST_SCRIPT")]);
+			Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
 			declare Continue = ProcessScript("TEST SCRIPT", CHALLENGE_CODE);
 		}
 		else {
@@ -263,9 +387,14 @@ main() {
 			SetMapStyle(TextLib::Join("+",_Scripts));
 
 			declare Continue = True;
-			foreach(Script,CHALLENGE_SCRIPTS) {
+			for(I,0,CHALLENGE_SCRIPTS.count-1) {
+				declare Script = CHALLENGE_SCRIPTS[I];
+								
 				if(Continue) {
-					Begin(Script.Name);
+					CurrentScript = I;
+					
+					Layers::SendEvent("ModifierScript", "ScriptName", [Script.Name]);
+					Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
 					ValidateScript();
 					
 					declare Text BuildScript;
@@ -285,86 +414,15 @@ main() {
 					Continue = ProcessScript(Script.Name, BuildScript);
 					sleep(500);
 				}
+				if(Problems.count > 0) Finish();
+				if(Abort) return;
 			}
 		}
 	}
 	
-	Map.MapName = OriginalMap.Name ^ "$z (" ^ OriginalMap.CollectionName ^ ", " ^ TextLib::Replace(Map.MapStyle, "+", " ")^ ")";
+	Map.MapName = OriginalMap.Name ^ "$z - " ^ TextLib::Replace(Map.MapStyle, "+", " + ");
 	
 	Finish();
-	
-	declare Abort = False;
-	while(!Abort) {
-		foreach(Event,PendingEvents) {
-			if(Event.Type == CMapEditorPluginEvent::Type::LayerCustomEvent) {
-				switch(Event.CustomEventType) {
-					case "Button_Interface": {
-						Abort = True;
-					}
-					case "Button_Exit": {
-						Quit();
-					}
-					case "Button_Validate": {
-						Validate();
-					}
-					case "Button_Save": {
-						declare metadata ModifierBase::SChProblem[] Problems for Map;
-
-						if(Problems.count == 0) {
-							if(CurrentShadowsQuality == ::ShadowsQuality::Fast
-							|| CurrentShadowsQuality == ::ShadowsQuality::Default
-							|| CurrentShadowsQuality == ::ShadowsQuality::High
-							|| CurrentShadowsQuality == ::ShadowsQuality::Ultra) {
-								Map.MapName = OriginalMap.Name ^ "$z (" ^ TextLib::Replace(Map.MapStyle, "+", " ")^ ")";
-								SaveMap("");
-							}
-							else {
-								Layers::SendEvent("ModifierResult", "SuggestShadows");
-							}
-						}
-						else {
-							Map.MapName = OriginalMap.Name ^ "$z (" ^ TextLib::Replace(Map.MapStyle, "+", " ")^ ")";
-							SaveMap("");
-						}
-					}
-					case "Button_Shadows_VeryFast": {
-						ComputeShadows(::ShadowsQuality::VeryFast);
-					}
-					case "Button_Shadows_Fast": {
-						ComputeShadows(::ShadowsQuality::Fast);
-					}
-					case "Button_Shadows_Default": {
-						ComputeShadows(::ShadowsQuality::Default);
-					}
-					case "Button_Shadows_High": {
-						ComputeShadows(::ShadowsQuality::High);
-					}
-					case "Button_Shadows_Ultra": {
-						ComputeShadows(::ShadowsQuality::Ultra);
-					}
-				}
-			}
-		}
-		
-		if(LastShadowsQuality != CurrentShadowsQuality) {
-			wait(IsEditorReadyForRequest);
-			sleep(200);
-			if(CurrentShadowsQuality == ::ShadowsQuality::VeryFast)
-				Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("VERY_FAST"), ""^IsUltraShadowsQualityAvailable]);
-			else if(CurrentShadowsQuality == ::ShadowsQuality::Fast)
-				Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("FAST"), ""^IsUltraShadowsQualityAvailable]);
-			else if(CurrentShadowsQuality == ::ShadowsQuality::Default)
-				Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("DEFAULT"), ""^IsUltraShadowsQualityAvailable]);
-			else if(CurrentShadowsQuality == ::ShadowsQuality::High)
-				Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("HIGH"), ""^IsUltraShadowsQualityAvailable]);
-			else if(CurrentShadowsQuality == ::ShadowsQuality::Ultra)
-				Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("ULTRA"), ""^IsUltraShadowsQualityAvailable]);
-			
-			LastShadowsQuality = CurrentShadowsQuality;
-		}
-	
-		yield;
-	}
 	
 	Layers::DestroyAll();
 	UILayerDestroyAll();

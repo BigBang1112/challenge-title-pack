@@ -120,3 +120,42 @@
 	CAnchorData[] Anchors;
 	Text Waypoint;
 }
+
+declare SChProblem Problem;
+
+Void UpdateProblem() {
+	(Page.GetFirstChild("LABEL_PROBLEM") as CMlLabel).SetText(Problem.ShortDescription);
+	(Page.GetFirstChild("LABEL_PROBLEM_LONG") as CMlLabel).SetText(Problem.LongDescription);
+}
+
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseClick: {
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON_LEAVE": {
+					SendCustomEvent("Button_Leave",[]);
+				}
+				case "QUAD_BUTTON_NEXT": {
+					SendCustomEvent("Button_Next",[]);
+				}
+			}
+		}
+		case CMlScriptEvent::Type::PluginCustomEvent: {
+			switch(Event.CustomEventType) {
+				case "Show": {
+					
+				}
+				case "Hide": {
+					SendCustomEvent("Hide_Response", []);
+				}
+				case "Problem": {
+					declare JsonSuccess = Problem.fromjson(Event.CustomEventData[0]);
+					UpdateProblem();
+				}
+			}
+		}
+	}
+}
+***

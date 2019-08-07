@@ -1,0 +1,20 @@
+<frame pos="0 -50">
+	<frame id="FRAME_BACKGROUND">
+		<quad z-index="-1" size="100 30" bgcolor="FFFA" style="Bgs1" substyle="BgCardList" valign="top" halign="center"/>
+		<quad z-index="0" size="100 30" bgcolor="FFFA" style="Bgs1" substyle="BgGradV" valign="top" halign="center"/>
+	</frame>
+	<frame pos="-75 -20" z-index="1">
+		<quad z-index="0" size="40 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="630" id="QUAD_BUTTON_LEAVE" class="opacity"/>
+		<label pos="0 -5.25" z-index="1" size="40 10" text="{{{{LEAVE}}}}" halign="center" valign="center2" textfont="RajdhaniMono"/>
+	</frame>
+	<frame pos="75 -20" z-index="1">
+		<quad z-index="0" size="40 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_BUTTON_NEXT" class="opacity"/>
+		<label pos="0 -5.25" z-index="1" size="40 10" text="{{{{NEXT}}}}" halign="center" valign="center2" textfont="RajdhaniMono"/>
+	</frame>
+	<label id="LABEL_PROBLEM" pos="0 -4.8" z-index="1" size="90 10" text="{{{{PROBLEM}}}}" textfont="RajdhaniMono" halign="center" textcolor="EEE"/>
+	<label id="LABEL_PROBLEM_LONG" pos="0 -10.8" z-index="1" size="90 10" textfont="BiryaniDemiBold" halign="center" textcolor="EEE" textsize="2" autonewline="1"/>
+	<frame z-index="1" pos="0 -25" id="FRAME_SOLVED" hidden="1">
+		<quad pos="0 0" z-index="-1" size="90 5" bgcolor="0806" halign="center" valign="center"/>
+		<label pos="0 -0.3" z-index="0" size="20 5" text="SOLVED" halign="center" valign="center2" textfont="RajdhaniMono" textsize="2"/>
+	</frame>
+</frame>

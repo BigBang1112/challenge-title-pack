@@ -32,6 +32,7 @@ declare Quad_Button_Validate = (Page.GetFirstChild("QUAD_BUTTON_VALIDATE") as CM
 declare Label_Button_Validate = (Page.GetFirstChild("LABEL_BUTTON_VALIDATE") as CMlLabel);
 
 declare Boolean IsUltraAvailable;
+declare Boolean HasProblems;
 ***
 
 ***Loop***
@@ -50,7 +51,8 @@ foreach(Event,PendingEvents) {
 					SendCustomEvent("Button_Exit",[]);
 				}
 				case "QUAD_BUTTON_VALIDATE": {
-					SendCustomEvent("Button_Validate",[]);
+					if(HasProblems) SendCustomEvent("Button_Solve",[]);
+					else SendCustomEvent("Button_Validate",[]);
 				}
 				case "QUAD_BUTTON_SHADOWS": {
 					if(Page.GetFirstChild("FRAME_SHADOWS").DataAttributeGet("open") == "1") {
@@ -100,6 +102,7 @@ foreach(Event,PendingEvents) {
 							AnimMgr.Add(Element, "<quad opacity=\"0\" hidden=\"1\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 						}
 					}
+					SendCustomEvent("Hide_Response", []);
 				}
 				case "SuggestShadows": {
 					if(Page.GetFirstChild("FRAME_SHADOWS").DataAttributeGet("open") != "1") {
@@ -121,10 +124,12 @@ foreach(Event,PendingEvents) {
 				case "Problems": {
 					Quad_Button_Validate.ModulateColor = <0.6,0.4,0.0>;
 					Label_Button_Validate.SetText("{{{{SOLVE_PROBLEMS}}}}");
+					HasProblems = True;
 				}
 				case "Solved": {
 					Quad_Button_Validate.ModulateColor = <0.0,0.4,0.0>;
 					Label_Button_Validate.SetText("{{{{VALIDATE}}}}");
+					HasProblems = False;
 				}
 				case "Shadows": {
 					declare Quality = Event.CustomEventData[0];

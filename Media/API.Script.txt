@@ -531,6 +531,14 @@ Void Problem_FromBase(SChProblem _Problem) {
 
 }
 
+SChSolution Solution(Text _Value, Text _AdditionalInfo, Boolean _IsInteractive) {
+	declare SChSolution Solution;
+	Solution.Value = _Value;
+	Solution.AdditionalInfo = _AdditionalInfo;
+	Solution.IsInteractive = _IsInteractive;
+	return Solution;
+}
+
 Void Note(SChNote _Note) {
 	
 }

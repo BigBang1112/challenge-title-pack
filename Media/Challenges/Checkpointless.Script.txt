@@ -5,6 +5,56 @@ Script.AuthorLogin = "bigbang1112";
 Script.Description = "{{{{CHECKPOINTLESS_DESCRIPTION}}}}";
 ***
 
+Void Problem_BlockMissing(Text _BlockName) {
+	declare SChProblem Problem_BlockMissing;
+	Problem_BlockMissing.Name = "BLOCK_MISSING";
+	Problem_BlockMissing.BlockName = _BlockName;
+	Problem_BlockMissing.ShortDescription = "{{{{PROBLEM_BLOCK_MISSING}}}} - " ^ _BlockName;
+	Problem_BlockMissing.LongDescription = "{{{{PROBLEM_BLOCK_MISSING_LONG}}}}";
+	Problem_BlockMissing.Solutions.add(Solution("{{{{PROBLEM_BLOCK_MISSING_SOLUTION_1}}}}", "", True));
+	Problem_BlockMissing.Solutions.add(Solution("{{{{PROBLEM_BLOCK_MISSING_SOLUTION_2}}}}", "", False));
+	Problem_BlockMissing.Solutions.add(Solution("{{{{PROBLEM_BLOCK_MISSING_SOLUTION_3}}}}", "", True));
+	Problem_BlockMissing.Solutions.add(Solution("{{{{PROBLEM_BLOCK_MISSING_SOLUTION_4}}}}", "", False));
+	Problem(Problem_BlockMissing);
+}
+
+Void Problem_MultilapTrack(SChWaypoint _Multilap) {
+	declare SChProblem Problem_MultilapTrack;
+	Problem_MultilapTrack.Name = "MULTILAP_TRACK";
+	Problem_MultilapTrack.Waypoint = _Multilap;
+	Problem_MultilapTrack.ShortDescription = "{{{{PROBLEM_MULTILAP_TRACK}}}}";
+	Problem_MultilapTrack.LongDescription = "{{{{PROBLEM_MULTILAP_TRACK_LONG_CHECKPOINTLESS}}}}";
+	Problem(Problem_MultilapTrack);
+}
+
+Void Problem_ItemMultilap(SChItem _Item) {
+	declare SChProblem Problem_ItemMultilap;
+	Problem_ItemMultilap.Name = "ITEM_MULTILAP";
+	Problem_ItemMultilap.Item = _Item;
+	Problem_ItemMultilap.ShortDescription = "{{{{PROBLEM_CANNOT_ADJUST_ONELAP}}}}";
+	Problem_ItemMultilap.LongDescription = "{{{{PROBLEM_CANNOT_ADJUST_ONELAP_LONG_CHECKPOINTLESS}}}}";
+	Problem_ItemMultilap.Solutions.add(Solution("{{{{PROBLEM_BLOCK_MISSING_SOLUTION_1}}}}", "", True));
+	Problem(Problem_ItemMultilap);
+}
+
+Void Problem_NoCheckpoint() {
+	declare SChProblem Problem_NoCheckpoint;
+	Problem_NoCheckpoint.Name = "NO_CHECKPOINT";
+	Problem_NoCheckpoint.ShortDescription = "{{{{PROBLEM_NO_CHECKPOINT}}}}";
+	Problem_NoCheckpoint.LongDescription = "{{{{PROBLEM_NO_CHECKPOINT_LONG}}}}";
+	Problem(Problem_NoCheckpoint);
+}
+
+Void Problem_CannotRemoveCheckpoint(SChWaypoint _Checkpoint) {
+	declare SChProblem Problem_CannotRemoveCheckpoint;
+	Problem_CannotRemoveCheckpoint.Name = "CANNOT_REMOVE_CHECKPOINT";
+	Problem_CannotRemoveCheckpoint.Waypoint = _Checkpoint;
+	Problem_CannotRemoveCheckpoint.ShortDescription = "{{{{PROBLEM_CANNOT_REMOVE_CHECKPOINT}}}}";
+	Problem_CannotRemoveCheckpoint.LongDescription = "{{{{PROBLEM_CANNOT_REMOVE_CHECKPOINT_LONG}}}}";
+	Problem_CannotRemoveCheckpoint.Solutions.add(Solution("{{{{PROBLEM_CANNOT_REMOVE_CHECKPOINT_SOLUTION_1}}}}", "", True));
+	Problem(Problem_CannotRemoveCheckpoint);
+}
+
 ***Main***
 ***
 declare Multilaps = GetMultilaps();
@@ -15,26 +65,11 @@ declare Environment = MapInfo.CollectionName;
 declare IsOneLapWithFinish = Multilaps.count == 1 && FinishLines.count > 0 && MapInfo.TMObjective_NbLaps == 1;
 declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
 
-if(IsMultilap) {
-	declare SChProblem Problem_MultilapTrack;
-	Problem_MultilapTrack.Name = "MULTILAP_TRACK";
-	Problem_MultilapTrack.Waypoint = Multilaps[0];
-	Problem_MultilapTrack.ShortDescription = "{{{{MULTILAP_TRACK}}}}";
-	Problem_MultilapTrack.LongDescription = "This track has a multilap which isn't considered as one lap with one or more finishes. This map can't be made Checkpointless.";
-	Problem(Problem_MultilapTrack);
-}
+if(IsMultilap) Problem_MultilapTrack(Multilaps[0]);
 
 if(IsOneLapWithFinish) {
 	declare Multilap = Multilaps[0];
-	if(Multilap.IsItem) {
-		declare SChProblem Problem_ItemMultilap;
-		Problem_ItemMultilap.Name = "ITEM_MULTILAP";
-		Problem_ItemMultilap.Waypoint = Multilap;
-		Problem_ItemMultilap.ShortDescription = "{{{{CANNOT_ADJUST_ONELAP}}}}";
-		Problem_ItemMultilap.LongDescription = "Multilap is an item. Script can't replace it with any start variant. Replacing it with start variant is needed to make Checkpointless valid.";
-		Problem_ItemMultilap.Solutions.add("Replace the multilap item manually with a possible start variant.");
-		Problem(Problem_ItemMultilap);
-	}
+	if(Multilap.IsItem) Problem_ItemMultilap(Multilap.Item);
 	else if(Multilap.IsBlock) {
 		foreach(Relation, Relation_MultilapStartTwoway[Environment]) {
 			declare MultilapBlockName = Relation[0];
@@ -46,16 +81,7 @@ if(IsOneLapWithFinish) {
 					if(Block.Placed)
 						SetStatusMessage(MultilapBlockName ^ " {{{{replaced_with}}}} " ^ StartTwowayBlockName ^ ".");
 					else {
-						declare SChProblem Problem_BlockMissing;
-						Problem_BlockMissing.Name = "BLOCK_MISSING";
-						Problem_BlockMissing.BlockName = StartTwowayBlockName;
-						Problem_BlockMissing.ShortDescription = "{{{{BLOCK_MISSING}}}} - " ^ StartTwowayBlockName;
-						Problem_BlockMissing.LongDescription = "Block to replace with is missing in the current blockset.";
-						Problem_BlockMissing.Solutions.add("Contact the authors of Challenge to add the block.");
-						Problem_BlockMissing.Solutions.add("Add the block by yourself via block creator or macroblock.");
-						Problem_BlockMissing.Solutions.add("Place a similar block that will function the same.");
-						Problem_BlockMissing.Solutions.add("Wait before Nadeo will add the block.");
-						Problem(Problem_BlockMissing);
+						Problem_BlockMissing(StartTwowayBlockName);
 					}
 				}
 			}
@@ -68,13 +94,7 @@ if(IsOneLapWithFinish) {
 
 declare Checkpoints = GetCheckpoints();
 
-if(Checkpoints.count == 0) {
-	declare SChProblem Problem_NoCheckpoint;
-	Problem_NoCheckpoint.Name = "NO_CHECKPOINT";
-	Problem_NoCheckpoint.ShortDescription = "{{{{NO_CHECKPOINT}}}}";
-	Problem_NoCheckpoint.LongDescription = "The track has no checkpoints.";
-	Problem(Problem_NoCheckpoint);
-}
+if(Checkpoints.count == 0) Problem_NoCheckpoint();
 
 for(i,0,Checkpoints.count-1) {
 	declare Checkpoint = Checkpoints[i];
@@ -92,15 +112,7 @@ for(i,0,Checkpoints.count-1) {
 	
 	SetStatusProgress((i+1.0)/(Checkpoints.count));
 
-	if(!Removed) {
-		declare SChProblem Problem_CannotRemoveCheckpoint;
-		Problem_CannotRemoveCheckpoint.Name = "CANNOT_REMOVE_CHECKPOINT";
-		Problem_CannotRemoveCheckpoint.Waypoint = Checkpoint;
-		Problem_CannotRemoveCheckpoint.ShortDescription = "{{{{CANNOT_REMOVE_CHECKPOINT}}}}";
-		Problem_CannotRemoveCheckpoint.LongDescription = "This checkpoint can't be removed via script. The block or item is possibly ghost type or weirdly placed.";
-		Problem_CannotRemoveCheckpoint.Solutions.add("Remove the checkpoint manually.");
-		Problem(Problem_CannotRemoveCheckpoint);
-	}
+	if(!Removed) Problem_CannotRemoveCheckpoint(Checkpoint);
 
 	yield;
 }

@@ -1,0 +1,38 @@
+<frame pos="-100 40" id="FRAME_SOLUTIONS">
+	<frame id="FRAME_BACKGROUND">
+		<quad z-index="-1" size="100 60" bgcolor="FFFA" style="Bgs1" substyle="BgCardList" valign="top" halign="center"/>
+		<quad z-index="0" size="100 60" bgcolor="FFFA" style="Bgs1" substyle="BgGradV" valign="top" halign="center"/>
+	</frame>
+	<frame id="FRAME_INNER" z-index="1">
+		<label pos="-42.5 -4.6" z-index="1" size="90 5" text="{{{{POSSIBLE_SOLUTIONS}}}}" textfont="RajdhaniMono" textsize="4" id="LABEL_SOLUTIONS"/>
+		<quad pos="0 -15" z-index="1" size="100 40" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV" class="opacity" id="QUAD_LIST_BG"/>
+		<quad pos="47 -15" z-index="2" size="2 20" bgcolor="FFFA" style="Bgs1" substyle="BgMetalBar" id="QUAD_SCROLLBAR" hidden="1"/>
+		<quad pos="47 -15" z-index="1" size="2 40" bgcolor="FFFA" style="Bgs1InRace" substyle="BgMetalBar" modulatecolor="222" opacity=".5" id="QUAD_SCROLLBAR_BACKGROUND"/>
+		<frame pos="0 -15" z-index="2" id="FRAME_LIST">
+			<frame hidden="1">
+				<quad z-index="0" size="97 10" pos="-50 0" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON"/>
+				<frame pos="-45 -5.25" z-index="1" clip="True" clipsizen="100 10" id="FRAME_LABEL_BUTTON">
+					<label size="200 10" text="MAP NAME MAP NAME MAP NAME MAP NAME MAP NAME" textsize="2" halign="left" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON" textcolor="EEE"/>
+				</frame>
+			</frame>
+			<frame hidden="1" pos="0 -10">
+				<quad z-index="0" size="97 10" pos="-50 0" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON"/>
+				<frame pos="-45 -5.25" z-index="1" clip="True" clipsizen="100 10" id="FRAME_LABEL_BUTTON">
+					<label size="200 10" text="MAP NAME MAP NAME MAP NAME MAP NAME MAP NAME" textsize="2" halign="left" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON" textcolor="EEE"/>
+				</frame>
+			</frame>
+			<frame hidden="1" pos="0 -20">
+				<quad z-index="0" size="97 10" pos="-50 0" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON"/>
+				<frame pos="-45 -5.25" z-index="1" clip="True" clipsizen="100 10" id="FRAME_LABEL_BUTTON">
+					<label size="200 10" text="MAP NAME MAP NAME MAP NAME MAP NAME MAP NAME" textsize="2" halign="left" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON" textcolor="EEE"/>
+				</frame>
+			</frame>
+			<frame hidden="1" pos="0 -30">
+				<quad z-index="0" size="97 10" pos="-50 0" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON"/>
+				<frame pos="-45 -5.25" z-index="1" clip="True" clipsizen="100 10" id="FRAME_LABEL_BUTTON">
+					<label size="200 10" text="MAP NAME MAP NAME MAP NAME MAP NAME MAP NAME" textsize="2" halign="left" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON" textcolor="EEE"/>
+				</frame>
+			</frame>
+		</frame>
+	</frame>
+</frame>
