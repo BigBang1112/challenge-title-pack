@@ -8,6 +8,9 @@ declare Text[][][Text] Relation_MultilapStartTwoway;
 declare Text[][][Text] Relation_MultilapFinishTwoway;
 declare Text[][][Text] Relation_StartTwowayFinishTwoway;
 
+declare SChProblem Solver_Problem;
+declare Integer Solver_Solution;
+
 SResponse Request(Text _Command, Text[] _Arguments) {
 	declare SResponse Response;
 
@@ -417,7 +420,7 @@ Boolean RemoveSpecificBlock(SChBlock _Block) {
 }
 
 Integer Random(Integer _Min, Integer _Max) { // Consistent randomizer
-	return MathLib::Rand(_Min, _Max, Editor.Map.CopperPrice);
+	return MathLib::Rand(_Min, _Max, GetMapInfo().CopperPrice);
 }
 
 Integer Random(Integer _Max) {
@@ -425,7 +428,7 @@ Integer Random(Integer _Max) {
 }
 
 Real Random(Real _Min, Real _Max) { // Consistent randomizer
-	return MathLib::Rand(_Min, _Max, Editor.Map.CopperPrice);
+	return MathLib::Rand(_Min, _Max, GetMapInfo().CopperPrice);
 }
 
 Real Random(Real _Max) {
@@ -503,6 +506,10 @@ Void Complete() { // Shouldn't be normally called
 	declare Response = Request("Ch_Complete", []);
 }
 
+Void Solve(SChProblem _Problem) { // Shouldn't be normally called
+	declare Response = Request("Ch_Solve", [_Problem.tojson()]);
+}
+
 Void Problem(SChProblem _Problem) {
 	Problems.add(_Problem);
 
@@ -549,6 +556,14 @@ Void Incompatible(Text _Reason) {
 
 Void Chill() {
 	yield;
+}
+
+Void ShowEditor() {
+	declare Response = Request("Ch_ShowEditor", []);
+}
+
+Void HideEditor() {
+	declare Response = Request("Ch_HideEditor", []);
 }
 
 //

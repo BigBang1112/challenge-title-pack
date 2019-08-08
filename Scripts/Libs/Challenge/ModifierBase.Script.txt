@@ -14,10 +14,10 @@
 	Boolean IsRoad; 
 	Boolean IsTerrain;
 	Boolean IsPodium;
-	Text Waypoint;
 	SChAnchor[] Anchors;
 	Boolean NoRespawn;
 	Boolean IsSpecial;
+	Text Waypoint;
 }
 
 #Struct SChItem {
@@ -57,11 +57,8 @@
 	Text Name;
 	Int3 Coord;
 	Text Direction;
-	SChWaypoint Waypoint;
 	SChWaypoint[] Waypoints;
-	SChBlock Block;
 	SChBlock[] Blocks;
-	SChItem Item;
 	SChItem[] Items;
 	Text BlockName;
 	Text ShortDescription;
@@ -71,11 +68,8 @@
 
 #Struct SChNote {
 	Text Name;
-	SChWaypoint Waypoint;
 	SChWaypoint[] Waypoints;
-	SChBlock Block;
 	SChBlock[] Blocks;
-	SChItem Item;
 	SChItem[] Items;
 }
 

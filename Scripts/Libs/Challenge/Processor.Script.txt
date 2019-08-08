@@ -467,6 +467,16 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			UndergroundMode = False;
 			Respond(_LayerAPI, _Type, []);
 		}
+		case "Ch_ShowEditor": {
+			HideEditorInterface = False;
+			EnableEditorInputsCustomProcessing = False;
+			Respond(_LayerAPI, _Type, []);
+		}
+		case "Ch_HideEditor": {
+			HideEditorInterface = True;
+			EnableEditorInputsCustomProcessing = True;
+			Respond(_LayerAPI, _Type, []);
+		}
 		case "Ch_RemoveItem": {
 			declare ModifierBase::SChItem Item;
 			declare JsonSuccess = Item.fromjson(_Data[0]);

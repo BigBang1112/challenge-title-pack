@@ -18,7 +18,7 @@ declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
 if(IsMultilap) {
 	declare SChProblem Problem_MultilapTrack;
 	Problem_MultilapTrack.Name = "MULTILAP_TRACK";
-	Problem_MultilapTrack.Waypoint = Multilaps[0];
+	Problem_MultilapTrack.Waypoints.add(Multilaps[0]);
 	Problem_MultilapTrack.ShortDescription = "{{{{MULTILAP_TRACK}}}}";
 	Problem_MultilapTrack.LongDescription = "This track has a multilap which isn't considered as one lap with 1 or more finishes. This map can't be made Checkpointless.";
 	Problem(Problem_MultilapTrack);
@@ -37,7 +37,7 @@ else {
 		if(Start.IsItem) {
 			declare SChProblem Problem_ItemStart;
 			Problem_ItemStart.Name = "ITEM_START";
-			Problem_ItemStart.Waypoint = Start;
+			Problem_ItemStart.Waypoints.add(Start);
 			Problem_ItemStart.ShortDescription = "";
 			Problem_ItemStart.LongDescription = "Start is an item. Script can't replace it with any multilap variant. Replacing it with multilap variant is needed to make Comeback valid.";
 			Problem_ItemStart.Solutions.add("Replace the start item manually with a possible multilap variant.");
@@ -67,7 +67,7 @@ else {
 			else {
 				declare SChProblem Problem_CannotRemoveStartLine;
 				Problem_CannotRemoveStartLine.Name = "CANNOT_REMOVE_STARTLINE";
-				Problem_CannotRemoveStartLine.Waypoint = Start;
+				Problem_CannotRemoveStartLine.Waypoints.add(Start);
 				Problem_CannotRemoveStartLine.ShortDescription = "{{{{CANNOT_REMOVE_STARTLINE}}}} - " ^ StartBlockName;
 				Problem_CannotRemoveStartLine.LongDescription = "This start anchor can't be removed via script. The anchor is possibly ghost block or weirdly placed.";
 				Problem_CannotRemoveStartLine.Solutions.add("Replace the start manually with possible multilap variant.");
@@ -88,7 +88,7 @@ foreach(Finish, FinishLines) {
 		if(Finish.IsItem) {
 			declare SChProblem Problem_ItemFinish;
 			Problem_ItemFinish.Name = "ITEM_FINISH";
-			Problem_ItemFinish.Waypoint = Finish;
+			Problem_ItemFinish.Waypoints.add(Finish);
 			Problem_ItemFinish.ShortDescription = "";
 			Problem_ItemFinish.LongDescription = "Finish is an item. Script can't replace it with any checkpoint variant. Replacing it with checkpoint variant is needed to make Comeback valid.";
 			Problem_ItemFinish.Solutions.add("Replace the finish item manually with a possible checkpoint variant.");
@@ -121,7 +121,7 @@ foreach(Finish, FinishLines) {
 			else {
 				declare SChProblem Problem_CannotRemoveFinishLine;
 				Problem_CannotRemoveFinishLine.Name = "CANNOT_REMOVE_FINISHLINE";
-				Problem_CannotRemoveFinishLine.Waypoint = Finish;
+				Problem_CannotRemoveFinishLine.Waypoints.add(Finish);
 				Problem_CannotRemoveFinishLine.ShortDescription = "{{{{CANNOT_REMOVE_FINISHLINE}}}} -  " ^ FinishBlockName;
 				Problem_CannotRemoveFinishLine.LongDescription = "This finish can't be removed via script. The block is possibly ghost or weirdly placed.";
 				Problem_CannotRemoveFinishLine.Solutions.add("Replace the finish manually with possible checkpoint variant.");

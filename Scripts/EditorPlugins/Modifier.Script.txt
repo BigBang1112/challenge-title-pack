@@ -52,8 +52,30 @@ declare Boolean Abort;
 
 declare ::ShadowsQuality LastShadowsQuality;
 
+declare Integer BlockSize;
+
+Text GetScriptFromIndex(Integer _Index) {
+	declare metadata SScriptInfo[] Scripts for Map;
+	if(!Scripts.existskey(_Index)) return "";
+	return File::Read("Media/Challenges/"^Scripts[_Index].Name);
+}
+
 Void ValidateScript() {
 
+}
+
+Void CameraReset() {
+	declare CamPosition = <Map.Size.X*BlockSize/2.,5.,Map.Size.Z*BlockSize/3.>;
+	CameraTargetPosition = CamPosition;
+	CameraToTargetDistance = BlockSize*.75*Map.Size.X;
+	CameraHAngle = 0.;
+	CameraVAngle = 1.;
+}
+
+Void CameraSpin() {
+	CameraToTargetDistance = BlockSize*1.5;
+	CameraVAngle = 0.5;
+	CameraHAngle += 0.01;
 }
 
 Void Finish() {
@@ -93,8 +115,9 @@ Void Finish() {
 	Layers::Show("ModifierResult", True);
 	
 	declare Solver = False;
+	declare Continue = False;
 	
-	while(!Abort) {
+	while(!Continue) {
 		foreach(Event,PendingEvents) {
 			Layers::Event(Event);
 		
@@ -102,6 +125,7 @@ Void Finish() {
 				switch(Event.CustomEventType) {
 					case "Button_Interface": {
 						Abort = True;
+						return;
 					}
 					case "Button_Exit": {
 						Quit();
@@ -114,6 +138,7 @@ Void Finish() {
 						Layers::SendEvent("ModifierProblems", "SelectProblem", "0");
 						Layers::SendEvent("ModifierSolver", "Problem", Problems[0].tojson());
 						Layers::Show("ModifierSolutions", True);
+						Layers::SendEvent("ModifierSolutions", "UpdateSolutions", Problems[0].Solutions.tojson());
 					}
 					case "Button_Save": {
 						declare metadata ModifierBase::SChProblem[] Problems for Map;
@@ -174,10 +199,17 @@ Void Finish() {
 			LastShadowsQuality = CurrentShadowsQuality;
 		}
 		
+		declare CamPosition = <Map.Size.X*BlockSize/2.,5.,Map.Size.Z*BlockSize/3.>;
+		CameraReset();
+		
 		if(Solver) {
 			Layers::Hide("ModifierResult", True);
 			Layers::Show("ModifierSolver", True);
-			while(Solver) {
+			
+			declare Integer SelectedProblem;
+			declare Integer SelectedSolution = -1;
+			
+			while(Solver) { // Solver interaction loop
 				foreach(Event,PendingEvents) {
 					Layers::Event(Event);
 					
@@ -185,25 +217,130 @@ Void Finish() {
 						case CMapEditorPluginEvent::Type::LayerCustomEvent: {
 							switch(Event.CustomEventType) {
 								case "SelectProblem": {
-									Layers::SendEvent("ModifierSolver", "Problem", Problems[TextLib::ToInteger(Event.CustomEventData[0])].tojson());
+									SelectedProblem = TextLib::ToInteger(Event.CustomEventData[0]);
+									declare Problem = Problems[SelectedProblem];
+									Layers::SendEvent("ModifierSolver", "Problem", Problem.tojson());
 									Layers::Show("ModifierSolutions", True);
+									Layers::SendEvent("ModifierSolutions", "UpdateSolutions", Problem.Solutions.tojson());
+									if(Problem.Waypoints.count > 0) {
+										declare Waypoint = Problem.Waypoints[0];
+										if(Waypoint.IsBlock)
+											CamPosition = <Waypoint.Block.Coord.X*BlockSize*1.,Waypoint.Block.Coord.Y*BlockSize/4.,Waypoint.Block.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
+										else if(Waypoint.IsItem)
+											CamPosition = Waypoint.Item.Position+<16.,0.,16.>;
+									}
+									else if(Problem.Items.count > 0) {
+										declare Item = Problem.Items[0];
+										CamPosition = Item.Position+<16.,0.,16.>;
+									}
 								}
 								case "Button_Leave": {
 									Solver = False;
 									Layers::SendEvent("ModifierProblems", "SelectProblem", "-1");
+									Layers::Show("ModifierResult", True);
 								}
 								case "Button_Next": {
 									Layers::SendEvent("ModifierProblems", "NextProblem");
+								}
+								case "SelectSolution": {
+									SelectedSolution = TextLib::ToInteger(Event.CustomEventData[0]);
 								}
 							}
 						}
 					}
 				}
+				
+				CameraTargetPosition = CamPosition;
+				CameraSpin();
+				
+				if(SelectedSolution != -1) {
+					Layers::Hide("ModifierSolutions", True);
+					Layers::Hide("ModifierProblems", True);
+					//Layers::Hide("ModifierSolver", True);
+					
+					LayerAPI = UILayerCreate();
+					LayerAPI.ManialinkPage = Manialink::Construct("","""#RequireContext CMapEditorPluginLayer
+	
+					{{{File::Read("Media/API_Base.Script.txt")}}}
+								
+					{{{Dictionary::TranslateAllPhrases(File::Read("Media/API.Script.txt"))}}}
+								
+					{{{Dictionary::TranslateAllPhrases(GetScriptFromIndex(CurrentScript))}}}
+								
+					{{{File::Read("Media/API_Main_Solver.Script.txt")}}}""");
+					
+					LayerCustomEvent(LayerAPI, "Solver", [Problems[SelectedProblem].tojson(), SelectedSolution^""]);
+					
+					declare Solved = False;
+					while(!Solved) { // Inner solve loop
+						declare SCommand[] Commands;
+						foreach(Event,PendingEvents) {
+							Layers::Event(Event);
+						
+							if(Event.Type == CMapEditorPluginEvent::Type::LayerCustomEvent) {
+								if(Event.CustomEventType == "Ch_Solve") {
+									for(I,0,Problems.count-1) {
+										if(Problems.existskey(I) && Problems[I].tojson() == Event.CustomEventData[0])
+											declare Removed = Problems.removekey(I);
+									}
+									Solved = True;
+									log("[SOLVER] Solved");
+								}
+								else if(TextLib::StartsWith("Ch_", Event.CustomEventType)) {
+									declare SCommand Command;
+									Command.Name = Event.CustomEventType;
+									foreach(Data, Event.CustomEventData)
+										Command.Parameters.add(Data);
+									Commands.add(Command);
+								}
+							}
+						}
+						
+						foreach(Command,Commands) {						
+							log("[SOLVER] Request: "^Command.Name);
+							declare Success = Processor::Command(LayerAPI, Command.Name, Command.Parameters);
+						}
+
+						CameraSpin();
+						
+						yield;
+					}
+					
+					if(Problems.count > 0) {
+						Layers::SendEvent("ModifierProblems", "UpdateProblems", Problems.tojson());
+						Layers::SendEvent("ModifierProblems", "SelectProblem", "0");
+						SelectedProblem = 0;
+						Layers::Show("ModifierProblems", True);
+						declare Problem = Problems[0];
+						Layers::SendEvent("ModifierSolver", "Problem", Problem.tojson());
+						Layers::Show("ModifierSolutions", True);
+						Layers::SendEvent("ModifierSolutions", "UpdateSolutions", Problem.Solutions.tojson());
+						
+						if(Problem.Waypoints.count > 0) {
+							declare Waypoint = Problem.Waypoints[0];
+							if(Waypoint.IsBlock)
+								CamPosition = <Waypoint.Block.Coord.X*BlockSize*1.,Waypoint.Block.Coord.Y*BlockSize/4.,Waypoint.Block.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
+							else if(Waypoint.IsItem)
+								CamPosition = Waypoint.Item.Position+<16.,0.,16.>;
+						}
+						else if(Problem.Items.count > 0) {
+							declare Item = Problem.Items[0];
+							CamPosition = Item.Position+<16.,0.,16.>;
+						}
+					}
+					else {
+						Solver = False;
+						Continue = True;
+					}
+					SelectedSolution = -1;
+				}
+				
 				yield;
 			}
-			Layers::Hide("ModifierSolver", True);
+			if(Continue) Layers::Hide("ModifierProblems", True);
+			
+			Layers::Hide("ModifierSolver");
 			Layers::Hide("ModifierSolutions", True);
-			Layers::Show("ModifierResult", True);
 		}
 	
 		yield;
@@ -246,6 +383,8 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 	while(!Completed && !Terminate) {
 		declare SCommand[] Commands;
 		foreach(Event,PendingEvents) {
+			Layers::Event(Event);
+		
 			if(Event.Type == CMapEditorPluginEvent::Type::LayerCustomEvent) {
 				if(Event.CustomEventType == "Ch_Complete") {
 					Completed = True;
@@ -270,6 +409,8 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 			log("[MODIFIER] Request: "^Command.Name);
 			if(!Processor::Command(LayerAPI, Command.Name, Command.Parameters)) TerminateScript();
 		}
+		
+		CameraReset();
 	
 		yield;
 	}
@@ -296,43 +437,45 @@ main() {
 	
 	declare metadata ModifierBase::SChMap OriginalMap for Map;
 	declare metadata ModifierBase::SChProblem[] Problems for Map;
+	declare metadata SScriptInfo[] Scripts for Map;
 	declare metadata Integer CurrentScript for Map;
 	
 	declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
+	if(Scripts.count == 0) declare JsonSuccess = Scripts.fromjson(CHALLENGE_SCRIPTS.tojson());
 	
 	if(Problems.count == 0) {
 		if(CHALLENGE_SCRIPTS.count == 0 && !S_TestMode) return;
 	}
 
-	declare BlockSize = 32.;
-	if(Map.CollectionName == "Canyon") BlockSize = 64.;
+	BlockSize = 32;
+	if(Map.CollectionName == "Canyon") BlockSize = 64;
 	
-	CameraTargetPosition = <Map.Size.X*BlockSize/2,5.,Map.Size.Z*BlockSize/3>;
+	CameraTargetPosition = <Map.Size.X*BlockSize/2.,5.,Map.Size.Z*BlockSize/3.>;
 	CameraToTargetDistance = BlockSize*.75*Map.Size.X;
 	CameraHAngle = 0.;
 	CameraVAngle = 1.;
 	
 	HideEditorInterface = True;
-	EnableEditorInputsCustomProcessing = False;
+	EnableEditorInputsCustomProcessing = True;
 	EditMode = CMapEditorPlugin::EditMode::FreeLook;
+
+	Layers::Create("ModifierIntro",Manialink::FromFile(C_Manialink_ModifierIntro, True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierScript",Manialink::FromFile(C_Manialink_ModifierScript, True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierStatus",Manialink::FromFile(C_Manialink_ModifierStatus, True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierMetadata",Manialink::FromFile(C_Manialink_ModifierMetadata, True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierActions",Manialink::FromFile(C_Manialink_ModifierActions, True, ["TextAnimation"], Settings::Get().Theme));
+
+	Layers::SetAnimationInOut("ModifierScript",CUILayer::EUILayerAnimation::DownSlow);
+	Layers::SetAnimationInOut("ModifierStatus",CUILayer::EUILayerAnimation::DownSlow);
+	Layers::SetAnimationInOut("ModifierActions",CUILayer::EUILayerAnimation::RightSlow);
+	Layers::SetAnimationInOut("ModifierMetadata",CUILayer::EUILayerAnimation::UpSlow);
+		
+	Layers::SetAnimationInOut("ModifierResult",CUILayer::EUILayerAnimation::DownSlow);
 	
 	if(Problems.count > 0) {
 		
 	}
 	else {
-		Layers::Create("ModifierIntro",Manialink::FromFile(C_Manialink_ModifierIntro, True, ["TextAnimation"], Settings::Get().Theme));
-		Layers::Create("ModifierScript",Manialink::FromFile(C_Manialink_ModifierScript, True, ["TextAnimation"], Settings::Get().Theme));
-		Layers::Create("ModifierStatus",Manialink::FromFile(C_Manialink_ModifierStatus, True, ["TextAnimation"], Settings::Get().Theme));
-		Layers::Create("ModifierMetadata",Manialink::FromFile(C_Manialink_ModifierMetadata, True, ["TextAnimation"], Settings::Get().Theme));
-		Layers::Create("ModifierActions",Manialink::FromFile(C_Manialink_ModifierActions, True, ["TextAnimation"], Settings::Get().Theme));
-		
-		Layers::SetAnimationInOut("ModifierScript",CUILayer::EUILayerAnimation::DownSlow);
-		Layers::SetAnimationInOut("ModifierStatus",CUILayer::EUILayerAnimation::DownSlow);
-		Layers::SetAnimationInOut("ModifierActions",CUILayer::EUILayerAnimation::RightSlow);
-		Layers::SetAnimationInOut("ModifierMetadata",CUILayer::EUILayerAnimation::UpSlow);
-		
-		Layers::SetAnimationInOut("ModifierResult",CUILayer::EUILayerAnimation::DownSlow);
-		
 		declare Map::SMapInfo OriginalMapInfo for LocalUser;
 		declare JsonSuccess = OriginalMap.fromjson(OriginalMapInfo.tojson());
 		
@@ -363,60 +506,64 @@ main() {
 		Map.MapName = """Modifying... ({{{OriginalMap.Name}}})""";
 		
 		LayerCustomEvent(Layers::Get("ModifierIntro"), "Hide", []);
-	
-		Layers::Show("ModifierScript");
-		sleep(100);
-		Layers::Show("ModifierStatus");
-		sleep(100);
-		Layers::Show("ModifierActions");
-		sleep(100);
-		Layers::Show("ModifierMetadata");
-		sleep(200);
+	}
 		
-		if(S_TestMode) {
-			declare Text CHALLENGE_CODE for LocalUser;
-			SetMapStyle("Test Script");
-			Layers::SendEvent("ModifierScript", "ScriptName", [Dictionary::Get("TEST_SCRIPT")]);
-			Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
-			declare Continue = ProcessScript("TEST SCRIPT", CHALLENGE_CODE);
-		}
-		else {
-			declare Text[] _Scripts;
-			foreach(Script,CHALLENGE_SCRIPTS)
-				_Scripts.add(TextLib::SubText(Script.Name, 0, TextLib::Length(Script.Name)-11));
-			SetMapStyle(TextLib::Join("+",_Scripts));
+	if(S_TestMode) {
+		declare Text CHALLENGE_CODE for LocalUser;
+		SetMapStyle("Test Script");
+		Layers::SendEvent("ModifierScript", "ScriptName", [Dictionary::Get("TEST_SCRIPT")]);
+		Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
+		declare Continue = ProcessScript("TEST SCRIPT", CHALLENGE_CODE);
+	}
+	else {
+		declare Text[] _Scripts;
+		foreach(Script,Scripts)
+			_Scripts.add(TextLib::SubText(Script.Name, 0, TextLib::Length(Script.Name)-11));
+		SetMapStyle(TextLib::Join("+",_Scripts));
 
-			declare Continue = True;
-			for(I,0,CHALLENGE_SCRIPTS.count-1) {
-				declare Script = CHALLENGE_SCRIPTS[I];
-								
-				if(Continue) {
-					CurrentScript = I;
-					
-					Layers::SendEvent("ModifierScript", "ScriptName", [Script.Name]);
-					Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
-					ValidateScript();
-					
-					declare Text BuildScript;
-					
-					switch(Script.Type) {
-						case "Official": {
-							BuildScript = File::Read("Media/Challenges/"^Script.Name);
-						}
-						case "Local": {
-							
-						}
-						case "Online": {
-							
-						}
+		declare Continue = True;
+		for(I,0,Scripts.count-1) {
+			declare Script = Scripts[I];
+			
+			if(Continue && I >= CurrentScript) {				
+				CameraReset();
+
+				Layers::Show("ModifierScript");
+				sleep(100);
+				Layers::Show("ModifierStatus");
+				Layers::SendEvent("ModifierStatus", "Progress", "0");
+				Layers::SendEvent("ModifierScript", "ScriptName", Script.Name);
+				Layers::SendEvent("ModifierStatus", "Status", "...");
+				Layers::SendEvent("ModifierStatus", "Message", "");
+				sleep(100);
+				Layers::Show("ModifierActions");
+				sleep(100);
+				Layers::Show("ModifierMetadata");
+				sleep(200);
+				
+				ValidateScript();
+				
+				declare Text BuildScript;
+				
+				switch(Script.Type) {
+					case "Official": {
+						BuildScript = File::Read("Media/Challenges/"^Script.Name);
 					}
-					
-					Continue = ProcessScript(Script.Name, BuildScript);
-					sleep(500);
+					case "Local": {
+						
+					}
+					case "Online": {
+						
+					}
 				}
-				if(Problems.count > 0) Finish();
-				if(Abort) return;
+				
+				Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
+				Continue = ProcessScript(Script.Name, BuildScript);
+				sleep(500);
 			}
+			if(Problems.count > 0) Finish();
+			CurrentScript += 1;
+			if(Abort) return;
 		}
 	}
 	

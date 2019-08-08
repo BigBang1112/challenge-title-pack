@@ -74,11 +74,8 @@
 	Text Name;
 	Int3 Coord;
 	Text Direction;
-	SChWaypoint Waypoint;
 	SChWaypoint[] Waypoints;
-	SChBlock Block;
 	SChBlock[] Blocks;
-	SChItem Item;
 	SChItem[] Items;
 	Text BlockName;
 	Text ShortDescription;
@@ -89,11 +86,8 @@
 #Struct SChNote {
 	Text Name;
 	Int3 Coord;
-	SChWaypoint Waypoint;
 	SChWaypoint[] Waypoints;
-	SChBlock Block;
 	SChBlock[] Blocks;
-	SChItem Item;
 	SChItem[] Items;
 }
 

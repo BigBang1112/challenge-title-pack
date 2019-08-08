@@ -21,7 +21,7 @@ Void Problem_BlockMissing(Text _BlockName) {
 Void Problem_MultilapTrack(SChWaypoint _Multilap) {
 	declare SChProblem Problem_MultilapTrack;
 	Problem_MultilapTrack.Name = "MULTILAP_TRACK";
-	Problem_MultilapTrack.Waypoint = _Multilap;
+	Problem_MultilapTrack.Waypoints.add(_Multilap);
 	Problem_MultilapTrack.ShortDescription = "{{{{PROBLEM_MULTILAP_TRACK}}}}";
 	Problem_MultilapTrack.LongDescription = "{{{{PROBLEM_MULTILAP_TRACK_LONG_CHECKPOINTLESS}}}}";
 	Problem(Problem_MultilapTrack);
@@ -30,7 +30,7 @@ Void Problem_MultilapTrack(SChWaypoint _Multilap) {
 Void Problem_ItemMultilap(SChItem _Item) {
 	declare SChProblem Problem_ItemMultilap;
 	Problem_ItemMultilap.Name = "ITEM_MULTILAP";
-	Problem_ItemMultilap.Item = _Item;
+	Problem_ItemMultilap.Items.add(_Item);
 	Problem_ItemMultilap.ShortDescription = "{{{{PROBLEM_CANNOT_ADJUST_ONELAP}}}}";
 	Problem_ItemMultilap.LongDescription = "{{{{PROBLEM_CANNOT_ADJUST_ONELAP_LONG_CHECKPOINTLESS}}}}";
 	Problem_ItemMultilap.Solutions.add(Solution("{{{{PROBLEM_BLOCK_MISSING_SOLUTION_1}}}}", "", True));
@@ -48,7 +48,7 @@ Void Problem_NoCheckpoint() {
 Void Problem_CannotRemoveCheckpoint(SChWaypoint _Checkpoint) {
 	declare SChProblem Problem_CannotRemoveCheckpoint;
 	Problem_CannotRemoveCheckpoint.Name = "CANNOT_REMOVE_CHECKPOINT";
-	Problem_CannotRemoveCheckpoint.Waypoint = _Checkpoint;
+	Problem_CannotRemoveCheckpoint.Waypoints.add(_Checkpoint);
 	Problem_CannotRemoveCheckpoint.ShortDescription = "{{{{PROBLEM_CANNOT_REMOVE_CHECKPOINT}}}}";
 	Problem_CannotRemoveCheckpoint.LongDescription = "{{{{PROBLEM_CANNOT_REMOVE_CHECKPOINT_LONG}}}}";
 	Problem_CannotRemoveCheckpoint.Solutions.add(Solution("{{{{PROBLEM_CANNOT_REMOVE_CHECKPOINT_SOLUTION_1}}}}", "", True));
@@ -120,7 +120,30 @@ for(i,0,Checkpoints.count-1) {
 
 ***Solver***
 ***
-foreach(Problem,Problems) {
+switch(Solver_Problem.Name) {
+	case "CANNOT_REMOVE_CHECKPOINT": {
+		Editor.EnableEditorInputsCustomProcessing = False;
 
+		declare Removed = False;
+		while(!Removed) {
+			Editor.EditMode = CMapEditorPlugin::EditMode::Erase;
+			Editor.CursorCoord = Solver_Problem.Waypoints[0].Block.Coord;
+
+			declare Checkpoints = GetCheckpoints();
+			declare Boolean Exists;
+			foreach(Checkpoint, Checkpoints) {
+				if(Checkpoint.IsBlock && Solver_Problem.Waypoints[0].Block.Id == Checkpoint.Block.Id)
+					Exists = True;
+				if(Checkpoint.IsItem && Solver_Problem.Waypoints[0].Item.Position == Checkpoint.Item.Position)
+					Exists = True;
+			}
+			
+			if(!Exists) Removed = True;
+
+			sleep(100);
+		}
+
+		Editor.EnableEditorInputsCustomProcessing = True;
+	}
 }
 ***

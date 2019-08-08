@@ -177,7 +177,7 @@ foreach(Event,PendingEvents) {
 					Start = Now;
 					End = -1;
 
-					Page.GetFirstChild("FRAME_PROBLEMS").RelativePosition_V3 = <120.,10.>;
+					Page.GetFirstChild("FRAME_PROBLEMS").RelativePosition_V3 = <120.,15.>;
 					AnimMgr.Add(Page.GetFirstChild("FRAME_PROBLEMS"), "<frame pos=\"120 40\"/>", Now + 500, 500, CAnimManager::EAnimManagerEasing::QuadOut);
 
 					foreach(Control,(Page.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls) {
@@ -202,7 +202,7 @@ foreach(Event,PendingEvents) {
 				}
 				case "Hide": {
 					End = Now;
-					AnimMgr.Add(Page.GetFirstChild("FRAME_PROBLEMS"), "<frame pos=\"130 40\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+					AnimMgr.Add(Page.GetFirstChild("FRAME_PROBLEMS"), "<frame pos=\"200 40\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 				}
 				case "UpdateProblems": {
 					declare JsonSuccess = Problems.fromjson(Event.CustomEventData[0]);

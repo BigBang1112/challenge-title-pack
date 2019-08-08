@@ -21,7 +21,7 @@ Void Problem_BlockMissing(Text _BlockName) {
 Void Problem_MultilapTrack(SChWaypoint _Multilap) {
 	declare SChProblem Problem_MultilapTrack;
 	Problem_MultilapTrack.Name = "MULTILAP_TRACK";
-	Problem_MultilapTrack.Waypoint = _Multilap;
+	Problem_MultilapTrack.Waypoints.add(_Multilap);
 	Problem_MultilapTrack.ShortDescription = "{{{{PROBLEM_MULTILAP_TRACK}}}}";
 	Problem_MultilapTrack.LongDescription = "{{{{PROBLEM_MULTILAP_TRACK_LONG_CHECKPOINTLESS}}}}";
 	Problem(Problem_MultilapTrack);
@@ -30,7 +30,7 @@ Void Problem_MultilapTrack(SChWaypoint _Multilap) {
 Void Problem_ItemMultilap(SChItem _Item) {
 	declare SChProblem Problem_ItemMultilap;
 	Problem_ItemMultilap.Name = "ITEM_MULTILAP";
-	Problem_ItemMultilap.Item = _Item;
+	Problem_ItemMultilap.Items.add(_Item);
 	Problem_ItemMultilap.ShortDescription = "{{{{PROBLEM_CANNOT_ADJUST_ONELAP}}}}";
 	Problem_ItemMultilap.LongDescription = "{{{{PROBLEM_CANNOT_ADJUST_ONELAP_LONG_CHECKPOINTLESS}}}}";
 	Problem_ItemMultilap.Solutions.add(Solution("{{{{PROBLEM_BLOCK_MISSING_SOLUTION_1}}}}", "", True));
@@ -40,7 +40,7 @@ Void Problem_ItemMultilap(SChItem _Item) {
 Void Problem_ItemStart(SChItem _Item) {
 	declare SChProblem Problem_ItemStart;
 	Problem_ItemStart.Name = "ITEM_START";
-	Problem_ItemStart.Item = _Item;
+	Problem_ItemStart.Items.add(_Item);
 	Problem_ItemStart.ShortDescription = "{{{{PROBLEM_CANNOT_REPLACE_START}}}}";
 	Problem_ItemStart.LongDescription = "{{{{PROBLEM_CANNOT_REPLACE_START_LONG}}}}";
 	Problem_ItemStart.Solutions.add(Solution("{{{{PROBLEM_CANNOT_REPLACE_START_SOLUTION_1}}}}", "", True));
@@ -50,7 +50,7 @@ Void Problem_ItemStart(SChItem _Item) {
 Void Problem_ItemFinish(SChItem _Item) {
 	declare SChProblem Problem_ItemFinish;
 	Problem_ItemFinish.Name = "ITEM_FINISH";
-	Problem_ItemFinish.Item = _Item;
+	Problem_ItemFinish.Items.add(_Item);
 	Problem_ItemFinish.ShortDescription = "{{{{PROBLEM_CANNOT_REPLACE_FINISH}}}}";
 	Problem_ItemFinish.LongDescription = "{{{{PROBLEM_CANNOT_REPLACE_FINISH_LONG}}}}";
 	Problem_ItemFinish.Solutions.add(Solution("{{{{PROBLEM_CANNOT_REPLACE_FINISH_SOLUTION_1}}}}", "", True));
@@ -151,7 +151,64 @@ if(FinishLines.count == 1) {
 
 ***Solver***
 ***
-foreach(Problem,Problems) {
+switch(Solver_Problem.Name) {
+	case "ITEM_START": {
+		ShowEditor();
+		
+		declare StartPos = Solver_Problem.Items[0].Position;
+		declare Replaced = False;
+		while(!Replaced) {
+			declare Starts = GetStartLines();
+			declare Finishes = GetFinishLines();
+			declare Boolean StartExists;
+			foreach(Start, Starts) {
+				if(Start.IsItem) {
+					if(Start.Item.Position == StartPos) {
+						StartExists = True;
+					}
+				}
+			}
+			
+			foreach(Finish, Finishes) {
+				if(Finish.IsItem) {
+					if(!StartExists && MathLib::Distance(StartPos, Finish.Item.Position) < 16.) {
+						Replaced = True;
+					}
+				}
+			}
+			sleep(100);
+		}
 
+		HideEditor();
+	}
+	case "ITEM_FINISH": {
+		ShowEditor();
+		
+		declare FinishPos = Solver_Problem.Items[0].Position;
+		declare Replaced = False;
+		while(!Replaced) {
+			declare Starts = GetStartLines();
+			declare Finishes = GetFinishLines();
+			declare Boolean FinishExists;
+			foreach(Finish, Finishes) {
+				if(Finish.IsItem) {
+					if(Finish.Item.Position == FinishPos) {
+						FinishExists = True;
+					}
+				}
+			}
+			
+			foreach(Start, Starts) {
+				if(Start.IsItem) {
+					if(!FinishExists && MathLib::Distance(FinishPos, Start.Item.Position) < 16.) {
+						Replaced = True;
+					}
+				}
+			}
+			sleep(100);
+		}
+
+		HideEditor();
+	}
 }
 ***

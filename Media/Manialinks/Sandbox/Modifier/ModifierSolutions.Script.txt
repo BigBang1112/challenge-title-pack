@@ -135,12 +135,7 @@ Void UpdateSolutions() {
 			declare Frame_Button = (Selector.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame);
 			declare Label_Button = (Frame_Button.GetFirstChild("LABEL_BUTTON") as CMlLabel);
 
-			if(SelectedSolution == i)
-				Quad_Button.Substyle = "BgCard";
-			else
-				Quad_Button.Substyle = "BgCardInventoryItem";
-
-			//Label_Button.SetText(Problem.ShortDescription);
+			Label_Button.SetText(Solution.Value);
 			Selector.DataAttributeSet("solution",i^"");
 			Selector.Show();
 		}
@@ -167,7 +162,6 @@ foreach(Event,PendingEvents) {
 				case "QUAD_BUTTON": {
 					SelectedSolution = TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("solution"));
 					SendCustomEvent("SelectSolution", [SelectedSolution^""]);
-					UpdateSolutions();
 				}
 			}
 		}
@@ -177,7 +171,7 @@ foreach(Event,PendingEvents) {
 					Start = Now;
 					End = -1;
 
-					Page.GetFirstChild("FRAME_SOLUTIONS").RelativePosition_V3 = <-100.,10.>;
+					Page.GetFirstChild("FRAME_SOLUTIONS").RelativePosition_V3 = <-100.,15.>;
 					AnimMgr.Add(Page.GetFirstChild("FRAME_SOLUTIONS"), "<frame pos=\"-100 40\"/>", Now + 500, 500, CAnimManager::EAnimManagerEasing::QuadOut);
 
 					foreach(Control,(Page.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls) {
