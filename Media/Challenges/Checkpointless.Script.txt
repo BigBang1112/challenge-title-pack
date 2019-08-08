@@ -71,7 +71,7 @@ if(IsOneLapWithFinish) {
 	declare Multilap = Multilaps[0];
 	if(Multilap.IsItem) Problem_ItemMultilap(Multilap.Item);
 	else if(Multilap.IsBlock) {
-		foreach(Relation, Relation_MultilapStartTwoway[Environment]) {
+		foreach(Relation, GetRelation_MultilapStartTwoway()[Environment]) {
 			declare MultilapBlockName = Relation[0];
 			declare StartTwowayBlockName = Relation[1];
 			if(Multilap.Block.Name == MultilapBlockName) {
@@ -120,29 +120,40 @@ for(i,0,Checkpoints.count-1) {
 
 ***Solver***
 ***
+log(Solver_Problem);
 switch(Solver_Problem.Name) {
 	case "CANNOT_REMOVE_CHECKPOINT": {
 		Editor.EnableEditorInputsCustomProcessing = False;
 
+		Editor.EditMode = CMapEditorPlugin::EditMode::Erase;
+
 		declare Removed = False;
 		while(!Removed) {
-			Editor.EditMode = CMapEditorPlugin::EditMode::Erase;
-			Editor.CursorCoord = Solver_Problem.Waypoints[0].Block.Coord;
+			declare BlockName = Event_MapModified();
+			if(BlockName != "") {
+				declare Checkpoints = GetCheckpoints();
+				declare Boolean Exists;
+				foreach(Checkpoint, Checkpoints) {
+					if(Checkpoint.IsBlock && Solver_Problem.Waypoints[0].Block.Id == Checkpoint.Block.Id)
+						Exists = True;
+					if(Checkpoint.IsItem && Solver_Problem.Waypoints[0].Item.Position == Checkpoint.Item.Position)
+						Exists = True;
+				}
 
-			declare Checkpoints = GetCheckpoints();
-			declare Boolean Exists;
-			foreach(Checkpoint, Checkpoints) {
-				if(Checkpoint.IsBlock && Solver_Problem.Waypoints[0].Block.Id == Checkpoint.Block.Id)
-					Exists = True;
-				if(Checkpoint.IsItem && Solver_Problem.Waypoints[0].Item.Position == Checkpoint.Item.Position)
-					Exists = True;
+				log(BlockName);
+
+				if(Exists) {
+					Editor.HideEditorInterface = False;
+					Editor.EditMode = CMapEditorPlugin::EditMode::Place;
+					SetCursorBlock(BlockName);
+				}
+				else Removed = True;
 			}
-			
-			if(!Exists) Removed = True;
 
-			sleep(100);
+			yield;
 		}
 
+		Editor.HideEditorInterface = True;
 		Editor.EnableEditorInputsCustomProcessing = True;
 	}
 }

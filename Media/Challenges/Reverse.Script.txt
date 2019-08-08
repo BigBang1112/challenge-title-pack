@@ -79,7 +79,6 @@ declare IsOneLapWithFinish = Multilaps.count == 1 && FinishLines.count > 0 && Ma
 declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
 
 if(IsMultilap) Problem_MultilapTrack(Multilaps[0]);
-if(FinishLines.count > 1) Problem_MultipleFinishes(FinishLines);
 
 SetStatusProgress(.5);
 
@@ -87,7 +86,7 @@ if(IsOneLapWithFinish) {
 	declare Multilap = Multilaps[0];
 	if(Multilap.IsItem) Problem_ItemMultilap(Multilap.Item);
 	else if(Multilap.IsBlock) {
-		foreach(Relation, Relation_MultilapFinishTwoway[Environment]) {
+		foreach(Relation, GetRelation_MultilapFinishTwoway()[Environment]) {
 			declare MultilapBlockName = Relation[0];
 			declare FinishTwowayBlockName = Relation[1];
 			if(Multilap.Block.Name == MultilapBlockName) {
@@ -108,7 +107,7 @@ else {
 	declare Start = StartLines[0];
 	if(Start.IsItem) Problem_ItemStart(Start.Item);
 	else if(Start.IsBlock) {
-		foreach(Relation, Relation_StartFinish[Environment]) {
+		foreach(Relation, GetRelation_StartFinish()[Environment]) {
 			declare StartBlockName = Relation[0];
 			declare FinishBlockName = Relation[1];
 
@@ -126,13 +125,14 @@ else {
 }
 
 SetStatusProgress(1.);
+if(FinishLines.count > 1) Problem_MultipleFinishes(FinishLines);
 
 if(FinishLines.count == 1) {
 	declare Finish = FinishLines[0];
 
 	if(Finish.IsItem) Problem_ItemFinish(Finish.Item);
 	else {
-		foreach(Relation, Relation_StartFinish[Environment]) {
+		foreach(Relation, GetRelation_StartFinish()[Environment]) {
 			declare StartBlockName = Relation[0];
 			declare FinishBlockName = Relation[1];
 			
@@ -152,6 +152,27 @@ if(FinishLines.count == 1) {
 ***Solver***
 ***
 switch(Solver_Problem.Name) {
+	case "MULTIPLE_FINISHES": {
+		declare MapInfo = GetMapInfo();
+		declare Environment = MapInfo.CollectionName;
+
+		declare Finish = Solver_Problem.Waypoints[Solver_Point];
+		if(Finish.IsBlock) {
+			foreach(Relation, GetRelation_StartFinish()[Environment]) {
+				declare StartBlockName = Relation[0];
+				declare FinishBlockName = Relation[1];
+				
+				if(Finish.Block.Name == FinishBlockName) {
+					declare Removed = RemoveSpecificBlock(Finish.Block);
+					if(Removed) {
+						declare Block = PlaceBlock(StartBlockName, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
+						if(!Block.Placed) {}
+					}
+					else {}
+				}
+			}
+		}
+	}
 	case "ITEM_START": {
 		ShowEditor();
 		

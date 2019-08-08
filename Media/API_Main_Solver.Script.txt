@@ -10,6 +10,7 @@ while(True) {
 					case "Solver": {
 						SolverFound = Solver_Problem.fromjson(Event.CustomEventData[0]);
 						Solver_Solution = TextLib::ToInteger(Event.CustomEventData[1]);
+						Solver_Point = TextLib::ToInteger(Event.CustomEventData[2]);
 					}
 					case "Hide": {
 						SendCustomEvent("Hide_Response", []);

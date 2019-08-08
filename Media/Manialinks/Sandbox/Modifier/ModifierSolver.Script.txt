@@ -122,10 +122,33 @@
 }
 
 declare SChProblem Problem;
+declare Integer SelectedPoint;
+declare Integer TotalPoints;
 
 Void UpdateProblem() {
 	(Page.GetFirstChild("LABEL_PROBLEM") as CMlLabel).SetText(Problem.ShortDescription);
 	(Page.GetFirstChild("LABEL_PROBLEM_LONG") as CMlLabel).SetText(Problem.LongDescription);
+
+	declare Offset = 0;
+	if(SelectedPoint < Problem.Waypoints.count) {
+		declare Block = Problem.Waypoints[SelectedPoint].Block;
+		(Page.GetFirstChild("LABEL_POINT") as CMlLabel).SetText(Block.Name ^ " $666" ^ Block.Coord);
+		Offset += 1;
+	}
+	else if(SelectedPoint - Offset < Problem.Blocks.count) {
+		declare Block = Problem.Blocks[SelectedPoint - Offset];
+		(Page.GetFirstChild("LABEL_POINT") as CMlLabel).SetText(Block.Name ^ " $666" ^ Block.Coord);
+		Offset += 1;
+	}
+	else if(SelectedPoint - Offset < Problem.Items.count) {
+		(Page.GetFirstChild("LABEL_POINT") as CMlLabel).SetText(Problem.Items[SelectedPoint - Offset].Position^"");
+		Offset += 1;
+	}
+
+	TotalPoints = Problem.Waypoints.count + Problem.Blocks.count + Problem.Items.count;
+
+	if(TotalPoints > 1) Page.GetFirstChild("FRAME_SWITCHES").Show();
+	else Page.GetFirstChild("FRAME_SWITCHES").Hide();
 }
 
 ***Loop***
@@ -140,6 +163,22 @@ foreach(Event,PendingEvents) {
 				case "QUAD_BUTTON_NEXT": {
 					SendCustomEvent("Button_Next",[]);
 				}
+				case "QUAD_BUTTON_NEXT_POINT": {
+					if(SelectedPoint == TotalPoints-1)
+						SelectedPoint = 0;
+					else
+						SelectedPoint+=1;
+					UpdateProblem();
+					SendCustomEvent("UpdatePoint", [SelectedPoint^""]);
+				}
+				case "QUAD_BUTTON_PREVIOUS_POINT": {
+					if(SelectedPoint == 0)
+						SelectedPoint = TotalPoints-1;
+					else
+						SelectedPoint-=1;
+					UpdateProblem();
+					SendCustomEvent("UpdatePoint", [SelectedPoint^""]);
+				}
 			}
 		}
 		case CMlScriptEvent::Type::PluginCustomEvent: {
@@ -152,7 +191,20 @@ foreach(Event,PendingEvents) {
 				}
 				case "Problem": {
 					declare JsonSuccess = Problem.fromjson(Event.CustomEventData[0]);
+					SelectedPoint = 0;
 					UpdateProblem();
+				}
+				case "ProblemCount": {
+					if(TextLib::ToInteger(Event.CustomEventData[0]) > 1) {
+						(Page.GetFirstChild("QUAD_BUTTON_NEXT") as CMlQuad).ModulateColor = <0.,.2,.4>;
+						(Page.GetFirstChild("LABEL_BUTTON_NEXT") as CMlLabel).Opacity = 1.;
+						Page.GetFirstChild("QUAD_BUTTON_NEXT_DISABLE").Hide();
+					}
+					else {
+						(Page.GetFirstChild("QUAD_BUTTON_NEXT") as CMlQuad).ModulateColor = <.2,.2,.2>;
+						(Page.GetFirstChild("LABEL_BUTTON_NEXT") as CMlLabel).Opacity = .5;
+						Page.GetFirstChild("QUAD_BUTTON_NEXT_DISABLE").Show();
+					}
 				}
 			}
 		}

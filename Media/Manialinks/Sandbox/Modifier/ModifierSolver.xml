@@ -1,7 +1,7 @@
 <frame pos="0 -50">
 	<frame id="FRAME_BACKGROUND">
 		<quad z-index="-1" size="100 30" bgcolor="FFFA" style="Bgs1" substyle="BgCardList" valign="top" halign="center"/>
-		<quad z-index="0" size="100 30" bgcolor="FFFA" style="Bgs1" substyle="BgGradV" valign="top" halign="center"/>
+		<quad z-index="0" size="100 30" bgcolor="FFFA" style="Bgs1" substyle="BgGradV" valign="top" halign="center" pos="0 0"/>
 	</frame>
 	<frame pos="-75 -20" z-index="1">
 		<quad z-index="0" size="40 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="630" id="QUAD_BUTTON_LEAVE" class="opacity"/>
@@ -9,12 +9,23 @@
 	</frame>
 	<frame pos="75 -20" z-index="1">
 		<quad z-index="0" size="40 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_BUTTON_NEXT" class="opacity"/>
-		<label pos="0 -5.25" z-index="1" size="40 10" text="{{{{NEXT}}}}" halign="center" valign="center2" textfont="RajdhaniMono"/>
+		<label pos="0 -5.25" z-index="1" size="40 10" text="{{{{NEXT}}}}" halign="center" valign="center2" id="LABEL_BUTTON_NEXT" textfont="RajdhaniMono"/>
+		<quad z-index="2" size="40 10" halign="center" scriptevents="1" id="QUAD_BUTTON_NEXT_DISABLE" hidden="1"/>
 	</frame>
 	<label id="LABEL_PROBLEM" pos="0 -4.8" z-index="1" size="90 10" text="{{{{PROBLEM}}}}" textfont="RajdhaniMono" halign="center" textcolor="EEE"/>
 	<label id="LABEL_PROBLEM_LONG" pos="0 -10.8" z-index="1" size="90 10" textfont="BiryaniDemiBold" halign="center" textcolor="EEE" textsize="2" autonewline="1"/>
-	<frame z-index="1" pos="0 -25" id="FRAME_SOLVED" hidden="1">
-		<quad pos="0 0" z-index="-1" size="90 5" bgcolor="0806" halign="center" valign="center"/>
-		<label pos="0 -0.3" z-index="0" size="20 5" text="SOLVED" halign="center" valign="center2" textfont="RajdhaniMono" textsize="2"/>
+	<frame z-index="1" pos="0 -25" id="FRAME_POINTS" hidden="0">
+		<quad pos="0 0" z-index="-1" size="80 7.5" halign="center" valign="center" style="Bgs1InRace" substyle="BgListLine" opacity=".5"/>
+		<label pos="0 -0.2" z-index="0" size="70 7.5" text="WATWATWTWATAWTAWTAWTAWT" halign="center" valign="center2" textfont="RajdhaniMono" textsize="2" id="LABEL_POINT"/>
+		<frame id="FRAME_SWITCHES">
+			<frame pos="-43 0">
+				<quad z-index="-1" size="7.5 7.5" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_BUTTON_PREVIOUS_POINT"/>
+				<label z-index="0" size="5 5" text="" valign="center" halign="center" textsize="2"/>
+			</frame>
+			<frame pos="43 0">
+				<quad z-index="-1" size="7.5 7.5" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_BUTTON_NEXT_POINT"/>
+				<label z-index="0" size="5 5" text="" valign="center" halign="center" textsize="2"/>
+			</frame>
+		</frame>
 	</frame>
 </frame>

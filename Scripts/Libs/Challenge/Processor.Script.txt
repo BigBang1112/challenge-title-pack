@@ -783,6 +783,10 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			Layers::SendEvent("ModifierStatus", "Color", [_Data[0]]);
 			Respond(_LayerAPI, _Type, []);
 		}
+		case "Ch_SetCursorBlock": {
+			CursorBlockModel = GetBlockModelFromName(_Data[0]);
+			Respond(_LayerAPI, _Type, ["True"]);
+		}
 		default: {
 			log("Unknown request: "^_Type);
 			Respond(_LayerAPI, _Type, ["False"]);

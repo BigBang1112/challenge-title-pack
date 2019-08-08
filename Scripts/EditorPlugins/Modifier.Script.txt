@@ -1,6 +1,7 @@
 #RequireContext CMapEditorPlugin
 
 #Include "TextLib" as TextLib
+#Include "AnimLib" as AnimLib
 #Include "MapUnits" as MapUnits
 
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
@@ -53,6 +54,16 @@ declare Boolean Abort;
 declare ::ShadowsQuality LastShadowsQuality;
 
 declare Integer BlockSize;
+declare Integer HeightOffset;
+
+declare Integer CamTime;
+declare Vec3 CamPosition;
+declare Vec3 LastCamPosition;
+declare Vec3 DelayedCamPosition;
+declare Integer CamDistanceTime;
+declare Real CamDistance;
+declare Real LastCamDistance;
+declare Real DelayedCamDistance;
 
 Text GetScriptFromIndex(Integer _Index) {
 	declare metadata SScriptInfo[] Scripts for Map;
@@ -65,17 +76,38 @@ Void ValidateScript() {
 }
 
 Void CameraReset() {
-	declare CamPosition = <Map.Size.X*BlockSize/2.,5.,Map.Size.Z*BlockSize/3.>;
-	CameraTargetPosition = CamPosition;
-	CameraToTargetDistance = BlockSize*.75*Map.Size.X;
+	CamPosition = <Map.Size.X*BlockSize/2.,5.,Map.Size.Z*BlockSize/3.>;
+	CamDistance = BlockSize*.75*Map.Size.X;
 	CameraHAngle = 0.;
 	CameraVAngle = 1.;
 }
 
 Void CameraSpin() {
-	CameraToTargetDistance = BlockSize*1.5;
+	CamDistance = BlockSize*1.5;
 	CameraVAngle = 0.5;
 	CameraHAngle += 0.01;
+}
+
+Void UpdateCamera() {
+	if(CamPosition != LastCamPosition) {
+		CamTime = Now;
+		DelayedCamPosition = CameraTargetPosition;
+		LastCamPosition = CamPosition;
+	}
+	
+	declare X = AnimLib::EaseOutQuad(Now-CamTime, DelayedCamPosition.X, CamPosition.X-DelayedCamPosition.X, 1000);
+	declare Y = AnimLib::EaseOutQuad(Now-CamTime, DelayedCamPosition.Y, CamPosition.Y-DelayedCamPosition.Y, 1000);
+	declare Z = AnimLib::EaseOutQuad(Now-CamTime, DelayedCamPosition.Z, CamPosition.Z-DelayedCamPosition.Z, 1000);
+	CameraTargetPosition = <X,Y,Z>;
+	
+	if(CamDistance != LastCamDistance) {
+		CamDistanceTime = Now;
+		DelayedCamDistance = CameraToTargetDistance;
+		LastCamDistance = CamDistance;
+	}
+	
+	declare Distance = AnimLib::EaseOutQuad(Now-CamDistanceTime, DelayedCamDistance, CamDistance-DelayedCamDistance, 1000);
+	CameraToTargetDistance = Distance;
 }
 
 Void Finish() {
@@ -199,8 +231,8 @@ Void Finish() {
 			LastShadowsQuality = CurrentShadowsQuality;
 		}
 		
-		declare CamPosition = <Map.Size.X*BlockSize/2.,5.,Map.Size.Z*BlockSize/3.>;
 		CameraReset();
+		UpdateCamera();
 		
 		if(Solver) {
 			Layers::Hide("ModifierResult", True);
@@ -208,6 +240,7 @@ Void Finish() {
 			
 			declare Integer SelectedProblem;
 			declare Integer SelectedSolution = -1;
+			declare Integer SelectedPoint;
 			
 			while(Solver) { // Solver interaction loop
 				foreach(Event,PendingEvents) {
@@ -220,19 +253,9 @@ Void Finish() {
 									SelectedProblem = TextLib::ToInteger(Event.CustomEventData[0]);
 									declare Problem = Problems[SelectedProblem];
 									Layers::SendEvent("ModifierSolver", "Problem", Problem.tojson());
+									Layers::SendEvent("ModifierSolver", "ProblemCount", Problems.count^"");
 									Layers::Show("ModifierSolutions", True);
 									Layers::SendEvent("ModifierSolutions", "UpdateSolutions", Problem.Solutions.tojson());
-									if(Problem.Waypoints.count > 0) {
-										declare Waypoint = Problem.Waypoints[0];
-										if(Waypoint.IsBlock)
-											CamPosition = <Waypoint.Block.Coord.X*BlockSize*1.,Waypoint.Block.Coord.Y*BlockSize/4.,Waypoint.Block.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
-										else if(Waypoint.IsItem)
-											CamPosition = Waypoint.Item.Position+<16.,0.,16.>;
-									}
-									else if(Problem.Items.count > 0) {
-										declare Item = Problem.Items[0];
-										CamPosition = Item.Position+<16.,0.,16.>;
-									}
 								}
 								case "Button_Leave": {
 									Solver = False;
@@ -245,12 +268,39 @@ Void Finish() {
 								case "SelectSolution": {
 									SelectedSolution = TextLib::ToInteger(Event.CustomEventData[0]);
 								}
+								case "UpdatePoint": {
+									declare Problem = Problems[SelectedProblem];
+									
+									SelectedPoint = TextLib::ToInteger(Event.CustomEventData[0]);
+								}
 							}
 						}
 					}
 				}
 				
-				CameraTargetPosition = CamPosition;
+				declare Problem = Problems[SelectedProblem];
+				declare Offset = 0;
+				if(SelectedPoint < Problem.Waypoints.count) {
+					declare Waypoint = Problem.Waypoints[SelectedPoint];
+					if(Waypoint.IsBlock) {
+						CamPosition = <Waypoint.Block.Coord.X*BlockSize*1.,(Waypoint.Block.Coord.Y-HeightOffset)*32./4.,Waypoint.Block.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
+					}
+					else if(Waypoint.IsItem)
+						CamPosition = Waypoint.Item.Position+<BlockSize/2.,0.,BlockSize/2.>;
+					Offset += 1;
+				}
+				else if(SelectedPoint - Offset < Problem.Blocks.count) {
+					declare Block = Problem.Blocks[SelectedPoint - Offset];
+					CamPosition = <Block.Coord.X*BlockSize*1.,(Block.Coord.Y-HeightOffset)*32./4.,Block.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
+					Offset += 1;
+				}
+				else if(SelectedPoint - Offset < Problem.Items.count) {
+					declare Item = Problem.Items[SelectedPoint - Offset];
+					CamPosition = Item.Position+<BlockSize/2.,0.,BlockSize/2.>;
+					Offset += 1;
+				}
+				
+				UpdateCamera();
 				CameraSpin();
 				
 				if(SelectedSolution != -1) {
@@ -269,15 +319,24 @@ Void Finish() {
 								
 					{{{File::Read("Media/API_Main_Solver.Script.txt")}}}""");
 					
-					LayerCustomEvent(LayerAPI, "Solver", [Problems[SelectedProblem].tojson(), SelectedSolution^""]);
+					LayerCustomEvent(LayerAPI, "Solver", [Problems[SelectedProblem].tojson(), SelectedSolution^"", SelectedPoint^""]);
+					
+					declare Text[Integer] LastBlocks;
+					foreach(Block,Blocks)
+						LastBlocks[Block.BlockScriptId] = Block.BlockModel.Name;
+						
+					declare Text BlockModified;
 					
 					declare Solved = False;
+					declare MapModified = False;
 					while(!Solved) { // Inner solve loop
 						declare SCommand[] Commands;
+						
 						foreach(Event,PendingEvents) {
 							Layers::Event(Event);
 						
 							if(Event.Type == CMapEditorPluginEvent::Type::LayerCustomEvent) {
+								if(Event.CustomEventType == "Button_Leave") return;
 								if(Event.CustomEventType == "Ch_Solve") {
 									for(I,0,Problems.count-1) {
 										if(Problems.existskey(I) && Problems[I].tojson() == Event.CustomEventData[0])
@@ -285,6 +344,17 @@ Void Finish() {
 									}
 									Solved = True;
 									log("[SOLVER] Solved");
+								}
+								else if(Event.CustomEventType == "Ch_Event_MapModified") {
+									if(MapModified) {
+										log("[MODIFIER] Event success: MapModified");
+										LayerCustomEvent(LayerAPI, "Ch_Event_MapModified_Response", [BlockModified]);
+										BlockModified = "";
+										MapModified = False;
+									}
+									else {
+										LayerCustomEvent(LayerAPI, "Ch_Event_MapModified_Response", [""]);
+									}
 								}
 								else if(TextLib::StartsWith("Ch_", Event.CustomEventType)) {
 									declare SCommand Command;
@@ -294,14 +364,27 @@ Void Finish() {
 									Commands.add(Command);
 								}
 							}
+							else if(Event.Type == CMapEditorPluginEvent::Type::MapModified) {
+								MapModified = True;
+								foreach(Block,Blocks)
+									if(LastBlocks.existskey(Block.BlockScriptId))
+										declare Removed = LastBlocks.removekey(Block.BlockScriptId);
+								foreach(Id => BlockName,LastBlocks) {
+									BlockModified = BlockName;
+								}
+								LastBlocks.clear();
+								foreach(Block,Blocks)
+									LastBlocks[Block.BlockScriptId] = Block.BlockModel.Name;
+							}
 						}
 						
 						foreach(Command,Commands) {						
 							log("[SOLVER] Request: "^Command.Name);
 							declare Success = Processor::Command(LayerAPI, Command.Name, Command.Parameters);
 						}
-
-						CameraSpin();
+						
+						if(HideEditorInterface) CameraSpin();
+						if(EditorInputIsDown_Undo) declare Success = Redo();
 						
 						yield;
 					}
@@ -316,17 +399,17 @@ Void Finish() {
 						Layers::Show("ModifierSolutions", True);
 						Layers::SendEvent("ModifierSolutions", "UpdateSolutions", Problem.Solutions.tojson());
 						
-						if(Problem.Waypoints.count > 0) {
+						/*if(Problem.Waypoints.count > 0) {
 							declare Waypoint = Problem.Waypoints[0];
 							if(Waypoint.IsBlock)
-								CamPosition = <Waypoint.Block.Coord.X*BlockSize*1.,Waypoint.Block.Coord.Y*BlockSize/4.,Waypoint.Block.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
+								CamPosition = <Waypoint.Block.Coord.X*BlockSize*1.,(Waypoint.Block.Coord.Y-HeightOffset)*32./4.,Waypoint.Block.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
 							else if(Waypoint.IsItem)
 								CamPosition = Waypoint.Item.Position+<16.,0.,16.>;
 						}
 						else if(Problem.Items.count > 0) {
 							declare Item = Problem.Items[0];
 							CamPosition = Item.Position+<16.,0.,16.>;
-						}
+						}*/
 					}
 					else {
 						Solver = False;
@@ -410,6 +493,7 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 			if(!Processor::Command(LayerAPI, Command.Name, Command.Parameters)) TerminateScript();
 		}
 		
+		UpdateCamera();
 		CameraReset();
 	
 		yield;
@@ -449,11 +533,14 @@ main() {
 
 	BlockSize = 32;
 	if(Map.CollectionName == "Canyon") BlockSize = 64;
+	if(Map.CollectionName == "Canyon") HeightOffset = 8;
+	if(Map.CollectionName == "Stadium") HeightOffset = 8;
 	
-	CameraTargetPosition = <Map.Size.X*BlockSize/2.,5.,Map.Size.Z*BlockSize/3.>;
-	CameraToTargetDistance = BlockSize*.75*Map.Size.X;
-	CameraHAngle = 0.;
-	CameraVAngle = 1.;
+	CameraReset();
+	LastCamPosition = CamPosition;
+	LastCamDistance = CamDistance;
+	CameraTargetPosition = CamPosition;
+	CameraToTargetDistance = CamDistance;
 	
 	HideEditorInterface = True;
 	EnableEditorInputsCustomProcessing = True;
@@ -486,6 +573,8 @@ main() {
 		
 		LayerCustomEvent(Layers::Get("ModifierIntro"), "Map", [OriginalMap.Name]);
 		Layers::Show("ModifierIntro");
+		
+		CurrentScript = -1;
 	
 		PreloadAllBlocks();
 		
@@ -525,44 +614,45 @@ main() {
 		for(I,0,Scripts.count-1) {
 			declare Script = Scripts[I];
 			
-			if(Continue && I >= CurrentScript) {				
-				CameraReset();
-
-				Layers::Show("ModifierScript");
-				sleep(100);
-				Layers::Show("ModifierStatus");
-				Layers::SendEvent("ModifierStatus", "Progress", "0");
-				Layers::SendEvent("ModifierScript", "ScriptName", Script.Name);
-				Layers::SendEvent("ModifierStatus", "Status", "...");
-				Layers::SendEvent("ModifierStatus", "Message", "");
-				sleep(100);
-				Layers::Show("ModifierActions");
-				sleep(100);
-				Layers::Show("ModifierMetadata");
-				sleep(200);
-				
-				ValidateScript();
-				
-				declare Text BuildScript;
-				
-				switch(Script.Type) {
-					case "Official": {
-						BuildScript = File::Read("Media/Challenges/"^Script.Name);
+			if(Continue && I >= CurrentScript) {
+				if(Problems.count > 0) Finish();
+				else {
+					CurrentScript += 1;
+					Layers::Show("ModifierScript");
+					sleep(100);
+					Layers::Show("ModifierStatus");
+					Layers::SendEvent("ModifierStatus", "Progress", "0");
+					Layers::SendEvent("ModifierScript", "ScriptName", Script.Name);
+					Layers::SendEvent("ModifierStatus", "Status", "...");
+					Layers::SendEvent("ModifierStatus", "Message", "");
+					sleep(100);
+					Layers::Show("ModifierActions");
+					sleep(100);
+					Layers::Show("ModifierMetadata");
+					sleep(200);
+					
+					ValidateScript();
+					
+					declare Text BuildScript;
+					
+					switch(Script.Type) {
+						case "Official": {
+							BuildScript = File::Read("Media/Challenges/"^Script.Name);
+						}
+						case "Local": {
+							
+						}
+						case "Online": {
+							
+						}
 					}
-					case "Local": {
-						
-					}
-					case "Online": {
-						
-					}
+					
+					Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
+					Continue = ProcessScript(Script.Name, BuildScript);
+					sleep(500);
+					if(Problems.count > 0) Finish();
 				}
-				
-				Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
-				Continue = ProcessScript(Script.Name, BuildScript);
-				sleep(500);
 			}
-			if(Problems.count > 0) Finish();
-			CurrentScript += 1;
 			if(Abort) return;
 		}
 	}
