@@ -1,12 +1,5 @@
 declare SChMetadata Script;
 declare SChProblem[] Problems;
-declare Text[][][Text] Relation_StartFinish;
-declare Text[][][Text] Relation_StartMultilap;
-declare Text[][][Text] Relation_FinishCheckpoint;
-declare Text[][][Text] Relation_CheckpointRoad;
-declare Text[][][Text] Relation_MultilapStartTwoway;
-declare Text[][][Text] Relation_MultilapFinishTwoway;
-declare Text[][][Text] Relation_StartTwowayFinishTwoway;
 
 declare SChProblem Solver_Problem;
 declare Integer Solver_Solution;
@@ -772,6 +765,10 @@ Text[][][Text] GetRelation_MultilapFinishTwoway() {
 			["RoadTunnelMultilap", "RoadTunnelFinishTwoway"]
 		]
 	];
+}
+
+Text[][][Text] GetRelation_StartTwowayFinishTwoway() {
+	return [];
 }
 
 //

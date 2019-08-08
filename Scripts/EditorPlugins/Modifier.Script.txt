@@ -299,6 +299,11 @@ Void Finish() {
 					CamPosition = Item.Position+<BlockSize/2.,0.,BlockSize/2.>;
 					Offset += 1;
 				}
+				else if(SelectedPoint - Offset < Problem.Coords.count) {
+					declare Coord = Problem.Coords[SelectedPoint - Offset];
+					CamPosition = <Coord.X*BlockSize*1.,(Coord.Y-HeightOffset)*32./4.,Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
+					Offset += 1;
+				}
 				
 				UpdateCamera();
 				CameraSpin();
@@ -543,7 +548,7 @@ main() {
 	CameraToTargetDistance = CamDistance;
 	
 	HideEditorInterface = True;
-	EnableEditorInputsCustomProcessing = True;
+	EnableEditorInputsCustomProcessing = False;
 	EditMode = CMapEditorPlugin::EditMode::FreeLook;
 
 	Layers::Create("ModifierIntro",Manialink::FromFile(C_Manialink_ModifierIntro, True, ["TextAnimation"], Settings::Get().Theme));

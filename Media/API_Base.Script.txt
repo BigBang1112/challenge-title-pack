@@ -72,12 +72,12 @@
 
 #Struct SChProblem {
 	Text Name;
-	Int3 Coord;
+	Int3[] Coords;
 	Text Direction;
 	SChWaypoint[] Waypoints;
 	SChBlock[] Blocks;
 	SChItem[] Items;
-	Text BlockName;
+	Text[] BlockNames;
 	Text ShortDescription;
 	Text LongDescription;
 	SChSolution[] Solutions;

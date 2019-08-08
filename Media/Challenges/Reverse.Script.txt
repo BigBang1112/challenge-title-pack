@@ -8,7 +8,7 @@ Script.Description = "{{{{REVERSE_DESCRIPTION}}}}";
 Void Problem_BlockMissing(Text _BlockName) {
 	declare SChProblem Problem_BlockMissing;
 	Problem_BlockMissing.Name = "BLOCK_MISSING";
-	Problem_BlockMissing.BlockName = _BlockName;
+	Problem_BlockMissing.BlockNames.add(_BlockName);
 	Problem_BlockMissing.ShortDescription = "{{{{PROBLEM_BLOCK_MISSING}}}} - " ^ _BlockName;
 	Problem_BlockMissing.LongDescription = "{{{{PROBLEM_BLOCK_MISSING_LONG}}}}";
 	Problem_BlockMissing.Solutions.add(Solution("{{{{PROBLEM_BLOCK_MISSING_SOLUTION_1}}}}", "", True));
@@ -64,6 +64,7 @@ Void Problem_MultipleFinishes(SChWaypoint[] _Finishes) {
 	Problem_MultipleFinishes.ShortDescription = "{{{{PROBLEM_MULTIPLE_FINISHES}}}}";
 	Problem_MultipleFinishes.LongDescription = "{{{{PROBLEM_MULTIPLE_FINISHES_LONG}}}}";
 	Problem_MultipleFinishes.Solutions.add(Solution("{{{{PROBLEM_MULTIPLE_FINISHES_SOLUTION_1}}}}", "", True));
+	Problem_MultipleFinishes.Solutions.add(Solution("{{{{PROBLEM_MULTIPLE_FINISHES_SOLUTION_2}}}}", "", True));
 	Problem(Problem_MultipleFinishes);
 }
 

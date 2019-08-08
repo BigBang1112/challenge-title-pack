@@ -55,15 +55,12 @@
 
 #Struct SChProblem {
 	Text Name;
-	Int3 Coord;
+	Int3[] Coords;
 	Text Direction;
-	SChWaypoint Waypoint;
 	SChWaypoint[] Waypoints;
-	SChBlock Block;
 	SChBlock[] Blocks;
-	SChItem Item;
 	SChItem[] Items;
-	Text BlockName;
+	Text[] BlockNames;
 	Text ShortDescription;
 	Text LongDescription;
 	SChSolution[] Solutions;
@@ -144,8 +141,14 @@ Void UpdateProblem() {
 		(Page.GetFirstChild("LABEL_POINT") as CMlLabel).SetText(Problem.Items[SelectedPoint - Offset].Position^"");
 		Offset += 1;
 	}
+	else if(SelectedPoint - Offset < Problem.Coords.count) { // Lepší bude SChApproxBlock
+		declare Text BlockName;
+		if(Problem.BlockNames.existskey(SelectedPoint - Offset)) BlockName = Problem.BlockNames[SelectedPoint - Offset] ^ " $666";
+		(Page.GetFirstChild("LABEL_POINT") as CMlLabel).SetText(BlockName ^ Problem.Coords[SelectedPoint - Offset]);
+		Offset += 1;
+	}
 
-	TotalPoints = Problem.Waypoints.count + Problem.Blocks.count + Problem.Items.count;
+	TotalPoints = Problem.Waypoints.count + Problem.Blocks.count + Problem.Items.count + Problem.BlockNames.count;
 
 	if(TotalPoints > 1) Page.GetFirstChild("FRAME_SWITCHES").Show();
 	else Page.GetFirstChild("FRAME_SWITCHES").Hide();

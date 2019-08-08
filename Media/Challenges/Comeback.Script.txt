@@ -5,6 +5,60 @@ Script.AuthorLogin = "bigbang1112";
 Script.Description = "{{{{COMEBACK_DESCRIPTION}}}}";
 ***
 
+Void Problem_MultilapTrack(SChWaypoint _Multilap) {
+	declare SChProblem Problem_MultilapTrack;
+	Problem_MultilapTrack.Name = "MULTILAP_TRACK";
+	Problem_MultilapTrack.Waypoints.add(_Multilap);
+	Problem_MultilapTrack.ShortDescription = "{{{{PROBLEM_MULTILAP_TRACK}}}}";
+	Problem_MultilapTrack.LongDescription = "{{{{PROBLEM_MULTILAP_TRACK_LONG_CHECKPOINTLESS}}}}";
+	Problem(Problem_MultilapTrack);
+}
+
+Void Problem_ItemStart(SChWaypoint _Start) {
+	declare SChProblem Problem_ItemStart;
+	Problem_ItemStart.Name = "ITEM_START";
+	Problem_ItemStart.Waypoints.add(_Start);
+	Problem_ItemStart.ShortDescription = "{{{{PROBLEM_CANNOT_REPLACE_START_MULTILAP}}}}";
+	Problem_ItemStart.LongDescription = "{{{{PROBLEM_CANNOT_REPLACE_START_MULTILAP_LONG}}}}";
+	Problem_ItemStart.Solutions.add(Solution("{{{{PROBLEM_CANNOT_REPLACE_START_MULTILAP_SOLUTION_1}}}}", "", True));
+	Problem(Problem_ItemStart);
+}
+
+Void Problem_CannotPlaceGhostBlock(Int3 _Coord, Text _Direction, Text _BlockName) {
+	declare SChProblem Problem_CannotPlaceGhostBlock;
+	Problem_CannotPlaceGhostBlock.Name = "CANNOT_PLACE_GHOSTBLOCK";
+	Problem_CannotPlaceGhostBlock.Coords.add(_Coord);
+	Problem_CannotPlaceGhostBlock.Direction = _Direction;
+	Problem_CannotPlaceGhostBlock.BlockNames.add(_BlockName);
+	Problem_CannotPlaceGhostBlock.ShortDescription = "{{{{PROBLEM_CANNOT_PLACE_GHOSTBLOCK}}}} - " ^ _BlockName;
+	Problem_CannotPlaceGhostBlock.LongDescription = "This block is not possible to place in ghost variant.";
+	Problem_CannotPlaceGhostBlock.Solutions.add(Solution("Contact the authors of Challenge to add the ghost variant of the block.", "", True));
+	Problem_CannotPlaceGhostBlock.Solutions.add(Solution("Place the ghost block manually.", "", True));
+	Problem(Problem_CannotPlaceGhostBlock);
+}
+
+Void Problem_CannotRemoveStart(SChWaypoint _Start) {
+	declare SChProblem Problem_CannotRemoveStart;
+	Problem_CannotRemoveStart.Name = "CANNOT_REMOVE_START";
+	Problem_CannotRemoveStart.Waypoints.add(_Start);
+	Problem_CannotRemoveStart.ShortDescription = "{{{{PROBLEM_CANNOT_REMOVE_START}}}} - " ^ _Start.Block.Name;
+	Problem_CannotRemoveStart.LongDescription = "This start anchor can't be removed via script. The anchor is possibly ghost block or weirdly placed.";
+	Problem_CannotRemoveStart.Solutions.add(Solution("Replace the start manually with possible multilap variant.", "", True));
+	Problem_CannotRemoveStart.Solutions.add(Solution("Replace the start manually with possible multilap ghost variant.", "", True));
+	Problem(Problem_CannotRemoveStart);
+}
+
+Void Problem_CannotRemoveFinish(SChWaypoint _Finish) {
+	declare SChProblem Problem_CannotRemoveFinish;
+	Problem_CannotRemoveFinish.Name = "CANNOT_REMOVE_FINISHLINE";
+	Problem_CannotRemoveFinish.Waypoints.add(_Finish);
+	Problem_CannotRemoveFinish.ShortDescription = "{{{{CANNOT_REMOVE_FINISHLINE}}}} -  " ^ _Finish.Block.Name;
+	Problem_CannotRemoveFinish.LongDescription = "This finish can't be removed via script. The block is possibly ghost or weirdly placed.";
+	Problem_CannotRemoveFinish.Solutions.add(Solution("Replace the finish manually with possible checkpoint variant.", "", True));
+	Problem_CannotRemoveFinish.Solutions.add(Solution("Replace the finish manually with possible checkpoint ghost variant.", "", True));
+	Problem(Problem_CannotRemoveFinish);
+}
+
 ***Main***
 ***
 declare Multilaps = GetMultilaps();
@@ -15,14 +69,7 @@ declare Environment = MapInfo.CollectionName;
 declare IsOneLapWithFinish = Multilaps.count == 1 && FinishLines.count > 0 && MapInfo.TMObjective_NbLaps == 1;
 declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
 
-if(IsMultilap) {
-	declare SChProblem Problem_MultilapTrack;
-	Problem_MultilapTrack.Name = "MULTILAP_TRACK";
-	Problem_MultilapTrack.Waypoints.add(Multilaps[0]);
-	Problem_MultilapTrack.ShortDescription = "{{{{MULTILAP_TRACK}}}}";
-	Problem_MultilapTrack.LongDescription = "This track has a multilap which isn't considered as one lap with 1 or more finishes. This map can't be made Checkpointless.";
-	Problem(Problem_MultilapTrack);
-}
+if(IsMultilap) Problem_MultilapTrack(Multilaps[0]);
 
 if(IsOneLapWithFinish) {
 
@@ -31,18 +78,10 @@ else {
 	declare StartLines = GetStartLines();
 	declare Start = StartLines[0];
 
-	foreach(Relation, Relation_StartMultilap[Environment]) {
+	foreach(Relation, GetRelation_StartMultilap()[Environment]) {
 		declare StartBlockName = Relation[0];
 		declare MultilapBlockName = Relation[1];
-		if(Start.IsItem) {
-			declare SChProblem Problem_ItemStart;
-			Problem_ItemStart.Name = "ITEM_START";
-			Problem_ItemStart.Waypoints.add(Start);
-			Problem_ItemStart.ShortDescription = "";
-			Problem_ItemStart.LongDescription = "Start is an item. Script can't replace it with any multilap variant. Replacing it with multilap variant is needed to make Comeback valid.";
-			Problem_ItemStart.Solutions.add("Replace the start item manually with a possible multilap variant.");
-			Problem(Problem_ItemStart);
-		}
+		if(Start.IsItem) Problem_ItemStart(Start);
 		else if(Start.Block.Name == StartBlockName) {
 			SetStatusProgress(.5);
 			if(RemoveSpecificBlock(Start.Block)) {
@@ -51,29 +90,9 @@ else {
 				|| PlaceGhostBlock(MultilapBlockName, Start.Block.Coord, Start.Block.Direction)) {
 					SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ MultilapBlockName ^ ".");
 				}
-				else {
-					declare SChProblem Problem_CannotPlaceGhostBlock;
-					Problem_CannotPlaceGhostBlock.Name = "CANNOT_PLACE_GHOSTBLOCK";
-					Problem_CannotPlaceGhostBlock.Coord = Start.Block.Coord;
-					Problem_CannotPlaceGhostBlock.Direction = Start.Block.Direction;
-					Problem_CannotPlaceGhostBlock.BlockName = MultilapBlockName;
-					Problem_CannotPlaceGhostBlock.ShortDescription = "{{{{CANNOT_PLACE_GHOSTBLOCK}}}} - " ^ MultilapBlockName;
-					Problem_CannotPlaceGhostBlock.LongDescription = "This block is not possible to place in ghost variant.";
-					Problem_CannotPlaceGhostBlock.Solutions.add("Contact the authors of Challenge to add the ghost variant of the block.");
-					Problem_CannotPlaceGhostBlock.Solutions.add("Place the ghost block manually.");
-					Problem(Problem_CannotPlaceGhostBlock);
-				}
+				else Problem_CannotPlaceGhostBlock(Start.Block.Coord, Start.Block.Direction, MultilapBlockName);
 			}
-			else {
-				declare SChProblem Problem_CannotRemoveStartLine;
-				Problem_CannotRemoveStartLine.Name = "CANNOT_REMOVE_STARTLINE";
-				Problem_CannotRemoveStartLine.Waypoints.add(Start);
-				Problem_CannotRemoveStartLine.ShortDescription = "{{{{CANNOT_REMOVE_STARTLINE}}}} - " ^ StartBlockName;
-				Problem_CannotRemoveStartLine.LongDescription = "This start anchor can't be removed via script. The anchor is possibly ghost block or weirdly placed.";
-				Problem_CannotRemoveStartLine.Solutions.add("Replace the start manually with possible multilap variant.");
-				Problem_CannotRemoveStartLine.Solutions.add("Replace the start manually with possible multilap ghost variant.");
-				Problem(Problem_CannotRemoveStartLine);
-			}
+			else Problem_CannotRemoveStart(Start);
 		}
 	}
 }
@@ -81,7 +100,7 @@ else {
 declare SChAnchor[] CheckpointsToLink;
 
 foreach(Finish, FinishLines) {
-	foreach(Relation, Relation_FinishCheckpoint[Environment]) {
+	foreach(Relation, GetRelation_FinishCheckpoint()[Environment]) {
 		declare FinishBlockName = Relation[0];
 		declare CheckpointBlockName = Relation[1];
 
@@ -91,7 +110,7 @@ foreach(Finish, FinishLines) {
 			Problem_ItemFinish.Waypoints.add(Finish);
 			Problem_ItemFinish.ShortDescription = "";
 			Problem_ItemFinish.LongDescription = "Finish is an item. Script can't replace it with any checkpoint variant. Replacing it with checkpoint variant is needed to make Comeback valid.";
-			Problem_ItemFinish.Solutions.add("Replace the finish item manually with a possible checkpoint variant.");
+			Problem_ItemFinish.Solutions.add(Solution("Replace the finish item manually with a possible checkpoint variant.", "", True));
 			Problem(Problem_ItemFinish);
 		}
 		else if(Finish.Block.Name == FinishBlockName) {
@@ -105,29 +124,9 @@ foreach(Finish, FinishLines) {
 						if(Anchor.DefaultTag == "Checkpoint")
 							CheckpointsToLink.add(Anchor);
 				}
-				else {
-					declare SChProblem Problem_CannotPlaceGhostBlock;
-					Problem_CannotPlaceGhostBlock.Name = "CANNOT_PLACE_GHOSTBLOCK";
-					Problem_CannotPlaceGhostBlock.Coord = Finish.Block.Coord;
-					Problem_CannotPlaceGhostBlock.Direction = Finish.Block.Direction;
-					Problem_CannotPlaceGhostBlock.BlockName = CheckpointBlockName;
-					Problem_CannotPlaceGhostBlock.ShortDescription = "{{{{CANNOT_PLACE_GHOSTBLOCK}}}} - " ^ CheckpointBlockName;
-					Problem_CannotPlaceGhostBlock.LongDescription = "This block is not possible to place in ghost variant.";
-					Problem_CannotPlaceGhostBlock.Solutions.add("Contact the authors of Challenge to add the ghost variant of the block.");
-					Problem_CannotPlaceGhostBlock.Solutions.add("Place the ghost block manually.");
-					Problem(Problem_CannotPlaceGhostBlock);
-				}
+				else Problem_CannotPlaceGhostBlock(Finish.Block.Coord, Finish.Block.Direction, CheckpointBlockName);
 			}
-			else {
-				declare SChProblem Problem_CannotRemoveFinishLine;
-				Problem_CannotRemoveFinishLine.Name = "CANNOT_REMOVE_FINISHLINE";
-				Problem_CannotRemoveFinishLine.Waypoints.add(Finish);
-				Problem_CannotRemoveFinishLine.ShortDescription = "{{{{CANNOT_REMOVE_FINISHLINE}}}} -  " ^ FinishBlockName;
-				Problem_CannotRemoveFinishLine.LongDescription = "This finish can't be removed via script. The block is possibly ghost or weirdly placed.";
-				Problem_CannotRemoveFinishLine.Solutions.add("Replace the finish manually with possible checkpoint variant.");
-				Problem_CannotRemoveFinishLine.Solutions.add("Replace the finish manually with possible checkpoint ghost variant.");
-				Problem(Problem_CannotRemoveFinishLine);
-			}
+			else Problem_CannotRemoveFinish(Finish);
 		}
 	}
 }
