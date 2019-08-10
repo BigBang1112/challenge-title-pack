@@ -164,12 +164,32 @@ switch(Solver_Problem.Name) {
 				declare FinishBlockName = Relation[1];
 				
 				if(Finish.Block.Name == FinishBlockName) {
-					declare Removed = RemoveSpecificBlock(Finish.Block);
-					if(Removed) {
+					if(RemoveSpecificBlock(Finish.Block)) {
 						declare Block = PlaceBlock(StartBlockName, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
 						if(!Block.Placed) {}
 					}
 					else {}
+				}
+			}
+		}
+
+		switch(Solver_Solution) {
+			case 0: {
+				
+			}
+			case 1: {
+				declare Removed = Solver_Problem.Waypoints.removekey(Solver_Point);
+				foreach(Finish, Solver_Problem.Waypoints) {
+					if(Finish.IsBlock) {
+						if(!RemoveSpecificBlock(Finish.Block)) {
+
+						}
+					}
+					else if(Finish.IsItem) {
+						if(!RemoveItem(Finish.Item)) {
+
+						}
+					}
 				}
 			}
 		}
