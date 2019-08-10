@@ -23,7 +23,7 @@ Void Problem_MultilapTrack(SChWaypoint _Multilap) {
 	Problem_MultilapTrack.Name = "MULTILAP_TRACK";
 	Problem_MultilapTrack.Waypoints.add(_Multilap);
 	Problem_MultilapTrack.ShortDescription = "{{{{PROBLEM_MULTILAP_TRACK}}}}";
-	Problem_MultilapTrack.LongDescription = "{{{{PROBLEM_MULTILAP_TRACK_LONG_CHECKPOINTLESS}}}}";
+	Problem_MultilapTrack.LongDescription = "{{{{PROBLEM_MULTILAP_TRACK_LONG_REVERSE}}}}";
 	Problem(Problem_MultilapTrack);
 }
 
@@ -31,9 +31,8 @@ Void Problem_ItemMultilap(SChItem _Item) {
 	declare SChProblem Problem_ItemMultilap;
 	Problem_ItemMultilap.Name = "ITEM_MULTILAP";
 	Problem_ItemMultilap.Items.add(_Item);
-	Problem_ItemMultilap.ShortDescription = "{{{{PROBLEM_CANNOT_ADJUST_ONELAP}}}}";
-	Problem_ItemMultilap.LongDescription = "{{{{PROBLEM_CANNOT_ADJUST_ONELAP_LONG_CHECKPOINTLESS}}}}";
-	Problem_ItemMultilap.Solutions.add(Solution("{{{{PROBLEM_BLOCK_MISSING_SOLUTION_1}}}}", "", True));
+	Problem_ItemMultilap.ShortDescription = "{{{{PROBLEM_MULTILAP_TRACK}}}}";
+	Problem_ItemMultilap.LongDescription = "{{{{PROBLEM_MULTILAP_TRACK_LONG_REVERSE}}}}";
 	Problem(Problem_ItemMultilap);
 }
 
@@ -193,6 +192,8 @@ switch(Solver_Problem.Name) {
 				}
 			}
 		}
+
+		Solver_Success = True;
 	}
 	case "ITEM_START": {
 		ShowEditor();
@@ -222,6 +223,8 @@ switch(Solver_Problem.Name) {
 		}
 
 		HideEditor();
+
+		Solver_Success = True;
 	}
 	case "ITEM_FINISH": {
 		ShowEditor();
@@ -251,6 +254,8 @@ switch(Solver_Problem.Name) {
 		}
 
 		HideEditor();
+
+		Solver_Success = True;
 	}
 }
 ***

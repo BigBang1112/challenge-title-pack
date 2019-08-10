@@ -120,7 +120,6 @@ for(i,0,Checkpoints.count-1) {
 
 ***Solver***
 ***
-log(Solver_Problem);
 switch(Solver_Problem.Name) {
 	case "CANNOT_REMOVE_CHECKPOINT": {
 		Editor.EnableEditorInputsCustomProcessing = False;
@@ -155,6 +154,8 @@ switch(Solver_Problem.Name) {
 
 		Editor.HideEditorInterface = True;
 		Editor.EnableEditorInputsCustomProcessing = True;
+
+		Solver_Success = True;
 	}
 }
 ***

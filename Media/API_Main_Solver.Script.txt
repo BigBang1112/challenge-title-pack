@@ -29,5 +29,5 @@ while(True) {
 	yield;
 }
 
-Solve(Solver_ProblemId);
+Solve();
 ***

@@ -344,11 +344,13 @@ Void Finish() {
 								if(Event.CustomEventType == "Button_Leave") return;
 								if(Event.CustomEventType == "Ch_Solve") {
 									declare ProblemId = TextLib::ToInteger(Event.CustomEventData[0]);
-									if(Problems.existskey(ProblemId)) {
-											declare Removed = Problems.removekey(ProblemId);
-										Solved = True;
-										log("[SOLVER] Solved");
+									declare Success = Event.CustomEventData[1] == "True";
+									if(Success && Problems.existskey(ProblemId)) {
+										declare Removed = Problems.removekey(ProblemId);
+										log("[SOLVER] Solved successfully");
 									}
+									else log("[SOLVER] Solved unsuccessfully");
+									Solved = True;
 								}
 								else if(Event.CustomEventType == "Ch_Event_MapModified") {
 									if(MapModified) {

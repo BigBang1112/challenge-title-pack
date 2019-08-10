@@ -139,7 +139,9 @@ if(CheckpointsToLink.count > 1) {
 
 ***Solver***
 ***
-foreach(Problem,Problems) {
+switch(Solver_Problem.Name) {
+	case "": {
 
+	}
 }
 ***

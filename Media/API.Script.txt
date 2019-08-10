@@ -5,6 +5,7 @@ declare SChProblem Solver_Problem;
 declare Integer Solver_ProblemId;
 declare Integer Solver_Solution;
 declare Integer Solver_Point;
+declare Boolean Solver_Success;
 
 SResponse Request(Text _Command, Text[] _Arguments) {
 	declare SResponse Response;
@@ -501,8 +502,8 @@ Void Complete() { // Shouldn't be normally called
 	declare Response = Request("Ch_Complete", []);
 }
 
-Void Solve(Integer _ProblemId) { // Shouldn't be normally called
-	declare Response = Request("Ch_Solve", [_ProblemId^""]);
+Void Solve() {
+	declare Response = Request("Ch_Solve", [Solver_ProblemId^"", Solver_Success^""]);
 }
 
 Void Problem(SChProblem _Problem) {
