@@ -283,7 +283,7 @@ Void Finish() {
 				if(SelectedPoint < Problem.Waypoints.count) {
 					declare Waypoint = Problem.Waypoints[SelectedPoint];
 					if(Waypoint.IsBlock) {
-						CamPosition = <Waypoint.Block.Coord.X*BlockSize*1.,(Waypoint.Block.Coord.Y-HeightOffset)*32./4.,Waypoint.Block.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
+						CamPosition = <Waypoint.Block.Coord.X*BlockSize*1.,(Waypoint.Block.Coord.Y-HeightOffset+1)*(BlockSize/4.),Waypoint.Block.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
 					}
 					else if(Waypoint.IsItem)
 						CamPosition = Waypoint.Item.Position+<BlockSize/2.,0.,BlockSize/2.>;
@@ -291,7 +291,7 @@ Void Finish() {
 				}
 				else if(SelectedPoint - Offset < Problem.Blocks.count) {
 					declare Block = Problem.Blocks[SelectedPoint - Offset];
-					CamPosition = <Block.Coord.X*BlockSize*1.,(Block.Coord.Y-HeightOffset)*32./4.,Block.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
+					CamPosition = <Block.Coord.X*BlockSize*1.,(Block.Coord.Y-HeightOffset+1)*(BlockSize/4.),Block.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
 					Offset += 1;
 				}
 				else if(SelectedPoint - Offset < Problem.Items.count) {
@@ -301,7 +301,7 @@ Void Finish() {
 				}
 				else if(SelectedPoint - Offset < Problem.Coords.count) {
 					declare Coord = Problem.Coords[SelectedPoint - Offset];
-					CamPosition = <Coord.X*BlockSize*1.,(Coord.Y-HeightOffset)*32./4.,Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
+					CamPosition = <Coord.X*BlockSize*1.,(Coord.Y-HeightOffset+1)*(BlockSize/4.),Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
 					Offset += 1;
 				}
 				
@@ -537,9 +537,21 @@ main() {
 	}
 
 	BlockSize = 32;
-	if(Map.CollectionName == "Canyon") BlockSize = 64;
-	if(Map.CollectionName == "Canyon") HeightOffset = 8;
-	if(Map.CollectionName == "Stadium") HeightOffset = 8;
+	switch(Map.CollectionName) {
+		case "Canyon": {
+			BlockSize = 64;
+			HeightOffset = 15;
+		}
+		case "Stadium": {
+			HeightOffset = 9;
+		}
+		case "Valley": {
+			HeightOffset = 5;
+		}
+		case "Lagoon": {
+			HeightOffset = 5;
+		}
+	}
 	
 	CameraReset();
 	LastCamPosition = CamPosition;
