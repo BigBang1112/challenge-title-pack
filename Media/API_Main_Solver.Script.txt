@@ -8,9 +8,10 @@ while(True) {
 			case CMlScriptEvent::Type::PluginCustomEvent: {
 				switch(Event.CustomEventType) {
 					case "Solver": {
-						SolverFound = Solver_Problem.fromjson(Event.CustomEventData[0]);
-						Solver_Solution = TextLib::ToInteger(Event.CustomEventData[1]);
-						Solver_Point = TextLib::ToInteger(Event.CustomEventData[2]);
+						Solver_ProblemId = TextLib::ToInteger(Event.CustomEventData[0]);
+						SolverFound = Solver_Problem.fromjson(Event.CustomEventData[1]);
+						Solver_Solution = TextLib::ToInteger(Event.CustomEventData[2]);
+						Solver_Point = TextLib::ToInteger(Event.CustomEventData[3]);
 					}
 					case "Hide": {
 						SendCustomEvent("Hide_Response", []);
@@ -28,5 +29,5 @@ while(True) {
 	yield;
 }
 
-Solve(Solver_Problem);
+Solve(Solver_ProblemId);
 ***

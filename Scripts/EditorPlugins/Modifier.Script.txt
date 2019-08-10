@@ -324,7 +324,7 @@ Void Finish() {
 								
 					{{{File::Read("Media/API_Main_Solver.Script.txt")}}}""");
 					
-					LayerCustomEvent(LayerAPI, "Solver", [Problems[SelectedProblem].tojson(), SelectedSolution^"", SelectedPoint^""]);
+					LayerCustomEvent(LayerAPI, "Solver", [SelectedProblem^"", Problems[SelectedProblem].tojson(), SelectedSolution^"", SelectedPoint^""]);
 					
 					declare Text[Integer] LastBlocks;
 					foreach(Block,Blocks)
@@ -343,12 +343,12 @@ Void Finish() {
 							if(Event.Type == CMapEditorPluginEvent::Type::LayerCustomEvent) {
 								if(Event.CustomEventType == "Button_Leave") return;
 								if(Event.CustomEventType == "Ch_Solve") {
-									for(I,0,Problems.count-1) {
-										if(Problems.existskey(I) && Problems[I].tojson() == Event.CustomEventData[0])
-											declare Removed = Problems.removekey(I);
+									declare ProblemId = TextLib::ToInteger(Event.CustomEventData[0]);
+									if(Problems.existskey(ProblemId)) {
+											declare Removed = Problems.removekey(ProblemId);
+										Solved = True;
+										log("[SOLVER] Solved");
 									}
-									Solved = True;
-									log("[SOLVER] Solved");
 								}
 								else if(Event.CustomEventType == "Ch_Event_MapModified") {
 									if(MapModified) {

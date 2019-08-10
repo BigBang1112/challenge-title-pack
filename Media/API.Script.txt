@@ -2,6 +2,7 @@ declare SChMetadata Script;
 declare SChProblem[] Problems;
 
 declare SChProblem Solver_Problem;
+declare Integer Solver_ProblemId;
 declare Integer Solver_Solution;
 declare Integer Solver_Point;
 
@@ -500,8 +501,8 @@ Void Complete() { // Shouldn't be normally called
 	declare Response = Request("Ch_Complete", []);
 }
 
-Void Solve(SChProblem _Problem) { // Shouldn't be normally called
-	declare Response = Request("Ch_Solve", [_Problem.tojson()]);
+Void Solve(Integer _ProblemId) { // Shouldn't be normally called
+	declare Response = Request("Ch_Solve", [_ProblemId^""]);
 }
 
 Void Problem(SChProblem _Problem) {
