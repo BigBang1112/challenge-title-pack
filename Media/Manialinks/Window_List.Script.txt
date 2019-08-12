@@ -2,6 +2,7 @@
 	Text Name;
 	Integer Count;
 	Boolean Selected;
+	Boolean Selectable;
 }
 
 declare CMlFrame Frame_Window_List;
@@ -18,7 +19,9 @@ declare Text Window_Title;
 declare CMlControl::AlignHorizontal Window_Title_Align;
 declare Boolean Window_Number_Enable;
 declare SElement[] Window_Elements;
+declare Boolean Window_Multiselection;
 declare Real Window_ScrollbarHeight;
+declare Vec2 Window_AnimationOut;
 
 declare Vec2 PreviousScroll;
 
@@ -50,10 +53,13 @@ Void UpdateElements() {
 		if(Window_Elements.existskey(i+Offset)) {
 			declare Element = Window_Elements[i+Offset];
 			Label_Button.SetText(Element.Name);
+			Label_Button.Size.X = Label_Button.ComputeWidth(Element.Name);
 			(Selector.GetFirstChild("LABEL_NUMBER") as CMlLabel).SetText(Element.Count^"");
 			Selector.DataAttributeSet("element",i+Offset^"");
 
-			if(Element.Selected)
+			if(!Element.Selectable)
+				Quad_Button.Substyle = "BgEmpty";
+			else if(Element.Selected)
 				Quad_Button.Substyle = "BgCard";
 			else
 				Quad_Button.Substyle = "BgCardInventoryItem";
@@ -71,16 +77,16 @@ Void UpdateElements() {
 		}
 	}
 
-	declare ListSize = Window_Size.Y-20;
+	declare ListHeight = Window_Size.Y-20;
 
-	if(ListSize/10 < Window_Elements.count) {
+	if(ListHeight/10 < Window_Elements.count) {
 		Quad_Scrollbar.Show();
 	}
 	else {
 		Quad_Scrollbar.Hide();
 	}
 
-	Frame_List.ScrollMax = <0.,Window_Elements.count*10.-ListSize>;
+	Frame_List.ScrollMax = <0.,Window_Elements.count*10.-ListHeight>;
 
 	declare VisibleElements = (Window_Size.Y-20)/10;
 	if(Window_Elements.count > VisibleElements) {
@@ -97,17 +103,19 @@ Void UpdateLayout() {
 		Control.Size = Window_Size;
 
 	Label_Name.Size.X = Window_Size.X-10;
-	Align(Label_Name, Label_Name.HorizontalAlign, 2.5);
+	Align(Label_Name, Window_Title_Align, 2.5);
 
-	declare ListSize = Window_Size.Y-20;
+	declare ListWidth = Window_Size.X-12;
+	if(Window_Number_Enable) ListWidth -= 10;
+	declare ListHeight = Window_Size.Y-20;
 
-	Quad_List_Bg.Size = <Window_Size.X, ListSize>;
+	Quad_List_Bg.Size = <Window_Size.X, ListHeight>;
 
 	Quad_Scrollbar.RelativePosition_V3.X = Window_Size.X/2-3;
 	Quad_Scrollbar_Background.RelativePosition_V3.X = Window_Size.X/2-3;
 
-	Frame_List.ClipWindowRelativePosition = <0., -ListSize/2>;
-	Frame_List.ClipWindowSize = <Window_Size.X, ListSize>;
+	Frame_List.ClipWindowRelativePosition = <0., -ListHeight/2>;
+	Frame_List.ClipWindowSize = <Window_Size.X, ListHeight>;
 
 	foreach(Control,(Frame_List.Controls[0] as CMlFrame).Controls) {
 		declare Frame = (Control as CMlFrame);
@@ -115,18 +123,62 @@ Void UpdateLayout() {
 		Frame.GetFirstChild("QUAD_BUTTON").Size.X = Window_Size.X-3;
 		Frame.GetFirstChild("FRAME_LABEL_BUTTON").RelativePosition_V3.X = -Window_Size.X/2+5;
 
+		(Frame.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).ClipWindowSize.X = ListWidth;
+		(Frame.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).ClipWindowRelativePosition.X = ListWidth/2;
+
 		if(Window_Number_Enable) {
-			(Frame.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).ClipWindowSize.X = (Window_Size.X-20-2)*2;
 			Frame.GetFirstChild("LABEL_NUMBER").RelativePosition_V3.X = Window_Size.X/2-10;
 			Frame.GetFirstChild("LABEL_NUMBER").Show();
 		}
 		else {
-			(Frame.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).ClipWindowSize.X = (Window_Size.X-10-2)*2;
 			Frame.GetFirstChild("LABEL_NUMBER").Hide();
 		}
 	}
 
 	UpdateElements();
+}
+
+Void Select(Integer _Id) {
+	if(_Id < 0) {
+		for(I,0,Window_Elements.count-1)
+			Window_Elements[I].Selected = False;
+	}
+	else if(Window_Elements[_Id].Selectable) {
+		if(Window_Multiselection) {
+			if(Window_Elements[_Id].Selected)
+				Window_Elements[_Id].Selected = False;
+			else
+				Window_Elements[_Id].Selected = True;
+		}
+		else {
+			for(I,0,Window_Elements.count-1) Window_Elements[I].Selected = False;
+			Window_Elements[_Id].Selected = True;
+		}
+
+		UpdateElements();
+		SendCustomEvent("Select", [_Id^""]);
+	}
+}
+
+Void Next() {
+	declare Id = -1;
+	if(!Window_Multiselection) {
+		declare I = 0;
+		while(I < Window_Elements.count && !Window_Elements[I].Selected) I+=1;
+
+		Window_Elements[I].Selected = False;
+		if(I+1 == Window_Elements.count) {
+			Window_Elements[0].Selected = True;
+			Id = 0;
+		}
+		else {
+			Window_Elements[I+1].Selected = True;
+			Id = I+1;
+		}
+	}
+
+	UpdateElements();
+	SendCustomEvent("Select", [Id^""]);
 }
 
 ***Start***
@@ -143,12 +195,14 @@ Quad_Scrollbar_Background = (Page.GetFirstChild("QUAD_SCROLLBAR_BACKGROUND") as 
 Frame_List = (Page.GetFirstChild("FRAME_LIST") as CMlFrame);
 
 Window_Size = <70.,50.>;
-Window_Title = "PRCNATY";
+Window_Title = "";
 Window_Title_Align = CMlControl::AlignHorizontal::HCenter;
-Window_Number_Enable = True;
+Window_Number_Enable = False;
 
 Frame_List.ScrollActive = True;
 Frame_List.ScrollGrid = <10.,10.>;
+
+declare CMlLabel MoveLabel;
 ***
 
 ***Loop***
@@ -157,8 +211,29 @@ foreach(Event,PendingEvents) {
 	switch(Event.Type) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
-				case "": {
-					
+				case "QUAD_BUTTON": {
+					Select(TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("element")));
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MouseOver: {
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON": {
+					declare Label = ((Event.Control.Parent.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).GetFirstChild("LABEL_BUTTON") as CMlLabel);
+					declare ListWidth = Window_Size.X-12;
+					if(Window_Number_Enable) ListWidth -= 10;
+					if(Label.Size.X > ListWidth) Label.DataAttributeSet("move", Label.Size.X-ListWidth^"");
+					else Label.DataAttributeSet("move", "0");
+					MoveLabel = Label;
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MouseOut: {
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON": {
+					declare Label = ((Event.Control.Parent.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).GetFirstChild("LABEL_BUTTON") as CMlLabel);
+					Label.DataAttributeSet("move", "0");
+					AnimMgr.Add(Label, "<label pos=\"0 0\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
 				}
 			}
 		}
@@ -200,12 +275,23 @@ foreach(Event,PendingEvents) {
 					declare JsonSuccess = Window_Elements.fromjson(Event.CustomEventData[0]);
 					UpdateElements();
 				}
+				case "Animation_Out": {
+					declare Position = TextLib::Split(" ", Event.CustomEventData[0]);
+					Window_AnimationOut = <TextLib::ToReal(Position[0]), TextLib::ToReal(Position[1])>;
+					UpdateLayout();
+				}
+				case "Select": {
+					Select(TextLib::ToInteger(Event.CustomEventData[0]));
+				}
+				case "Next": {
+					Next();
+				}
 				case "Show": {
 					Start = Now;
 					End = -1;
 
-					Frame_Window_List.RelativePosition_V3 = <Window_Position.X,7.5>;					
-					AnimMgr.Add(Frame_Window_List, """<frame pos="{{{Window_Position.X}}} {{{Window_Size.Y/2}}}"/>""", Now + 500 + 500, 500, CAnimManager::EAnimManagerEasing::QuadOut);
+					Frame_Window_List.RelativePosition_V3 = <Window_Position.X,Window_Position.Y+7.5>;					
+					AnimMgr.Add(Frame_Window_List, """<frame pos="{{{Window_Position.X}}} {{{Window_Position.Y+Window_Size.Y/2}}}"/>""", Now + 500 + 500, 500, CAnimManager::EAnimManagerEasing::QuadOut);
 
 					foreach(Control,Frame_Background.Controls) {
 						(Control as CMlQuad).Opacity = 0.;
@@ -222,10 +308,11 @@ foreach(Event,PendingEvents) {
 						AnimMgr.Flush(Frame.GetFirstChild("QUAD_BUTTON"));
 						AnimMgr.Flush(Frame.GetFirstChild("LABEL_BUTTON"));
 						AnimMgr.Flush(Frame.GetFirstChild("LABEL_NUMBER"));
-
-						(Frame.GetFirstChild("QUAD_BUTTON") as CMlQuad).Hide();
+						
+						Frame.GetFirstChild("QUAD_BUTTON").Hide();
 						AnimMgr.Add(Frame.GetFirstChild("QUAD_BUTTON"), "<quad hidden=\"0\"/>", Now + 1500 + Delay, 200, CAnimManager::EAnimManagerEasing::QuadOut);
 						((Frame.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).GetFirstChild("LABEL_BUTTON") as CMlLabel).Opacity = 0.;
+						(Frame.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).GetFirstChild("LABEL_BUTTON").RelativePosition_V3.X = 0.;
 						AnimMgr.Add((Frame.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).GetFirstChild("LABEL_BUTTON"), "<label opacity=\"1\"/>", Now + 1500 + Delay, 200, CAnimManager::EAnimManagerEasing::QuadOut);
 						(Frame.GetFirstChild("LABEL_NUMBER") as CMlLabel).Opacity = 0.;
 						AnimMgr.Add(Frame.GetFirstChild("LABEL_NUMBER"), "<label opacity=\"1\"/>", Now + 1500 + Delay, 200, CAnimManager::EAnimManagerEasing::QuadOut);
@@ -235,7 +322,7 @@ foreach(Event,PendingEvents) {
 				}
 				case "Hide": {
 					End = Now;
-					AnimMgr.Add(Frame_Window_List, "<frame pos=\"-200 35\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+					AnimMgr.Add(Frame_Window_List, """<frame pos="{{{Window_AnimationOut.X}}} {{{Window_AnimationOut.Y+Window_Size.Y/2}}}"/>""", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 				}
 			}
 		}
@@ -263,6 +350,13 @@ if(End != -1) {
 		SendCustomEvent("Hide_Response", []);
 		End = -1;
 	}
+}
+
+if(MoveLabel != Null) {
+	declare Move = TextLib::ToReal(MoveLabel.DataAttributeGet("move"));
+	if(Move != 0.)
+		if(-MoveLabel.RelativePosition_V3.X < Move)
+			MoveLabel.RelativePosition_V3.X -= Period*.01;
 }
 
 if(Frame_List.ScrollOffset != PreviousScroll) {

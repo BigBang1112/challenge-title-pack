@@ -25,9 +25,7 @@
 #Const C_Manialink_ModifierStatus "Media/Manialinks/Sandbox/Modifier/ModifierStatus"
 #Const C_Manialink_ModifierMetadata "Media/Manialinks/Sandbox/Modifier/ModifierMetadata"
 #Const C_Manialink_ModifierActions "Media/Manialinks/Sandbox/Modifier/ModifierActions"
-#Const C_Manialink_ModifierProblems "Media/Manialinks/Sandbox/Modifier/ModifierProblems"
 #Const C_Manialink_ModifierSolver "Media/Manialinks/Sandbox/Modifier/ModifierSolver"
-#Const C_Manialink_ModifierSolutions "Media/Manialinks/Sandbox/Modifier/ModifierSolutions"
 
 #Struct SCommand {
 	Text Name;
@@ -45,6 +43,13 @@
 	Text Name;
 	Text Type;
 	SMetadata Metadata;
+}
+
+#Struct SElement {
+	Text Name;
+	Integer Count;
+	Boolean Selected;
+	Boolean Selectable;
 }
 
 declare CUILayer LayerAPI;
@@ -119,9 +124,21 @@ Void Finish() {
 	sleep(500);
 	
 	Layers::Create("ModifierResult",Manialink::FromFile(C_Manialink_ModifierResult, True, ["TextAnimation"], Settings::Get().Theme));
-	Layers::Create("ModifierProblems",Manialink::FromFile(C_Manialink_ModifierProblems, True, ["TextAnimation"], Settings::Get().Theme));
+	
+	Layers::Create("ModifierProblems",Manialink::FromFile("Media/Manialinks/Window_List", True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::SendEvent("ModifierProblems", "Title", Dictionary::Get("PROBLEMS"));
+	Layers::SendEvent("ModifierProblems", "Position", "120 10");
+	Layers::SendEvent("ModifierProblems", "Size", "60 60");
+	Layers::SendEvent("ModifierProblems", "Animation_Out", "200 10");
+	
 	Layers::Create("ModifierSolver",Manialink::FromFile(C_Manialink_ModifierSolver, True, ["TextAnimation"], Settings::Get().Theme));
-	Layers::Create("ModifierSolutions",Manialink::FromFile(C_Manialink_ModifierSolutions, True, ["TextAnimation"], Settings::Get().Theme));
+	
+	Layers::Create("ModifierSolutions",Manialink::FromFile("Media/Manialinks/Window_List", True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::SendEvent("ModifierSolutions", "Title", Dictionary::Get("POSSIBLE_SOLUTIONS"));
+	Layers::SendEvent("ModifierSolutions", "Title_Align", "left");
+	Layers::SendEvent("ModifierSolutions", "Position", "-100 10");
+	Layers::SendEvent("ModifierSolutions", "Size", "100 60");
+	Layers::SendEvent("ModifierSolutions", "Animation_Out", "-210 10");
 
 	declare metadata ModifierBase::SChMap OriginalMap for Map;
 	declare metadata ModifierBase::SChProblem[] Problems for Map;
@@ -130,10 +147,21 @@ Void Finish() {
 	if(Terminate) Layers::SendEvent("ModifierResult", "Unsolvable");
 	else {
 		Layers::SendEvent("ModifierResult", "Success");
+		
 		if(Problems.count > 0) {
 			Layers::SendEvent("ModifierResult", "Problems");
+			
+			declare SElement[] Elements;
+			foreach(Problem,Problems) {
+				declare SElement Element;
+				Element.Name = Problem.ShortDescription;
+				Element.Selectable = True;
+				Elements.add(Element);
+			}
+			
+			Layers::SendEvent("ModifierProblems", "Elements", Elements.tojson());
+			
 			Layers::Show("ModifierProblems", True);
-			Layers::SendEvent("ModifierProblems", "UpdateProblems", Problems.tojson());
 		}
 	}
 	
@@ -167,10 +195,18 @@ Void Finish() {
 					}
 					case "Button_Solve": {
 						Solver = True;
-						Layers::SendEvent("ModifierProblems", "SelectProblem", "0");
+						Layers::SendEvent("ModifierProblems", "Select", "0");
 						Layers::SendEvent("ModifierSolver", "Problem", Problems[0].tojson());
+						
+						declare SElement[] Elements;
+						foreach(Solution,Problems[0].Solutions) {
+							declare SElement Element;
+							Element.Name = Solution.Value;
+							Element.Selectable = Solution.IsInteractive;
+							Elements.add(Element);
+						}
+						Layers::SendEvent("ModifierSolutions", "Elements", Elements.tojson());
 						Layers::Show("ModifierSolutions", True);
-						Layers::SendEvent("ModifierSolutions", "UpdateSolutions", Problems[0].Solutions.tojson());
 					}
 					case "Button_Save": {
 						declare metadata ModifierBase::SChProblem[] Problems for Map;
@@ -207,7 +243,7 @@ Void Finish() {
 					case "Button_Shadows_Ultra": {
 						ComputeShadows(::ShadowsQuality::Ultra);
 					}
-					case "SelectProblem": {
+					case "Select": {
 						Solver = True;
 					}
 				}
@@ -248,30 +284,50 @@ Void Finish() {
 					
 					switch(Event.Type) {
 						case CMapEditorPluginEvent::Type::LayerCustomEvent: {
-							switch(Event.CustomEventType) {
-								case "SelectProblem": {
-									SelectedProblem = TextLib::ToInteger(Event.CustomEventData[0]);
-									declare Problem = Problems[SelectedProblem];
-									Layers::SendEvent("ModifierSolver", "Problem", Problem.tojson());
-									Layers::SendEvent("ModifierSolver", "ProblemCount", Problems.count^"");
-									Layers::Show("ModifierSolutions", True);
-									Layers::SendEvent("ModifierSolutions", "UpdateSolutions", Problem.Solutions.tojson());
+							switch(Event.CustomEventLayer) {
+								case Layers::Get("ModifierProblems"): {
+									switch(Event.CustomEventType) {
+										case "Select": {
+											SelectedProblem = TextLib::ToInteger(Event.CustomEventData[0]);
+											declare Problem = Problems[SelectedProblem];
+											Layers::SendEvent("ModifierSolver", "Problem", Problem.tojson());
+											Layers::SendEvent("ModifierSolver", "ProblemCount", Problems.count^"");
+											
+											declare SElement[] Elements;
+											foreach(Solution,Problem.Solutions) {
+												declare SElement Element;
+												Element.Name = Solution.Value;
+												Element.Selectable = Solution.IsInteractive;
+												Elements.add(Element);
+											}
+											Layers::SendEvent("ModifierSolutions", "Elements", Elements.tojson());
+											Layers::Show("ModifierSolutions", True);
+										}
+									}
 								}
-								case "Button_Leave": {
-									Solver = False;
-									Layers::SendEvent("ModifierProblems", "SelectProblem", "-1");
-									Layers::Show("ModifierResult", True);
+								case Layers::Get("ModifierSolutions"): {
+									switch(Event.CustomEventType) {
+										case "Select": {
+											SelectedSolution = TextLib::ToInteger(Event.CustomEventData[0]);
+										}
+									}
 								}
-								case "Button_Next": {
-									Layers::SendEvent("ModifierProblems", "NextProblem");
-								}
-								case "SelectSolution": {
-									SelectedSolution = TextLib::ToInteger(Event.CustomEventData[0]);
-								}
-								case "UpdatePoint": {
-									declare Problem = Problems[SelectedProblem];
-									
-									SelectedPoint = TextLib::ToInteger(Event.CustomEventData[0]);
+								case Layers::Get("ModifierSolver"): {
+									switch(Event.CustomEventType) {
+										case "Button_Leave": {
+											Solver = False;
+											Layers::SendEvent("ModifierProblems", "Select", "-1");
+											Layers::Show("ModifierResult", True);
+										}
+										case "Button_Next": {
+											Layers::SendEvent("ModifierProblems", "Next");
+										}
+										case "UpdatePoint": {
+											declare Problem = Problems[SelectedProblem];
+											
+											SelectedPoint = TextLib::ToInteger(Event.CustomEventData[0]);
+										}
+									}
 								}
 							}
 						}
@@ -397,14 +453,31 @@ Void Finish() {
 					}
 					
 					if(Problems.count > 0) {
-						Layers::SendEvent("ModifierProblems", "UpdateProblems", Problems.tojson());
-						Layers::SendEvent("ModifierProblems", "SelectProblem", "0");
+						declare SElement[] Elements;
+						foreach(Problem,Problems) {
+							declare SElement Element;
+							Element.Name = Problem.ShortDescription;
+							Element.Selectable = True;
+							Elements.add(Element);
+						}
+						Layers::SendEvent("ModifierProblems", "Elements", Elements.tojson());
+						
+						Layers::SendEvent("ModifierProblems", "Select", "0");
 						SelectedProblem = 0;
 						Layers::Show("ModifierProblems", True);
 						declare Problem = Problems[0];
 						Layers::SendEvent("ModifierSolver", "Problem", Problem.tojson());
 						Layers::Show("ModifierSolutions", True);
-						Layers::SendEvent("ModifierSolutions", "UpdateSolutions", Problem.Solutions.tojson());
+						
+						declare SElement[] SolutionElements;
+						foreach(Solution,Problem.Solutions) {
+							declare SElement Element;
+							Element.Name = Solution.Value;
+							Element.Selectable = Solution.IsInteractive;
+							SolutionElements.add(Element);
+						}
+						
+						Layers::SendEvent("ModifierSolutions", "Elements", SolutionElements.tojson());
 						
 						/*if(Problem.Waypoints.count > 0) {
 							declare Waypoint = Problem.Waypoints[0];

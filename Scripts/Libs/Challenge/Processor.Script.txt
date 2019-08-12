@@ -50,7 +50,7 @@ ModifierBase::SChallengeBlock[] GetBlocks() {
 	}
 
 	foreach(Block, Blocks) {
-		if(!Coords.exists(Block.Coord)) {
+		if(Block != Null && !Coords.exists(Block.Coord)) {
 			declare ModifierBase::SChallengeBlock ChBlock;
 			ChBlock.Placed = True;
 			ChBlock.Block <=> Block;

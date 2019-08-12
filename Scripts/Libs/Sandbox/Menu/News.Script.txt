@@ -1,6 +1,7 @@
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
+#Include "Libs/BigBang1112/Random.Script.txt" as Random
 
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 
@@ -14,16 +15,9 @@
 Void Start() {
 	Layers::Create("News", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme));
 	Layers::SendEvent("News", "Title", Dictionary::Get("NEWS"));
-	Layers::SendEvent("News", "Position", ["-115 35"]);
+	Layers::SendEvent("News", "Position", ["-115 0"]);
 	Layers::SendEvent("News", "Size", ["70 70"]);
-	
-	declare SElement[] Elements;
-	for(I,0,4) {
-		declare SElement Element;
-		Element.Name = "Kdgsdgiojsd oigjsio jo sdf dsa fsda fsda afs";
-		Elements.add(Element);
-	}
-	Layers::SendEvent("News", "Elements", Elements.tojson());
+	Layers::SendEvent("News", "Animation_Out", ["-200 0"]);
 	
 	Layers::Show("News", True);
 }

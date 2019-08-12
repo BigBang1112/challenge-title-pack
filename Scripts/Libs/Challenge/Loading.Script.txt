@@ -8,11 +8,11 @@ Void SetLoading(Text _Environment, Text _MapUid) {
 	declare Opacities = Time::GetTimeOpacities();
 
 	declare LoadingManialink = """<frame z-index="0">
-	<quad pos="0 0" z-index="-6" size="320 180" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Sunrise.jpg" opacity="{{{Opacities[0]*.75}}}" id="QUAD_SUNRISE"/>
-	<quad pos="0 0" z-index="-5" size="320 180" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Day.jpg" opacity="{{{Opacities[1]*.75}}}" id="QUAD_DAY"/>
-	<quad pos="0 0" z-index="-4" size="320 180" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Sunset.jpg" opacity="{{{Opacities[2]*.75}}}" id="QUAD_SUNSET"/>
-	<quad pos="0 0" z-index="-3" size="320 180" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Night.jpg" opacity="{{{Opacities[3]*.75}}}" id="QUAD_NIGHT"/>
-	<quad pos="0 0" z-index="-2" size="320 180" bgcolor="000D" halign="center" valign="center"/>
+	<quad pos="0 0" z-index="-6" size="320 180" bgcolor="000A" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Sunrise.jpg" opacity="{{{Opacities[0]*.9}}}" id="QUAD_SUNRISE"/>
+	<quad pos="0 0" z-index="-5" size="320 180" bgcolor="000A" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Day.jpg" opacity="{{{Opacities[1]*.9}}}" id="QUAD_DAY"/>
+	<quad pos="0 0" z-index="-4" size="320 180" bgcolor="000A" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Sunset.jpg" opacity="{{{Opacities[2]*.9}}}" id="QUAD_SUNSET"/>
+	<quad pos="0 0" z-index="-3" size="320 180" bgcolor="000A" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Night.jpg" opacity="{{{Opacities[3]*.9}}}" id="QUAD_NIGHT"/>
+	<quad pos="0 0" z-index="-2" size="320 180" bgcolor="000A" halign="center" valign="center"/>
 	<frame pos="60">
 		<frame pos="0 2.5">
 			<quad pos="0 0" z-index="0" size="88 20" image="file://Media/Images/ChallengeSmall.png" halign="center" valign="center"/>
