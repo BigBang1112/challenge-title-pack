@@ -11,6 +11,7 @@
 
 #Include "Libs/Challenge/Backend.Script.txt" as Backend
 #Include "Libs/Challenge/Scope.Script.txt" as Scope
+#Include "Libs/Challenge/Loading.Script.txt" as Loading
 
 #Struct SPublicMap {
 	Text Name;
@@ -78,8 +79,10 @@ Void Async() {
 			foreach(MapInfo,MapList.MapInfos)
 				if(MapInfo.MapUid == SelectedPlaysession.Map.Uid)
 					PlayableMap <=> MapInfo;
-			if(PlayableMap != Null)
+			if(PlayableMap != Null) {
+				Loading::SetLoading(PlayableMap.CollectionName, PlayableMap.MapUid);
 				TitleControl.PlayMap(PlayableMap.FileName,"","");
+			}
 			Task::Destroy_DataFileMgr("PLAYSESSION_MAP");
 		}
 	}

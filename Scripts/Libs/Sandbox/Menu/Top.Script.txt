@@ -1,7 +1,9 @@
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
-
+#Include "Libs/BigBang1112/Map.Script.txt" as Map
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+
+#Include "Libs/Challenge/Loading.Script.txt" as Loading
 
 #Const C_Manialink "Media/Manialinks/Sandbox/Top"
 
@@ -9,15 +11,16 @@ Void Start() {
 	Layers::Create("Top", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme), True, True);
 }
 
+declare Boolean VisitMap;
+
 Void Event(CManiaAppEvent _Event) {
 	declare Event <=> _Event;
 
 	if(Event.Type == CManiaAppEvent::EType::LayerCustomEvent) {
 		switch(Event.CustomEventType) {
 			case "Button_Skins": {
-				//Restart::Restart();
-				if(TitleControl.IsReady)
-					TitleControl.PlayMap("SkinSelect.Map.Gbx", "TrackMania/SkinSelect.Script.txt", "");
+				VisitMap = True;
+				
 			}
 		}
 	}
@@ -28,5 +31,11 @@ Void Async() {
 }
 
 Void Loop() {
-	
+	if(VisitMap) {
+		wait(TitleControl.IsReady);
+		declare Map = Map::MapInfo("SkinSelect.Map.Gbx", 2);
+		Loading::SetLoading(Map.CollectionName, Map.MapUid);
+		TitleControl.PlayMap(Map.FileName, "TrackMania/SkinSelect.Script.txt", "");
+		VisitMap = False;
+	}
 }

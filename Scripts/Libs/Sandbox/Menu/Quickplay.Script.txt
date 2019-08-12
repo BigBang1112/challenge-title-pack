@@ -16,6 +16,7 @@
 
 #Include "Libs/Challenge/Nicknames.Script.txt" as Nicknames
 #Include "Libs/Challenge/Scope.Script.txt" as Scope
+#Include "Libs/Challenge/Loading.Script.txt" as Loading
 
 #Struct SMetadata {
 	Text Name;
@@ -87,7 +88,8 @@ Void StartMap(Text _MapLocation, Map::SMapInfo _MapInfo, SScriptInfo[] _Scripts)
 		OriginalMapInfo = _MapInfo;
 		declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
 		CHALLENGE_SCRIPTS = _Scripts;
-	
+		
+		Loading::SetLoading(_MapInfo.CollectionName, _MapInfo.MapUid);
 		TitleControl.EditNewMapFromBaseMap(_MapInfo.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt", """<settings>
 		<setting name="S_Build" type="boolean" value="True"/>
 	</settings>""");
@@ -105,6 +107,7 @@ Boolean StartMapIfExists() {
 			declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
 			CHALLENGE_SCRIPTS = MapDownloadScripts;
 			
+			Loading::SetLoading(MapInfo.CollectionName, MapInfo.MapUid);
 			TitleControl.EditNewMapFromBaseMap(MapInfo.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt", """<settings>
 	<setting name="S_Build" type="boolean" value="True"/>
 </settings>""");
@@ -172,12 +175,16 @@ Void Event(CManiaAppEvent _Event) {
 					declare SScriptInfo[] Scripts;
 					declare JsonSuccessScripts = Scripts.fromjson(Event.CustomEventData[2]);
 					if(MapInfo.MapType == "TrackMania\\Challenge") {
-						if(MapInfo.IsPlayable)
+						if(MapInfo.IsPlayable) {
+							Loading::SetLoading(MapInfo.CollectionName, MapInfo.MapUid);
 							TitleControl.PlayMap(MapInfo.FileName,"","");
-						else
+						}
+						else {
+							Loading::SetLoading(MapInfo.CollectionName, MapInfo.MapUid);
 							TitleControl.EditMap(MapInfo.FileName, "Modifier.Script.txt", """<settings>
 	<setting name="S_Build" type="boolean" value="True"/>
 </settings>""");
+						}
 					}
 					else
 						StartMap(MapLocation, MapInfo, Scripts);
@@ -426,6 +433,7 @@ Void Loop() {
 				foreach(MapInfo,List.MapInfos) {
 					if(MapInfo.MapUid == MapDownloadUid) {
 						wait(TitleControl.IsReady);
+						Loading::SetLoading(MapInfo.CollectionName, MapInfo.MapUid);
 						TitleControl.PlayMap(MapInfo.FileName,"","");
 						
 						MapDownloadApproximateLocation = "";

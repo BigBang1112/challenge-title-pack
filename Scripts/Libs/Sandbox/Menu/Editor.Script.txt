@@ -6,6 +6,8 @@
 #Include "Libs/BigBang1112/Map.Script.txt" as Map
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 
+#Include "Libs/Challenge/Loading.Script.txt" as Loading
+
 #Const C_Manialink "Media/Manialinks/Sandbox/Editor"
 
 Void Start() {
@@ -46,6 +48,7 @@ Void Loop() {
 	if(StartTest) {
 		declare Map::SMapInfo OriginalMapInfo for LocalUser;
 		OriginalMapInfo = Map::MapInfo("2FRV EXCLUSIVE 001.Map.Gbx", 2);
+		Loading::SetLoading(OriginalMapInfo.CollectionName, OriginalMapInfo.MapUid);
 		TitleControl.EditNewMapFromBaseMap(OriginalMapInfo.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt","""<settings>
 	<setting name="S_Build" type="boolean" value="True"/>
 	<setting name="S_TestMode" type="boolean" value="True"/>

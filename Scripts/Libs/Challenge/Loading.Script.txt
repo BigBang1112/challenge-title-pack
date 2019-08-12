@@ -1,0 +1,36 @@
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Time.Script.txt" as Time
+#Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
+
+Void SetLoading(Text _Environment, Text _MapUid) {
+	declare Opacities = Time::GetTimeOpacities();
+
+	declare LoadingManialink = """<frame z-index="0">
+	<quad pos="0 0" z-index="-6" size="320 180" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Sunrise.jpg" opacity="{{{Opacities[0]*.75}}}" id="QUAD_SUNRISE"/>
+	<quad pos="0 0" z-index="-5" size="320 180" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Day.jpg" opacity="{{{Opacities[1]*.75}}}" id="QUAD_DAY"/>
+	<quad pos="0 0" z-index="-4" size="320 180" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Sunset.jpg" opacity="{{{Opacities[2]*.75}}}" id="QUAD_SUNSET"/>
+	<quad pos="0 0" z-index="-3" size="320 180" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Night.jpg" opacity="{{{Opacities[3]*.75}}}" id="QUAD_NIGHT"/>
+	<quad pos="0 0" z-index="-2" size="320 180" bgcolor="000D" halign="center" valign="center"/>
+	<frame pos="60">
+		<frame pos="0 2.5">
+			<quad pos="0 0" z-index="0" size="88 20" image="file://Media/Images/ChallengeSmall.png" halign="center" valign="center"/>
+			<quad pos="0.5 -0.5" z-index="0" size="88 20" image="file://Media/Images/ChallengeSmall.png" halign="center" modulatecolor="036" valign="center"/>
+		</frame>
+		<label pos="25 -5" z-index="0" size="30 5" text="{{{Dictionary::Get("LOADING")}}}..." halign="center" textemboss="1" textfont="BiryaniDemiBold"/>
+	</frame>
+	<frame>
+		<quad pos="-80 0" z-index="-1" size="55 55" halign="center" valign="center" style="Bgs1" substyle="BgButtonGlow" opacity=".5"/>
+		<quad pos="-80 0" z-index="0" size="50 50" bgcolor="000" halign="center" valign="center" image="file://Thumbnails/MapUid/{{{_MapUid}}}"/>
+		<quad pos="-80 0" z-index="1" size="51 51" halign="center" valign="center" style="Bgs1" substyle="BgColorContour"/>
+	</frame>
+</frame>""";
+
+	if(Layers::Exists("Loading")) {
+		Layers::Update("Loading", Manialink::Construct(LoadingManialink, "", True, [], Settings::Get().Theme));
+	}
+	else {
+		Layers::Create("Loading", Manialink::Construct(LoadingManialink, "", True, [], Settings::Get().Theme), True, False, CUILayer::EUILayerType::LoadingScreen);
+	}
+}

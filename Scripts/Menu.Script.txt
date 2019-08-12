@@ -8,6 +8,7 @@
 #Include "Libs/BigBang1112/Auth.Script.txt" as Auth
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 
 #Include "Libs/Sandbox/Menu/Quickplay.Script.txt" as Menu_Quickplay
 #Include "Libs/Sandbox/Menu/Main.Script.txt" as Menu_Main
@@ -17,6 +18,7 @@
 #Include "Libs/Sandbox/Menu/News.Script.txt" as Menu_News
 
 #Include "Libs/Challenge/Menu/AuthBeta.Script.txt" as Menu_AuthBeta
+#Include "Libs/Challenge/Loading.Script.txt" as Loading
 
 #Include "Libs/Challenge/Devmode.Script.txt" as Devmode
 
@@ -27,7 +29,6 @@ main() {
 		Settings::Restart(False);
 		
 		Layers::Create("Background", "file://Media/Manialinks/Background.xml", True, False);
-		Layers::Create("Loading", "file://Media/Manialinks/Base/Loading.xml", True, False, CUILayer::EUILayerType::LoadingScreen);
 		
 		//Auth::AuthorizeInManialink("b1a3d10ba7", "basic maps", "http://localhost/challenge/auth");
 		
