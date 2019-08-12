@@ -4,6 +4,7 @@
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/Http.Script.txt" as Http
 #Include "Libs/BigBang1112/Task.Script.txt" as Task
+#Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 #Include "Libs/BigBang1112/Time.Script.txt" as Time
@@ -30,13 +31,17 @@
 	SUser[] Users;
 }
 
-#Const C_Manialink "Media/Manialinks/Sandbox/Playsessions"
+#Const C_Manialink "Media/Manialinks/Window_List"
 
 declare SPlaysession[] Playsessions;
 declare SPlaysession SelectedPlaysession;
 
 Void Start() {
-	Layers::Create("Playsessions", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme), True, True);
+	Layers::Create("Playsessions", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme));
+	Layers::SendEvent("Playsessions", "Title", Dictionary::Get("NOW_PLAYING"));
+	Layers::SendEvent("Playsessions", "Position", ["115 35"]);
+	Layers::SendEvent("Playsessions", "Size", ["70 70"]);
+	Layers::Show("Playsessions", True);
 	
 	declare Success = Http::AsyncGET("Playsessions", """{{{Backend::GetHost()}}}/playsessions.php?titleid={{{LoadedTitle.TitleId}}}""");
 }

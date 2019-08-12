@@ -1,12 +1,31 @@
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 
-#Const C_Manialink "Media/Manialinks/Sandbox/News"
+#Const C_Manialink "Media/Manialinks/Window_List"
+
+#Struct SElement {
+	Text Name;
+	Integer Count;
+}
 
 Void Start() {
-	Layers::Create("News", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme), True, True);
+	Layers::Create("News", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme));
+	Layers::SendEvent("News", "Title", Dictionary::Get("NEWS"));
+	Layers::SendEvent("News", "Position", ["-115 35"]);
+	Layers::SendEvent("News", "Size", ["70 70"]);
+	
+	declare SElement[] Elements;
+	for(I,0,4) {
+		declare SElement Element;
+		Element.Name = "Kdgsdgiojsd oigjsio jo sdf dsa fsda fsda afs";
+		Elements.add(Element);
+	}
+	Layers::SendEvent("News", "Elements", Elements.tojson());
+	
+	Layers::Show("News", True);
 }
 
 Void Event(CManiaAppEvent _Event) {
