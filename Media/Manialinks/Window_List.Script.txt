@@ -290,11 +290,12 @@ foreach(Event,PendingEvents) {
 					Start = Now;
 					End = -1;
 
-					Frame_Window_List.RelativePosition_V3 = <Window_Position.X,Window_Position.Y+7.5>;					
+					Frame_Window_List.RelativePosition_V3 = <Window_Position.X,Window_Position.Y+7.5>;
 					AnimMgr.Add(Frame_Window_List, """<frame pos="{{{Window_Position.X}}} {{{Window_Position.Y+Window_Size.Y/2}}}"/>""", Now + 500 + 500, 500, CAnimManager::EAnimManagerEasing::QuadOut);
 
 					foreach(Control,Frame_Background.Controls) {
 						(Control as CMlQuad).Opacity = 0.;
+						(Control as CMlQuad).Style = "Bgs1InRace";
 						AnimMgr.Add(Control, "<quad opacity=\"1\"/>", Now + 500, 500, CAnimManager::EAnimManagerEasing::QuadOut);
 					}
 
@@ -334,6 +335,7 @@ declare Time = Now - Start - 1000;
 if(Time <= 1500) {
 	foreach(Control,Frame_Background.Controls) {
 		Control.Size.Y = AnimLib::EaseOutQuad(Time, 15.0, Window_Size.Y-15, 500);
+		if(Time >= 0) (Control as CMlQuad).Style = "Bgs1";
 	}
 	Quad_Scrollbar_Background.Size.Y = AnimLib::EaseOutQuad(Time, 0.0, Window_Size.Y-20, 500);
 	Quad_List_Bg.Size.Y = AnimLib::EaseOutQuad(Time, 0.0, Window_Size.Y-20, 500);
