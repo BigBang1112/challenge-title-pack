@@ -12,8 +12,11 @@
 #Include "Libs/Challenge/Backend.Script.txt" as Backend
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 
+#Const C_Manialink_Menu "Media/Manialinks/Base/Ingame/Menu"
+#Const C_Manialink_Vehicle "Media/Manialinks/Base/Ingame/Vehicle"
 #Const C_Manialink_Dashboard "Media/Manialinks/Base/Ingame/Dashboard"
 #Const C_Manialink_Stunts "Media/Manialinks/Base/Ingame/Stunts"
+#Const C_Manialink_Playsession "Media/Manialinks/Base/Ingame/Playsession"
 #Const C_Manialink_Spotify "Media/Manialinks/Base/Ingame/Spotify"
 
 #Struct SPlaysession {
@@ -43,9 +46,47 @@ ClientUI.OverlayHidePersonnalBestAndRank = True;
 ClientUI.OverlayHideChrono = True;
 ClientUI.OverlayHidePosition = True;
 
-Layers::Create("Dashboard", Manialink::FromFile(C_Manialink_Dashboard, True, ["TextAnimation"], Settings::Get().Theme), True);
-Layers::Create("Stunts", Manialink::FromFile(C_Manialink_Stunts, True, ["TextAnimation"], Settings::Get().Theme), True);
-Layers::Create("Spotify", Manialink::FromFile(C_Manialink_Spotify, True, ["TextAnimation"], Settings::Get().Theme), True);
+declare netread Text[] Server_Vehicles for UI;
+declare netread Text Server_MapVehicle for UI;
+
+wait(Server_Vehicles.count > 0 && Server_MapVehicle != "");
+
+declare VehicleML = "";
+for(I, 0, Server_Vehicles.count-1) {
+	declare Vehicle = Server_Vehicles[I];
+	VehicleML ^= """<frame pos="0 {{{-I*20+Server_Vehicles.keyof(Server_MapVehicle)*20}}}" data-id="{{{I}}}">
+	<frame z-index="-1">
+		<quad z-index="0" size="80 19" valign="center" halign="center" style="Bgs1" substyle="BgCardList" opacity="1"/>
+		<quad z-index="1" size="80 19" valign="center" halign="center" style="Bgs1" substyle="BgGradV" opacity="1"/>
+	</frame>
+	<quad z-index="0" size="80 19" id="QUAD_VEHICLE" valign="center" halign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5"/>
+	<label pos="0 -0.5" z-index="1" size="70 10" text="{{{Vehicle}}}" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" opacity="1"/>
+</frame>""";
+}
+
+declare VehicleManialink = Manialink::FromFile(C_Manialink_Vehicle, True, ["TextAnimation"], Settings::Get().Theme);
+VehicleManialink = TextLib::Replace(VehicleManialink, """<frame id="FRAME_INNER_VEHICLES"/>""",
+"""<quad z-index="-1" pos="0 {{{-Server_Vehicles.count*20/2+Server_Vehicles.keyof(Server_MapVehicle)*20}}}" size="120 {{{(Server_Vehicles.count)*20+160}}}" halign="center" valign="center" style="Bgs1InRace" substyle="BgEmpty" scriptevents="1"/>
+<frame id="FRAME_INNER_VEHICLES">{{{VehicleML}}}</frame>""");
+
+Layers::Create("Menu", Manialink::FromFile(C_Manialink_Menu, True, ["TextAnimation"], Settings::Get().Theme));
+Layers::Create("Vehicle", VehicleManialink);
+Layers::Create("Dashboard", Manialink::FromFile(C_Manialink_Dashboard, True, ["TextAnimation"], Settings::Get().Theme));
+Layers::Create("Stunts", Manialink::FromFile(C_Manialink_Stunts, True, ["TextAnimation"], Settings::Get().Theme));
+Layers::Create("Playsession", Manialink::FromFile(C_Manialink_Playsession, True, ["TextAnimation"], Settings::Get().Theme));
+Layers::Create("Spotify", Manialink::FromFile(C_Manialink_Spotify, True, ["TextAnimation"], Settings::Get().Theme));
+
+Layers::Show("Menu", True);
+Layers::Show("Vehicle", True);
+
+declare Integer VehicleIndex for Layers::Get("Vehicle").LocalPage;
+declare Integer MapVehicleIndex for Layers::Get("Vehicle").LocalPage;
+if(Server_Vehicles.exists(Server_MapVehicle)) MapVehicleIndex = Server_Vehicles.keyof(Server_MapVehicle);
+else MapVehicleIndex = -1;
+VehicleIndex = MapVehicleIndex;
+
+declare Integer VehicleCount for Layers::Get("Vehicle").LocalPage;
+VehicleCount = Server_Vehicles.count;
 
 declare SAuthToken INGAME_TOKEN for LocalUser;
 
@@ -61,7 +102,7 @@ Playsession.TitleId = LoadedTitle.TitleId;
 log(INGAME_TOKEN.Value);
 
 declare Req = Http::SyncPOST("""{{{Backend::GetHost()}}}/ingame/playsession""", Playsession.tojson(), "Content-Type: application/json\nContent-Length: "^TextLib::Length(Playsession.tojson()));
-log(Req.Result);
+//log(Req.Result);
 Http.Destroy(Req);
 
 declare metadata ModifierBase::SChMap OriginalMap for Map;
@@ -70,6 +111,9 @@ Map.MapName = OriginalMap.Name ^ "$z (" ^ OriginalMap.CollectionName ^ ", " ^ Te
 //sleep(3000);
 //log(Http::SyncGET("""{{{Backend::GetHost()}}}/ingame/playsession?login={{{Playsession.Login}}}&token={{{Playsession.Token}}}&mapuid={{{Playsession.MapUid}}}&car=StadiumCar&secret={{{Playsession.Secret}}}&action=succmydic""").Result);
 
+declare netwrite Integer User_VehicleIndex for UI;
+
 while(True) {
+	User_VehicleIndex = VehicleIndex;
 	yield;
 }

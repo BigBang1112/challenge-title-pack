@@ -1,0 +1,96 @@
+declare CMlFrame Frame_Inner_Vehicles;
+declare CMlFrame Frame_Vehicles;
+
+Void UpdateVehicles() {
+	declare Integer VehicleIndex for Page;
+	declare Integer VehicleCount for Page;
+	declare Integer MapVehicleIndex for Page;
+
+	foreach(Frame,Frame_Inner_Vehicles.Controls) {
+		foreach(Control,(Frame as CMlFrame).Controls) {
+			if(Control is CMlFrame)
+				foreach(C, (Control as CMlFrame).Controls)
+					if(C is CMlQuad) (C as CMlQuad).Opacity = 1.;
+			if(Control is CMlQuad) (Control as CMlQuad).Opacity = 1.;
+			if(Control is CMlLabel) (Control as CMlLabel).Opacity = 1.;
+		}
+	}
+
+	for(I, 0, VehicleCount-1) {
+		declare Frame_Vehicle = (Frame_Inner_Vehicles.Controls[I] as CMlFrame);
+		declare Quad_Vehicle = (Frame_Vehicle.GetFirstChild("QUAD_VEHICLE") as CMlQuad);
+
+		if(I == VehicleIndex) {
+			Quad_Vehicle.Substyle = "BgCard";
+			
+			for(J,1,2) {
+				declare Invert = J*2-3;
+				for(K,2,4) {
+					if(Frame_Inner_Vehicles.Controls.existskey(I+K*Invert)) {
+						foreach(Control,(Frame_Inner_Vehicles.Controls[I+K*Invert] as CMlFrame).Controls) {
+							if(Control is CMlFrame)
+								foreach(C, (Control as CMlFrame).Controls)
+									if(C is CMlQuad) (C as CMlQuad).Opacity = 1-(K-1)*.25;
+							if(Control is CMlQuad) (Control as CMlQuad).Opacity = 1-(K-1)*.25;
+							if(Control is CMlLabel) (Control as CMlLabel).Opacity = 1-(K-1)*.25;
+						}
+					}
+				}
+			}
+		}
+		else {
+			Quad_Vehicle.Substyle = "BgCardInventoryItem";
+		}
+	}
+}
+
+***Start***
+***
+Frame_Inner_Vehicles = (Page.GetFirstChild("FRAME_INNER_VEHICLES") as CMlFrame);
+
+declare Integer VehicleIndex for Page;
+declare Integer VehicleCount for Page;
+declare Integer MapVehicleIndex for Page;
+
+declare Integer OldVehicleIndex = -1;
+
+Frame_Vehicles = (Page.GetFirstChild("FRAME_VEHICLES") as CMlFrame);
+if(VehicleCount > 0) {
+	Frame_Vehicles.ScrollActive = True;
+	Frame_Vehicles.ScrollMax = <0.,(VehicleCount-MapVehicleIndex-1)*20.>;
+	Frame_Vehicles.ScrollMin = <0.,-MapVehicleIndex*20.>;
+	Frame_Vehicles.ScrollGridSnap = True;
+	Frame_Vehicles.ScrollGrid = <0.,20.>;
+}
+
+UpdateVehicles();
+
+declare OldScroll = Frame_Vehicles.ScrollOffset;
+***
+
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseClick: {
+			switch(Event.ControlId) {
+				case "QUAD_VEHICLE": {
+					declare PreviousIndex = VehicleIndex;
+					VehicleIndex = TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("id"));
+					Frame_Vehicles.Scroll(<0.,(VehicleIndex-PreviousIndex)*1.>);
+				}
+			}
+		}
+	}
+}
+
+if(Frame_Vehicles.ScrollOffset != OldScroll) {
+	VehicleIndex = MathLib::NearestInteger(Frame_Vehicles.ScrollOffset.Y/20+MapVehicleIndex);
+	OldScroll = Frame_Vehicles.ScrollOffset;
+}
+
+if(VehicleIndex != OldVehicleIndex) {
+	UpdateVehicles();
+	OldVehicleIndex = VehicleIndex;
+}
+***

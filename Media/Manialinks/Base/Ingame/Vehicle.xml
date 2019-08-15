@@ -1,0 +1,6 @@
+<frame>
+	<label pos="62 -0.3" z-index="0" size="20 20" text="" halign="center" valign="center" textsize="10" textemboss="1" textcolor="222"/>
+	<frame pos="110" clip="True" clipsizen="120 160" id="FRAME_VEHICLES">
+		<frame id="FRAME_INNER_VEHICLES"/>
+	</frame>
+</frame>

@@ -4,6 +4,11 @@
 
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 
+#Struct SVehicle {
+	Text Name;
+	Ident Id;
+}
+
 Void CheckValidability() {
 	declare StartsFinishes = 0;
 	declare Starts = 0;
@@ -72,8 +77,42 @@ main() {
 	while(True) {
 		foreach(Event,PendingEvents) {
 			switch(Event.Type) {
-				case CMapEditorPluginEvent::Type::StartValidation: {
+				case CMapEditorPluginEvent::Type::StartValidation: {					
+					declare Text[] VehicleList = ["CanyonCar", "StadiumCar", "ValleyCar", "LagoonCar",
+					"DesertCar", "RallyCar", "SnowCar", "IslandCar", "BayCar", "CoastCar"];
+					
+					foreach(Player, Players) {
+						declare UI <=> Mode.UIManager.GetUI(Player);
+						declare netwrite Text[] Server_Vehicles for UI;
+						Server_Vehicles = VehicleList;
+					}
+					
+					declare SVehicle[] Vehicles;
+				
+					Mode.ItemList_Begin();
+					foreach(Name, VehicleList) {
+						declare SVehicle Vehicle;
+						Vehicle.Name = Name;
+						Vehicle.Id = Mode.ItemList_Add(Name^"New.Item.Gbx");
+						Vehicles.add(Vehicle);
+					}
+					Mode.ItemList_End();
+				
 					RequestEnterPlayground();
+					wait(IsSwitchedToPlayground);
+										
+					wait(Mode.MapLoaded);
+					
+					declare SVehicle MapVehicle;
+					foreach(Vehicle, Vehicles)
+						if(Vehicle.Name == Mode.MapPlayerModelName) MapVehicle = Vehicle;
+					
+					foreach(Player, Players) {
+						declare UI <=> Mode.UIManager.GetUI(Player);
+						declare netwrite Text Server_MapVehicle for UI;
+						Server_MapVehicle = Mode.MapPlayerModelName;
+					}
+					
 					Player.RaceStartTime = -1;
 					Player.IsSpawned = True;
 					Player.Score.Clear();
@@ -81,13 +120,20 @@ main() {
 					wait(Mode.UIManager.UIAll.UISequenceIsCompleted);
 					Mode.CutOffTimeLimit = -1;
 					
-					Mode.UIManager.UIAll.UISequence = CUIConfig::EUISequence::Playing;
 					
 					while(IsSwitchedToPlayground) {
-						if(ValidationEndRequested) RequestLeavePlayground();
+						if(ValidationEndRequested) {
+							RequestLeavePlayground();
+							wait(!IsSwitchedToPlayground);
+							break;
+						}
 						
-						foreach(PlayerWaiting,Mode.PlayersWaiting) {
-							Mode.SpawnPlayer(Player, 0, Mode.Now+2500);
+						foreach(Player,Mode.Players) {
+							declare UI <=> UIManager.GetUI(Player);
+							declare netread Integer User_VehicleIndex for UI;
+							if(Vehicles.existskey(User_VehicleIndex)) Player.ForceModelId = Vehicles[User_VehicleIndex].Id;
+							else Player.ForceModelId = MapVehicle.Id;
+							Mode.SpawnPlayer(Player, 0, Mode.Now+10000);
 						}
 						
 						yield;
