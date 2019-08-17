@@ -107,13 +107,20 @@ Http.Destroy(Req);
 
 declare metadata ModifierBase::SChMap OriginalMap for Map;
 Map.MapName = OriginalMap.Name ^ "$z (" ^ OriginalMap.CollectionName ^ ", " ^ TextLib::Replace(Map.MapStyle, "+", " ") ^ ", StadiumCar)";
+Layers::SendEvent("Menu", "MapName", OriginalMap.Name);
 
 //sleep(3000);
 //log(Http::SyncGET("""{{{Backend::GetHost()}}}/ingame/playsession?login={{{Playsession.Login}}}&token={{{Playsession.Token}}}&mapuid={{{Playsession.MapUid}}}&car=StadiumCar&secret={{{Playsession.Secret}}}&action=succmydic""").Result);
 
-declare netwrite Integer User_VehicleIndex for UI;
+declare netwrite Integer Client_VehicleIndex for UI;
+
+declare Integer VehicleLock for Layers::Get("Vehicle").LocalPage;
+declare netread Integer Server_VehicleLock for UI;
 
 while(True) {
-	User_VehicleIndex = VehicleIndex;
+	Client_VehicleIndex = VehicleIndex;
+	
+	VehicleLock = Server_VehicleLock;
+
 	yield;
 }

@@ -1,5 +1,7 @@
 declare CMlFrame Frame_Inner_Vehicles;
 declare CMlFrame Frame_Vehicles;
+declare CMlLabel Label_Arrow;
+declare CMlLabel Label_Lock;
 
 Void UpdateVehicles() {
 	declare Integer VehicleIndex for Page;
@@ -10,8 +12,8 @@ Void UpdateVehicles() {
 		foreach(Control,(Frame as CMlFrame).Controls) {
 			if(Control is CMlFrame)
 				foreach(C, (Control as CMlFrame).Controls)
-					if(C is CMlQuad) (C as CMlQuad).Opacity = 1.;
-			if(Control is CMlQuad) (Control as CMlQuad).Opacity = 1.;
+					if(C is CMlQuad) AnimMgr.Add(C, """<quad opacity="1"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+			if(Control is CMlQuad) AnimMgr.Add(Control, """<quad opacity="1"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 			if(Control is CMlLabel) (Control as CMlLabel).Opacity = 1.;
 		}
 	}
@@ -30,8 +32,8 @@ Void UpdateVehicles() {
 						foreach(Control,(Frame_Inner_Vehicles.Controls[I+K*Invert] as CMlFrame).Controls) {
 							if(Control is CMlFrame)
 								foreach(C, (Control as CMlFrame).Controls)
-									if(C is CMlQuad) (C as CMlQuad).Opacity = 1-(K-1)*.25;
-							if(Control is CMlQuad) (Control as CMlQuad).Opacity = 1-(K-1)*.25;
+									if(C is CMlQuad) AnimMgr.Add(C, """<quad opacity="{{{1-(K-1)*.25}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+							if(Control is CMlQuad) AnimMgr.Add(Control, """<quad opacity="{{{1-(K-1)*.25}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 							if(Control is CMlLabel) (Control as CMlLabel).Opacity = 1-(K-1)*.25;
 						}
 					}
@@ -41,8 +43,8 @@ Void UpdateVehicles() {
 						foreach(Control,(Frame_Inner_Vehicles.Controls[I+K*Invert] as CMlFrame).Controls) {
 							if(Control is CMlFrame)
 								foreach(C, (Control as CMlFrame).Controls)
-									if(C is CMlQuad) (C as CMlQuad).Opacity = .25;
-							if(Control is CMlQuad) (Control as CMlQuad).Opacity = .25;
+									if(C is CMlQuad) AnimMgr.Add(C, """<quad opacity=".25"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+							if(Control is CMlQuad) AnimMgr.Add(Control, """<quad opacity=".25"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 							if(Control is CMlLabel) (Control as CMlLabel).Opacity = .25;
 						}
 					}
@@ -55,13 +57,38 @@ Void UpdateVehicles() {
 	}
 }
 
+Void UpdatePositions(Vec2 _Scroll, Vec2 _OldScroll) {
+	declare Integer VehicleIndex for Page;
+	declare Integer MapVehicleIndex for Page;
+	declare Integer VehicleLock for Page;
+
+	VehicleIndex = MathLib::NearestInteger(_Scroll.Y/20+MapVehicleIndex);
+
+	Frame_Inner_Vehicles.RelativePosition_V3.Y -= _Scroll.Y-_OldScroll.Y;
+	AnimMgr.Add(Frame_Inner_Vehicles, """<frame pos="0 0"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+	
+	if(VehicleLock == -1) {
+		Label_Arrow.RelativePosition_V3.Y -= _Scroll.Y-_OldScroll.Y;
+		Label_Lock.RelativePosition_V3.Y -= _Scroll.Y-_OldScroll.Y;
+		AnimMgr.Add(Label_Arrow, """<label pos="{{{Label_Arrow.RelativePosition_V3.X}}} 0"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+		AnimMgr.Add(Label_Lock, """<label pos="{{{Label_Lock.RelativePosition_V3.X}}} 0"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+	}
+	else {
+		AnimMgr.Add(Label_Arrow, """<label pos="{{{Label_Arrow.RelativePosition_V3.X}}} {{{_Scroll.Y-VehicleLock*20}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+		AnimMgr.Add(Label_Lock, """<label pos="{{{Label_Lock.RelativePosition_V3.X}}} {{{_Scroll.Y-VehicleLock*20}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+	}
+}
+
 ***Start***
 ***
 Frame_Inner_Vehicles = (Page.GetFirstChild("FRAME_INNER_VEHICLES") as CMlFrame);
+Label_Arrow = (Page.GetFirstChild("LABEL_ARROW") as CMlLabel);
+Label_Lock = (Page.GetFirstChild("LABEL_LOCK") as CMlLabel);
 
 declare Integer VehicleIndex for Page;
 declare Integer VehicleCount for Page;
 declare Integer MapVehicleIndex for Page;
+declare Integer VehicleLock for Page;
 
 declare Integer OldVehicleIndex = -1;
 
@@ -74,9 +101,11 @@ if(VehicleCount > 0) {
 	Frame_Vehicles.ScrollGrid = <0.,20.>;
 }
 
-UpdateVehicles();
-
 declare OldScroll = Frame_Vehicles.ScrollOffset;
+declare OldVehicleLock = VehicleLock;
+
+UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll);
+UpdateVehicles();
 ***
 
 ***Loop***
@@ -95,15 +124,25 @@ foreach(Event,PendingEvents) {
 	}
 }
 
+if(VehicleLock == -1) {
+	Label_Lock.Hide();
+}
+else {
+	Label_Lock.Show();
+}
+
 if(Frame_Vehicles.ScrollOffset != OldScroll) {
-	Frame_Inner_Vehicles.RelativePosition_V3.Y -= Frame_Vehicles.ScrollOffset.Y-OldScroll.Y;
-	AnimMgr.Add(Frame_Inner_Vehicles, """<frame pos="0 0"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
-	VehicleIndex = MathLib::NearestInteger(Frame_Vehicles.ScrollOffset.Y/20+MapVehicleIndex);
+	UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll);
 	OldScroll = Frame_Vehicles.ScrollOffset;
 }
 
 if(VehicleIndex != OldVehicleIndex) {
 	UpdateVehicles();
 	OldVehicleIndex = VehicleIndex;
+}
+
+if(VehicleLock != OldVehicleLock) {
+	UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll);
+	OldVehicleLock = VehicleLock;
 }
 ***
