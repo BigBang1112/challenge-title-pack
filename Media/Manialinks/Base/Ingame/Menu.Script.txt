@@ -1,0 +1,49 @@
+***Start***
+***
+declare Frame_Label_MapName = (Page.GetFirstChild("FRAME_LABEL_MAPNAME") as CMlFrame);
+declare Label_MapName = (Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel);
+declare Label_MapName2 = (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel);
+
+declare LabelDistance = 15;
+***
+
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseClick: {
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON_START": {
+					SendCustomEvent("Start", []);
+				}
+			}
+		}
+		case CMlScriptEvent::Type::PluginCustomEvent: {
+			switch(Event.CustomEventType) {
+				case "MapName": {
+					declare MapName = Event.CustomEventData[0];
+					Label_MapName.Size.X = Label_MapName.ComputeWidth(MapName);
+					Label_MapName.SetText(MapName);
+
+					Label_MapName2.RelativePosition_V3.X = Label_MapName.Size.X+LabelDistance;
+					Label_MapName2.Size.X = Label_MapName2.ComputeWidth(MapName);
+					Label_MapName2.SetText(MapName);
+				}
+			}
+		}
+	}
+}
+
+if(Frame_Label_MapName.ClipWindowSize.X < Label_MapName.Size.X) {
+	Label_MapName2.Show();
+	Label_MapName.RelativePosition_V3.X -= Period*.015;
+	Label_MapName2.RelativePosition_V3.X -= Period*.015;
+	if(Label_MapName.RelativePosition_V3.X + Label_MapName.Size.X < 0)
+		Label_MapName.RelativePosition_V3.X = Label_MapName2.RelativePosition_V3.X+Label_MapName2.Size.X+LabelDistance;
+	if(Label_MapName2.RelativePosition_V3.X + Label_MapName2.Size.X < 0)
+		Label_MapName2.RelativePosition_V3.X = Label_MapName.RelativePosition_V3.X+Label_MapName.Size.X+LabelDistance;
+}
+else {
+	Label_MapName2.Hide();
+}
+***

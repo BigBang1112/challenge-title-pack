@@ -1,12 +1,21 @@
 #RequireContext CTmMapType
 
+#Include "TextLib" as TextLib
+
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/File.Script.txt" as File
 
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 
 #Struct SVehicle {
 	Text Name;
 	Ident Id;
+}
+
+#Struct SDefinedVehicle {
+	Text Name;
+	Text Image;
+	Text File;
 }
 
 Void CheckValidability() {
@@ -72,29 +81,38 @@ main() {
 	Mode.UIManager.UIAll.SmallScoreTableVisibility = CUIConfig::EVisibility::ForcedHidden;
 	Mode.UIManager.UIAll.ScoreTableOnlyManialink = True;
 	
-	Mode.ClientManiaAppUrl = "file://Media/ManiaApps/ChallengeSoloClient.Script.txt";
-	
 	while(True) {
 		foreach(Event,PendingEvents) {
 			switch(Event.Type) {
-				case CMapEditorPluginEvent::Type::StartValidation: {					
-					declare Text[] VehicleList = ["CanyonCar", "StadiumCar", "ValleyCar", "LagoonCar",
-					"DesertCar", "RallyCar", "SnowCar", "IslandCar", "BayCar", "CoastCar"];
+				case CMapEditorPluginEvent::Type::StartValidation: {
+					Mode.ClientManiaAppUrl = "file://Media/ManiaApps/ChallengeSoloClient.Script.txt";
+					
+					declare SDefinedVehicle[] DefinedVehicles;
+					declare JsonSuccess = DefinedVehicles.fromjson(File::Read("Media/Vehicle.json"));
 					
 					foreach(Player, Players) {
 						declare UI <=> Mode.UIManager.GetUI(Player);
+						
 						declare netwrite Text[] Server_Vehicles for UI;
-						Server_Vehicles = VehicleList;
+						Server_Vehicles.clear();
+						foreach(Vehicle,DefinedVehicles)
+							Server_Vehicles.add(Vehicle.Name);
+						
+						declare netwrite Integer Server_VehicleLock for UI;
+						Server_VehicleLock = -1;
+						
+						declare netwrite Boolean Server_Playing for UI;
+						Server_Playing = False;
 					}
 					
 					declare SVehicle[] Vehicles;
 				
 					Mode.ItemList_Begin();
-					foreach(Name, VehicleList) {
-						declare SVehicle Vehicle;
-						Vehicle.Name = Name;
-						Vehicle.Id = Mode.ItemList_Add(Name^"New.Item.Gbx");
-						Vehicles.add(Vehicle);
+					foreach(Vehicle, DefinedVehicles) {
+						declare SVehicle V;
+						V.Name = Vehicle.Name;
+						V.Id = Mode.ItemList_Add(Vehicle.File);
+						Vehicles.add(V);
 					}
 					Mode.ItemList_End();
 				
@@ -118,10 +136,63 @@ main() {
 					Player.Score.Clear();
 					Mode.UIManager.UIAll.UISequence = CUIConfig::EUISequence::Intro;
 					wait(Mode.UIManager.UIAll.UISequenceIsCompleted);
+					Mode.UIManager.UIAll.UISequence = CUIConfig::EUISequence::Playing;
 					Mode.CutOffTimeLimit = -1;
 					
-					
 					while(IsSwitchedToPlayground) {
+						foreach(Event, Mode.PendingEvents) {
+							declare UI <=> Mode.UIManager.GetUI(Event.Player);
+							
+							declare netwrite Integer Server_VehicleLock for UI;
+							declare netwrite Boolean Server_Playing for UI;
+							
+							declare netread Integer Client_VehicleIndex for UI;
+							
+							switch(Event.Type) {
+								case CTmModeEvent::EType::StartLine: {									
+									Server_VehicleLock = Client_VehicleIndex;
+								}
+								case CTmModeEvent::EType::GiveUp: {
+									
+								}
+							}
+						}
+						
+						foreach(Event, Mode.UIManager.PendingEvents) {
+							switch(Event.Type) {
+								case CUIConfigEvent::EType::OnLayerCustomEvent: {
+									foreach(Player,Players) {
+										if(Event.UI == UIManager.GetUI(Player)) {
+											declare netwrite Boolean Server_Playing for UI;
+											declare netwrite Integer Server_VehicleLock for UI;
+											
+											declare netread Integer Client_VehicleIndex for UI;
+											
+											switch(Event.CustomEventType) {
+												case "Start": {
+													if(Vehicles.existskey(Client_VehicleIndex)) Player.ForceModelId = Vehicles[Client_VehicleIndex].Id;
+													else Player.ForceModelId = MapVehicle.Id;
+													Player.IsSpawned = True;
+													Player.RaceStartTime = Mode.Now+2500;
+													
+													Server_Playing = True;
+													Server_VehicleLock = -1;
+												}
+												case "Menu": {
+													Server_Playing = False;
+													Server_VehicleLock = -1;
+												}
+												case "VehicleIndexChanged": {
+													if(Server_VehicleLock == -1)
+														Server_Playing = False;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					
 						if(ValidationEndRequested) {
 							RequestLeavePlayground();
 							wait(!IsSwitchedToPlayground);
@@ -130,14 +201,50 @@ main() {
 						
 						foreach(Player,Mode.Players) {
 							declare UI <=> UIManager.GetUI(Player);
-							declare netread Integer User_VehicleIndex for UI;
-							if(Vehicles.existskey(User_VehicleIndex)) Player.ForceModelId = Vehicles[User_VehicleIndex].Id;
-							else Player.ForceModelId = MapVehicle.Id;
-							Mode.SpawnPlayer(Player, 0, Mode.Now+10000);
+							
+							declare netwrite Boolean Server_Playing for UI;
+							declare netwrite Integer Server_VehicleLock for UI;
+							
+							declare netread Integer Client_VehicleIndex for UI;
+							
+							if(Server_Playing) {
+								
+							}
+							else {
+								if(Server_VehicleLock == -1) {
+									if(Vehicles.existskey(Client_VehicleIndex)) Player.ForceModelId = Vehicles[Client_VehicleIndex].Id;
+									else Player.ForceModelId = MapVehicle.Id;
+									Player.IsSpawned = True;
+									Player.RaceStartTime = Mode.Now+10000;
+								}
+								else {
+									Player.ForceModelId = Vehicles[Server_VehicleLock].Id;
+									Player.IsSpawned = True;
+									Player.RaceStartTime = Mode.Now+10000;
+								}
+							}
+						}
+						
+						foreach(Player, Mode.PlayersWaiting) {
+							declare netwrite Boolean Server_Playing for UI;
+							declare netwrite Integer Server_VehicleLock for UI;
+							
+							declare netread Integer Client_VehicleIndex for UI;
+							
+							Server_VehicleLock = -1;
+							
+							if(Server_Playing) {
+								declare UI <=> UIManager.GetUI(Player);
+								
+								Player.ForceModelId = Vehicles[Client_VehicleIndex].Id;
+								Mode.SpawnPlayer(Player, 0, Mode.Now+2500);
+							}
 						}
 						
 						yield;
 					}
+					
+					Mode.ClientManiaAppUrl = "";
 				}
 			}
 		}

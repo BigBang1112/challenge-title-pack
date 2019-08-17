@@ -1,0 +1,14 @@
+<frame>
+	<frame z-index="-1" pos="-110">
+		<quad z-index="0" size="80 160" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
+		<quad z-index="1" size="80 160" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+	</frame>
+	<frame pos="-142.5 75" clip="True" clipposn="34 -7.5" clipsizen="67.5 20" id="FRAME_LABEL_MAPNAME">
+		<label z-index="0" size="200 15" text="WTFWTWTWTWF" textsize="16" textfont="Oswald" valign="top" id="LABEL_MAPNAME" textemboss="1"/>
+		<label z-index="0" size="200 15" text="WTFWTWTWTWF" textsize="16" textfont="Oswald" valign="top" id="LABEL_MAPNAME_2" textemboss="1"/>
+	</frame>
+	<frame pos="-110 -70">
+		<quad z-index="0" size="72.5 15" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="060" id="QUAD_BUTTON_START" class="opacity" pos="0 0" valign="center"/>
+		<label z-index="1" size="72.5 15" text="{{{{START}}}}" valign="center2" textfont="RajdhaniMono" halign="center" pos="0 -0.8" textsize="5"/>
+	</frame>
+</frame>

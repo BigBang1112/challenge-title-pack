@@ -1,0 +1,14 @@
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseClick: {
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON_OPENMENU": {
+					SendCustomEvent("Menu", []);
+				}
+			}
+		}
+	}
+}
+***

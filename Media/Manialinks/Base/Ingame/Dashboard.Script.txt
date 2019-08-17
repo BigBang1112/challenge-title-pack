@@ -3,6 +3,7 @@ Text TimeToTextWithMilli(Integer _Time) {
 }
 
 CTmMlPlayer GetOwner() {
+	wait(GUIPlayer != Null || InputPlayer != Null);
 	if(GUIPlayer != Null) return GUIPlayer;
 	return InputPlayer;
 }
@@ -44,69 +45,21 @@ Frame_Time.ClipWindowRelativePosition.Y = -20.;
 Frame_Checkpoint.ClipWindowRelativePosition.X = 32.;
 Frame_Speed.ClipWindowRelativePosition.X = -32.;
 
-wait(GetOwner() != Null);
 declare LastGear = GetOwner().EngineCurGear;
 ***
 
 ***Loop***
 ***
-Frame_Time.ClipWindowRelativePosition.Y = AnimLib::EaseOutQuad(Now - Start, -20., 20., 500);
-Frame_Checkpoint.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - Start-100, 40., -40., 500);
-Frame_Speed.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - Start-100, -40., 40., 500);
-
-declare RpmRatio = MathLib::Clamp(GetOwner().EngineRpm/10000,0.,1.);
-
-switch(GetOwner().RaceState) {
-	case CTmMlPlayer::ERaceState::BeforeStart: {
-		if(PreviousRaceState == CTmMlPlayer::ERaceState::Running) {
-			TimeResetRaceTime = PlayerTime;
-			TimeResetStamp = Now;
-
-			PreviousRaceState = CTmMlPlayer::ERaceState::BeforeStart;
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::PluginCustomEvent: {
+			switch(Event.CustomEventType) {
+				case "Show": {
+					Start = Now;
+				}
+			}
 		}
-		
-		PlayerTime = MathLib::NearestInteger(AnimLib::EaseOutQuad(Now - TimeResetStamp, TimeResetRaceTime+.0, -TimeResetRaceTime+.0, TimeResetLength));
 	}
-	case CTmMlPlayer::ERaceState::Running: {
-		if(PreviousRaceState == CTmMlPlayer::ERaceState::BeforeStart) {
-			Label_Time.RelativeScale = 1.25;
-			AnimMgr.Add(Label_Time, "<label scale=\"1\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
-
-			PreviousRaceState = CTmMlPlayer::ERaceState::Running;
-		}
-
-		PlayerTime = MathLib::Max(0, GameTime - GetOwner().RaceStartTime);
-	}
-	case CTmMlPlayer::ERaceState::Finished: {
-		
-	}
-}
-
-Label_Time.SetText(TimeToTextWithMilli(PlayerTime));
-Label_Speed.SetText(""^GetOwner().DisplaySpeed);
-Label_Speed.RelativeScale = RpmRatio*.2+0.9;
-Gauge_RPM.Ratio = RpmRatio;
-Gauge_RPM.RelativeScale = GetOwner().EngineTurboRatio*.25+1;
-
-if(GetOwner().EngineCurGear != LastGear) {
-	Label_Gear.Opacity = 0.;
-	AnimMgr.Add(Label_Gear, "<label opacity=\"1\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
-	Label_Gear.SetText(""^GetOwner().EngineCurGear);
-	LastGear = GetOwner().EngineCurGear;
-}
-
-Quad_Steer_Left.Size.X = MathLib::Clamp(-GetOwner().InputSteer,0.,1.)*28;
-Quad_Steer_Right.Size.X = MathLib::Clamp(GetOwner().InputSteer,0.,1.)*28;
-
-// If player started or stopped braking
-if(GetOwner().InputIsBraking != PreviousBrakeState) {
-	if(GetOwner().InputIsBraking) {
-		AnimMgr.Add(Quad_Brake, "<quad opacity=\"1\"/>", 100, CAnimManager::EAnimManagerEasing::QuadOut);
-	}
-	else {
-		AnimMgr.Add(Quad_Brake, "<quad opacity=\"0\"/>", 100, CAnimManager::EAnimManagerEasing::QuadOut);
-	}
-	PreviousBrakeState = GetOwner().InputIsBraking;
 }
 
 foreach(Event,RaceEvents) {
@@ -181,5 +134,64 @@ foreach(Event,RaceEvents) {
 			Quad_CP_Purple.Hide();
 		}
 	}
+}
+
+Frame_Time.ClipWindowRelativePosition.Y = AnimLib::EaseOutQuad(Now - Start, -20., 20., 500);
+Frame_Checkpoint.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - Start-100, 40., -40., 500);
+Frame_Speed.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - Start-100, -40., 40., 500);
+
+declare RpmRatio = MathLib::Clamp(GetOwner().EngineRpm/10000,0.,1.);
+
+switch(GetOwner().RaceState) {
+	case CTmMlPlayer::ERaceState::BeforeStart: {
+		if(PreviousRaceState == CTmMlPlayer::ERaceState::Running) {
+			TimeResetRaceTime = PlayerTime;
+			TimeResetStamp = Now;
+
+			PreviousRaceState = CTmMlPlayer::ERaceState::BeforeStart;
+		}
+		
+		PlayerTime = MathLib::NearestInteger(AnimLib::EaseOutQuad(Now - TimeResetStamp, TimeResetRaceTime+.0, -TimeResetRaceTime+.0, TimeResetLength));
+	}
+	case CTmMlPlayer::ERaceState::Running: {
+		if(PreviousRaceState == CTmMlPlayer::ERaceState::BeforeStart) {
+			Label_Time.RelativeScale = 1.25;
+			AnimMgr.Add(Label_Time, "<label scale=\"1\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
+
+			PreviousRaceState = CTmMlPlayer::ERaceState::Running;
+		}
+
+		PlayerTime = MathLib::Max(0, GameTime - GetOwner().RaceStartTime);
+	}
+	case CTmMlPlayer::ERaceState::Finished: {
+		
+	}
+}
+
+Label_Time.SetText(TimeToTextWithMilli(PlayerTime));
+Label_Speed.SetText(""^GetOwner().DisplaySpeed);
+Label_Speed.RelativeScale = RpmRatio*.2+0.9;
+Gauge_RPM.Ratio = RpmRatio;
+Gauge_RPM.RelativeScale = GetOwner().EngineTurboRatio*.25+1;
+
+if(GetOwner().EngineCurGear != LastGear) {
+	Label_Gear.Opacity = 0.;
+	AnimMgr.Add(Label_Gear, "<label opacity=\"1\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
+	Label_Gear.SetText(""^GetOwner().EngineCurGear);
+	LastGear = GetOwner().EngineCurGear;
+}
+
+Quad_Steer_Left.Size.X = MathLib::Clamp(-GetOwner().InputSteer,0.,1.)*28;
+Quad_Steer_Right.Size.X = MathLib::Clamp(GetOwner().InputSteer,0.,1.)*28;
+
+// If player started or stopped braking
+if(GetOwner().InputIsBraking != PreviousBrakeState) {
+	if(GetOwner().InputIsBraking) {
+		AnimMgr.Add(Quad_Brake, "<quad opacity=\"1\"/>", 100, CAnimManager::EAnimManagerEasing::QuadOut);
+	}
+	else {
+		AnimMgr.Add(Quad_Brake, "<quad opacity=\"0\"/>", 100, CAnimManager::EAnimManagerEasing::QuadOut);
+	}
+	PreviousBrakeState = GetOwner().InputIsBraking;
 }
 ***

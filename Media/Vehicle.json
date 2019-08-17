@@ -1,0 +1,52 @@
+[
+	{
+		"Name": "CanyonCar",
+		"Image": "",
+		"File": "CanyonCarNew.Item.Gbx"
+	},
+	{
+		"Name": "StadiumCar",
+		"Image": "",
+		"File": "StadiumCarNew.Item.Gbx"
+	},
+	{
+		"Name": "ValleyCar",
+		"Image": "",
+		"File": "ValleyCarNew.Item.Gbx"
+	},
+	{
+		"Name": "LagoonCar",
+		"Image": "",
+		"File": "LagoonCarNew.Item.Gbx"
+	},
+	{
+		"Name": "DesertCar",
+		"Image": "",
+		"File": "DesertCarNew.Item.Gbx"
+	},
+	{
+		"Name": "RallyCar",
+		"Image": "",
+		"File": "RallyCarNew.Item.Gbx"
+	},
+	{
+		"Name": "SnowCar",
+		"Image": "",
+		"File": "SnowCarNew.Item.Gbx"
+	},
+	{
+		"Name": "IslandCar",
+		"Image": "",
+		"File": "IslandCarNew.Item.Gbx"
+	},
+	{
+		"Name": "BayCar",
+		"Image": "",
+		"File": "BayCarNew.Item.Gbx"
+	},
+	{
+		"Name": "CoastCar",
+		"Image": "",
+		"File": "CoastCarNew.Item.Gbx"
+	}
+]

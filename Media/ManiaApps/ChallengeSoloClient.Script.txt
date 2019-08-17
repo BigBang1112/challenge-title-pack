@@ -7,6 +7,7 @@
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 #Include "Libs/BigBang1112/Http.Script.txt" as Http
 #Include "Libs/BigBang1112/Random.Script.txt" as Random
+#Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 #Include "Libs/BigBang1112/Map.Script.txt" as Map
 
 #Include "Libs/Challenge/Backend.Script.txt" as Backend
@@ -18,6 +19,10 @@
 #Const C_Manialink_Stunts "Media/Manialinks/Base/Ingame/Stunts"
 #Const C_Manialink_Playsession "Media/Manialinks/Base/Ingame/Playsession"
 #Const C_Manialink_Spotify "Media/Manialinks/Base/Ingame/Spotify"
+
+#Const C_Manialink_OpenMenu "Media/Manialinks/Base/Ingame/OpenMenu"
+
+#Const C_Manialink_Flash "Media/Manialinks/Base/Flash"
 
 #Struct SPlaysession {
 	Text Login;
@@ -61,6 +66,7 @@ for(I, 0, Server_Vehicles.count-1) {
 	</frame>
 	<quad z-index="0" size="80 19" id="QUAD_VEHICLE" valign="center" halign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5"/>
 	<label pos="0 -0.5" z-index="1" size="70 10" text="{{{Vehicle}}}" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" opacity="1"/>
+	<label pos="37.5 -8" z-index="1" size="75 5" text="{{{Dictionary::Get("ORIGINAL")}}}" halign="right" valign="bottom" textfont="Oswald" textsize="2" textcolor="FF0" id="LABEL_ORIGINAL" hidden="1"/>
 </frame>""";
 }
 
@@ -76,6 +82,10 @@ Layers::Create("Stunts", Manialink::FromFile(C_Manialink_Stunts, True, ["TextAni
 Layers::Create("Playsession", Manialink::FromFile(C_Manialink_Playsession, True, ["TextAnimation"], Settings::Get().Theme));
 Layers::Create("Spotify", Manialink::FromFile(C_Manialink_Spotify, True, ["TextAnimation"], Settings::Get().Theme));
 
+Layers::Create("Flash", Manialink::FromFile(C_Manialink_Flash, True, [], Settings::Get().Theme));
+
+Layers::Create("OpenMenu", Manialink::FromFile(C_Manialink_OpenMenu, True, ["TextAnimation"], Settings::Get().Theme));
+
 Layers::Show("Menu", True);
 Layers::Show("Vehicle", True);
 
@@ -84,6 +94,8 @@ declare Integer MapVehicleIndex for Layers::Get("Vehicle").LocalPage;
 if(Server_Vehicles.exists(Server_MapVehicle)) MapVehicleIndex = Server_Vehicles.keyof(Server_MapVehicle);
 else MapVehicleIndex = -1;
 VehicleIndex = MapVehicleIndex;
+
+declare Integer OldVehicleIndex = VehicleIndex;
 
 declare Integer VehicleCount for Layers::Get("Vehicle").LocalPage;
 VehicleCount = Server_Vehicles.count;
@@ -113,13 +125,61 @@ Layers::SendEvent("Menu", "MapName", OriginalMap.Name);
 //log(Http::SyncGET("""{{{Backend::GetHost()}}}/ingame/playsession?login={{{Playsession.Login}}}&token={{{Playsession.Token}}}&mapuid={{{Playsession.MapUid}}}&car=StadiumCar&secret={{{Playsession.Secret}}}&action=succmydic""").Result);
 
 declare netwrite Integer Client_VehicleIndex for UI;
+Client_VehicleIndex = VehicleIndex;
 
 declare Integer VehicleLock for Layers::Get("Vehicle").LocalPage;
 declare netread Integer Server_VehicleLock for UI;
 
 while(True) {
-	Client_VehicleIndex = VehicleIndex;
-	
+	foreach(Event, PendingEvents) {
+		switch(Event.Type) {
+			case CManiaAppPlaygroundEvent::EType::LayerCustomEvent: {
+				switch(Event.CustomEventLayer) {
+					case Layers::Get("Menu"): {
+						switch(Event.CustomEventType) {
+							case "Start": {
+								SendCustomEvent("Start", []);
+
+								Layers::Hide("Menu");
+								Layers::Hide("Vehicle");
+
+								Layers::Show("Dashboard", True);
+								Layers::Show("Stunts", True);
+								Layers::Show("Playsession", True);
+								Layers::Show("Spotify", True);
+								Layers::Show("OpenMenu", True);
+								Layers::Show("Flash");
+							}
+						}
+					}
+					case Layers::Get("OpenMenu"): {
+						switch(Event.CustomEventType) {
+							case "Menu": {
+								SendCustomEvent("Menu", []);
+
+								Layers::Show("Menu", True);
+								Layers::Show("Vehicle", True);
+
+								Layers::Hide("Dashboard");
+								Layers::Hide("Stunts");
+								Layers::Hide("Playsession");
+								Layers::Hide("Spotify");
+								Layers::Hide("OpenMenu");
+								Layers::Hide("Flash");
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if(VehicleIndex != OldVehicleIndex) {
+		Client_VehicleIndex = VehicleIndex;
+		SendCustomEvent("VehicleIndexChanged", [VehicleIndex^""]);
+		OldVehicleIndex = VehicleIndex;
+	}
+
 	VehicleLock = Server_VehicleLock;
 
 	yield;
