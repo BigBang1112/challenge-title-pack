@@ -12,8 +12,11 @@
 	Integer Count;
 }
 
-Void Start() {
+Void Init() {
 	Layers::Create("News", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme));
+}
+
+Void Start() {
 	Layers::SendEvent("News", "Title", Dictionary::Get("NEWS"));
 	Layers::SendEvent("News", "Position", ["-115 0"]);
 	Layers::SendEvent("News", "Size", ["70 70"]);

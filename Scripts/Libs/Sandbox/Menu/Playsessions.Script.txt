@@ -37,8 +37,11 @@
 declare SPlaysession[] Playsessions;
 declare SPlaysession SelectedPlaysession;
 
-Void Start() {
+Void Init() {
 	Layers::Create("Playsessions", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme));
+}
+
+Void Start() {
 	Layers::SendEvent("Playsessions", "Title", Dictionary::Get("NOW_PLAYING"));
 	Layers::SendEvent("Playsessions", "Position", ["115 0"]);
 	Layers::SendEvent("Playsessions", "Size", ["70 70"]);

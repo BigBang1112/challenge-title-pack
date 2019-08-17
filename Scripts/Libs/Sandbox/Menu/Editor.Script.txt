@@ -10,9 +10,11 @@
 
 #Const C_Manialink "Media/Manialinks/Sandbox/Editor"
 
-Void Start() {
-	Layers::Create("Editor", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme));
+Void Init() {
+	Layers::Create("Editor", Manialink::FromFile(C_Manialink, True, ["TextAnimation"], Settings::Get().Theme));
+}
 
+Void Start() {
 	Layers::SendEvent("Editor", "Code_SetText", [File::Read("Media/Challenges/Default.Script.txt")]);
 }
 

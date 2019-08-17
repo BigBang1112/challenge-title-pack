@@ -4,8 +4,12 @@
 
 #Const C_Manialink "Media/Manialinks/Sandbox/Menu"
 
+Void Init() {
+	Layers::Create("Menu", Manialink::FromFile(C_Manialink, True, ["TextAnimation"], Settings::Get().Theme));
+}
+
 Void Start() {
-	Layers::Create("Menu", Manialink::FromFile(C_Manialink, True, ["TextAnimation"], Settings::Get().Theme), True, True);
+	Layers::Show("Menu", True);
 }
 
 Void Event(CManiaAppEvent _Event) {

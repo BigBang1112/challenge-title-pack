@@ -7,8 +7,12 @@
 
 #Const C_Manialink "Media/Manialinks/Sandbox/Top"
 
+Void Init() {
+	Layers::Create("Top", Manialink::FromFile(C_Manialink, True, ["TextAnimation"], Settings::Get().Theme));
+}
+
 Void Start() {
-	Layers::Create("Top", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme), True, True);
+	Layers::Show("Top", True);
 }
 
 declare Boolean VisitMap;

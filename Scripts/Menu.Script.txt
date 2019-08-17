@@ -35,6 +35,13 @@ main() {
 		Dictionary::SetTranslationFolder("Media/Translations");
 		Dictionary::SetTranslationLanguage(Settings::Get().Language);
 		
+		Menu_Main::Init();
+		Menu_Quickplay::Init();
+		Menu_Top::Init();
+		Menu_Editor::Init();
+		Menu_Playsessions::Init();
+		Menu_News::Init();
+		
 		Auth::Start();
 		
 		Menu_AuthBeta::Start();
@@ -50,6 +57,7 @@ main() {
 			yield;
 		}
 		Menu_AuthBeta::End();
+		yield;
 		
 		Menu_Main::Start();
 		Menu_Quickplay::Start();
