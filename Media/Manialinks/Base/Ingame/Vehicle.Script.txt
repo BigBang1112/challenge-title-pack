@@ -23,8 +23,8 @@ Void UpdateVehicles() {
 		if(I == VehicleIndex) {
 			Quad_Vehicle.Substyle = "BgCard";
 			
-			for(J,1,2) {
-				declare Invert = J*2-3;
+			for(J,0,1) {
+				declare Invert = J*2-1;
 				for(K,2,4) {
 					if(Frame_Inner_Vehicles.Controls.existskey(I+K*Invert)) {
 						foreach(Control,(Frame_Inner_Vehicles.Controls[I+K*Invert] as CMlFrame).Controls) {
@@ -33,6 +33,17 @@ Void UpdateVehicles() {
 									if(C is CMlQuad) (C as CMlQuad).Opacity = 1-(K-1)*.25;
 							if(Control is CMlQuad) (Control as CMlQuad).Opacity = 1-(K-1)*.25;
 							if(Control is CMlLabel) (Control as CMlLabel).Opacity = 1-(K-1)*.25;
+						}
+					}
+				}
+				for(K,5,VehicleCount-1) {
+					if(Frame_Inner_Vehicles.Controls.existskey(I+K*Invert)) {
+						foreach(Control,(Frame_Inner_Vehicles.Controls[I+K*Invert] as CMlFrame).Controls) {
+							if(Control is CMlFrame)
+								foreach(C, (Control as CMlFrame).Controls)
+									if(C is CMlQuad) (C as CMlQuad).Opacity = .25;
+							if(Control is CMlQuad) (Control as CMlQuad).Opacity = .25;
+							if(Control is CMlLabel) (Control as CMlLabel).Opacity = .25;
 						}
 					}
 				}
@@ -85,6 +96,8 @@ foreach(Event,PendingEvents) {
 }
 
 if(Frame_Vehicles.ScrollOffset != OldScroll) {
+	Frame_Inner_Vehicles.RelativePosition_V3.Y -= Frame_Vehicles.ScrollOffset.Y-OldScroll.Y;
+	AnimMgr.Add(Frame_Inner_Vehicles, """<frame pos="0 0"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 	VehicleIndex = MathLib::NearestInteger(Frame_Vehicles.ScrollOffset.Y/20+MapVehicleIndex);
 	OldScroll = Frame_Vehicles.ScrollOffset;
 }
