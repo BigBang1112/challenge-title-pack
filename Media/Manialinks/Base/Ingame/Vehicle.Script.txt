@@ -78,8 +78,8 @@ Void UpdatePositions(Vec2 _Scroll, Vec2 _OldScroll) {
 		AnimMgr.Add(Label_Lock, """<label pos="{{{Label_Lock.RelativePosition_V3.X}}} 0"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 	}
 	else {
-		AnimMgr.Add(Label_Arrow, """<label pos="{{{Label_Arrow.RelativePosition_V3.X}}} {{{_Scroll.Y-VehicleLock*20}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
-		AnimMgr.Add(Label_Lock, """<label pos="{{{Label_Lock.RelativePosition_V3.X}}} {{{_Scroll.Y-VehicleLock*20}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+		AnimMgr.Add(Label_Arrow, """<label pos="{{{Label_Arrow.RelativePosition_V3.X}}} {{{_Scroll.Y-(VehicleLock-MapVehicleIndex)*20}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+		AnimMgr.Add(Label_Lock, """<label pos="{{{Label_Lock.RelativePosition_V3.X}}} {{{_Scroll.Y-(VehicleLock-MapVehicleIndex)*20}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 	}
 }
 
