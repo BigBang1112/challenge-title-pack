@@ -4,6 +4,8 @@ declare Frame_Label_MapName = (Page.GetFirstChild("FRAME_LABEL_MAPNAME") as CMlF
 declare Label_MapName = (Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel);
 declare Label_MapName2 = (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel);
 
+Label_MapName.RelativePosition_V3.X = 0.;
+
 declare LabelDistance = 15;
 ***
 

@@ -21,6 +21,10 @@ Void UpdateVehicles() {
 	for(I, 0, VehicleCount-1) {
 		declare Frame_Vehicle = (Frame_Inner_Vehicles.Controls[I] as CMlFrame);
 		declare Quad_Vehicle = (Frame_Vehicle.GetFirstChild("QUAD_VEHICLE") as CMlQuad);
+		declare Label_Original = (Frame_Vehicle.GetFirstChild("LABEL_ORIGINAL") as CMlLabel);
+
+		if(I == MapVehicleIndex) Label_Original.Show();
+			else Label_Original.Hide();
 
 		if(I == VehicleIndex) {
 			Quad_Vehicle.Substyle = "BgCard";

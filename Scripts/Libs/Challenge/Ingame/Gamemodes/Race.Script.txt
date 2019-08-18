@@ -1,0 +1,211 @@
+#Include "Libs/BigBang1112/File.Script.txt" as File
+
+#Struct SRealVehicle {
+	Text Name;
+	Ident Id;
+}
+
+#Struct SVehicle {
+	Text Name;
+	Text Image;
+	Text File;
+}
+
+declare SVehicle[] Vehicles;
+declare SRealVehicle[] RealVehicles;
+declare SRealVehicle RealMapVehicle;
+
+Void Init(CTmMode _Mode) {	
+	declare JsonSuccess = Vehicles.fromjson(File::Read("Media/Vehicle.json"));
+	
+	foreach(Player, Players) {
+		declare UI <=> _Mode.UIManager.GetUI(Player);
+		
+		declare netwrite Text[] Server_Vehicles for UI;
+		Server_Vehicles.clear();
+		foreach(Vehicle,Vehicles)
+			Server_Vehicles.add(Vehicle.Name);
+		
+		declare netwrite Integer Server_VehicleLock for UI;
+		Server_VehicleLock = -1;
+		
+		declare netwrite Boolean Server_Playing for UI;
+		Server_Playing = False;
+		
+		declare netwrite Boolean Server_EndRace for UI;
+		Server_EndRace = False;
+		
+		declare netwrite Boolean Server_Outro for UI;
+		Server_Outro = False;
+		
+		UI.UISequence = CUIConfig::EUISequence::Playing;
+	}
+
+	_Mode.ItemList_Begin();
+	foreach(Vehicle, Vehicles) {
+		declare SRealVehicle RealVehicle;
+		RealVehicle.Name = Vehicle.Name;
+		RealVehicle.Id = _Mode.ItemList_Add(Vehicle.File);
+		RealVehicles.add(RealVehicle);
+	}
+	_Mode.ItemList_End();
+}
+
+Void Start(CTmMode _Mode) {
+	wait(_Mode.MapLoaded);
+					
+	declare SVehicle MapVehicle;
+	foreach(Vehicle, RealVehicles)
+		if(Vehicle.Name == _Mode.MapPlayerModelName) RealMapVehicle = Vehicle;
+	
+	foreach(Player, Players) {
+		declare UI <=> _Mode.UIManager.GetUI(Player);
+		declare netwrite Text Server_MapVehicle for UI;
+		Server_MapVehicle = _Mode.MapPlayerModelName;
+		
+		Player.RaceStartTime = -1;
+		Player.IsSpawned = True;
+		Player.Score.Clear();
+	}
+	
+	_Mode.CutOffTimeLimit = -1;
+}
+
+Void Loop(CTmMode _Mode) {
+	foreach(Event, _Mode.PendingEvents) {
+		declare UI <=> _Mode.UIManager.GetUI(Event.Player);
+		
+		declare netwrite Integer Server_VehicleLock for UI;
+		declare netwrite Boolean Server_Playing for UI;
+		declare netwrite Boolean Server_EndRace for UI;
+		declare netwrite Boolean Server_Outro for UI;
+		
+		declare netread Integer Client_VehicleIndex for UI;
+		
+		switch(Event.Type) {
+			case CTmModeEvent::EType::StartLine: {									
+				Server_VehicleLock = Client_VehicleIndex;
+			}
+			case CTmModeEvent::EType::WayPoint: {
+				if(Event.IsEndRace) { // Finish
+					Server_EndRace = True;
+				}
+				else if(Event.IsEndLap) { // Lap
+					
+				}
+				else { // Checkpoint
+				
+				}
+			}
+			case CTmModeEvent::EType::GiveUp: {
+				if(Server_EndRace)
+					_Mode.Discard(Event);
+			}
+		}
+	}
+	
+	foreach(Event, _Mode.UIManager.PendingEvents) {
+		switch(Event.Type) {
+			case CUIConfigEvent::EType::OnLayerCustomEvent: {
+				foreach(Player,Players) {
+					if(Event.UI == _Mode.UIManager.GetUI(Player)) {
+						declare netwrite Boolean Server_Playing for Event.UI;
+						declare netwrite Integer Server_VehicleLock for Event.UI;
+						declare netwrite Boolean Server_EndRace for Event.UI;
+						declare netwrite Boolean Server_Outro for Event.UI;
+						
+						declare netread Integer Client_VehicleIndex for Event.UI;
+						
+						switch(Event.CustomEventType) {
+							case "Start": {
+								if(Vehicles.existskey(Client_VehicleIndex)) Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id;
+								else Player.ForceModelId = RealMapVehicle.Id;
+								Player.IsSpawned = True;
+								Player.RaceStartTime = _Mode.Now+2500;
+								
+								Server_Playing = True;
+								Server_VehicleLock = -1;
+							}
+							case "Menu": {
+								Server_Playing = False;
+								Server_VehicleLock = -1;
+							}
+							case "VehicleIndexChanged": {
+								if(Server_VehicleLock == -1)
+									Server_Playing = False;
+							}
+							case "Continue": {
+								Server_EndRace = False;
+								Server_Outro = True;
+								
+								Event.UI.UISequence = CUIConfig::EUISequence::EndRound;
+								declare Ghost = _Mode.ScoreMgr.Playground_GetPlayerGhost(Player);
+								_Mode.UnspawnPlayer(Player);
+								/*if(Ghost != Null) {
+									declare GhostId = _Mode.RaceGhost_AddWithOffset(Ghost, -2500);
+
+									Event.UI.SpectatorForcedTarget = GhostId;
+									Event.UI.UISequence = CUIConfig::EUISequence::EndRound;
+								}*/
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	foreach(Player,_Mode.Players) {
+		declare UI <=> _Mode.UIManager.GetUI(Player);
+		
+		declare netwrite Boolean Server_Playing for UI;
+		declare netwrite Integer Server_VehicleLock for UI;
+		
+		declare netread Integer Client_VehicleIndex for UI;
+		
+		if(Server_Playing) {
+			
+		}
+		else {
+			if(Server_VehicleLock == -1) {
+				if(Vehicles.existskey(Client_VehicleIndex)) Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id;
+				else Player.ForceModelId = RealMapVehicle.Id;
+				_Mode.SpawnPlayer(Player, 0, Now+1000000);
+			}
+			else {
+				Player.ForceModelId = RealVehicles[Server_VehicleLock].Id;
+				_Mode.SpawnPlayer(Player, 0, Now+1000000);
+			}
+		}
+	}
+	
+	foreach(Player, _Mode.PlayersWaiting) {
+		declare UI <=> _Mode.UIManager.GetUI(Player);
+	
+		declare netwrite Boolean Server_Playing for UI;
+		declare netwrite Integer Server_VehicleLock for UI;
+		declare netwrite Boolean Server_EndRace for UI;
+		declare netwrite Boolean Server_Outro for UI;
+		
+		declare netread Integer Client_VehicleIndex for UI;
+		
+		Server_VehicleLock = -1;
+		
+		if(Server_Playing && !Server_EndRace && !Server_Outro) {			
+			Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id;
+			_Mode.SpawnPlayer(Player, 0, _Mode.Now+2500);
+		}
+		
+		if(Server_Outro) {
+			sleep(1000);
+			UI.UISequence = CUIConfig::EUISequence::Playing;
+			Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id;
+			_Mode.SpawnPlayer(Player, 0, _Mode.Now+2500);
+			Server_Outro = False;
+		}
+	}
+}
+
+Void End() {
+
+}

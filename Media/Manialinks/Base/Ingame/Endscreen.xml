@@ -1,0 +1,27 @@
+<frame z-index="100">
+	<quad pos="0 0" z-index="1" size="320 180" halign="center" valign="center" opacity="0" bgcolor="FFF" id="QUAD_FLASH"/>
+	<frame id="FRAME_ENDSCREEN_INFO" hidden="1">
+		<quad pos="0 0" z-index="-1" size="320 180" halign="center" valign="center" style="Bgs1" substyle="BgDialogBlur"/>
+		<frame pos="0 50">
+			<quad z-index="-2" size="140 30" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="-1" size="140 30" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+			<label pos="0 -1.2" z-index="0" size="110 20" text="0:00.000" halign="center" valign="center2" textfont="RajdhaniMono" textsize="20" textcolor="EEE" id="LABEL_TIME"/>
+		</frame>
+		<frame pos="0 30">
+			<quad z-index="-2" size="140 60" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="-1" size="140 60" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
+		</frame>
+		<frame pos="-110 65">
+			<quad z-index="-2" size="70 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="-1" size="70 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
+		</frame>
+		<frame pos="110 65">
+			<quad z-index="-2" size="70 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="-1" size="70 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
+		</frame>
+		<frame pos="0 -50">
+			<quad z-index="-2" size="140 30" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCard" modulatecolor="036" scriptevents="1" id="QUAD_BUTTON_CONTINUE"/>
+			<label pos="0 -1" z-index="0" size="110 20" text="{{{{CONTINUE}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="12" textcolor="EEE"/>
+		</frame>
+	</frame>
+</frame>

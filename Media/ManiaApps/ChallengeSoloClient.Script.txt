@@ -1,6 +1,7 @@
 #RequireContext CManiaAppPlayground
 
 #Include "TextLib" as TextLib
+#Include "MathLib" as MathLib
 
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
@@ -19,6 +20,8 @@
 #Const C_Manialink_Stunts "Media/Manialinks/Base/Ingame/Stunts"
 #Const C_Manialink_Playsession "Media/Manialinks/Base/Ingame/Playsession"
 #Const C_Manialink_Spotify "Media/Manialinks/Base/Ingame/Spotify"
+#Const C_Manialink_Endscreen "Media/Manialinks/Base/Ingame/Endscreen"
+#Const C_Manialink_Outro "Media/Manialinks/Base/Ingame/Outro"
 
 #Const C_Manialink_OpenMenu "Media/Manialinks/Base/Ingame/OpenMenu"
 
@@ -81,6 +84,8 @@ Layers::Create("Dashboard", Manialink::FromFile(C_Manialink_Dashboard, True, ["T
 Layers::Create("Stunts", Manialink::FromFile(C_Manialink_Stunts, True, ["TextAnimation"], Settings::Get().Theme));
 Layers::Create("Playsession", Manialink::FromFile(C_Manialink_Playsession, True, ["TextAnimation"], Settings::Get().Theme));
 Layers::Create("Spotify", Manialink::FromFile(C_Manialink_Spotify, True, ["TextAnimation"], Settings::Get().Theme));
+Layers::Create("Endscreen", Manialink::FromFile(C_Manialink_Endscreen, True, [], Settings::Get().Theme));
+Layers::Create("Outro", Manialink::FromFile(C_Manialink_Outro, True, [], Settings::Get().Theme));
 
 Layers::Create("Flash", Manialink::FromFile(C_Manialink_Flash, True, [], Settings::Get().Theme));
 
@@ -130,6 +135,12 @@ Client_VehicleIndex = VehicleIndex;
 declare Integer VehicleLock for Layers::Get("Vehicle").LocalPage;
 declare netread Integer Server_VehicleLock for UI;
 
+declare netread Boolean Server_EndRace for UI;
+declare RaceEnded = Server_EndRace;
+
+declare netread Boolean Server_Outro for UI;
+declare IsOutro = Server_Outro;
+
 while(True) {
 	foreach(Event, PendingEvents) {
 		switch(Event.Type) {
@@ -165,7 +176,17 @@ while(True) {
 								Layers::Hide("Playsession");
 								Layers::Hide("Spotify");
 								Layers::Hide("OpenMenu");
+
 								Layers::Hide("Flash");
+							}
+						}
+					}
+					case Layers::Get("Endscreen"): {
+						switch(Event.CustomEventType) {
+							case "Continue": {
+								SendCustomEvent("Continue", []);
+
+								Layers::Show("Outro");
 							}
 						}
 					}
@@ -178,6 +199,36 @@ while(True) {
 		Client_VehicleIndex = VehicleIndex;
 		SendCustomEvent("VehicleIndexChanged", [VehicleIndex^""]);
 		OldVehicleIndex = VehicleIndex;
+	}
+
+	if(Server_EndRace != RaceEnded) {
+		if(Server_EndRace) {
+			Layers::Hide("Dashboard");
+			Layers::Hide("Stunts");
+			Layers::Hide("Playsession");
+			Layers::Hide("Spotify");
+			Layers::Hide("OpenMenu");
+
+			Layers::Show("Endscreen", True);
+		}
+		else {
+			Layers::Hide("Endscreen");
+			Layers::Hide("Flash");
+		}
+		RaceEnded = Server_EndRace;
+	}
+
+	if(Server_Outro != IsOutro) {
+		if(!Server_Outro) {
+			Layers::Show("Dashboard", True);
+			Layers::Show("Stunts", True);
+			Layers::Show("Playsession", True);
+			Layers::Show("Spotify", True);
+			Layers::Show("OpenMenu", True);
+			Layers::Show("Flash");
+			Layers::Hide("Endscreen");
+		}
+		IsOutro = Server_Outro;
 	}
 
 	VehicleLock = Server_VehicleLock;

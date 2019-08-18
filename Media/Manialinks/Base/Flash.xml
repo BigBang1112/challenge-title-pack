@@ -1,0 +1,3 @@
+<frame z-index="100">
+	<quad size="320 180" bgcolor="FFF" halign="center" valign="center" id="QUAD_FLASH" opacity="0"/>
+</frame>
