@@ -181,7 +181,10 @@ Gauge_RPM.RelativeScale = GetOwner().EngineTurboRatio*.25+1;
 if(GetOwner().EngineCurGear != LastGear) {
 	Label_Gear.Opacity = 0.;
 	AnimMgr.Add(Label_Gear, "<label opacity=\"1\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
-	Label_Gear.SetText(""^GetOwner().EngineCurGear);
+	if(GetOwner().EngineCurGear > 0)
+		Label_Gear.SetText(""^GetOwner().EngineCurGear);
+	else
+		Label_Gear.SetText("R");
 	LastGear = GetOwner().EngineCurGear;
 }
 
