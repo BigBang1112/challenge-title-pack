@@ -355,6 +355,11 @@ Void Finish() {
 					CamPosition = Item.Position+<BlockSize/2.,0.,BlockSize/2.>;
 					Offset += 1;
 				}
+				else if(SelectedPoint - Offset < Problem.ApproxBlocks.count) {
+					declare ApproxBlock = Problem.ApproxBlocks[SelectedPoint - Offset];
+					CamPosition = <ApproxBlock.Coord.X*BlockSize*1.,(ApproxBlock.Coord.Y-HeightOffset+1)*(BlockSize/4.),ApproxBlock.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
+					Offset += 1;
+				}
 				else if(SelectedPoint - Offset < Problem.Coords.count) {
 					declare Coord = Problem.Coords[SelectedPoint - Offset];
 					CamPosition = <Coord.X*BlockSize*1.,(Coord.Y-HeightOffset+1)*(BlockSize/4.),Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;

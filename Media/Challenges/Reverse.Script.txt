@@ -5,10 +5,16 @@ Script.AuthorLogin = "bigbang1112";
 Script.Description = "{{{{REVERSE_DESCRIPTION}}}}";
 ***
 
-Void Problem_BlockMissing(Text _BlockName) {
+Void Problem_BlockMissing(Text _BlockName, Int3 _Coord, Text _Direction) {
 	declare SChProblem Problem_BlockMissing;
 	Problem_BlockMissing.Name = "BLOCK_MISSING";
-	Problem_BlockMissing.BlockNames.add(_BlockName);
+
+	declare SChApproxBlock Block;
+	Block.Name = _BlockName;
+	Block.Coord = _Coord;
+	Block.Direction = _Direction;
+	Problem_BlockMissing.ApproxBlocks.add(Block);
+
 	Problem_BlockMissing.ShortDescription = "{{{{PROBLEM_BLOCK_MISSING}}}} - " ^ _BlockName;
 	Problem_BlockMissing.LongDescription = "{{{{PROBLEM_BLOCK_MISSING_LONG}}}}";
 	Problem_BlockMissing.Solutions.add(Solution("{{{{PROBLEM_BLOCK_MISSING_SOLUTION_1}}}}", "", True));
@@ -95,7 +101,7 @@ if(IsOneLapWithFinish) {
 					if(IsSpecialBlock(FinishTwowayBlockName)) {
 						declare Block = PlaceBlock(FinishTwowayBlockName, Multilap.Block.Coord, Multilap.Block.Direction);
 						if(Block.Placed) SetStatusMessage(MultilapBlockName ^ " {{{{replaced_with}}}} " ^ FinishTwowayBlockName ^ ".");
-						else Problem_BlockMissing(FinishTwowayBlockName);
+						else Problem_BlockMissing(FinishTwowayBlockName, Multilap.Block.Coord, Multilap.Block.Direction);
 					}
 				}
 			}
@@ -116,7 +122,7 @@ else {
 				if(Removed) {
 					declare Block = PlaceBlock(FinishBlockName, Start.Block.Coord, OppositeDirection(Start.Block.Direction));
 					if(Block.Placed) SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ FinishBlockName ^ ".");
-					else Problem_BlockMissing(FinishBlockName);
+					else Problem_BlockMissing(FinishBlockName, Start.Block.Coord, OppositeDirection(Start.Block.Direction));
 				}
 			}
 		}
@@ -141,7 +147,7 @@ if(FinishLines.count == 1) {
 				if(Removed) {
 					declare Block = PlaceBlock(StartBlockName, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
 					if(Block.Placed) SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ StartBlockName ^ ".");
-					else Problem_BlockMissing(StartBlockName);
+					else Problem_BlockMissing(StartBlockName, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
 				}
 			}
 		}

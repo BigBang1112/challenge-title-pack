@@ -54,6 +54,12 @@
 	SChItem Item;
 }
 
+#Struct SChApproxBlock {
+	Text Name;
+	Int3 Coord;
+	Text Direction;
+}
+
 #Struct SReplacementResult {
 	Boolean Removed;
 	Boolean Placed;
@@ -73,11 +79,10 @@
 #Struct SChProblem {
 	Text Name;
 	Int3[] Coords;
-	Text Direction;
 	SChWaypoint[] Waypoints;
 	SChBlock[] Blocks;
 	SChItem[] Items;
-	Text[] BlockNames;
+	SChApproxBlock[] ApproxBlocks;
 	Text ShortDescription;
 	Text LongDescription;
 	SChSolution[] Solutions;

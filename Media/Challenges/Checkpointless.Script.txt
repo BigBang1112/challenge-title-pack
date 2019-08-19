@@ -8,8 +8,12 @@ Script.Description = "{{{{CHECKPOINTLESS_DESCRIPTION}}}}";
 Void Problem_BlockMissing(Text _BlockName, Int3 _Coord) {
 	declare SChProblem Problem_BlockMissing;
 	Problem_BlockMissing.Name = "BLOCK_MISSING";
-	Problem_BlockMissing.BlockNames.add(_BlockName);
-	Problem_BlockMissing.Coords.add(_Coord);
+
+	declare SChApproxBlock Block;
+	Block.Name = _BlockName;
+	Block.Coord = _Coord;
+	Problem_BlockMissing.ApproxBlocks.add(Block);
+
 	Problem_BlockMissing.ShortDescription = "{{{{PROBLEM_BLOCK_MISSING}}}} - " ^ _BlockName;
 	Problem_BlockMissing.LongDescription = "{{{{PROBLEM_BLOCK_MISSING_LONG}}}}";
 	Problem_BlockMissing.Solutions.add(Solution("{{{{PROBLEM_BLOCK_MISSING_SOLUTION_1}}}}", "", True));

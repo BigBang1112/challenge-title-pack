@@ -13,7 +13,9 @@
 		<quad z-index="2" size="40 10" halign="center" scriptevents="1" id="QUAD_BUTTON_NEXT_DISABLE" hidden="1"/>
 	</frame>
 	<label id="LABEL_PROBLEM" pos="0 -4.8" z-index="1" size="90 10" text="{{{{PROBLEM}}}}" textfont="RajdhaniMono" halign="center" textcolor="EEE"/>
-	<label id="LABEL_PROBLEM_LONG" pos="0 -10.8" z-index="1" size="90 10" textfont="BiryaniDemiBold" halign="center" textcolor="EEE" textsize="2" autonewline="1"/>
+	<frame z-index="1" pos="0 -10.8" clip="True" clipsizen="90 10" clipposn="0 -5">
+		<label id="LABEL_PROBLEM_LONG" size="90 10" textfont="BiryaniDemiBold" halign="center" textcolor="EEE" textsize="2" autonewline="1" text="dfsafjo sadj ofsjd ofjas dfjsoiad jfoisj oij foisadj oifsj oiadj fosdja iofjsdj fsodjsioaddjsioadf jdjsioadf jf jdjsioadf jdjsioadf jdjsioadf jdjsioadf jdjsioadf j"/>
+	</frame>
 	<frame z-index="1" pos="0 -25" id="FRAME_POINTS" hidden="0">
 		<quad pos="0 0" z-index="-1" size="80 7.5" halign="center" valign="center" style="Bgs1InRace" substyle="BgListLine" opacity=".5"/>
 		<label pos="0 -0.2" z-index="0" size="70 7.5" text="WATWATWTWATAWTAWTAWTAWT" halign="center" valign="center2" textfont="RajdhaniMono" textsize="2" id="LABEL_POINT"/>

@@ -20,6 +20,12 @@
 	Boolean IsSpecial;
 }
 
+#Struct SChApproxBlock {
+	Text Name;
+	Int3 Coord;
+	Text Direction;
+}
+
 #Struct SChItem {
 	Vec3 Position;
 	SChAnchor Anchor;
@@ -56,11 +62,10 @@
 #Struct SChProblem {
 	Text Name;
 	Int3[] Coords;
-	Text Direction;
 	SChWaypoint[] Waypoints;
 	SChBlock[] Blocks;
 	SChItem[] Items;
-	Text[] BlockNames;
+	SChApproxBlock[] ApproxBlocks;
 	Text ShortDescription;
 	Text LongDescription;
 	SChSolution[] Solutions;
@@ -141,14 +146,16 @@ Void UpdateProblem() {
 		(Page.GetFirstChild("LABEL_POINT") as CMlLabel).SetText(Problem.Items[SelectedPoint - Offset].Position^"");
 		Offset += 1;
 	}
-	else if(SelectedPoint - Offset < Problem.Coords.count) { // Lepší bude SChApproxBlock
-		declare Text BlockName;
-		if(Problem.BlockNames.existskey(SelectedPoint - Offset)) BlockName = Problem.BlockNames[SelectedPoint - Offset] ^ " $666";
-		(Page.GetFirstChild("LABEL_POINT") as CMlLabel).SetText(BlockName ^ Problem.Coords[SelectedPoint - Offset]);
+	else if(SelectedPoint - Offset < Problem.ApproxBlocks.count) {
+		(Page.GetFirstChild("LABEL_POINT") as CMlLabel).SetText(Problem.ApproxBlocks[SelectedPoint - Offset].Name ^ " $666" ^ Problem.ApproxBlocks[SelectedPoint - Offset].Coord);
+		Offset += 1;
+	}
+	else if(SelectedPoint - Offset < Problem.Coords.count) {
+		(Page.GetFirstChild("LABEL_POINT") as CMlLabel).SetText(Problem.Coords[SelectedPoint - Offset]^"");
 		Offset += 1;
 	}
 
-	TotalPoints = Problem.Waypoints.count + Problem.Blocks.count + Problem.Items.count + Problem.BlockNames.count;
+	TotalPoints = Problem.Waypoints.count + Problem.Blocks.count + Problem.Items.count + Problem.ApproxBlocks.count + Problem.Coords.count;
 
 	if(TotalPoints > 1) Page.GetFirstChild("FRAME_SWITCHES").Show();
 	else Page.GetFirstChild("FRAME_SWITCHES").Hide();

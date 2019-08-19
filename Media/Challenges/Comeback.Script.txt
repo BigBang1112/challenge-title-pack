@@ -27,10 +27,14 @@ Void Problem_ItemStart(SChWaypoint _Start) {
 Void Problem_CannotPlaceGhostBlock(Int3 _Coord, Text _Direction, Text _BlockName) {
 	declare SChProblem Problem_CannotPlaceGhostBlock;
 	Problem_CannotPlaceGhostBlock.Name = "CANNOT_PLACE_GHOSTBLOCK";
-	Problem_CannotPlaceGhostBlock.Coords.add(_Coord);
-	Problem_CannotPlaceGhostBlock.Direction = _Direction;
-	Problem_CannotPlaceGhostBlock.BlockNames.add(_BlockName);
-	Problem_CannotPlaceGhostBlock.ShortDescription = "{{{{PROBLEM_CANNOT_PLACE_GHOSTBLOCK}}}} - " ^ _BlockName;
+
+	declare SChApproxBlock Block;
+	Block.Name = _BlockName;
+	Block.Coord = _Coord;
+	Block.Direction = _Direction;
+	Problem_CannotPlaceGhostBlock.ApproxBlocks.add(Block);
+	
+	Problem_CannotPlaceGhostBlock.ShortDescription = "{{{{PROBLEM_CANNOT_PLACE_GHOSTBLOCK}}}} - " ^ Block.Name;
 	Problem_CannotPlaceGhostBlock.LongDescription = "This block is not possible to place in ghost variant.";
 	Problem_CannotPlaceGhostBlock.Solutions.add(Solution("Contact the authors of Challenge to add the ghost variant of the block.", "", True));
 	Problem_CannotPlaceGhostBlock.Solutions.add(Solution("Place the ghost block manually.", "", True));
