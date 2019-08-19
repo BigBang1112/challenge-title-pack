@@ -1,3 +1,7 @@
+Text TimeToTextWithMilli(Integer _Time) {
+	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
+}
+
 ***Loop***
 ***
 foreach(Event,PendingEvents) {
@@ -20,8 +24,27 @@ foreach(Event,PendingEvents) {
 
 					Page.GetFirstChild("QUAD_BUTTON_CONTINUE").Focus();
 				}
+				case "Update": {
+					declare Integer Time for Page;
+					declare Text Map_Name for Page;
+					declare Text Map_Env for Page;
+					declare Text Car for Page;
+					declare Text[] Challenges for Page;
+
+					(Page.GetFirstChild("LABEL_TIME") as CMlLabel).SetText(TimeToTextWithMilli(Time));
+
+					SlideText_Set((Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel), (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel), Map_Name, 15);
+					SlideText_Set((Page.GetFirstChild("LABEL_ENV") as CMlLabel), (Page.GetFirstChild("LABEL_ENV_2") as CMlLabel), TextLib::ToUpperCase(Map_Env), 15);
+					SlideText_Set((Page.GetFirstChild("LABEL_CAR") as CMlLabel), (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel), Car, 15);
+					SlideText_Set((Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel), (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel), TextLib::Join(" + ", Challenges), 15);
+				}
 			}
 		}
 	}
 }
+
+SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_MAPNAME") as CMlFrame), (Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel), (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel), 15, .015);
+SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_ENV") as CMlFrame), (Page.GetFirstChild("LABEL_ENV") as CMlLabel), (Page.GetFirstChild("LABEL_ENV_2") as CMlLabel), 15, .015);
+SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_CAR") as CMlFrame), (Page.GetFirstChild("LABEL_CAR") as CMlLabel), (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel), 15, .015);
+SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_CHALLENGE") as CMlFrame), (Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel), (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel), 15, .015);
 ***

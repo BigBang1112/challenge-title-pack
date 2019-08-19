@@ -31,7 +31,7 @@ UIManager.UIAll.SmallScoreTableVisibility = CUIConfig::EVisibility::ForcedHidden
 UIManager.UIAll.ScoreTableOnlyManialink = True;
 
 wait(Players.count>0);
-Race::Init(This);
+Race::Init(This, False);
 
 ClientManiaAppUrl = "file://Media/ManiaApps/ChallengeSoloClient.Script.txt";
 

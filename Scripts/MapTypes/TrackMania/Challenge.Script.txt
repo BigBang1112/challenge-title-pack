@@ -9,17 +9,6 @@
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
 
-#Struct SVehicle {
-	Text Name;
-	Ident Id;
-}
-
-#Struct SDefinedVehicle {
-	Text Name;
-	Text Image;
-	Text File;
-}
-
 Void CheckValidability() {
 	declare StartsFinishes = 0;
 	declare Starts = 0;
@@ -87,7 +76,7 @@ main() {
 				case CMapEditorPluginEvent::Type::StartValidation: {
 					Mode.ClientManiaAppUrl = "file://Media/ManiaApps/ChallengeSoloClient.Script.txt";
 					
-					Race::Init(Mode);		
+					Race::Init(Mode, True);
 					RequestEnterPlayground();
 					wait(IsSwitchedToPlayground);
 					wait(Mode.MapLoaded);

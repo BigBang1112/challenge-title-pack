@@ -1,27 +1,43 @@
 <frame z-index="100">
 	<quad pos="0 0" z-index="1" size="320 180" halign="center" valign="center" opacity="0" bgcolor="FFF" id="QUAD_FLASH"/>
-	<frame id="FRAME_ENDSCREEN_INFO" hidden="1">
+	<frame id="FRAME_ENDSCREEN_INFO" hidden="0">
 		<quad pos="0 0" z-index="-1" size="320 180" halign="center" valign="center" style="Bgs1" substyle="BgDialogBlur"/>
 		<frame pos="0 50">
 			<quad z-index="-2" size="140 30" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="-1" size="140 30" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
 			<label pos="0 -1.2" z-index="0" size="110 20" text="0:00.000" halign="center" valign="center2" textfont="RajdhaniMono" textsize="20" textcolor="EEE" id="LABEL_TIME"/>
 		</frame>
-		<frame pos="0 30">
-			<quad z-index="-2" size="140 60" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
-			<quad z-index="-1" size="140 60" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
+		<frame pos="0 32.5">
+			<quad z-index="-2" size="140 75" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="-1" size="140 75" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
+			<frame pos="-64 -5" id="FRAME_LABEL_MAPNAME" clip="True" clipposn="40 -5" clipsizen="80 10">
+				<label z-index="0" size="200 10" text="MAPNAME MAPNAMEMAPNAME " valign="top" textfont="Oswald" textsize="10" textcolor="EEE" id="LABEL_MAPNAME"/>
+				<label z-index="0" size="200 10" text="MAPNAME MAPNAMEMAPNAME " valign="top" textfont="Oswald" textsize="10" textcolor="EEE" id="LABEL_MAPNAME_2"/>
+			</frame>
+			<frame pos="-64 -17" id="FRAME_LABEL_ENV" clip="True" clipposn="40 -2.5" clipsizen="80 5">
+				<label z-index="0" size="200 5" text="ENVENVENVENVENVENVENVENVENVENVENVENVENVENVENVENV" valign="top" textfont="Oswald" textsize="4" textcolor="EEE" id="LABEL_ENV"/>
+				<label z-index="0" size="200 5" text="ENVENVENVENVENVENVENVENVENVENVENVENVENVENVENVENV" valign="top" textfont="Oswald" textsize="4" textcolor="EEE" id="LABEL_ENV_2"/>
+			</frame>
+			<frame pos="64 -10.2" id="FRAME_LABEL_CAR" clip="True" clipposn="-22.5 0" clipsizen="45 9">
+				<label z-index="0" size="200 7" text="StadiumCar" valign="center2" textfont="Oswald" textsize="6" textcolor="EEE" id="LABEL_CAR" halign="right" textprefix="$o"/>
+				<label z-index="0" size="200 7" text="StadiumCar" valign="center2" textfont="Oswald" textsize="6" textcolor="EEE" id="LABEL_CAR_2" halign="right" textprefix="$o"/>
+			</frame>
+			<frame pos="64 -17" id="FRAME_LABEL_CHALLENGE" clip="True" clipposn="-22.5 -2.5" clipsizen="45 7">
+				<label z-index="0" size="200 7" text="REVERSE + REVERSE + REVERSE" textfont="Oswald" textsize="4" textcolor="EEE" id="LABEL_CHALLENGE" halign="right"/>
+				<label z-index="0" size="200 7" text="REVERSE + REVERSE + REVERSE" textfont="Oswald" textsize="4" textcolor="EEE" id="LABEL_CHALLENGE_2" halign="right"/>
+			</frame>
 		</frame>
-		<frame pos="-110 65">
-			<quad z-index="-2" size="70 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
-			<quad z-index="-1" size="70 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
+		<frame pos="-105 65">
+			<quad z-index="-2" size="65 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="-1" size="65 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
 		</frame>
-		<frame pos="110 65">
-			<quad z-index="-2" size="70 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
-			<quad z-index="-1" size="70 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
+		<frame pos="105 65">
+			<quad z-index="-2" size="65 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="-1" size="65 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
 		</frame>
-		<frame pos="0 -50">
-			<quad z-index="-2" size="140 30" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCard" modulatecolor="036" scriptevents="1" id="QUAD_BUTTON_CONTINUE"/>
-			<label pos="0 -1" z-index="0" size="110 20" text="{{{{CONTINUE}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="12" textcolor="EEE"/>
+		<frame pos="0 -55">
+			<quad z-index="-2" size="140 20" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCard" modulatecolor="036" scriptevents="1" id="QUAD_BUTTON_CONTINUE"/>
+			<label pos="0 -.7" z-index="0" size="110 20" text="{{{{CONTINUE}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="9" textcolor="EEE"/>
 		</frame>
 	</frame>
 </frame>

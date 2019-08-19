@@ -4,9 +4,19 @@ declare Frame_Label_MapName = (Page.GetFirstChild("FRAME_LABEL_MAPNAME") as CMlF
 declare Label_MapName = (Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel);
 declare Label_MapName2 = (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel);
 
-Label_MapName.RelativePosition_V3.X = 0.;
+declare Frame_Label_Challenge = (Page.GetFirstChild("FRAME_LABEL_CHALLENGE") as CMlFrame);
+declare Label_Challenge = (Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel);
+declare Label_Challenge2 = (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel);
 
 declare LabelDistance = 15;
+
+declare Boolean IsPauseMenu for Page;
+declare Boolean IsMenuOpen for Page;
+declare Boolean IsBlurred for Page;
+
+EnableMenuNavigationInputs = True;
+
+ShowInGameMenu();
 ***
 
 ***Loop***
@@ -16,7 +26,13 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_START": {
-					SendCustomEvent("Start", []);
+					SendCustomEvent("Start", ["True"]);
+
+					CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+				}
+				case "QUAD_BUTTON_EXIT": {
+					CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Quit);
+					Playground.QuitServer(False);
 				}
 			}
 		}
@@ -24,28 +40,36 @@ foreach(Event,PendingEvents) {
 			switch(Event.CustomEventType) {
 				case "MapName": {
 					declare MapName = Event.CustomEventData[0];
-					Label_MapName.Size.X = Label_MapName.ComputeWidth(MapName);
-					Label_MapName.SetText(MapName);
-
-					Label_MapName2.RelativePosition_V3.X = Label_MapName.Size.X+LabelDistance;
-					Label_MapName2.Size.X = Label_MapName2.ComputeWidth(MapName);
-					Label_MapName2.SetText(MapName);
+					SlideText_Set(Label_MapName, Label_MapName2, MapName, LabelDistance);
+				}
+				case "Challenge": {
+					declare Challenge = Event.CustomEventData[0];
+					SlideText_Set(Label_Challenge, Label_Challenge2, Challenge, LabelDistance);
+				}
+			}
+		}
+		case CMlEvent::Type::MenuNavigation: {
+			switch(Event.MenuNavAction) {
+				case CMlEvent::EMenuNavAction::Cancel: {
+					CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
 				}
 			}
 		}
 	}
 }
 
-if(Frame_Label_MapName.ClipWindowSize.X < Label_MapName.Size.X) {
-	Label_MapName2.Show();
-	Label_MapName.RelativePosition_V3.X -= Period*.015;
-	Label_MapName2.RelativePosition_V3.X -= Period*.015;
-	if(Label_MapName.RelativePosition_V3.X + Label_MapName.Size.X < 0)
-		Label_MapName.RelativePosition_V3.X = Label_MapName2.RelativePosition_V3.X+Label_MapName2.Size.X+LabelDistance;
-	if(Label_MapName2.RelativePosition_V3.X + Label_MapName2.Size.X < 0)
-		Label_MapName2.RelativePosition_V3.X = Label_MapName.RelativePosition_V3.X+Label_MapName.Size.X+LabelDistance;
+if(IsMenuOpen != IsMenuNavigationForeground) {
+	IsMenuOpen = IsMenuNavigationForeground;
+	if(IsMenuOpen) SendCustomEvent("Open", []);
+	else {
+		SendCustomEvent("Close", []);
+		SendCustomEvent("Start", ["False"]);
+	}
 }
-else {
-	Label_MapName2.Hide();
-}
+
+if(IsBlurred) Page.GetFirstChild("QUAD_BACKGROUND").Show();
+else Page.GetFirstChild("QUAD_BACKGROUND").Hide();
+
+SlideText_Loop(Frame_Label_MapName, Label_MapName, Label_MapName2, LabelDistance, .015);
+SlideText_Loop(Frame_Label_Challenge, Label_Challenge, Label_Challenge2, LabelDistance, -.015);
 ***

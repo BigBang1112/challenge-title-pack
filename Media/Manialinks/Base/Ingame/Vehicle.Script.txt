@@ -61,7 +61,7 @@ Void UpdateVehicles() {
 	}
 }
 
-Void UpdatePositions(Vec2 _Scroll, Vec2 _OldScroll) {
+Void UpdatePositions(Vec2 _Scroll, Vec2 _OldScroll, Boolean _Instantly) {
 	declare Integer VehicleIndex for Page;
 	declare Integer MapVehicleIndex for Page;
 	declare Integer VehicleLock for Page;
@@ -72,15 +72,31 @@ Void UpdatePositions(Vec2 _Scroll, Vec2 _OldScroll) {
 	AnimMgr.Add(Frame_Inner_Vehicles, """<frame pos="0 0"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 	
 	if(VehicleLock == -1) {
-		Label_Arrow.RelativePosition_V3.Y -= _Scroll.Y-_OldScroll.Y;
-		Label_Lock.RelativePosition_V3.Y -= _Scroll.Y-_OldScroll.Y;
-		AnimMgr.Add(Label_Arrow, """<label pos="{{{Label_Arrow.RelativePosition_V3.X}}} 0"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
-		AnimMgr.Add(Label_Lock, """<label pos="{{{Label_Lock.RelativePosition_V3.X}}} 0"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+		if(_Instantly) {
+			Label_Arrow.RelativePosition_V3.Y = 0.;
+			Label_Lock.RelativePosition_V3.Y = 0.;
+		}
+		else {
+			Label_Arrow.RelativePosition_V3.Y -= _Scroll.Y-_OldScroll.Y;
+			Label_Lock.RelativePosition_V3.Y -= _Scroll.Y-_OldScroll.Y;
+			AnimMgr.Add(Label_Arrow, """<label pos="{{{Label_Arrow.RelativePosition_V3.X}}} 0"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+			AnimMgr.Add(Label_Lock, """<label pos="{{{Label_Lock.RelativePosition_V3.X}}} 0"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+		}
 	}
 	else {
-		AnimMgr.Add(Label_Arrow, """<label pos="{{{Label_Arrow.RelativePosition_V3.X}}} {{{_Scroll.Y-(VehicleLock-MapVehicleIndex)*20}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
-		AnimMgr.Add(Label_Lock, """<label pos="{{{Label_Lock.RelativePosition_V3.X}}} {{{_Scroll.Y-(VehicleLock-MapVehicleIndex)*20}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+		if(_Instantly) {
+			Label_Arrow.RelativePosition_V3.Y = _Scroll.Y-(VehicleLock-MapVehicleIndex)*20;
+			Label_Lock.RelativePosition_V3.Y = _Scroll.Y-(VehicleLock-MapVehicleIndex)*20;
+		}
+		else {
+			AnimMgr.Add(Label_Arrow, """<label pos="{{{Label_Arrow.RelativePosition_V3.X}}} {{{_Scroll.Y-(VehicleLock-MapVehicleIndex)*20}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+			AnimMgr.Add(Label_Lock, """<label pos="{{{Label_Lock.RelativePosition_V3.X}}} {{{_Scroll.Y-(VehicleLock-MapVehicleIndex)*20}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+		}
 	}
+}
+
+Void UpdatePositions(Vec2 _Scroll, Vec2 _OldScroll) {
+	UpdatePositions(_Scroll, _OldScroll, False);
 }
 
 ***Start***
@@ -93,6 +109,8 @@ declare Integer VehicleIndex for Page;
 declare Integer VehicleCount for Page;
 declare Integer MapVehicleIndex for Page;
 declare Integer VehicleLock for Page;
+
+declare Boolean IsMenuOpen for Page;
 
 declare Integer OldVehicleIndex = -1;
 
@@ -125,6 +143,14 @@ foreach(Event,PendingEvents) {
 				}
 			}
 		}
+		case CMlScriptEvent::Type::PluginCustomEvent: {
+			switch(Event.CustomEventType) {
+				case "Show": {
+					UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll);
+					UpdateVehicles();
+				}
+			}
+		}
 	}
 }
 
@@ -148,5 +174,13 @@ if(VehicleIndex != OldVehicleIndex) {
 if(VehicleLock != OldVehicleLock) {
 	UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll);
 	OldVehicleLock = VehicleLock;
+}
+
+if(IsMenuOpen != IsMenuNavigationForeground) {
+	IsMenuOpen = IsMenuNavigationForeground;
+	if(IsMenuOpen) UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll, True);
+	else {
+		
+	}
 }
 ***

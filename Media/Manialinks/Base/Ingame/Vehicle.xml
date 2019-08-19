@@ -3,7 +3,7 @@
 		<label pos="62 -0.3" z-index="0" size="20 20" text="" halign="center" valign="center" textsize="10" textemboss="1" textcolor="EEE" id="LABEL_ARROW"/>
 		<label pos="62 -0.3" z-index="1" size="20 20" text="🔒" halign="center" valign="center2" textsize="8" textemboss="1" textcolor="222" id="LABEL_LOCK" hidden="1"/>
 	</frame>
-	<frame pos="110" clip="True" clipsizen="120 160" id="FRAME_VEHICLES">
+	<frame pos="110" clip="True" clipsizen="240 160" id="FRAME_VEHICLES">
 		<frame id="FRAME_INNER_VEHICLES"/>
 	</frame>
 </frame>

@@ -1,0 +1,25 @@
+***Loop***
+***
+
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseClick: {
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON_CONTINUE": {
+					SendCustomEvent("Continue", []);
+				}
+				case "QUAD_BUTTON_EXIT": {
+					SendCustomEvent("Exit", []);
+				}
+			}
+		}
+		case CMlScriptEvent::Type::PluginCustomEvent: {
+			switch(Event.CustomEventType) {
+				case "": {
+					
+				}
+			}
+		}
+	}
+}
+***
