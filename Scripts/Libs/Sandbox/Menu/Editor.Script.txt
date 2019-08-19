@@ -15,7 +15,7 @@ Void Init() {
 }
 
 Void Start() {
-	Layers::SendEvent("Editor", "Code_SetText", [File::Read("Media/Challenges/Default.Script.txt")]);
+
 }
 
 declare Boolean StartTest;

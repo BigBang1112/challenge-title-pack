@@ -1,6 +1,7 @@
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/File.Script.txt" as File
 
 #Const C_Manialink "Media/Manialinks/Sandbox/Menu"
 
@@ -27,6 +28,8 @@ Void Event(CManiaAppEvent _Event) {
 				Layers::Hide("Top", True);
 				Layers::Hide("Playsessions", True);
 				Layers::Hide("News", True);
+				
+				Layers::SendEvent("Editor", "Code_SetText", File::Read("Media/Challenges/Default.Script.txt"));
 			}
 		}
 	}
