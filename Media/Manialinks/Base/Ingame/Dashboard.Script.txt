@@ -58,6 +58,9 @@ foreach(Event,PendingEvents) {
 			switch(Event.CustomEventType) {
 				case "Show": {
 					Start = Now;
+
+					Label_Gear.Opacity = 1.;
+					Quad_Brake.Opacity = 0.;
 				}
 			}
 		}
