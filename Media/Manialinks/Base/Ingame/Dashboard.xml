@@ -36,7 +36,7 @@
 			<quad z-index="1" size="12 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
 			<label pos="0 -.3" z-index="3" size="12 8" text="1" halign="center" valign="center2" textfont="RajdhaniMono" textsize="2.5" id="LABEL_GEAR" textcolor="EEE"/>
 		</frame>
-		<frame pos="-66 -78.5" clip="True" clipsizen="13 10">
+		<frame pos="-66 -78.5" clip="True" clipsizen="13 10" id="FRAME_INFO">
 			<quad z-index="0" size="12 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="1" size="12 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
 			<quad z-index="2" size="4 4" bgcolor="FFFA" valign="center" halign="center" style="Icons64x64_1" substyle="TrackInfo"/>

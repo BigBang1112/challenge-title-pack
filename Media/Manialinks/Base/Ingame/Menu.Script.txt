@@ -8,6 +8,10 @@ declare Frame_Label_Challenge = (Page.GetFirstChild("FRAME_LABEL_CHALLENGE") as 
 declare Label_Challenge = (Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel);
 declare Label_Challenge2 = (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel);
 
+declare Frame_Label_Car = (Page.GetFirstChild("FRAME_LABEL_CAR") as CMlFrame);
+declare Label_Car = (Page.GetFirstChild("LABEL_CAR") as CMlLabel);
+declare Label_Car2 = (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel);
+
 declare LabelDistance = 15;
 
 declare Boolean IsPauseMenu for Page;
@@ -46,6 +50,10 @@ foreach(Event,PendingEvents) {
 					declare Challenge = Event.CustomEventData[0];
 					SlideText_Set(Label_Challenge, Label_Challenge2, Challenge, LabelDistance);
 				}
+				case "Car": {
+					declare Car = Event.CustomEventData[0];
+					SlideText_Set(Label_Car, Label_Car2, Car, LabelDistance);
+				}
 			}
 		}
 		case CMlEvent::Type::MenuNavigation: {
@@ -72,4 +80,5 @@ else Page.GetFirstChild("QUAD_BACKGROUND").Hide();
 
 SlideText_Loop(Frame_Label_MapName, Label_MapName, Label_MapName2, LabelDistance, .015);
 SlideText_Loop(Frame_Label_Challenge, Label_Challenge, Label_Challenge2, LabelDistance, -.015);
+SlideText_Loop(Frame_Label_Car, Label_Car, Label_Car2, LabelDistance, -.015);
 ***

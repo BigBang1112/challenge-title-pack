@@ -257,10 +257,14 @@ while(True) {
 		}
 	}
 
-	if(Server_CurrentVehicle > 0)
+	if(Server_CurrentVehicle >= 0) {
+		Layers::SendEvent("Menu", "Car", Server_Vehicles[Server_CurrentVehicle]);
 		Map.MapName = """({{{OriginalMap.CollectionName}}}) {{{OriginalMap.Name}}}.{{{TextLib::Replace(Map.MapStyle, "+", "")}}} [{{{Server_Vehicles[Server_CurrentVehicle]}}}]""";
-	else
+	}
+	else {
 		Map.MapName = """({{{OriginalMap.CollectionName}}}) {{{OriginalMap.Name}}}.{{{TextLib::Replace(Map.MapStyle, "+", "")}}}""";
+		Layers::SendEvent("Menu", "Car", "");
+	}
 
 	if(VehicleIndex != OldVehicleIndex) {
 		Client_VehicleIndex = VehicleIndex;
