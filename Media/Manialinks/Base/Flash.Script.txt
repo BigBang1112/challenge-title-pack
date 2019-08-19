@@ -4,14 +4,38 @@ CTmMlPlayer GetOwner() {
 	return InputPlayer;
 }
 
+***Start***
+***
+declare CollectedCheckpoints = 0;
+***
+
 ***Loop***
 ***
+foreach(Event,RaceEvents) {
+	switch(Event.Type) {
+		case CTmRaceClientEvent::EType::WayPoint: {
+			if(Event.IsEndRace) {
+				
+			}
+			else if(Event.IsEndLap) {
+
+			}
+			else {
+				CollectedCheckpoints += 1;
+			}
+		}
+		case CTmRaceClientEvent::EType::Respawn: {
+			CollectedCheckpoints = 0;
+		}
+	}
+}
+
 declare ClosestFinishDistance = MathLib::Distance(MapFinishLinePos[0], GetOwner().Position);
 foreach(Finish, MapFinishLinePos)
 	if(ClosestFinishDistance > MathLib::Distance(Finish, GetOwner().Position))
 		ClosestFinishDistance = MathLib::Distance(Finish, GetOwner().Position);
 
-if(ClosestFinishDistance <= 64.) {
+if(CollectedCheckpoints == MapCheckpointPos.count && ClosestFinishDistance <= 64.) {
 	(Page.GetFirstChild("QUAD_FLASH") as CMlQuad).Opacity = (1-ClosestFinishDistance/64)*.25;
 }
 else {
