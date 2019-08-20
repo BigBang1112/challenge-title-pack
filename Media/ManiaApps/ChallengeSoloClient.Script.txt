@@ -307,7 +307,10 @@ if(VehicleIndex != OldVehicleIndex) {
 }
 
 if(Server_Stunt.Timestamp != LastStunt.Timestamp) {
-	Layers::SendEvent("Stunts", "Stunt", Server_Stunt.tojson());
+	declare Stunt::SStunt Stunt;
+	Stunt = Server_Stunt;
+	Stunt.Figure = Dictionary::Get(Stunt.Figure);
+	Layers::SendEvent("Stunts", "Stunt", Stunt.tojson());
 	LastStunt = Server_Stunt;
 }
 
