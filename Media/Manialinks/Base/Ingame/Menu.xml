@@ -4,9 +4,9 @@
 		<quad z-index="0" size="80 160" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
 		<quad z-index="1" size="80 160" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
 	</frame>
-	<frame pos="-145 75" clip="True" clipposn="36 -6" clipsizen="70 15" id="FRAME_LABEL_MAPNAME">
-		<label z-index="0" size="70 15" text="KTFWTWTWTWF" textsize="16" textfont="Oswald" valign="top" id="LABEL_MAPNAME" textemboss="1" pos="0"/>
-		<label z-index="0" size="70 15" text="KTFWTWTWTWF" textsize="16" textfont="Oswald" valign="top" id="LABEL_MAPNAME_2" textemboss="1" pos="0"/>
+	<frame pos="-145 75" clip="True" clipposn="36 -6" clipsizen="70 17" id="FRAME_LABEL_MAPNAME">
+		<label z-index="0" size="70 15" text="KTFWTWTWTWF" textsize="16" textfont="Oswald" valign="top" id="LABEL_MAPNAME" textemboss="1"/>
+		<label z-index="0" size="70 15" text="KTFWTWTWTWF" textsize="16" textfont="Oswald" valign="top" id="LABEL_MAPNAME_2" textemboss="1"/>
 	</frame>
 	<frame pos="-145 59" clip="True" clipposn="36 -2.5" clipsizen="70 10" id="FRAME_LABEL_CHALLENGE">
 		<label z-index="0" size="70 7" text="REVERSE + CHECKPOINTLESSFS" textsize="6" textfont="Oswald" valign="top" id="LABEL_CHALLENGE" textemboss="1"/>
@@ -19,9 +19,14 @@
 	<frame pos="-110 40">
 		<quad z-index="0" size="80 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON_EXIT" pos="0 0" halign="center"/>
 		<label pos="-35 -5.25" z-index="1" size="70 10" text=" {{{{EXIT}}}}" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON_EXIT" textcolor="EEE"/>
-		<quad z-index="0" size="80 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgGradV" halign="center"/>
+		<quad z-index="0" size="80 9.5" bgcolor="FFFA" style="Bgs1InRace" substyle="BgGradV" halign="center" pos="0 -0.25"/>
 	</frame>
-	<frame pos="-110 -70">
+	<frame pos="-110 30">
+		<quad z-index="0" size="80 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON_CONTINUE" pos="0 0" halign="center"/>
+		<label pos="-35 -5.25" z-index="1" size="70 10" text=" {{{{CONTINUE}}}}" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON_CONTINUE" textcolor="EEE"/>
+		<quad z-index="0" size="80 9.5" bgcolor="FFFA" style="Bgs1InRace" substyle="BgGradV" halign="center" pos="0 -0.25"/>
+	</frame>
+	<frame pos="-110 -70" class="BUTTON">
 		<quad z-index="0" size="72.5 15" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="060" id="QUAD_BUTTON_START" class="opacity" pos="0 0" valign="center"/>
 		<label z-index="1" size="72.5 15" text="{{{{START}}}}" valign="center2" textfont="RajdhaniMono" halign="center" pos="0 -0.8" textsize="5"/>
 	</frame>

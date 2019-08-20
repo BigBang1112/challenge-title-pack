@@ -1,3 +1,58 @@
+#Struct SNavControl {
+	CMlControl Left;
+	CMlControl Right;
+	CMlControl Up;
+	CMlControl Down;
+}
+
+declare SNavControl[CMlControl] NavControls;
+declare CMlControl SelectedNav;
+declare CMlControl FirstNav;
+
+Void Select(CMlControl _Control) {
+	foreach(Control => NavControl, NavControls) {
+		if(Control is CMlQuad) {
+			declare Quad = (Control as CMlQuad);
+			if(Quad.Parent.HasClass("BUTTON")) {
+				Quad.Parent.RelativeScale = 1.;
+			}
+			else if(Quad.Substyle == "BgCard") Quad.Substyle = "BgCardInventoryItem";
+		}
+	}
+
+	if(_Control != Null && (_Control is CMlQuad)) {
+		declare Quad = (_Control as CMlQuad);
+		if(Quad.Parent.HasClass("BUTTON")) {
+			Quad.Parent.RelativeScale = 1.05;
+		}
+		else if(Quad.Substyle == "BgCardInventoryItem")
+			Quad.Substyle = "BgCard";
+	}
+
+	SelectedNav = _Control;
+}
+
+Void PassNavigation(Text _Layer) {
+	EnableMenuNavigationInputs = False;
+	Select(Null);
+	SendCustomEvent("Navigation", [_Layer]);
+}
+
+Void Button_Continue() {
+	SendCustomEvent("Start", ["False"]);
+	CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+}
+
+Void Button_Exit() {
+	CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Quit);
+	Playground.QuitServer(False);
+}
+
+Void Button_Start() {
+	SendCustomEvent("Start", ["True"]);
+	CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+}
+
 ***Start***
 ***
 declare Frame_Label_MapName = (Page.GetFirstChild("FRAME_LABEL_MAPNAME") as CMlFrame);
@@ -18,25 +73,45 @@ declare Boolean IsPauseMenu for Page;
 declare Boolean IsMenuOpen for Page;
 declare Boolean IsBlurred for Page;
 
-EnableMenuNavigationInputs = True;
+declare Quad_Button_Start = (Page.GetFirstChild("QUAD_BUTTON_START") as CMlQuad);
+declare Quad_Button_Exit = (Page.GetFirstChild("QUAD_BUTTON_EXIT") as CMlQuad);
+declare Quad_Button_Continue = (Page.GetFirstChild("QUAD_BUTTON_CONTINUE") as CMlQuad);
 
-ShowInGameMenu();
+FirstNav = Quad_Button_Continue;
+
+declare SNavControl Button_Exit;
+Button_Exit.Down = Quad_Button_Continue;
+NavControls[Quad_Button_Exit] = Button_Exit;
+
+declare SNavControl Button_Continue;
+Button_Continue.Up = Quad_Button_Exit;
+Button_Continue.Down = Quad_Button_Start;
+NavControls[Quad_Button_Continue] = Button_Continue;
+
+declare SNavControl Button_Start;
+Button_Start.Up = Quad_Button_Continue;
+NavControls[Quad_Button_Start] = Button_Start;
 ***
 
 ***Loop***
 ***
 foreach(Event,PendingEvents) {
 	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseOver: {
+			if(Event.Control is CMlQuad) {
+				Select(Null);
+			}
+		}
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_START": {
-					SendCustomEvent("Start", ["True"]);
-
-					CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+					Button_Start();
 				}
 				case "QUAD_BUTTON_EXIT": {
-					CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Quit);
-					Playground.QuitServer(False);
+					Button_Exit();
+				}
+				case "QUAD_BUTTON_CONTINUE": {
+					Button_Continue();
 				}
 			}
 		}
@@ -54,12 +129,71 @@ foreach(Event,PendingEvents) {
 					declare Car = Event.CustomEventData[0];
 					SlideText_Set(Label_Car, Label_Car2, Car, LabelDistance);
 				}
+				case "Open": {
+					ShowInGameMenu();
+				}
+				case "Navigation": {
+					EnableMenuNavigationInputs = Event.CustomEventData[0] == "True";
+					if(EnableMenuNavigationInputs) Select(FirstNav);
+				}
 			}
 		}
 		case CMlEvent::Type::MenuNavigation: {
 			switch(Event.MenuNavAction) {
 				case CMlEvent::EMenuNavAction::Cancel: {
-					CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+					if(IsPauseMenu)
+						CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+					else
+						Playground.QuitServer(False);	
+				}
+				case CMlEvent::EMenuNavAction::Select: {
+					if(SelectedNav.ControlId == "QUAD_BUTTON_CONTINUE") Button_Continue();
+					else if(SelectedNav.ControlId == "QUAD_BUTTON_EXIT") Button_Exit();
+					else if(SelectedNav.ControlId == "QUAD_BUTTON_START") Button_Start();
+				}
+				case CMlEvent::EMenuNavAction::Up: {
+					if(SelectedNav != Null) {
+						if(NavControls[SelectedNav].Up != Null)
+							Select(NavControls[SelectedNav].Up);
+						//else
+						//	PassNavigation("Up");
+					}
+					else {
+						Select(FirstNav);
+					}
+				}
+				case CMlEvent::EMenuNavAction::Down: {
+					if(SelectedNav != Null) {
+						if(NavControls[SelectedNav].Down != Null)
+							Select(NavControls[SelectedNav].Down);
+						//else
+						//	PassNavigation("Down");
+					}
+					else {
+						Select(FirstNav);
+					}
+				}
+				case CMlEvent::EMenuNavAction::Left: {
+					if(SelectedNav != Null) {
+						if(NavControls[SelectedNav].Left != Null)
+							Select(NavControls[SelectedNav].Left);
+						else
+							PassNavigation("Vehicle");
+					}
+					else {
+						Select(FirstNav);
+					}
+				}
+				case CMlEvent::EMenuNavAction::Right: {
+					if(SelectedNav != Null) {
+						if(NavControls[SelectedNav].Right != Null)
+							Select(NavControls[SelectedNav].Right);
+						else
+							PassNavigation("Vehicle");
+					}
+					else {
+						Select(FirstNav);
+					}
 				}
 			}
 		}
@@ -68,7 +202,10 @@ foreach(Event,PendingEvents) {
 
 if(IsMenuOpen != IsMenuNavigationForeground) {
 	IsMenuOpen = IsMenuNavigationForeground;
-	if(IsMenuOpen) SendCustomEvent("Open", []);
+	if(IsMenuOpen) {
+		SendCustomEvent("Open", []);
+		Select((Page.GetFirstChild("QUAD_BUTTON_CONTINUE") as CMlQuad));
+	}
 	else {
 		SendCustomEvent("Close", []);
 		SendCustomEvent("Start", ["False"]);

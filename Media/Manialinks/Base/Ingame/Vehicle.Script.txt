@@ -129,7 +129,7 @@ declare OldVehicleLock = VehicleLock;
 UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll);
 UpdateVehicles();
 
-EnableMenuNavigationInputs = True;
+//EnableMenuNavigationInputs = True;
 ***
 
 ***Loop***
@@ -156,12 +156,29 @@ foreach(Event,PendingEvents) {
 					UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll);
 					UpdateVehicles();
 				}
+				case "Navigation": {
+					EnableMenuNavigationInputs = Event.CustomEventData[0] == "True";
+				}
 			}
 		}
 		case CMlScriptEvent::Type::MenuNavigation: {
 			switch(Event.MenuNavAction) {
 				case CMlEvent::EMenuNavAction::Cancel: {
 					
+				}
+				case CMlEvent::EMenuNavAction::Up: {
+					Frame_Vehicles.Scroll(<0., -1.>);
+				}
+				case CMlEvent::EMenuNavAction::Down: {
+					Frame_Vehicles.Scroll(<0., 1.>);
+				}
+				case CMlEvent::EMenuNavAction::Left: {
+					EnableMenuNavigationInputs = False;
+					SendCustomEvent("Navigation", ["Menu"]);
+				}
+				case CMlEvent::EMenuNavAction::Left: {
+					EnableMenuNavigationInputs = False;
+					SendCustomEvent("Navigation", ["Menu"]);
 				}
 			}
 		}
