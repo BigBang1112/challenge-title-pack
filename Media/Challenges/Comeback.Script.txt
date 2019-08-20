@@ -83,18 +83,18 @@ else {
 	declare Start = StartLines[0];
 
 	foreach(Relation, GetRelation_StartMultilap()[Environment]) {
-		declare StartBlockName = Relation[0];
-		declare MultilapBlockName = Relation[1];
+		declare StartBlock = Relation[0];
+		declare MultilapBlock = Relation[1];
 		if(Start.IsItem) Problem_ItemStart(Start);
-		else if(Start.Block.Name == StartBlockName) {
+		else if(Start.Block.Name == StartBlock.Name) {
 			SetStatusProgress(.5);
 			if(RemoveSpecificBlock(Start.Block)) {
-				declare PlaceBlockResult = PlaceBlock(MultilapBlockName, Start.Block.Coord, Start.Block.Direction);
+				declare PlaceBlockResult = PlaceBlock(MultilapBlock.Name, Start.Block.Coord, Start.Block.Direction);
 				if(PlaceBlockResult.Placed
-				|| PlaceGhostBlock(MultilapBlockName, Start.Block.Coord, Start.Block.Direction)) {
-					SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ MultilapBlockName ^ ".");
+				|| PlaceGhostBlock(MultilapBlock.Name, Start.Block.Coord, Start.Block.Direction)) {
+					SetStatusMessage(StartBlock.Name ^ " {{{{replaced_with}}}} " ^ MultilapBlock.Name ^ ".");
 				}
-				else Problem_CannotPlaceGhostBlock(Start.Block.Coord, Start.Block.Direction, MultilapBlockName);
+				else Problem_CannotPlaceGhostBlock(Start.Block.Coord, Start.Block.Direction, MultilapBlock.Name);
 			}
 			else Problem_CannotRemoveStart(Start);
 		}
@@ -105,8 +105,8 @@ declare SChAnchor[] CheckpointsToLink;
 
 foreach(Finish, FinishLines) {
 	foreach(Relation, GetRelation_FinishCheckpoint()[Environment]) {
-		declare FinishBlockName = Relation[0];
-		declare CheckpointBlockName = Relation[1];
+		declare FinishBlock = Relation[0];
+		declare CheckpointBlock = Relation[1];
 
 		if(Finish.IsItem) {
 			declare SChProblem Problem_ItemFinish;
@@ -117,18 +117,18 @@ foreach(Finish, FinishLines) {
 			Problem_ItemFinish.Solutions.add(Solution("Replace the finish item manually with a possible checkpoint variant.", "", True));
 			Problem(Problem_ItemFinish);
 		}
-		else if(Finish.Block.Name == FinishBlockName) {
+		else if(Finish.Block.Name == FinishBlock.Name) {
 			SetStatusProgress(1.);
 			if(RemoveSpecificBlock(Finish.Block)) {
-				declare PlaceBlockResult = PlaceBlock(CheckpointBlockName, Finish.Block.Coord, Finish.Block.Direction);
+				declare PlaceBlockResult = PlaceBlock(CheckpointBlock.Name, Finish.Block.Coord, Finish.Block.Direction);
 				if(PlaceBlockResult.Placed
-				|| PlaceGhostBlock(CheckpointBlockName, Finish.Block.Coord, Finish.Block.Direction)) {
-					SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ CheckpointBlockName ^ ".");
+				|| PlaceGhostBlock(CheckpointBlock.Name, Finish.Block.Coord, Finish.Block.Direction)) {
+					SetStatusMessage(FinishBlock.Name ^ " {{{{replaced_with}}}} " ^ CheckpointBlock.Name ^ ".");
 					foreach(Anchor, PlaceBlockResult.Block.Anchors)
 						if(Anchor.DefaultTag == "Checkpoint")
 							CheckpointsToLink.add(Anchor);
 				}
-				else Problem_CannotPlaceGhostBlock(Finish.Block.Coord, Finish.Block.Direction, CheckpointBlockName);
+				else Problem_CannotPlaceGhostBlock(Finish.Block.Coord, Finish.Block.Direction, CheckpointBlock.Name);
 			}
 			else Problem_CannotRemoveFinish(Finish);
 		}

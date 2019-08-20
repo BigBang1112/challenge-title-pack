@@ -1,0 +1,31 @@
+{
+	"Canyon": [
+		[{"Name": "RoadRaceStart"}, {"Name": "RoadRaceMultilap"}],
+		[{"Name": "RoadRaceStartMirror"}, {"Name": "RoadRaceMultilapMirror"}],
+		[{"Name": "ArenaStart"}, {"Name": "ArenaMultilap"}],
+		[{"Name": "RoadMainStart"}, {"Name": "RoadMainMultilap"}],
+		[{"Name": "TubeStart"}, {"Name": "TubeMultilap"}],
+		[{"Name": "TubeStartUnderground"}, {"Name": "TubeMultilapUnderground"}],
+		[{"Name": "RoadCaveStart"}, {"Name": "RoadCaveMultiLap"}],
+		[{"Name": "RoadCaveDoubleStart"}, {"Name": "RoadCaveDoubleMultiLap"}]
+	],
+	"Stadium": [
+		[{"Name": "StadiumRoadMainStartLine"}, {"Name": "StadiumRoadMainStartFinishLine"}]
+	],
+	"Valley": [
+		[{"Name": "Road2WayStart"}, {"Name": "Road2WayMultilap"}],
+		[{"Name": "Road2WayForestStart"}, {"Name": "Road2WayForestMultilap"}],
+		[{"Name": "Road4WayStart"}, {"Name": "Road4WayMultiLap"}],
+		[{"Name": "TunnelRoad4wayStart"}, {"Name": "TunnelRoad4wayMultilap"}],
+		[{"Name": "RoadForestLargeStart"}, {"Name": "RoadForestLargeMultilap"}]
+	],
+	"Lagoon": [
+		[{"Name": "RoadMainStart"}, {"Name": "RoadMainMultilap"}],
+		[{"Name": "FreeWayStart"}, {"Name": "FreeWayMultilap"}],
+		[{"Name": "RoadThemeParkStart"}, {"Name": "RoadThemeParkMultilap"}],
+		[{"Name": "RoadThemeParkFlipStart"}, {"Name": "RoadThemeParkFlipMultilap"}],
+		[{"Name": "ArenaStart"}, {"Name": "ArenaMultilap"}],
+		[{"Name": "ArenaStartX2"}, {"Name": "ArenaMultilapX2"}],
+		[{"Name": "RoadTunnelStart"}, {"Name": "RoadTunnelMultilap"}]
+	]
+}

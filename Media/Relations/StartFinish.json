@@ -1,0 +1,51 @@
+{
+	"Canyon": [
+		[{"Name": "RoadRaceStart"}, {"Name": "RoadRaceFinish"}],
+		[{"Name": "RoadRaceStartMirror"}, {"Name": "RoadRaceFinishMirror"}],
+		[{"Name": "ArenaStart"}, {"Name": "ArenaFinish"}],
+		[{"Name": "RoadMainStart"}, {"Name": "RoadMainFinish"}],
+		[{"Name": "TubeStart"}, {"Name": "TubeFinish"}],
+		[{"Name": "TubeStartUnderground"}, {"Name": "TubeFinishUnderground"}],
+		[{"Name": "RoadCaveStart"}, {"Name": "RoadCaveFinish"}],
+		[{"Name": "RoadCaveDoubleStart"}, {"Name": "RoadCaveDoubleFinish"}],
+		[{"Name": "RoadRaceStartTwoway"}, {"Name": "RoadRaceFinishTwoway"}],
+		[{"Name": "RoadRaceStartMirrorTwoway"}, {"Name": "RoadRaceFinishMirrorTwoway"}],
+		[{"Name": "ArenaStartTwoway"}, {"Name": "ArenaFinishTwoway"}],
+		[{"Name": "RoadMainStartTwoway"}, {"Name": "RoadMainFinishTwoway"}]
+	],
+	"Stadium": [
+		[{"Name": "StadiumRoadMainStartLine"}, {"Name": "StadiumRoadMainFinishLine"}],
+		[{"Name": "StadiumRoadMainStartLineTwoway"}, {"Name": "StadiumRoadMainFinishLineTwoway"}],
+		[{"Name": "StadiumPlatformStartTwoway"}, {"Name": "StadiumPlatformFinishTwoway"}],
+		[{"Name": "StadiumRoadDirtStartTwoway"}, {"Name": "StadiumRoadDirtFinishTwoway"}],
+		[{"Name": "StadiumTrenchStartTwoway"}, {"Name": "StadiumTrenchFinishTwoway"}]
+	],
+	"Valley": [
+		[{"Name": "Road2WayStart"}, {"Name": "Road2WayFinish"}],
+		[{"Name": "Road2WayForestStart"}, {"Name": "Road2WayForestFinish"}],
+		[{"Name": "Road4WayStart"}, {"Name": "Road4WayFinish"}],
+		[{"Name": "TunnelRoad4wayStart"}, {"Name": "TunnelRoad4wayFinish"}],
+		[{"Name": "RoadForestLargeStart"}, {"Name": "RoadForestLargeFinish"}],
+		[{"Name": "Road2WayStartTwoway"}, {"Name": "Road2WayFinishTwoway"}],
+		[{"Name": "Road2WayForestStartTwoway"}, {"Name": "Road2WayForestFinishTwoway"}],
+		[{"Name": "Road4WayStartTwoway"}, {"Name": "Road4WayFinishTwoway"}],
+		[{"Name": "TunnelRoad4wayStartTwoway"}, {"Name": "TunnelRoad4wayFinishTwoway"}],
+		[{"Name": "RoadForestLargeStartTwoway"}, {"Name": "RoadForestLargeFinishTwoway"}]
+	],
+	"Lagoon": [
+		[{"Name": "RoadMainStart"}, {"Name": "RoadMainFinish"}],
+		[{"Name": "FreeWayStart"}, {"Name": "FreeWayFinish"}],
+		[{"Name": "RoadThemeParkStart"}, {"Name": "RoadThemeParkFinish"}],
+		[{"Name": "RoadThemeParkFlipStart"}, {"Name": "RoadThemeParkFlipFinish"}],
+		[{"Name": "ArenaStart"}, {"Name": "ArenaFinish"}],
+		[{"Name": "ArenaStartX2"}, {"Name": "ArenaFinishX2"}],
+		[{"Name": "RoadTunnelStart"}, {"Name": "RoadTunnelFinish"}],
+		[{"Name": "RoadMainStartTwoway"}, {"Name": "RoadMainFinishTwoway"}],
+		[{"Name": "FreeWayStartTwoway"}, {"Name": "FreeWayFinishTwoway"}],
+		[{"Name": "RoadThemeParkStartTwoway"}, {"Name": "RoadThemeParkFinishTwoway"}],
+		[{"Name": "RoadThemeParkFlipStartTwoway"}, {"Name": "RoadThemeParkFlipFinishTwoway"}],
+		[{"Name": "ArenaStartTwoway"}, {"Name": "ArenaFinishTwoway"}],
+		[{"Name": "ArenaStartX2Twoway"}, {"Name": "ArenaFinishX2Twoway"}],
+		[{"Name": "RoadTunnelStartTwoway"}, {"Name": "RoadTunnelFinishTwoway"}]
+	]
+}

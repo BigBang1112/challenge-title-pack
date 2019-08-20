@@ -1,0 +1,32 @@
+{
+	"Canyon": [
+		[{"Name": "RoadRaceFinish"}, {"Name": "RoadRaceCheckpoint"}],
+		[{"Name": "RoadRaceFinishMirror"}, {"Name": "RoadRaceCheckpointMirror"}],
+		[{"Name": "ArenaFinish"}, {"Name": "ArenaCheckpointBase"}],
+		[{"Name": "RoadMainFinish"}, {"Name": "RoadMainCheckpoint"}],
+		[{"Name": "TubeFinish"}, {"Name": "TubeCheckpoint"}],
+		[{"Name": "TubeFinishUnderground"}, {"Name": "TubeCheckpointUnderground"}],
+		[{"Name": "RoadCaveFinish"}, {"Name": "RoadCaveCheckpoint"}],
+		[{"Name": "RoadCaveDoubleFinish"}, {"Name": "RoadCaveDoubleCheckpoint"}]
+	],
+	"Stadium": [
+		[{"Name": "StadiumRoadMainFinishLine"}, {"Name": "StadiumRoadMainCheckpoint"}]
+	],
+	"Valley": [
+		[{"Name": "Road2WayFinish"}, {"Name": "Road2WayCheckpoint"}],
+		[{"Name": "Road2WayForestFinish"}, {"Name": "Road2WayForestCheckpoint"}],
+		[{"Name": "Road4WayFinish"}, {"Name": "Road4WayCheckpoint"}],
+		[{"Name": "TunnelRoad4wayFinish"}, {"Name": "TunnelRoad4wayCheckpoint"}],
+		[{"Name": "RoadForestLargeFinish"}, {"Name": "RoadForestLargeCheckpoint"}],
+		[{"Name": "RoadForestLargeFinishTwoway"}, {"Name": "RoadForestLargeCheckpoint"}]
+	],
+	"Lagoon": [
+		[{"Name": "RoadMainFinish"}, {"Name": "RoadMainCheckpoint"}],
+		[{"Name": "FreeWayFinish"}, {"Name": "FreeWayCheckpoint"}],
+		[{"Name": "RoadThemeParkFinish"}, {"Name": "RoadThemeParkCheckpoint"}],
+		[{"Name": "RoadThemeParkFlipFinish"}, {"Name": "RoadThemeParkFlip-Checkpoint"}],
+		[{"Name": "ArenaFinish"}, {"Name": "ArenaCheckpoint"}],
+		[{"Name": "ArenaFinishX2"}, {"Name": "ArenaCheckpointX2"}],
+		[{"Name": "RoadTunnelFinish"}, {"Name": "RoadTunnelCheckpoint"}]
+	]
+}

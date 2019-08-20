@@ -93,15 +93,15 @@ if(IsOneLapWithFinish) {
 	if(Multilap.IsItem) Problem_ItemMultilap(Multilap.Item);
 	else if(Multilap.IsBlock) {
 		foreach(Relation, GetRelation_MultilapFinishTwoway()[Environment]) {
-			declare MultilapBlockName = Relation[0];
-			declare FinishTwowayBlockName = Relation[1];
-			if(Multilap.Block.Name == MultilapBlockName) {
+			declare MultilapBlock = Relation[0];
+			declare FinishTwowayBlock = Relation[1];
+			if(Multilap.Block.Name == MultilapBlock.Name) {
 				declare Removed = RemoveSpecificBlock(Multilap.Block);
 				if(Removed) {
-					if(IsSpecialBlock(FinishTwowayBlockName)) {
-						declare Block = PlaceBlock(FinishTwowayBlockName, Multilap.Block.Coord, Multilap.Block.Direction);
-						if(Block.Placed) SetStatusMessage(MultilapBlockName ^ " {{{{replaced_with}}}} " ^ FinishTwowayBlockName ^ ".");
-						else Problem_BlockMissing(FinishTwowayBlockName, Multilap.Block.Coord, Multilap.Block.Direction);
+					if(IsSpecialBlock(FinishTwowayBlock.Name)) {
+						declare Block = PlaceBlock(FinishTwowayBlock.Name, Multilap.Block.Coord, Multilap.Block.Direction);
+						if(Block.Placed) SetStatusMessage(MultilapBlock.Name ^ " {{{{replaced_with}}}} " ^ FinishTwowayBlock.Name ^ ".");
+						else Problem_BlockMissing(FinishTwowayBlock.Name, Multilap.Block.Coord, Multilap.Block.Direction);
 					}
 				}
 			}
@@ -114,15 +114,15 @@ else {
 	if(Start.IsItem) Problem_ItemStart(Start.Item);
 	else if(Start.IsBlock) {
 		foreach(Relation, GetRelation_StartFinish()[Environment]) {
-			declare StartBlockName = Relation[0];
-			declare FinishBlockName = Relation[1];
+			declare StartBlock = Relation[0];
+			declare FinishBlock = Relation[1];
 
-			if(Start.Block.Name == StartBlockName) {
+			if(Start.Block.Name == StartBlock.Name) {
 				declare Removed = RemoveSpecificBlock(Start.Block);
 				if(Removed) {
-					declare Block = PlaceBlock(FinishBlockName, Start.Block.Coord, OppositeDirection(Start.Block.Direction));
-					if(Block.Placed) SetStatusMessage(StartBlockName ^ " {{{{replaced_with}}}} " ^ FinishBlockName ^ ".");
-					else Problem_BlockMissing(FinishBlockName, Start.Block.Coord, OppositeDirection(Start.Block.Direction));
+					declare Block = PlaceBlock(FinishBlock.Name, Start.Block.Coord, OppositeDirection(Start.Block.Direction));
+					if(Block.Placed) SetStatusMessage(StartBlock.Name ^ " {{{{replaced_with}}}} " ^ FinishBlock.Name ^ ".");
+					else Problem_BlockMissing(FinishBlock.Name, Start.Block.Coord, OppositeDirection(Start.Block.Direction));
 				}
 			}
 		}
@@ -139,15 +139,15 @@ if(FinishLines.count == 1) {
 	if(Finish.IsItem) Problem_ItemFinish(Finish.Item);
 	else {
 		foreach(Relation, GetRelation_StartFinish()[Environment]) {
-			declare StartBlockName = Relation[0];
-			declare FinishBlockName = Relation[1];
+			declare StartBlock = Relation[0];
+			declare FinishBlock = Relation[1];
 			
-			if(Finish.Block.Name == FinishBlockName) {
+			if(Finish.Block.Name == FinishBlock.Name) {
 				declare Removed = RemoveSpecificBlock(Finish.Block);
 				if(Removed) {
-					declare Block = PlaceBlock(StartBlockName, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
-					if(Block.Placed) SetStatusMessage(FinishBlockName ^ " {{{{replaced_with}}}} " ^ StartBlockName ^ ".");
-					else Problem_BlockMissing(StartBlockName, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
+					declare Block = PlaceBlock(StartBlock.Name, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
+					if(Block.Placed) SetStatusMessage(FinishBlock.Name ^ " {{{{replaced_with}}}} " ^ StartBlock.Name ^ ".");
+					else Problem_BlockMissing(StartBlock.Name, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
 				}
 			}
 		}
@@ -165,12 +165,12 @@ switch(Solver_Problem.Name) {
 		declare Finish = Solver_Problem.Waypoints[Solver_Point];
 		if(Finish.IsBlock) {
 			foreach(Relation, GetRelation_StartFinish()[Environment]) {
-				declare StartBlockName = Relation[0];
-				declare FinishBlockName = Relation[1];
+				declare StartBlock = Relation[0];
+				declare FinishBlock = Relation[1];
 				
-				if(Finish.Block.Name == FinishBlockName) {
+				if(Finish.Block.Name == FinishBlock.Name) {
 					if(RemoveSpecificBlock(Finish.Block)) {
-						declare Block = PlaceBlock(StartBlockName, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
+						declare Block = PlaceBlock(StartBlock.Name, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
 						if(!Block.Placed) {}
 					}
 					else {}

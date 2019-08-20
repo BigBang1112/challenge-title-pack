@@ -1,0 +1,1080 @@
+{
+	"Canyon": [
+		[
+			{
+				"Name": "RoadRaceCheckpointMirror"
+			},
+			{
+				"Name": "RoadRaceStraight",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "RoadRaceCheckpoint"
+			},
+			{
+				"Name": "RoadRaceStraight",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "RoadRaceSlopeCheckpointUp"
+			},
+			{
+				"Name": "RoadRaceSlopeStaight"
+			}
+		],
+		[
+			{
+				"Name": "RoadRaceSlopeCheckpointUpMirror"
+			},
+			{
+				"Name": "RoadRaceSlopeStaightMirror"
+			}
+		],
+		[
+			{
+				"Name": "RoadRaceSlopeCheckpointDown"
+			},
+			{
+				"Name": "RoadRaceSlopeStaightMirror",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "RoadRaceSlopeCheckpointDownMirror"
+			},
+			{
+				"Name": "RoadRaceSlopeStaight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "RoadRaceTiltCheckpoint"
+			},
+			{
+				"Name": "RoadRaceTiltStraight",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "RoadRaceTiltCheckpointMirror"
+			},
+			{
+				"Name": "RoadRaceTiltStraight",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointBase"
+			},
+			{
+				"Name": "ArenaSimpleBase"
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointSlopeStraightUp"
+			},
+			{
+				"Name": "ArenaSlopeStraight"
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointSlopeStraightDown"
+			},
+			{
+				"Name": "ArenaSlopeStraight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointSlopeStraightLeftAir"
+			},
+			{
+				"Name": "ArenaSlopeStraight",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointSlopeStraightRightAir"
+			},
+			{
+				"Name": "ArenaSlopeStraight",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "OffRoadCheckpoint"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "ArenaTunnelCheckpoint"
+			},
+			{
+				"Name": "ArenaTunnelStraight"
+			}
+		],
+		[
+			{
+				"Name": "ArenaTunnelStraightOpen2SidesCheckpoint"
+			},
+			{
+				"Name": "ArenaTunnelStraightOpen2Sides"
+			}
+		],
+		[
+			{
+				"Name": "TubeCheckpoint"
+			},
+			{
+				"Name": "ArenaTubeStraightA"
+			}
+		],
+		[
+			{
+				"Name": "TubeCheckpointVAir"
+			},
+			{
+				"Name": "TubeVStraight4AirA"
+			}
+		],
+		[
+			{
+				"Name": "TubeCheckpointUnderground"
+			},
+			{
+				"Name": "TubeStraightUnderground"
+			}
+		],
+		[
+			{
+				"Name": "TubeCheckpointVUnderground"
+			},
+			{
+				"Name": "ToTubeVStraight4UndergroundA"
+			}
+		],
+		[
+			{
+				"Name": "RoadMainCheckpoint"
+			},
+			{
+				"Name": "RoadMain"
+			}
+		],
+		[
+			{
+				"Name": "RoadMainCheckpointUp"
+			},
+			{
+				"Name": "RoadMainSlopeStraight"
+			}
+		],
+		[
+			{
+				"Name": "RoadMainCheckpointDown"
+			},
+			{
+				"Name": "RoadMainSlopeStraight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "RoadHill2CheckpointLeft"
+			},
+			{
+				"Name": "RoadHill2Straight",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "RoadHill2CheckpointRight"
+			},
+			{
+				"Name": "RoadHill2Straight",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "Cliff12RoadHighCheckpointLeft"
+			},
+			{
+				"Name": "Cliff12RoadHighStraight",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "Cliff12RoadHighCheckpointRight"
+			},
+			{
+				"Name": "Cliff12RoadHighStraight",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "Cliff12RoadMedCheckpointLeft"
+			},
+			{
+				"Name": "Cliff12RoadMedStraight",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "Cliff12RoadMedCheckpointRight"
+			},
+			{
+				"Name": "Cliff12RoadMedStraight",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "RoadCaveCheckpoint"
+			},
+			{
+				"Name": "RoadCaveStraight"
+			}
+		],
+		[
+			{
+				"Name": "RoadCaveCheckpointSlope2Up"
+			},
+			{
+				"Name": "RoadCaveSlope2Straight"
+			}
+		],
+		[
+			{
+				"Name": "RoadCaveCheckpointSlope2Down"
+			},
+			{
+				"Name": "RoadCaveSlope2Straight",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "RoadCaveDoubleCheckpoint"
+			},
+			{
+				"Name": "RoadCaveDoubleStraight"
+			}
+		],
+		[
+			{
+				"Name": "RoadCaveDoubleCheckpointCenter"
+			},
+			{
+				"Name": "RoadCaveDoubleStraight"
+			}
+		],
+		[
+			{
+				"Name": "RoadCaveDoubleCheckpointLeft"
+			},
+			{
+				"Name": "RoadCaveDoubleStraight"
+			}
+		],
+		[
+			{
+				"Name": "RoadCaveDoubleCheckpointRight"
+			},
+			{
+				"Name": "RoadCaveDoubleStraight"
+			}
+		]
+	],
+	"Stadium": [
+		[
+			{
+				"Name": "StadiumRoadMainCheckpoint"
+			},
+			{
+				"Name": "StadiumRoadMain"
+			}
+		],
+		[
+			{
+				"Name": "StadiumGrassCheckpoint"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "StadiumRoadMainCheckpointUp"
+			},
+			{
+				"Name": "StadiumRoadMainSlopeStraight"
+			}
+		],
+		[
+			{
+				"Name": "StadiumRoadMainCheckpointDown"
+			},
+			{
+				"Name": "StadiumRoadMainSlopeStraight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "StadiumRoadMainCheckpointLeft"
+			},
+			{
+				"Name": "StadiumRoadTiltStraight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "StadiumRoadMainCheckpointRight"
+			},
+			{
+				"Name": "StadiumRoadTiltStraight"
+			}
+		],
+		[
+			{
+				"Name": "StadiumPlatformWallCheckpointV"
+			},
+			{
+				"Name": "StadiumPlatformWall1"
+			}
+		],
+		[
+			{
+				"Name": "StadiumPlatformWallCheckpointH"
+			},
+			{
+				"Name": "StadiumPlatformWall4"
+			}
+		],
+		[
+			{
+				"Name": "StadiumPlatformGridCheckpoint"
+			},
+			{
+				"Name": "StadiumPlatformGridStraight"
+			}
+		],
+		[
+			{
+				"Name": "StadiumPlatformCheckpoint"
+			},
+			{
+				"Name": "StadiumPlatformRoad"
+			}
+		],
+		[
+			{
+				"Name": "StadiumPlatformCheckpointDown"
+			},
+			{
+				"Name": "StadiumPlatformSlope2Straight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "StadiumPlatformCheckpointLeft"
+			},
+			{
+				"Name": "StadiumPlatformSlope2Straight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "StadiumPlatformCheckpointRight"
+			},
+			{
+				"Name": "StadiumPlatformSlope2Straight",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "StadiumPlatformCheckpointUp"
+			},
+			{
+				"Name": "StadiumPlatformSlope2Straight"
+			}
+		],
+		[
+			{
+				"Name": "StadiumCheckpointRingHRoad"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "StadiumCheckpointRingV"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "StadiumCheckpointRing2x1V"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "StadiumCheckpointRing2x1H"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "StadiumRoadDirtCheckpoint"
+			},
+			{
+				"Name": "StadiumRoadDirtFenceStraight"
+			}
+		],
+		[
+			{
+				"Name": "StadiumRoadDirtHighCheckpoint"
+			},
+			{
+				"Name": "StadiumRoadDirtHighFenceStraight"
+			}
+		],
+		[
+			{
+				"Name": "StadiumRoadDirtHillTiltCheckpointLeft"
+			},
+			{
+				"Name": "StadiumRoadDirtHillTiltStraight",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "StadiumRoadDirtHillTiltCheckpointRight"
+			},
+			{
+				"Name": "StadiumRoadDirtHillTiltStraight",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "StadiumTrenchCheckpoint"
+			},
+			{
+				"Name": "StadiumTrenchStraight"
+			}
+		]
+	],
+	"Valley": [
+		[
+			{
+				"Name": "Road2WayCheckpoint"
+			},
+			{
+				"Name": "Road2Way"
+			}
+		],
+		[
+			{
+				"Name": "Road2WayCheckpointSlopeUp"
+			},
+			{
+				"Name": "Road2WaySlopeStraight"
+			}
+		],
+		[
+			{
+				"Name": "Road2WayCheckpointSlopeDown"
+			},
+			{
+				"Name": "Road2WaySlopeStraight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "Road2WayForestCheckpoint"
+			},
+			{
+				"Name": "Road2WayForestStraight"
+			}
+		],
+		[
+			{
+				"Name": "Road4WayCheckpoint"
+			},
+			{
+				"Name": "Road4Way"
+			}
+		],
+		[
+			{
+				"Name": "Road4WayCheckpointUp"
+			},
+			{
+				"Name": "Road4WaySlopeStraight"
+			}
+		],
+		[
+			{
+				"Name": "Road4WayCheckpointDown"
+			},
+			{
+				"Name": "Road4WaySlopeStraight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "TunnelRoad4wayCheckpoint"
+			},
+			{
+				"Name": "TunnelRoad4wayStraight"
+			}
+		],
+		[
+			{
+				"Name": "TunnelRoad4WayCheckpointUp"
+			},
+			{
+				"Name": "TunnelRoad4waySlopeStraight"
+			}
+		],
+		[
+			{
+				"Name": "TunnelRoad4WayCheckpointDown"
+			},
+			{
+				"Name": "TunnelRoad4waySlopeStraight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointParkRoofBaseAir"
+			},
+			{
+				"Name": "ArenaParkRoofBase"
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointParkRoofSlopeStraightUpAir"
+			},
+			{
+				"Name": "ArenaParkRoofSlopeStraight"
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointParkRoofSlopeStraightDownAir"
+			},
+			{
+				"Name": "ArenaParkRoofSlopeStraight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointParkRoofSlopeLeft"
+			},
+			{
+				"Name": "ArenaParkRoofSlopeStraight",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointParkRoofSlopeRight"
+			},
+			{
+				"Name": "ArenaParkRoofSlopeStraight",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointParkRoofLoopStraight2VAir"
+			},
+			{
+				"Name": "ArenaParkRoofLoopStraight2",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointParkRoofLoopStraight4HAir"
+			},
+			{
+				"Name": "ArenaParkRoofLoopStraight4",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "RoadForestLargeCheckpoint"
+			},
+			{
+				"Name": "RoadForestLargeStraight"
+			}
+		],
+		[
+			{
+				"Name": "RoadDirtCheckpoint"
+			},
+			{
+				"Name": "RoadDirt"
+			}
+		],
+		[
+			{
+				"Name": "RoadCliffSlopeUTopCheckPointLeft"
+			},
+			{
+				"Name": "RoadCliffSlopeUTop",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "RoadCliffSlopeUTopCheckPointRight"
+			},
+			{
+				"Name": "RoadCliffSlopeUTop",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "RoadCliffSlopeUBottomCheckPointLeft"
+			},
+			{
+				"Name": "RoadCliffSlopeUBottom",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "RoadCliffSlopeUBottomCheckPointRight"
+			},
+			{
+				"Name": "RoadCliffSlopeUBottom",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "DecoCastleEntryCheckPointOut"
+			},
+			{
+				"Name": "DecoCastleDeadendEntryLake"
+			}
+		],
+		[
+			{
+				"Name": "DecoCastleEntryCheckPointIn"
+			},
+			{
+				"Name": "DecoCastleDeadendEntryLake",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "DecoCastleDeadendWallCheckPointLeft"
+			},
+			{
+				"Name": "DecoCastleDeadendWallLake",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "DecoCastleDeadendWallCheckPointRight"
+			},
+			{
+				"Name": "DecoCastleDeadendWallLake",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "DecoCastleDeadendWallRacingCheckPointLeft"
+			},
+			{
+				"Name": "DecoCastleDeadendWallRacingLake",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "DecoCastleDeadendWallRacingCheckPointRight"
+			},
+			{
+				"Name": "DecoCastleDeadendWallRacingLake",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "DecoCastleCenterCheckpointLake"
+			},
+			{
+				"Name": "DecoCastleCenterLake"
+			}
+		],
+		[
+			{
+				"Name": "DecoCastleGardenFlowerStraightHalfCheckpointLakeLeft"
+			},
+			{
+				"Name": "DecoCastleGardenFlowerStraightHalfLake",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "DecoCastleGardenFlowerStraightHalfCheckpointLakeRight"
+			},
+			{
+				"Name": "DecoCastleGardenFlowerStraightHalfLake"
+			}
+		],
+		[
+			{
+				"Name": "DecoCastleGardenFlowerStraightx2Lake"
+			},
+			{
+				"Name": "DecoCastleGardenFlowerStraightx2Lake"
+			}
+		],
+		[
+			{
+				"Name": "DecoCastleGardenCheckpointLake"
+			},
+			{
+				"Name": "DecoCastleGardenStraightLake"
+			}
+		],
+		[
+			{
+				"Name": "ViaducCheckpoint"
+			},
+			{
+				"Name": "ViaducStraight"
+			}
+		],
+		[
+			{
+				"Name": "ViaducCheckpointSlopeUp"
+			},
+			{
+				"Name": "Viaduc_Slope2Straight_Air"
+			}
+		],
+		[
+			{
+				"Name": "ViaducCheckpointSlopeDown"
+			},
+			{
+				"Name": "Viaduc_Slope2Straight_Air",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "RailTunnel_CheckPoint"
+			},
+			{
+				"Name": "RailTunnel_Straight"
+			}
+		],
+		[
+			{
+				"Name": "OffRoadCheckpoint"
+			},
+			{}
+		]
+	],
+	"Lagoon": [
+		[
+			{
+				"Name": "RoadMainCheckpoint"
+			},
+			{
+				"Name": "RoadMainSmall"
+			}
+		],
+		[
+			{
+				"Name": "RoadMainCheckpointUp"
+			},
+			{
+				"Name": "RoadMainSlopeStraight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "RoadMainCheckpointDown"
+			},
+			{
+				"Name": "RoadMainSlopeStraight"
+			}
+		],
+		[
+			{
+				"Name": "HighWaySlope2CheckpointUp"
+			},
+			{
+				"Name": "HighWaySlope2Straight"
+			}
+		],
+		[
+			{
+				"Name": "HighWaySlope2CheckpointDown"
+			},
+			{
+				"Name": "HighWaySlope2Straight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "HighWaySlope2CheckpointLeft"
+			},
+			{
+				"Name": "HighWayTilt2Straight"
+			}
+		],
+		[
+			{
+				"Name": "HighWaySlope2CheckpointRight"
+			},
+			{
+				"Name": "HighWayTilt2Straight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "FreeWayCheckpoint"
+			},
+			{
+				"Name": "FreeWay"
+			}
+		],
+		[
+			{
+				"Name": "RoadThemeParkCheckpoint"
+			},
+			{
+				"Name": "RoadThemePark"
+			}
+		],
+		[
+			{
+				"Name": "RoadThemeParkWall-Checkpoint"
+			},
+			{
+				"Name": "RoadThemeParkWall-Straight"
+			}
+		],
+		[
+			{
+				"Name": "RoadThemeParkWall-CheckpointUp"
+			},
+			{
+				"Name": "RoadThemeParkWall-StraightUp"
+			}
+		],
+		[
+			{
+				"Name": "RoadThemeParkFlip-Checkpoint"
+			},
+			{
+				"Name": "RoadThemeParkFlip"
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpoint"
+			},
+			{
+				"Name": "ArenaBase"
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointX2"
+			},
+			{
+				"Name": "ArenaBaseHorizontalX2"
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointUp"
+			},
+			{
+				"Name": "ArenaSlope2Straight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointUpX2"
+			},
+			{
+				"Name": "ArenaSlope2HorizontalX2"
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointDown"
+			},
+			{
+				"Name": "ArenaSlope2Straight",
+				"Direction": 1
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointDownX2"
+			},
+			{
+				"Name": "ArenaSlope2HorizontalX2"
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointLeft"
+			},
+			{
+				"Name": "ArenaSlope2Straight",
+				"Direction": 3
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointLeftX2"
+			},
+			{
+				"Name": "ArenaSlope2VerticalX2"
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointRight"
+			},
+			{
+				"Name": "ArenaSlope2Straight"
+			}
+		],
+		[
+			{
+				"Name": "ArenaCheckpointRightX2"
+			},
+			{
+				"Name": "ArenaSlope2VerticalX2"
+			}
+		],
+		[
+			{
+				"Name": "RoadTunnelCheckpoint"
+			},
+			{
+				"Name": "RoadTunnelStraight"
+			}
+		],
+		[
+			{
+				"Name": "RoadTunnelCheckpointUp"
+			},
+			{
+				"Name": "RoadTunnelSlope2Straight"
+			}
+		],
+		[
+			{
+				"Name": "RoadTunnelCheckpointDown"
+			},
+			{
+				"Name": "RoadTunnelSlope2Straight",
+				"Direction": 2
+			}
+		],
+		[
+			{
+				"Name": "BeachCheckPointLeft"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "BeachCheckPointRight"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "LandCheckpoint"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "LandHillCheckpointUp"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "LandHillCheckpointDown"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "LandHillCheckpointLeft"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "LandHillCheckpointRight"
+			},
+			{}
+		],
+		[
+			{
+				"Name": "DecoCityCheckpoint"
+			},
+			{
+				"Name": "DecoCityFloorBase"
+			}
+		]
+	]
+}

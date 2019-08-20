@@ -572,349 +572,56 @@ Boolean SetCursorBlock(Text _BlockName) {
 	return Response.Values[0] == "True";
 }
 
-Text[][][Text] GetRelation_StartFinish() {
-	return [
-		"Canyon" => [
-			["RoadRaceStart","RoadRaceFinish"],
-			["RoadRaceStartMirror","RoadRaceFinishMirror"],
-			["ArenaStart","ArenaFinish"],
-			["RoadMainStart","RoadMainFinish"],
-			["TubeStart","TubeFinish"],
-			["TubeStartUnderground","TubeFinishUnderground"],
-			["RoadCaveStart","RoadCaveFinish"],
-			["RoadCaveDoubleStart","RoadCaveDoubleFinish"],
-			["RoadRaceStartTwoway", "RoadRaceFinishTwoway"],
-			["RoadRaceStartMirrorTwoway", "RoadRaceFinishMirrorTwoway"],
-			["ArenaStartTwoway", "ArenaFinishTwoway"],
-			["RoadMainStartTwoway", "RoadMainFinishTwoway"]
-		],
-		"Stadium" => [
-			["StadiumRoadMainStartLine","StadiumRoadMainFinishLine"],
-			["StadiumRoadMainStartLineTwoway", "StadiumRoadMainFinishLineTwoway"],
-			["StadiumPlatformStartTwoway", "StadiumPlatformFinishTwoway"],
-			["StadiumRoadDirtStartTwoway", "StadiumRoadDirtFinishTwoway"],
-			["StadiumTrenchStartTwoway", "StadiumTrenchFinishTwoway"]
-		],
-		"Valley" => [
-			["Road2WayStart","Road2WayFinish"],
-			["Road2WayForestStart","Road2WayForestFinish"],
-			["Road4WayStart","Road4WayFinish"],
-			["TunnelRoad4wayStart","TunnelRoad4wayFinish"],
-			["RoadForestLargeStart","RoadForestLargeFinish"],
-			["Road2WayStartTwoway", "Road2WayFinishTwoway"],
-			["Road2WayForestStartTwoway", "Road2WayForestFinishTwoway"],
-			["Road4WayStartTwoway", "Road4WayFinishTwoway"],
-			["TunnelRoad4wayStartTwoway", "TunnelRoad4wayFinishTwoway"],
-			["RoadForestLargeStartTwoway", "RoadForestLargeFinishTwoway"]
-		],
-		"Lagoon" => [
-			["RoadMainStart","RoadMainFinish"],
-			["FreeWayStart","FreeWayFinish"],
-			["RoadThemeParkStart","RoadThemeParkFinish"],
-			["RoadThemeParkFlipStart","RoadThemeParkFlipFinish"],
-			["ArenaStart","ArenaFinish"],
-			["ArenaStartX2","ArenaFinishX2"], // or ArenaStartX2, Tom?
-			["RoadTunnelStart","RoadTunnelFinish"],
-			["RoadMainStartTwoway", "RoadMainFinishTwoway"],
-			["FreeWayStartTwoway", "FreeWayFinishTwoway"],
-			["RoadThemeParkStartTwoway", "RoadThemeParkFinishTwoway"],
-			["RoadThemeParkFlipStartTwoway", "RoadThemeParkFlipFinishTwoway"],
-			["ArenaStartTwoway", "ArenaFinishTwoway"],
-			["ArenaStartX2Twoway", "ArenaFinishX2Twoway"],
-			["RoadTunnelStartTwoway", "RoadTunnelFinishTwoway"]
-		]
-	];
+SChApproxBlock[][][Text] GetRelation_StartFinish() {
+	declare File = Http.CreateGet("file://Media/Relations/StartFinish.json");
+	wait(File.IsCompleted);
+	declare SChApproxBlock[][][Text] Relation;
+	declare JsonSuccess = Relation.fromjson(File.Result);
+	return Relation;
 }
 
-Text[][][Text] GetRelation_StartMultilap() {
-	return [
-		"Canyon" => [
-			["RoadRaceStart","RoadRaceMultilap"],
-			["RoadRaceStartMirror","RoadRaceMultilapMirror"],
-			["ArenaStart","ArenaMultilap"],
-			["RoadMainStart","RoadMainMultilap"],
-			["TubeStart","TubeMultilap"],
-			["TubeStartUnderground","TubeMultilapUnderground"],
-			["RoadCaveStart","RoadCaveMultiLap"],
-			["RoadCaveDoubleStart","RoadCaveDoubleMultiLap"]
-		],
-		"Stadium" => [
-			["StadiumRoadMainStartLine","StadiumRoadMainStartFinishLine"]
-		],
-		"Valley" => [
-			["Road2WayStart","Road2WayMultilap"],
-			["Road2WayForestStart","Road2WayForestMultilap"],
-			["Road4WayStart","Road4WayMultiLap"],
-			["TunnelRoad4wayStart","TunnelRoad4wayMultilap"],
-			["RoadForestLargeStart","RoadForestLargeMultilap"]
-		],
-		"Lagoon" => [
-			["RoadMainStart","RoadMainMultilap"],
-			["FreeWayStart","FreeWayMultilap"],
-			["RoadThemeParkStart","RoadThemeParkMultilap"],
-			["RoadThemeParkFlipStart","RoadThemeParkFlipMultilap"],
-			["ArenaStart","ArenaMultilap"],
-			["ArenaStartX2","ArenaMultilapX2"], // or ArenaStartX2, Tom?
-			["RoadTunnelStart","RoadTunnelMultilap"]
-		]
-	];
+SChApproxBlock[][][Text] GetRelation_StartMultilap() {
+	declare File = Http.CreateGet("file://Media/Relations/StartMultilap.json");
+	wait(File.IsCompleted);
+	declare SChApproxBlock[][][Text] Relation;
+	declare JsonSuccess = Relation.fromjson(File.Result);
+	return Relation;
 }
 
-Text[][][Text] GetRelation_FinishCheckpoint() {
-	return [
-		"Canyon" => [ //Ghostblocks not finished
-			["RoadRaceFinish", "RoadRaceCheckpoint"],
-			["RoadRaceFinishMirror", "RoadRaceCheckpointMirror"],
-			["ArenaFinish", "ArenaCheckpointBase"],
-			["RoadMainFinish", "RoadMainCheckpoint"],
-			["TubeFinish", "TubeCheckpoint"],
-			["TubeFinishUnderground", "TubeCheckpointUnderground"],
-			["RoadCaveFinish", "RoadCaveCheckpoint"],
-			["RoadCaveDoubleFinish", "RoadCaveDoubleCheckpoint"]
-		],
-		"Stadium" => [
-			["StadiumRoadMainFinishLine", "StadiumRoadMainCheckpoint"]
-		],
-		"Valley" => [
-			["Road2WayFinish", "Road2WayCheckpoint"],
-			["Road2WayForestFinish", "Road2WayForestCheckpoint"],
-			["Road4WayFinish", "Road4WayCheckpoint"],
-			["TunnelRoad4wayFinish", "TunnelRoad4wayCheckpoint"],
-			["RoadForestLargeFinish", "RoadForestLargeCheckpoint"],
-			["RoadForestLargeFinishTwoway", "RoadForestLargeCheckpoint"]
-		],
-		"Lagoon" => [ //Ghostblocks not finished
-			["RoadMainFinish", "RoadMainCheckpoint"],
-			["FreeWayFinish", "FreeWayCheckpoint"],
-			["RoadThemeParkFinish", "RoadThemeParkCheckpoint"],
-			["RoadThemeParkFlipFinish", "RoadThemeParkFlip-Checkpoint"],
-			["ArenaFinish", "ArenaCheckpoint"],
-			["ArenaFinishX2", "ArenaCheckpointX2"],
-			["RoadTunnelFinish", "RoadTunnelCheckpoint"]
-		]
-	];
+SChApproxBlock[][][Text] GetRelation_FinishCheckpoint() { //Canyon and Lagoon ghost blocks not done
+	declare File = Http.CreateGet("file://Media/Relations/FinishCheckpoint.json");
+	wait(File.IsCompleted);
+	declare SChApproxBlock[][][Text] Relation;
+	declare JsonSuccess = Relation.fromjson(File.Result);
+	return Relation;
 }
 
-Text[][][Text] GetRelation_MultilapStartTwoway() {
-	return [
-		"Canyon" => [
-			["RoadRaceMultilap", "RoadRaceStartTwoway"],
-			["RoadRaceMultilapMirror", "RoadRaceStartMirrorTwoway"],
-			["ArenaMultilap", "ArenaStartTwoway"],
-			["RoadMainMultilap", "RoadMainStartTwoway"],
-			["TubeMultilap", "TubeStart"],
-			["TubeMultilapUnderground", "TubeStartUnderground"],
-			["RoadCaveMultiLap", "RoadCaveStart"],
-			["RoadCaveDoubleMultiLap", "RoadCaveDoubleStart"]
-		],
-		"Stadium" => [
-			["StadiumRoadMainStartFinishLine", "StadiumRoadMainStartLineTwoway"],
-			["StadiumPlatformMultilap", "StadiumPlatformStartTwoway"],
-			["StadiumRoadDirtMutliLap", "StadiumRoadDirtStartTwoway"],
-			["StadiumTrenchMutliLap", "StadiumTrenchStartTwoway"]
-		],
-		"Valley" => [
-			["Road2WayMultilap", "Road2WayStartTwoway"],
-			["Road2WayForestMultilap", "Road2WayForestStartTwoway"],
-			["Road4WayMultiLap", "Road4WayStartTwoway"],
-			["TunnelRoad4wayMultilap", "TunnelRoad4wayStartTwoway"],
-			["RoadForestLargeMultilap", "RoadForestLargeStartTwoway"]
-		],
-		"Lagoon" => [
-			["RoadMainMultilap", "RoadMainStartTwoway"],
-			["FreeWayMultilap", "FreeWayStartTwoway"],
-			["RoadThemeParkMultilap", "RoadThemeParkStartTwoway"],
-			["RoadThemeParkFlipMultilap", "RoadThemeParkFlipStartTwoway"],
-			["ArenaMultilap", "ArenaStartTwoway"],
-			["ArenaMultilapX2", "ArenaStartX2Twoway"],
-			["RoadTunnelMultilap", "RoadTunnelStartTwoway"]
-		]
-	];
+SChApproxBlock[][][Text] GetRelation_MultilapStartTwoway() {
+	declare File = Http.CreateGet("file://Media/Relations/MultilapStartTwoway.json");
+	wait(File.IsCompleted);
+	declare SChApproxBlock[][][Text] Relation;
+	declare JsonSuccess = Relation.fromjson(File.Result);
+	return Relation;
 }
 
-Text[][][Text] GetRelation_MultilapFinishTwoway() {
-	return [
-		"Canyon" => [
-			["RoadRaceMultilap", "RoadRaceFinishTwoway"],
-			["RoadRaceMultilapMirror", "RoadRaceFinishMirrorTwoway"],
-			["ArenaMultilap", "ArenaFinishTwoway"],
-			["RoadMainMultilap", "RoadMainFinishTwoway"],
-			["TubeMultilap", "TubeFinish"],
-			["TubeMultilapUnderground", "TubeFinishUnderground"],
-			["RoadCaveMultiLap", "RoadCaveFinish"],
-			["RoadCaveDoubleMultiLap", "RoadCaveDoubleFinish"]
-		],
-		"Stadium" => [
-			["StadiumRoadMainFinishFinishLine", "StadiumRoadMainFinishLineTwoway"],
-			["StadiumPlatformMultilap", "StadiumPlatformFinishTwoway"],
-			["StadiumRoadDirtMutliLap", "StadiumRoadDirtFinishTwoway"],
-			["StadiumTrenchMutliLap", "StadiumTrenchFinishTwoway"]
-		],
-		"Valley" => [
-			["Road2WayMultilap", "Road2WayFinishTwoway"],
-			["Road2WayForestMultilap", "Road2WayForestFinishTwoway"],
-			["Road4WayMultiLap", "Road4WayFinishTwoway"],
-			["TunnelRoad4wayMultilap", "TunnelRoad4wayFinishTwoway"],
-			["RoadForestLargeMultilap", "RoadForestLargeFinishTwoway"]
-		],
-		"Lagoon" => [
-			["RoadMainMultilap", "RoadMainFinishTwoway"],
-			["FreeWayMultilap", "FreeWayFinishTwoway"],
-			["RoadThemeParkMultilap", "RoadThemeParkFinishTwoway"],
-			["RoadThemeParkFlipMultilap", "RoadThemeParkFlipFinishTwoway"],
-			["ArenaMultilap", "ArenaFinishTwoway"],
-			["ArenaMultilapX2", "ArenaFinishX2Twoway"],
-			["RoadTunnelMultilap", "RoadTunnelFinishTwoway"]
-		]
-	];
+SChApproxBlock[][][Text] GetRelation_MultilapFinishTwoway() {
+	declare File = Http.CreateGet("file://Media/Relations/MultilapFinishTwoway.json");
+	wait(File.IsCompleted);
+	declare SChApproxBlock[][][Text] Relation;
+	declare JsonSuccess = Relation.fromjson(File.Result);
+	return Relation;
 }
 
-Text[][][Text] GetRelation_StartTwowayFinishTwoway() {
+SChApproxBlock[][][Text] GetRelation_StartTwowayFinishTwoway() {
 	return [];
 }
 
-Text[][][Text] GetRelation_CheckpointRoad() {
-	return [
-        "Canyon" => [
-            ["RoadRaceCheckpointMirror","RoadRaceStraight"],//rot 1
-            ["RoadRaceCheckpoint","RoadRaceStraight"],//rot 3
-            ["RoadRaceSlopeCheckpointUp","RoadRaceSlopeStaight"],//rot 0
-            ["RoadRaceSlopeCheckpointUpMirror","RoadRaceSlopeStaightMirror"],//rot 0
-            ["RoadRaceSlopeCheckpointDown","RoadRaceSlopeStaightMirror"],//rot 2
-            ["RoadRaceSlopeCheckpointDownMirror","RoadRaceSlopeStaight"],//rot 2
-            ["RoadRaceTiltCheckpoint","RoadRaceTiltStraight"],//rot 3
-            ["RoadRaceTiltCheckpointMirror","RoadRaceTiltStraight"],//rot 1
-            ["ArenaCheckpointBase","ArenaSimpleBase"],
-            ["ArenaCheckpointSlopeStraightUp","ArenaSlopeStraight"],//rot 0
-            ["ArenaCheckpointSlopeStraightDown","ArenaSlopeStraight"],//rot 2
-            ["ArenaCheckpointSlopeStraightLeftAir","ArenaSlopeStraight"],//rot 1
-            ["ArenaCheckpointSlopeStraightRightAir","ArenaSlopeStraight"],//rot 3
-            ["OffRoadCheckpoint", ""],
-            ["ArenaTunnelCheckpoint","ArenaTunnelStraight"],
-            ["ArenaTunnelStraightOpen2SidesCheckpoint","ArenaTunnelStraightOpen2Sides"],
-            ["TubeCheckpoint","ArenaTubeStraightA"],
-            ["TubeCheckpointVAir","TubeVStraight4AirA"],
-            ["TubeCheckpointUnderground","TubeStraightUnderground"],
-            ["TubeCheckpointVUnderground","ToTubeVStraight4UndergroundA"],
-            ["RoadMainCheckpoint","RoadMain"],
-            ["RoadMainCheckpointUp","RoadMainSlopeStraight"],//rot 0
-            ["RoadMainCheckpointDown","RoadMainSlopeStraight"],//rot 2
-            ["RoadHill2CheckpointLeft","RoadHill2Straight"],//rot 3
-            ["RoadHill2CheckpointRight","RoadHill2Straight"],//rot 1
-            ["Cliff12RoadHighCheckpointLeft","Cliff12RoadHighStraight"],//rot 1
-            ["Cliff12RoadHighCheckpointRight","Cliff12RoadHighStraight"],//rot 3
-            ["Cliff12RoadMedCheckpointLeft","Cliff12RoadMedStraight"],//rot 1
-            ["Cliff12RoadMedCheckpointRight","Cliff12RoadMedStraight"],//rot 3
-            ["RoadCaveCheckpoint","RoadCaveStraight"],
-            ["RoadCaveCheckpointSlope2Up","RoadCaveSlope2Straight"],//rot 0
-            ["RoadCaveCheckpointSlope2Down","RoadCaveSlope2Straight"],//rot 3
-            ["RoadCaveDoubleCheckpoint","RoadCaveDoubleStraight"],
-            ["RoadCaveDoubleCheckpointCenter","RoadCaveDoubleStraight"],
-            ["RoadCaveDoubleCheckpointLeft","RoadCaveDoubleStraight"],
-            ["RoadCaveDoubleCheckpointRight","RoadCaveDoubleStraight"]
-        ],
-        "Stadium" => [
-            ["StadiumRoadMainCheckpoint","StadiumRoadMain"],
-            ["StadiumGrassCheckpoint", ""],
-            ["StadiumRoadMainCheckpointUp","StadiumRoadMainSlopeStraight"],//rot 0
-            ["StadiumRoadMainCheckpointDown","StadiumRoadMainSlopeStraight"],//rot 2
-            ["StadiumRoadMainCheckpointLeft","StadiumRoadTiltStraight"],//rot 2
-            ["StadiumRoadMainCheckpointRight","StadiumRoadTiltStraight"],//rot 0
-            ["StadiumPlatformWallCheckpointV","StadiumPlatformWall1"],
-            ["StadiumPlatformWallCheckpointH","StadiumPlatformWall4"],
-            ["StadiumPlatformGridCheckpoint","StadiumPlatformGridStraight"],
-            ["StadiumPlatformCheckpoint","StadiumPlatformRoad"],
-            ["StadiumPlatformCheckpointDown","StadiumPlatformSlope2Straight"],//rot 2
-            ["StadiumPlatformCheckpointLeft","StadiumPlatformSlope2Straight"],//rot 1
-            ["StadiumPlatformCheckpointRight","StadiumPlatformSlope2Straight"],//rot 3
-            ["StadiumPlatformCheckpointUp","StadiumPlatformSlope2Straight"],//rot 0
-            ["StadiumCheckpointRingHRoad", ""],
-            ["StadiumCheckpointRingV", ""],
-            ["StadiumCheckpointRing2x1V", ""],
-            ["StadiumCheckpointRing2x1H", ""],
-            ["StadiumRoadDirtCheckpoint","StadiumRoadDirtFenceStraight"],
-            ["StadiumRoadDirtHighCheckpoint","StadiumRoadDirtHighFenceStraight"],
-            ["StadiumRoadDirtHillTiltCheckpointLeft","StadiumRoadDirtHillTiltStraight"],//rot 3
-            ["StadiumRoadDirtHillTiltCheckpointRight","StadiumRoadDirtHillTiltStraight"],//rot 1
-            ["StadiumTrenchCheckpoint","StadiumTrenchStraight"]
-        ],
-        "Valley" => [
-            ["Road2WayCheckpoint","Road2Way"],
-            ["Road2WayCheckpointSlopeUp","Road2WaySlopeStraight"],//rot 0
-            ["Road2WayCheckpointSlopeDown","Road2WaySlopeStraight"],//rot 2
-            ["Road2WayForestCheckpoint","Road2WayForestStraight"],
-            ["Road4WayCheckpoint","Road4Way"],
-            ["Road4WayCheckpointUp","Road4WaySlopeStraight"],//rot 0
-            ["Road4WayCheckpointDown","Road4WaySlopeStraight"],//rot 2
-            ["TunnelRoad4wayCheckpoint","TunnelRoad4wayStraight"],
-            ["TunnelRoad4WayCheckpointUp","TunnelRoad4waySlopeStraight"],//rot 0
-            ["TunnelRoad4WayCheckpointDown","TunnelRoad4waySlopeStraight"],//rot 2
-            ["ArenaCheckpointParkRoofBaseAir","ArenaParkRoofBase"],
-            ["ArenaCheckpointParkRoofSlopeStraightUpAir","ArenaParkRoofSlopeStraight"],//rot 0
-            ["ArenaCheckpointParkRoofSlopeStraightDownAir","ArenaParkRoofSlopeStraight"],//rot 2
-            ["ArenaCheckpointParkRoofSlopeLeft","ArenaParkRoofSlopeStraight"],//rot 1
-            ["ArenaCheckpointParkRoofSlopeRight","ArenaParkRoofSlopeStraight"],//rot 3
-            ["ArenaCheckpointParkRoofLoopStraight2VAir","ArenaParkRoofLoopStraight2"],//rot 2
-            ["ArenaCheckpointParkRoofLoopStraight4HAir","ArenaParkRoofLoopStraight4"],//rot 2
-            ["RoadForestLargeCheckpoint","RoadForestLargeStraight"],
-            ["RoadDirtCheckpoint","RoadDirt"],
-            ["RoadCliffSlopeUTopCheckPointLeft","RoadCliffSlopeUTop"],//?rot 3
-            ["RoadCliffSlopeUTopCheckPointRight","RoadCliffSlopeUTop"],//?rot 1
-            ["RoadCliffSlopeUBottomCheckPointLeft","RoadCliffSlopeUBottom"],//rot 3
-            ["RoadCliffSlopeUBottomCheckPointRight","RoadCliffSlopeUBottom"],//rot 1
-            ["DecoCastleEntryCheckPointOut","DecoCastleDeadendEntryLake"],//rot 0
-            ["DecoCastleEntryCheckPointIn","DecoCastleDeadendEntryLake"],//rot 2
-            ["DecoCastleDeadendWallCheckPointLeft","DecoCastleDeadendWallLake"],//rot 3
-            ["DecoCastleDeadendWallCheckPointRight","DecoCastleDeadendWallLake"],//rot 1
-            ["DecoCastleDeadendWallRacingCheckPointLeft","DecoCastleDeadendWallRacingLake"],//rot 3
-            ["DecoCastleDeadendWallRacingCheckPointRight","DecoCastleDeadendWallRacingLake"],//rot 1
-            ["DecoCastleCenterCheckpointLake","DecoCastleCenterLake"],
-            ["DecoCastleGardenFlowerStraightHalfCheckpointLakeLeft","DecoCastleGardenFlowerStraightHalfLake"],//rot 2
-            ["DecoCastleGardenFlowerStraightHalfCheckpointLakeRight","DecoCastleGardenFlowerStraightHalfLake"],//rot 0
-            ["DecoCastleGardenFlowerStraightx2CheckpointLake", ""/*MacroBlock*/],
-            ["DecoCastleGardenCheckpointLake","DecoCastleGardenStraightLake"],
-            ["ViaducCheckpoint","ViaducStraight"],
-            ["ViaducCheckpointSlopeUp","Viaduc_Slope2Straight_Air"],//rot 0
-            ["ViaducCheckpointSlopeDown","Viaduc_Slope2Straight_Air"],//rot 2
-            ["RailTunnel_CheckPoint","RailTunnel_Straight"],
-            ["OffRoadCheckpoint", ""]
-        ],
-        "Lagoon" => [
-            ["RoadMainCheckpoint","RoadMainSmall"],
-            ["RoadMainCheckpointUp","RoadMainSlopeStraight"],//rot 2
-            ["RoadMainCheckpointDown","RoadMainSlopeStraight"],//rot 0
-            ["HighWaySlope2CheckpointUp","HighWaySlope2Straight"],//rot 0
-            ["HighWaySlope2CheckpointDown","HighWaySlope2Straight"],//rot 2
-            ["HighWaySlope2CheckpointLeft","HighWayTilt2Straight"],//rot 0
-            ["HighWaySlope2CheckpointRight","HighWayTilt2Straight"],//rot 2
-            ["FreeWayCheckpoint","FreeWay"],
-            ["RoadThemeParkCheckpoint","RoadThemePark"],
-            ["RoadThemeParkWall-Checkpoint","RoadThemeParkWall-Straight"],
-            ["RoadThemeParkWall-CheckpointUp","RoadThemeParkWall-StraightUp"],
-            ["RoadThemeParkFlip-Checkpoint","RoadThemeParkFlip"],
-            ["ArenaCheckpoint","ArenaBase"],
-            ["ArenaCheckpointX2", ""/*MacroBlock*/],
-            ["ArenaCheckpointUp","ArenaSlope2Straight"],//rot 0
-            ["ArenaCheckpointUpX2", ""/*MacroBlock*/],
-            ["ArenaCheckpointDown","ArenaSlope2Straight"],//rot 2
-            ["ArenaCheckpointDownX2", ""/*MacroBlock*/],
-            ["ArenaCheckpointLeft","ArenaSlope2Straight"],//rot 1
-            ["ArenaCheckpointLeftX2", ""/*MacroBlock*/],
-            ["ArenaCheckpointRight","ArenaSlope2Straight"],//rot 3
-            ["ArenaCheckpointRightX2", ""/*MacroBlock*/],
-            ["RoadTunnelCheckpoint","RoadTunnelStraight"],
-            ["RoadTunnelCheckpointUp","RoadTunnelSlope2Straight"],//rot 0
-            ["RoadTunnelCheckpointDown","RoadTunnelSlope2Straight"],//rot 2
-            ["BeachCheckPointLeft", ""],
-            ["BeachCheckPointRight", ""],
-            ["LandCheckpoint", ""],
-            ["LandHillCheckpointUp", ""],
-            ["LandHillCheckpointDown", ""],
-            ["LandHillCheckpointLeft", ""],
-            ["LandHillCheckpointRight", ""],
-            ["DecoCityCheckpoint","DecoCityFloorBase"]
-        ]
-    ];
+SChApproxBlock[][][Text] GetRelation_CheckpointRoad() {
+	declare File = Http.CreateGet("file://Media/Relations/CheckpointRoad.json");
+	wait(File.IsCompleted);
+	declare SChApproxBlock[][][Text] Relation;
+	declare JsonSuccess = Relation.fromjson(File.Result);
+	return Relation;
 }
 
 //

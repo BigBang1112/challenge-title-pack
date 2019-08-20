@@ -1,0 +1,34 @@
+{
+	"Canyon": [
+		[{"Name": "RoadRaceMultilap"}, {"Name": "RoadRaceFinishTwoway"}],
+		[{"Name": "RoadRaceMultilapMirror"}, {"Name": "RoadRaceFinishMirrorTwoway"}],
+		[{"Name": "ArenaMultilap"}, {"Name": "ArenaFinishTwoway"}],
+		[{"Name": "RoadMainMultilap"}, {"Name": "RoadMainFinishTwoway"}],
+		[{"Name": "TubeMultilap"}, {"Name": "TubeFinish"}],
+		[{"Name": "TubeMultilapUnderground"}, {"Name": "TubeFinishUnderground"}],
+		[{"Name": "RoadCaveMultiLap"}, {"Name": "RoadCaveFinish"}],
+		[{"Name": "RoadCaveDoubleMultiLap"}, {"Name": "RoadCaveDoubleFinish"}]
+	],
+	"Stadium": [
+		[{"Name": "StadiumRoadMainFinishFinishLine"}, {"Name": "StadiumRoadMainFinishLineTwoway"}],
+		[{"Name": "StadiumPlatformMultilap"}, {"Name": "StadiumPlatformFinishTwoway"}],
+		[{"Name": "StadiumRoadDirtMutliLap"}, {"Name": "StadiumRoadDirtFinishTwoway"}],
+		[{"Name": "StadiumTrenchMutliLap"}, {"Name": "StadiumTrenchFinishTwoway"}]
+	],
+	"Valley": [
+		[{"Name": "Road2WayMultilap"}, {"Name": "Road2WayFinishTwoway"}],
+		[{"Name": "Road2WayForestMultilap"}, {"Name": "Road2WayForestFinishTwoway"}],
+		[{"Name": "Road4WayMultiLap"}, {"Name": "Road4WayFinishTwoway"}],
+		[{"Name": "TunnelRoad4wayMultilap"}, {"Name": "TunnelRoad4wayFinishTwoway"}],
+		[{"Name": "RoadForestLargeMultilap"}, {"Name": "RoadForestLargeFinishTwoway"}]
+	],
+	"Lagoon": [
+		[{"Name": "RoadMainMultilap"}, {"Name": "RoadMainFinishTwoway"}],
+		[{"Name": "FreeWayMultilap"}, {"Name": "FreeWayFinishTwoway"}],
+		[{"Name": "RoadThemeParkMultilap"}, {"Name": "RoadThemeParkFinishTwoway"}],
+		[{"Name": "RoadThemeParkFlipMultilap"}, {"Name": "RoadThemeParkFlipFinishTwoway"}],
+		[{"Name": "ArenaMultilap"}, {"Name": "ArenaFinishTwoway"}],
+		[{"Name": "ArenaMultilapX2"}, {"Name": "ArenaFinishX2Twoway"}],
+		[{"Name": "RoadTunnelMultilap"}, {"Name": "RoadTunnelFinishTwoway"}]
+	]
+}

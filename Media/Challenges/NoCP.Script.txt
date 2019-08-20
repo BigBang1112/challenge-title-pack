@@ -77,16 +77,16 @@ if(IsOneLapWithFinish) {
 	if(Multilap.IsItem) Problem_ItemMultilap(Multilap.Item);
 	else if(Multilap.IsBlock) {
 		foreach(Relation, GetRelation_MultilapStartTwoway()[Environment]) {
-			declare MultilapBlockName = Relation[0];
-			declare StartTwowayBlockName = Relation[1];
-			if(Multilap.Block.Name == MultilapBlockName) {
+			declare MultilapBlock = Relation[0];
+			declare StartTwowayBlock = Relation[1];
+			if(Multilap.Block.Name == MultilapBlock.Name) {
 				declare Removed = RemoveSpecificBlock(Multilap.Block);
 				if(Removed) {
-					declare Block = PlaceBlock(StartTwowayBlockName, Multilap.Block.Coord, Multilap.Block.Direction);
+					declare Block = PlaceBlock(StartTwowayBlock.Name, Multilap.Block.Coord, Multilap.Block.Direction);
 					if(Block.Placed)
-						SetStatusMessage(MultilapBlockName ^ " {{{{replaced_with}}}} " ^ StartTwowayBlockName ^ ".");
+						SetStatusMessage(MultilapBlock.Name ^ " {{{{replaced_with}}}} " ^ StartTwowayBlock.Name ^ ".");
 					else {
-						Problem_BlockMissing(StartTwowayBlockName, Multilap.Block.Coord);
+						Problem_BlockMissing(StartTwowayBlock.Name, Multilap.Block.Coord);
 					}
 				}
 			}
@@ -106,15 +106,15 @@ for(i,0,Checkpoints.count-1) {
 
 	if(Checkpoint.IsBlock) {
 		foreach(Relation, GetRelation_CheckpointRoad()[Environment]) {
-			declare CheckpointBlockName = Relation[0];
-			declare RoadBlockName = Relation[1];
+			declare CheckpointBlock = Relation[0];
+			declare RoadBlock = Relation[1];
 			
-			if(Checkpoint.Block.Name == CheckpointBlockName) {
+			if(Checkpoint.Block.Name == CheckpointBlock.Name) {
 				declare Removed = RemoveSpecificBlock(Checkpoint.Block);
-				if(Removed && RoadBlockName != "") {
-					declare Block = PlaceBlock(RoadBlockName, Checkpoint.Block.Coord, OppositeDirection(Checkpoint.Block.Direction));
-					if(Block.Placed) SetStatusMessage(CheckpointBlockName ^ " {{{{replaced_with}}}} " ^ RoadBlockName ^ ".");
-					else Problem_BlockMissing(RoadBlockName, Checkpoint.Block.Coord);
+				if(Removed && RoadBlock.Name != "") {
+					declare Block = PlaceBlock(RoadBlock.Name, Checkpoint.Block.Coord, Checkpoint.Block.Direction);
+					if(Block.Placed) SetStatusMessage(CheckpointBlock.Name ^ " {{{{replaced_with}}}} " ^ RoadBlock.Name ^ ".");
+					else Problem_BlockMissing(RoadBlock.Name, Checkpoint.Block.Coord);
 				}
 				else Problem_CannotRemoveCheckpoint(Checkpoint);
 			}
