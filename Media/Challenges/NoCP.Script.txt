@@ -111,10 +111,13 @@ for(i,0,Checkpoints.count-1) {
 			
 			if(Checkpoint.Block.Name == CheckpointBlock.Name) {
 				declare Removed = RemoveSpecificBlock(Checkpoint.Block);
-				if(Removed && RoadBlock.Name != "") {
-					declare Block = PlaceBlock(RoadBlock.Name, Checkpoint.Block.Coord, Checkpoint.Block.Direction);
-					if(Block.Placed) SetStatusMessage(CheckpointBlock.Name ^ " {{{{replaced_with}}}} " ^ RoadBlock.Name ^ ".");
-					else Problem_BlockMissing(RoadBlock.Name, Checkpoint.Block.Coord);
+				if(Removed) {
+					if(RoadBlock.Name != "") {
+						log(RoadBlock.Name ^ " " ^ RoadBlock.Direction);
+						declare Block = PlaceBlock(RoadBlock.Name, Checkpoint.Block.Coord + RoadBlock.Coord, ClockwiseDirection(Checkpoint.Block.Direction, RoadBlock.Direction));
+						if(Block.Placed) SetStatusMessage(CheckpointBlock.Name ^ " {{{{replaced_with}}}} " ^ RoadBlock.Name ^ ".");
+						else Problem_BlockMissing(RoadBlock.Name, Checkpoint.Block.Coord);
+					}
 				}
 				else Problem_CannotRemoveCheckpoint(Checkpoint);
 			}

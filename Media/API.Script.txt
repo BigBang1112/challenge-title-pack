@@ -455,6 +455,29 @@ Text OppositeDirection(Text _Direction) {
 	return "";
 }
 
+Text ClockwiseDirection(Text _Direction, Integer _Amount) {
+	declare Direction = _Direction;
+	for(I,1,_Amount) {
+		if(Direction == "North") Direction = "East";
+		else if(Direction == "East") Direction = "South";
+		else if(Direction == "South") Direction = "West";
+		else if(Direction == "West") Direction = "North";
+	}
+	return Direction;
+}
+
+Text ClockwiseDirection(Text _Direction) {
+	return ClockwiseDirection(_Direction, 1);
+}
+
+Text CounterClockwiseDirection(Text _Direction, Integer _Amount) {
+	return ClockwiseDirection(_Direction, -_Amount);
+}
+
+Text CounterClockwiseDirection(Text _Direction) {
+	return CounterClockwiseDirection(_Direction, 1);
+}
+
 //
 /* Modifier appearance control */
 //
@@ -572,42 +595,42 @@ Boolean SetCursorBlock(Text _BlockName) {
 	return Response.Values[0] == "True";
 }
 
-SChApproxBlock[][][Text] GetRelation_StartFinish() {
+SChRelationBlock[][][Text] GetRelation_StartFinish() {
 	declare File = Http.CreateGet("file://Media/Relations/StartFinish.json");
 	wait(File.IsCompleted);
-	declare SChApproxBlock[][][Text] Relation;
+	declare SChRelationBlock[][][Text] Relation;
 	declare JsonSuccess = Relation.fromjson(File.Result);
 	return Relation;
 }
 
-SChApproxBlock[][][Text] GetRelation_StartMultilap() {
+SChRelationBlock[][][Text] GetRelation_StartMultilap() {
 	declare File = Http.CreateGet("file://Media/Relations/StartMultilap.json");
 	wait(File.IsCompleted);
-	declare SChApproxBlock[][][Text] Relation;
+	declare SChRelationBlock[][][Text] Relation;
 	declare JsonSuccess = Relation.fromjson(File.Result);
 	return Relation;
 }
 
-SChApproxBlock[][][Text] GetRelation_FinishCheckpoint() { //Canyon and Lagoon ghost blocks not done
+SChRelationBlock[][][Text] GetRelation_FinishCheckpoint() { //Canyon and Lagoon ghost blocks not done
 	declare File = Http.CreateGet("file://Media/Relations/FinishCheckpoint.json");
 	wait(File.IsCompleted);
-	declare SChApproxBlock[][][Text] Relation;
+	declare SChRelationBlock[][][Text] Relation;
 	declare JsonSuccess = Relation.fromjson(File.Result);
 	return Relation;
 }
 
-SChApproxBlock[][][Text] GetRelation_MultilapStartTwoway() {
+SChRelationBlock[][][Text] GetRelation_MultilapStartTwoway() {
 	declare File = Http.CreateGet("file://Media/Relations/MultilapStartTwoway.json");
 	wait(File.IsCompleted);
-	declare SChApproxBlock[][][Text] Relation;
+	declare SChRelationBlock[][][Text] Relation;
 	declare JsonSuccess = Relation.fromjson(File.Result);
 	return Relation;
 }
 
-SChApproxBlock[][][Text] GetRelation_MultilapFinishTwoway() {
+SChRelationBlock[][][Text] GetRelation_MultilapFinishTwoway() {
 	declare File = Http.CreateGet("file://Media/Relations/MultilapFinishTwoway.json");
 	wait(File.IsCompleted);
-	declare SChApproxBlock[][][Text] Relation;
+	declare SChRelationBlock[][][Text] Relation;
 	declare JsonSuccess = Relation.fromjson(File.Result);
 	return Relation;
 }
@@ -616,10 +639,10 @@ SChApproxBlock[][][Text] GetRelation_StartTwowayFinishTwoway() {
 	return [];
 }
 
-SChApproxBlock[][][Text] GetRelation_CheckpointRoad() {
+SChRelationBlock[][][Text] GetRelation_CheckpointRoad() {
 	declare File = Http.CreateGet("file://Media/Relations/CheckpointRoad.json");
 	wait(File.IsCompleted);
-	declare SChApproxBlock[][][Text] Relation;
+	declare SChRelationBlock[][][Text] Relation;
 	declare JsonSuccess = Relation.fromjson(File.Result);
 	return Relation;
 }

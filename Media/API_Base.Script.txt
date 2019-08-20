@@ -60,6 +60,12 @@
 	Text Direction;
 }
 
+#Struct SChRelationBlock {
+	Text Name;
+	Int3 Coord; // Offset
+	Integer Direction; // Offset
+}
+
 #Struct SReplacementResult {
 	Boolean Removed;
 	Boolean Placed;

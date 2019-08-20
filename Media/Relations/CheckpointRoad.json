@@ -391,6 +391,7 @@
 			},
 			{
 				"Name": "StadiumPlatformSlope2Straight",
+				"Coord": [0, 1, 0],
 				"Direction": 2
 			}
 		],
@@ -400,7 +401,8 @@
 			},
 			{
 				"Name": "StadiumPlatformSlope2Straight",
-				"Direction": 2
+				"Coord": [0, 1, 0],
+				"Direction": 1
 			}
 		],
 		[
@@ -409,6 +411,7 @@
 			},
 			{
 				"Name": "StadiumPlatformSlope2Straight",
+				"Coord": [0, 1, 0],
 				"Direction": 3
 			}
 		],
@@ -417,7 +420,8 @@
 				"Name": "StadiumPlatformCheckpointUp"
 			},
 			{
-				"Name": "StadiumPlatformSlope2Straight"
+				"Name": "StadiumPlatformSlope2Straight",
+				"Coord": [0, 1, 0]
 			}
 		],
 		[
