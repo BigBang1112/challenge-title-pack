@@ -2,6 +2,11 @@ Text TimeToTextWithMilli(Integer _Time) {
 	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
 }
 
+***Start***
+***
+declare Start = Now;
+***
+
 ***Loop***
 ***
 foreach(Event,PendingEvents) {
@@ -23,6 +28,8 @@ foreach(Event,PendingEvents) {
 					AnimMgr.Add(Page.GetFirstChild("FRAME_ENDSCREEN_INFO"), "<frame hidden=\"0\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
 
 					Page.GetFirstChild("QUAD_BUTTON_CONTINUE").Focus();
+
+					Start = Now;
 				}
 				case "Update": {
 					declare Integer Time for Page;
@@ -36,12 +43,22 @@ foreach(Event,PendingEvents) {
 					SlideText_Set((Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel), (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel), Map_Name, 15);
 					SlideText_Set((Page.GetFirstChild("LABEL_ENV") as CMlLabel), (Page.GetFirstChild("LABEL_ENV_2") as CMlLabel), TextLib::ToUpperCase(Map_Env), 15);
 					SlideText_Set((Page.GetFirstChild("LABEL_CAR") as CMlLabel), (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel), Car, 15);
-					SlideText_Set((Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel), (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel), TextLib::Join(" + ", Challenges), 15);
+					SlideText_Set((Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel), (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel), TextLib::ToUpperCase(TextLib::Join(" + ", Challenges)), 15);
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MenuNavigation: {
+			switch(Event.MenuNavAction) {
+				case CMlEvent::EMenuNavAction::Select: {
+					SendCustomEvent("Continue", []);
 				}
 			}
 		}
 	}
 }
+
+if(Now - Start > 200) EnableMenuNavigationInputs = True;
+else EnableMenuNavigationInputs = False;
 
 SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_MAPNAME") as CMlFrame), (Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel), (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel), 15, .015);
 SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_ENV") as CMlFrame), (Page.GetFirstChild("LABEL_ENV") as CMlLabel), (Page.GetFirstChild("LABEL_ENV_2") as CMlLabel), 15, .015);

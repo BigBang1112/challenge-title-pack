@@ -128,6 +128,8 @@ declare OldVehicleLock = VehicleLock;
 
 UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll);
 UpdateVehicles();
+
+EnableMenuNavigationInputs = True;
 ***
 
 ***Loop***
@@ -140,6 +142,11 @@ foreach(Event,PendingEvents) {
 					declare PreviousIndex = VehicleIndex;
 					VehicleIndex = TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("id"));
 					Frame_Vehicles.Scroll(<0.,(VehicleIndex-PreviousIndex)*1.>);
+
+					if(PreviousIndex - VehicleIndex == 0) {
+						SendCustomEvent("Start", ["True"]);
+						CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+					}
 				}
 			}
 		}
@@ -148,6 +155,25 @@ foreach(Event,PendingEvents) {
 				case "Show": {
 					UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll);
 					UpdateVehicles();
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MenuNavigation: {
+			switch(Event.MenuNavAction) {
+				case CMlEvent::EMenuNavAction::Cancel: {
+					
+				}
+			}
+		}
+		case CMlScriptEvent::Type::KeyPress: {
+			if(IsMenuOpen) {
+				switch(Event.KeyName) {
+					case "Prior": {
+						Frame_Vehicles.Scroll(<0., -1.>);
+					}
+					case "Next": {
+						Frame_Vehicles.Scroll(<0., 1.>);
+					}
 				}
 			}
 		}
