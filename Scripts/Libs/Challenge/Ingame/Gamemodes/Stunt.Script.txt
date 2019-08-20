@@ -1,3 +1,5 @@
+#Include "MathLib" as MathLib
+
 #Struct SStunt {
 	Integer Timestamp;
 	Integer Points;
@@ -64,6 +66,7 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 				case CTmModeEvent::EStuntFigure::WreckSpinningMix: { Stunt.Figure = "STUNT_WRECK_SPINNING_MIX"; Stunt.Quality = 4; }
 				case CTmModeEvent::EStuntFigure::WreckFlippingChaos: { Stunt.Figure = "STUNT_WRECK_FLIPPING_CHAOS"; Stunt.Quality = 5; }
 				case CTmModeEvent::EStuntFigure::WreckRollingMadness: { Stunt.Figure = "STUNT_WRECK_ROLLING_MADNESS"; Stunt.Quality = 5; }
+				case CTmModeEvent::EStuntFigure::RespawnPenalty: { Stunt.Figure = "STUNT_RESPAWN_PENALTY"; Stunt.Quality = -1; }
 			}
 			
 			CurrentStunts.add(Stunt);
@@ -72,7 +75,16 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 			Server_Stunt = Stunt;
 		}
 		case CTmModeEvent::EType::WayPoint: {
+			if(_Event.IsEndRace) {
+				declare Integer StuntTimePenalty for Player;
+				StuntTimePenalty = MathLib::FloorInteger(MathLib::Max(0.,_Event.RaceTime/1000.));
+			}
+			else if(_Event.IsEndLap) {
 			
+			}
+			else {
+				
+			}
 		}
 	}
 }

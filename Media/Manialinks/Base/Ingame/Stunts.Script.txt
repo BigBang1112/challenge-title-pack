@@ -17,8 +17,11 @@ CTmMlPlayer GetOwner() {
 ***
 declare Label_Points = (Page.GetFirstChild("LABEL_POINTS") as CMlLabel);
 declare Label_Stunt = (Page.GetFirstChild("LABEL_STUNT") as CMlLabel);
+declare Label_TimePenalty = (Page.GetFirstChild("LABEL_TIMEPENALTY") as CMlLabel);
 
 declare TotalPoints = 0;
+
+declare CTmMlPlayer::ERaceState PreviousRaceState;
 ***
 
 ***Loop***
@@ -30,15 +33,25 @@ foreach(Event,PendingEvents) {
 		}
 		case CMlScriptEvent::Type::PluginCustomEvent: {
 			switch(Event.CustomEventType) {
+				case "Start": {
+					
+				}
 				case "Stunt": {
 					declare SStunt Stunt;
 					declare JsonSuccess = Stunt.fromjson(Event.CustomEventData[0]);
-					TotalPoints += Stunt.Points;
+					
 					if(Stunt.Quality > 0) {
+						TotalPoints += Stunt.Points;
+
 						if(Stunt.Angle == 0)
 							Label_Stunt.SetText(Stunt.Figure);
 						else
 							Label_Stunt.SetText(Stunt.Figure ^ " " ^ Stunt.Angle);
+					}
+					else if(Stunt.Quality == 0) TotalPoints += Stunt.Points;
+					else if(Stunt.Quality < 0) {
+						TotalPoints -= Stunt.Points;
+						Label_Stunt.SetText(Stunt.Figure);
 					}
 				}
 			}
@@ -46,13 +59,24 @@ foreach(Event,PendingEvents) {
 	}
 }
 
+declare TimePenalty = MathLib::Max(0.,(GameTime-GetOwner().RaceStartTime)/1000.);
+declare TimePenaltyPoints = -MathLib::FloorInteger(TimePenalty);
+Label_TimePenalty.SetText(TextLib::FormatReal(TimePenalty, 3, False, False)^"s $f00("^TimePenaltyPoints^")");
+
 foreach(Event,RaceEvents) {
 	switch(Event.Type) {
 		case CTmRaceClientEvent::EType::Respawn: {
-			TotalPoints = 0;
-			Label_Stunt.SetText("");
 		}
 	}
+}
+
+if(GetOwner().RaceState != PreviousRaceState) {
+	declare State = GetOwner().RaceState;
+	if(State == CTmMlPlayer::ERaceState::BeforeStart) {
+		TotalPoints = 0;
+		Label_Stunt.SetText("");
+	}
+	PreviousRaceState = State;
 }
 
 Label_Points.SetText(TotalPoints^"");

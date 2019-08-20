@@ -20,6 +20,6 @@
 			<quad z-index="0" size="45 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="1" size="45 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
 		</frame>
-		<label pos="20 -0.5" z-index="1" size="52 5" text="" valign="center2" textsize="3" textfont="RajdhaniMono" halign="right" id="LABEL_POINTS"/>
+		<label pos="0 -0.5" z-index="1" size="40 5" text="" valign="center2" textsize="3" textfont="RajdhaniMono" halign="center" id="LABEL_TIMEPENALTY"/>
 	</frame>
 </frame>
