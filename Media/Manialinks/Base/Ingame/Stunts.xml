@@ -1,14 +1,25 @@
 <frame>
 	<frame pos="147.5 -66.5">
-		<quad z-index="0" size="20 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCardList"/>
-		<quad z-index="1" size="20 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgGradV"/>
+		<frame z-index="-1">
+			<quad z-index="0" size="20 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="20 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+		</frame>
+		<label pos="0 -0.5" z-index="0" size="15 5" text="0" valign="center2" textsize="3" textfont="RajdhaniMono" halign="center" id="LABEL_POINTS"/>
 	</frame>
 	<frame pos="132.5 -75">
-		<quad z-index="0" size="50 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCardList"/>
-		<quad z-index="1" size="50 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgGradV"/>
+		<frame>
+			<quad z-index="0" size="50 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="50 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+		</frame>
+		<frame z-index="1" id="FRAME_LABEL_STUNT" clip="True" clipsizen="45 6">
+			<label pos="22.5 -0.5" size="200 5" text="" valign="center2" textsize="3" textfont="RajdhaniMono" halign="right" id="LABEL_STUNT" textprefix="$i$o"/>
+		</frame>
 	</frame>
 	<frame pos="135 -83.5">
-		<quad z-index="0" size="45 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCardList"/>
-		<quad z-index="1" size="45 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgGradV"/>
+		<frame>
+			<quad z-index="0" size="45 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="45 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+		</frame>
+		<label pos="20 -0.5" z-index="1" size="52 5" text="" valign="center2" textsize="3" textfont="RajdhaniMono" halign="right" id="LABEL_POINTS"/>
 	</frame>
 </frame>

@@ -1,0 +1,59 @@
+#Struct SStunt {
+	Integer Timestamp;
+	Integer Points;
+	Text Figure;
+	Integer Angle;
+	Integer RaceTime;
+	Integer Quality;
+}
+
+CTmMlPlayer GetOwner() {
+	wait(GUIPlayer != Null || InputPlayer != Null);
+	if(GUIPlayer != Null) return GUIPlayer;
+	return InputPlayer;
+}
+
+***Start***
+***
+declare Label_Points = (Page.GetFirstChild("LABEL_POINTS") as CMlLabel);
+declare Label_Stunt = (Page.GetFirstChild("LABEL_STUNT") as CMlLabel);
+
+declare TotalPoints = 0;
+***
+
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseClick: {
+			
+		}
+		case CMlScriptEvent::Type::PluginCustomEvent: {
+			switch(Event.CustomEventType) {
+				case "Stunt": {
+					declare SStunt Stunt;
+					declare JsonSuccess = Stunt.fromjson(Event.CustomEventData[0]);
+					TotalPoints += Stunt.Points;
+					if(Stunt.Quality > 0) {
+						if(Stunt.Angle == 0)
+							Label_Stunt.SetText(Stunt.Figure);
+						else
+							Label_Stunt.SetText(Stunt.Figure ^ " " ^ Stunt.Angle);
+					}
+				}
+			}
+		}
+	}
+}
+
+foreach(Event,RaceEvents) {
+	switch(Event.Type) {
+		case CTmRaceClientEvent::EType::Respawn: {
+			TotalPoints = 0;
+			Label_Stunt.SetText("");
+		}
+	}
+}
+
+Label_Points.SetText(TotalPoints^"");
+***

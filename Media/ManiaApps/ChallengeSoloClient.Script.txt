@@ -15,6 +15,7 @@
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
+#Include "Libs/Challenge/Ingame/Gamemodes/Stunt.Script.txt" as Stunt
 
 #Const C_Manialink_Menu "Media/Manialinks/Base/Ingame/Menu"
 #Const C_Manialink_Vehicle "Media/Manialinks/Base/Ingame/Vehicle"
@@ -189,6 +190,9 @@ declare RaceEnded = Server_EndRace;
 
 declare netread Boolean Server_Outro for UI;
 declare IsOutro = Server_Outro;
+
+declare netread Stunt::SStunt Server_Stunt for UI;
+declare LastStunt = Server_Stunt;
 ***
 
 ***Loop***
@@ -300,6 +304,11 @@ if(VehicleIndex != OldVehicleIndex) {
 	OldVehicleIndex = VehicleIndex;
 
 	if(Server_VehicleLock == -1) IsBlurred = False;
+}
+
+if(Server_Stunt.Timestamp != LastStunt.Timestamp) {
+	Layers::SendEvent("Stunts", "Stunt", Server_Stunt.tojson());
+	LastStunt = Server_Stunt;
 }
 
 if(Server_EndRace != RaceEnded) {

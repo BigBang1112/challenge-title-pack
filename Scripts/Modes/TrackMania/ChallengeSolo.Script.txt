@@ -6,6 +6,7 @@
 #Include "Libs/BigBang1112/Random.Script.txt" as Random
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
+#Include "Libs/Challenge/Ingame/Gamemodes/Stunt.Script.txt" as Stunt
 #Include "Libs/Challenge/Backend.Script.txt" as Backend
 
 #Const CompatibleMapTypes  "Challenge"
@@ -31,16 +32,26 @@ UIManager.UIAll.SmallScoreTableVisibility = CUIConfig::EVisibility::ForcedHidden
 UIManager.UIAll.ScoreTableOnlyManialink = True;
 
 wait(Players.count>0);
-Race::Init(This, False);
+Race::Init(This);
 
 ClientManiaAppUrl = "file://Media/ManiaApps/ChallengeSoloClient.Script.txt";
 
 RequestLoadMap();
 wait(MapLoaded);
 
-Race::Start(This);
+Race::Start(This, False);
+Stunt::Start(This, False);
 
 while(True) {
+	foreach(Event, This.PendingEvents) {
+		Race::Event(This, Event);
+		Stunt::Event(This, Event);
+	}
+	
+	foreach(Event, This.UIManager.PendingEvents) {
+		Race::EventUI(This, Event);
+	}
+	
 	Race::Loop(This);
 	yield;
 }

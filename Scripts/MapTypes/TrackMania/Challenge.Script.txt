@@ -8,6 +8,7 @@
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
+#Include "Libs/Challenge/Ingame/Gamemodes/Stunt.Script.txt" as Stunt
 
 Void CheckValidability() {
 	declare StartsFinishes = 0;
@@ -76,13 +77,23 @@ main() {
 				case CMapEditorPluginEvent::Type::StartValidation: {
 					Mode.ClientManiaAppUrl = "file://Media/ManiaApps/ChallengeSoloClient.Script.txt";
 					
-					Race::Init(Mode, True);
+					Race::Init(Mode);
 					RequestEnterPlayground();
 					wait(IsSwitchedToPlayground);
 					wait(Mode.MapLoaded);
-					Race::Start(Mode);
+					Race::Start(Mode, True);
+					Stunt::Start(Mode, False);
 					
 					while(IsSwitchedToPlayground) {
+						foreach(Event, Mode.PendingEvents) {
+							Race::Event(Mode, Event);
+							Stunt::Event(Mode, Event);
+						}
+						
+						foreach(Event, Mode.UIManager.PendingEvents) {
+							Race::EventUI(Mode, Event);
+						}
+					
 						Race::Loop(Mode);
 					
 						if(ValidationEndRequested) {
