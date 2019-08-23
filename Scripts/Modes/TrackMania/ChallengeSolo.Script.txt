@@ -7,7 +7,7 @@
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
 #Include "Libs/Challenge/Ingame/Gamemodes/Stunt.Script.txt" as Stunt
-#Include "Libs/Challenge/Backend.Script.txt" as Backend
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
 #Const CompatibleMapTypes  "Challenge"
 #Const Version             "1.0.0"
@@ -29,7 +29,9 @@ UIManager.UIAll.OverlayHideSpectatorControllers = True;
 UIManager.UIAll.OverlayHideSpectatorInfos = True;
 UIManager.UIAll.OverlayChatHideAvatar = True;
 UIManager.UIAll.SmallScoreTableVisibility = CUIConfig::EVisibility::ForcedHidden;
+UIManager.UIAll.ScoreTableVisibility = CUIConfig::EVisibility::ForcedVisible;
 UIManager.UIAll.ScoreTableOnlyManialink = True;
+UIManager.UIAll.OverlayHideCheckPointTime = True;
 
 wait(Players.count>0);
 Race::Init(This);

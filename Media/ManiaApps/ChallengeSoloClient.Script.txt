@@ -11,7 +11,7 @@
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 #Include "Libs/BigBang1112/Map.Script.txt" as Map
 
-#Include "Libs/Challenge/Backend.Script.txt" as Backend
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
@@ -161,7 +161,7 @@ Playsession.TitleId = LoadedTitle.TitleId;
 
 log(INGAME_TOKEN.Value);
 
-declare Req = Http::SyncPOST("""{{{Backend::GetHost()}}}/ingame/playsession""", Playsession.tojson(), "Content-Type: application/json\nContent-Length: "^TextLib::Length(Playsession.tojson()));
+declare Req = Http::SyncPOST("""{{{Service_Status::LastStatus().Service}}}/ingame/playsession""", Playsession.tojson(), "Content-Type: application/json\nContent-Length: "^TextLib::Length(Playsession.tojson()));
 //log(Req.Result);
 Http.Destroy(Req);
 
