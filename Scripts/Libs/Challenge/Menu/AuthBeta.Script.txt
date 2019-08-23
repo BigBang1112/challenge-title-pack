@@ -8,10 +8,14 @@
 #Include "Libs/BigBang1112/Internet.Script.txt" as Internet
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 
-#Include "Libs/Challenge/Backend.Script.txt" as Backend
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
 #Struct SAccess {
 	Boolean Pass;
+	Boolean Insider;
+	Boolean Organizer;
+	Boolean Moderator;
+	Boolean Owner;
 	Text Token;
 }
 
@@ -26,7 +30,7 @@ SAccess GetAccess() {
 
 Void Start() {
 	Layers::Create("AuthBeta", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme), True);
-	declare Success = Auth2::AsyncAuthorize("Authorize", "b1a3d10ba7", "basic maps", Backend::GetHost()^"/auth.php");
+	declare Success = Auth2::AsyncAuthorize("Authorize", "b1a3d10ba7", "basic maps", Service_Status::LastStatus().Service^"/auth.php");
 }
 
 Void Event(CManiaAppEvent _Event) {

@@ -4,7 +4,7 @@
 #Include "Libs/BigBang1112/Time.Script.txt" as Time
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 
-#Include "Libs/Challenge/Backend.Script.txt" as Backend
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
 #Struct SPlayer {
 	Text Login;
@@ -32,7 +32,7 @@ Void Async() {
 				NewLogins.add(Login);
 			}
 		}
-		declare Success = Http::AsyncGET("RefreshNicknames", Backend::GetHost() ^ "/players?login=" ^ TextLib::URLEncode(TextLib::Join(" ",NewLogins)) ^ "&nickname_only=1");
+		declare Success = Http::AsyncGET("RefreshNicknames", Service_Status::LastStatus().Service ^ "/players?login=" ^ TextLib::URLEncode(TextLib::Join(" ",NewLogins)) ^ "&nickname_only=1");
 	}
 	
 	if(Http::IsCompleted("RefreshNicknames")) {

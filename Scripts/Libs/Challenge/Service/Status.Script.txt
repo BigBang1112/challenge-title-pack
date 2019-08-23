@@ -1,0 +1,36 @@
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
+
+#Struct SStatus {
+	Text Date;
+	Text Service;
+	Boolean Running;
+	Boolean Emergency;
+	Boolean InsiderAccess;
+	Boolean Maintenance;
+	Boolean IsUpdating;
+	Boolean NadeoMapsBlocked;
+}
+
+#Const C_Host "https://challenge.bigbang1112.eu"
+
+declare SStatus[] States;
+
+SStatus CheckStatus() {
+	declare Request = Http::SyncGET(C_Host^"/status.php");
+	
+	declare SStatus Status;
+	declare JsonSuccess = Status.fromjson(Request.Result);
+	
+	States.add(Status);
+	return Status;
+}
+
+Void CheckStatusAsync() {
+	
+}
+
+SStatus LastStatus() {
+	if(States.count > 0)
+		return States[States.count-1];
+	return CheckStatus();
+}

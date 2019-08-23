@@ -18,6 +18,8 @@
 #Include "Libs/Challenge/Scope.Script.txt" as Scope
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
 
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
+
 #Struct SMetadata {
 	Text Name;
 	Text AuthorLogin;
@@ -36,6 +38,11 @@
 	Text Author;
 }
 
+#Struct SMapOnline {
+	Boolean IsNadeoMap;
+	Boolean Blocked;
+}
+
 #Const C_Manialink "Media/Manialinks/Sandbox/Quickplay"
 
 declare CUILayer[Text] LayerAPIs;
@@ -51,6 +58,11 @@ declare Text MapDownloadType;
 declare Text[] DownloadedMapUids;
 declare Text ManagerMapUid;
 declare Boolean ManagerShowPrivate;
+
+declare Boolean StartMap;
+declare Text StartMapLocation;
+declare Map::SMapInfo StartMapInfo;
+declare SScriptInfo[] StartMapScripts;
 
 Void UpdateLocalMaps(Text _Folder, SMapInfoFilter _Filter) {
 	declare FlatSearch = (_Filter.Name != "");
@@ -69,6 +81,14 @@ Void UpdateOfficialScripts(Text[] _Scripts) {
 	Layers::SendEvent("Quickplay", "ScriptList_Official_Update", [Scripts.tojson()]);
 }
 
+Boolean CheckMapOnline(Text _MapUid) {
+	declare Status = Service_Status::LastStatus();
+	declare Map = Http::SyncGET(Status.Service ^"/map.php?"^_MapUid);
+	declare SMapOnline MapOnline;
+	declare JsonSuccess = MapOnline.fromjson(Map.Result);
+	return !(MapOnline.IsNadeoMap && Status.NadeoMapsBlocked) || Menu_AuthBeta::GetAccess().Owner || Menu_AuthBeta::GetAccess().Organizer;
+}
+
 Void StartMap(Text _MapLocation, Map::SMapInfo _MapInfo, SScriptInfo[] _Scripts) {
 	if(_MapInfo.MapUid == "") {
 		Dialog_Message("Please select a map.");
@@ -80,6 +100,10 @@ Void StartMap(Text _MapLocation, Map::SMapInfo _MapInfo, SScriptInfo[] _Scripts)
 	}
 	if(_Scripts.count == 0 && _MapInfo.MapType != "Challenge") {
 		Dialog_Message("Please select at least one script.");
+		return;
+	}
+	if(!CheckMapOnline(_MapInfo.MapUid)) {
+		Dialog_Message("This map is currently disabled: Strategy reasons");
 		return;
 	}
 
@@ -99,7 +123,7 @@ Void StartMap(Text _MapLocation, Map::SMapInfo _MapInfo, SScriptInfo[] _Scripts)
 Boolean StartMapIfExists() {	
 	declare List = Task::SyncMapList(DataFileMgr.Map_GetFilteredGameList(Scope::C_BrowserScope, MapDownloadApproximateLocation, True));
 	foreach(MapInfo,List.MapInfos) {
-		if(MapInfo.MapUid == MapDownloadUid) {
+		if(MapInfo.MapUid == MapDownloadUid && CheckMapOnline(MapInfo.MapUid)) {
 			wait(TitleControl.IsReady);
 			
 			declare Map::SMapInfo OriginalMapInfo for LocalUser;
@@ -190,8 +214,12 @@ Void Event(CManiaAppEvent _Event) {
 </settings>""");
 						}
 					}
-					else
-						StartMap(MapLocation, MapInfo, Scripts);
+					else {
+						StartMap = True;
+						StartMapLocation = MapLocation;
+						StartMapInfo = MapInfo;
+						StartMapScripts = Scripts;
+					}
 				}
 				if(MapLocation == "MapManager") {
 					declare JsonSuccessMapInfo = ManagerTrack.fromjson(Event.CustomEventData[1]);
@@ -419,6 +447,10 @@ Void Async() {
 }
 
 Void Loop() {
+	if(StartMap) {
+		StartMap(StartMapLocation, StartMapInfo, StartMapScripts);
+		StartMap = False;
+	}
 	if(MapDownloadApproximateLocation != "") {
 		if(!StartMapIfExists()) {
 			if(!MapDownload) {

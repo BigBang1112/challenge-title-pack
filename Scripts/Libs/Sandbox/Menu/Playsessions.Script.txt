@@ -9,7 +9,7 @@
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 #Include "Libs/BigBang1112/Time.Script.txt" as Time
 
-#Include "Libs/Challenge/Backend.Script.txt" as Backend
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 #Include "Libs/Challenge/Scope.Script.txt" as Scope
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
 
@@ -48,7 +48,7 @@ Void Start() {
 	Layers::SendEvent("Playsessions", "Animation_Out", ["200 0"]);
 	Layers::Show("Playsessions", True);
 	
-	declare Success = Http::AsyncGET("Playsessions", """{{{Backend::GetHost()}}}/playsessions.php?titleid={{{LoadedTitle.TitleId}}}""");
+	declare Success = Http::AsyncGET("Playsessions", """{{{Service_Status::LastStatus().Service}}}/playsessions.php?titleid={{{LoadedTitle.TitleId}}}""");
 }
 
 Void Event(CManiaAppEvent _Event) {
@@ -95,7 +95,7 @@ Void Async() {
 Void Loop() {
 	if(!Time::Stamp_CreateOnce("PLAYSESSION_REFRESH", 10*1000)) {
 		if(Time::Stamp_Reached("PLAYSESSION_REFRESH")) {
-			declare Success = Http::AsyncGET("Playsessions", """{{{Backend::GetHost()}}}/playsessions.php?titleid={{{LoadedTitle.TitleId}}}""");
+			declare Success = Http::AsyncGET("Playsessions", """{{{Service_Status::LastStatus().Service}}}/playsessions.php?titleid={{{LoadedTitle.TitleId}}}""");
 		}
 	}
 }

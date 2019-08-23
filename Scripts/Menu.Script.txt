@@ -21,6 +21,7 @@
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
 
 #Include "Libs/Challenge/Devmode.Script.txt" as Devmode
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
 #Setting S_Devmode True
 
@@ -34,6 +35,12 @@ main() {
 		
 		Dictionary::SetTranslationFolder("Media/Translations");
 		Dictionary::SetTranslationLanguage(Settings::Get().Language);
+		
+		declare Status = Service_Status::CheckStatus();
+		while(!Status.Running) {
+			sleep(10000);
+			Status = Service_Status::CheckStatus();
+		}
 		
 		Menu_Main::Init();
 		Menu_Quickplay::Init();
@@ -57,7 +64,12 @@ main() {
 			yield;
 		}
 		Menu_AuthBeta::End();
-		yield;
+		
+		while(!(Status.InsiderAccess || Menu_AuthBeta::GetAccess().Organizer || Menu_AuthBeta::GetAccess().Owner)) {
+			log("Insiders don't have access to the title pack at the moment.");
+			sleep(10000);
+			Status = Service_Status::CheckStatus();
+		}
 		
 		Menu_Main::Start();
 		Menu_Quickplay::Start();
