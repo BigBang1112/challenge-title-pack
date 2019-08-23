@@ -212,8 +212,7 @@ Void Finish() {
 						declare metadata ModifierBase::SChProblem[] Problems for Map;
 
 						if(Problems.count == 0) {
-							if(CurrentShadowsQuality == ::ShadowsQuality::Fast
-							|| CurrentShadowsQuality == ::ShadowsQuality::Default
+							if(CurrentShadowsQuality == ::ShadowsQuality::Default
 							|| CurrentShadowsQuality == ::ShadowsQuality::High
 							|| CurrentShadowsQuality == ::ShadowsQuality::Ultra) {
 								Map.MapName = OriginalMap.Name ^ "$z - " ^ TextLib::Replace(Map.MapStyle, "+", " + ");

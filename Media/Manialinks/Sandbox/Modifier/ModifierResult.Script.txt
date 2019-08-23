@@ -109,15 +109,13 @@ foreach(Event,PendingEvents) {
 						AnimMgr.Add(Page.GetFirstChild("FRAME_SHADOWS"), "<frame pos=\"0 50\" hidden=\"0\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 						Page.GetFirstChild("FRAME_SHADOWS").DataAttributeSet("open","1");
 					}
-					AnimMgr.Add(Page.GetFirstChild("QUAD_HIGHLIGHT_SHADOWS_FAST"), "<quad opacity=\".5\"/>", Now+200, 200, CAnimManager::EAnimManagerEasing::QuadOut);
-					AnimMgr.AddChain(Page.GetFirstChild("QUAD_HIGHLIGHT_SHADOWS_FAST"), "<quad opacity=\"0\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
-					AnimMgr.Add(Page.GetFirstChild("QUAD_HIGHLIGHT_SHADOWS_DEFAULT"), "<quad opacity=\".5\"/>", Now+400, 200, CAnimManager::EAnimManagerEasing::QuadOut);
+					AnimMgr.Add(Page.GetFirstChild("QUAD_HIGHLIGHT_SHADOWS_DEFAULT"), "<quad opacity=\".5\"/>", Now+200, 200, CAnimManager::EAnimManagerEasing::QuadOut);
 					AnimMgr.AddChain(Page.GetFirstChild("QUAD_HIGHLIGHT_SHADOWS_DEFAULT"), "<quad opacity=\"0\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
-					AnimMgr.Add(Page.GetFirstChild("QUAD_HIGHLIGHT_SHADOWS_HIGH"), "<quad opacity=\".5\"/>", Now+600, 200, CAnimManager::EAnimManagerEasing::QuadOut);
+					AnimMgr.Add(Page.GetFirstChild("QUAD_HIGHLIGHT_SHADOWS_HIGH"), "<quad opacity=\".5\"/>", Now+400, 200, CAnimManager::EAnimManagerEasing::QuadOut);
 					AnimMgr.AddChain(Page.GetFirstChild("QUAD_HIGHLIGHT_SHADOWS_HIGH"), "<quad opacity=\"0\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
 
 					if(IsUltraAvailable) {
-						AnimMgr.Add(Page.GetFirstChild("QUAD_HIGHLIGHT_SHADOWS_ULTRA"), "<quad opacity=\".5\"/>", Now+800, 200, CAnimManager::EAnimManagerEasing::QuadOut);
+						AnimMgr.Add(Page.GetFirstChild("QUAD_HIGHLIGHT_SHADOWS_ULTRA"), "<quad opacity=\".5\"/>", Now+600, 200, CAnimManager::EAnimManagerEasing::QuadOut);
 						AnimMgr.AddChain(Page.GetFirstChild("QUAD_HIGHLIGHT_SHADOWS_ULTRA"), "<quad opacity=\"0\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
 					}
 				}
