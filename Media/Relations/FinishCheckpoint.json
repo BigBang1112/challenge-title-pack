@@ -1,7 +1,7 @@
 {
 	"Canyon": [
-		[{"Name": "RoadRaceFinish"}, {"Name": "RoadRaceCheckpoint"}],
-		[{"Name": "RoadRaceFinishMirror"}, {"Name": "RoadRaceCheckpointMirror"}],
+		[{"Name": "RoadRaceFinish"}, {"Name": "RoadRaceCheckpointMirror"}],
+		[{"Name": "RoadRaceFinishMirror"}, {"Name": "RoadRaceCheckpoint"}],
 		[{"Name": "ArenaFinish"}, {"Name": "ArenaCheckpointBase"}],
 		[{"Name": "RoadMainFinish"}, {"Name": "RoadMainCheckpoint"}],
 		[{"Name": "TubeFinish"}, {"Name": "TubeCheckpoint"}],
