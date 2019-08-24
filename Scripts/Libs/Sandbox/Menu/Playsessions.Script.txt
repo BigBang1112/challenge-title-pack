@@ -13,6 +13,13 @@
 #Include "Libs/Challenge/Scope.Script.txt" as Scope
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
 
+#Struct SElement {
+	Text Name;
+	Integer Count;
+	Boolean Selected;
+	Boolean Selectable;
+}
+
 #Struct SPublicMap {
 	Text Name;
 	Text Uid;
@@ -56,7 +63,7 @@ Void Event(CManiaAppEvent _Event) {
 
 	if(Event.Type == CManiaAppEvent::EType::LayerCustomEvent) {
 		switch(Event.CustomEventType) {
-			case "JoinPlaysession": {
+			case "Select": {
 				SelectedPlaysession = Playsessions[TextLib::ToInteger(Event.CustomEventData[0])];
 				Task::Async_DataFileMgr("PLAYSESSION_MAP",DataFileMgr.Map_GetFilteredGameList(Scope::C_BrowserScope, "", True));
 			}
@@ -68,7 +75,15 @@ Void Async() {
 	if(Http::IsCompleted("Playsessions")) {
 		if(Http::IsSuccessful("Playsessions")) {
 			declare JsonSuccess = Playsessions.fromjson(Http::GetResult("Playsessions"));
-			Layers::SendEvent("Playsessions", "UpdatePlaysessions", Playsessions.tojson());
+			declare SElement[] Elements;
+			foreach(Playsession,Playsessions) {
+				declare SElement Element;
+				Element.Name = Playsession.Map.Name;
+				Element.Count = Playsession.Users.count;
+				Element.Selectable = True;
+				Elements.add(Element);
+			}
+			Layers::SendEvent("Playsessions", "Elements", Elements.tojson());
 		}
 		else {
 			
