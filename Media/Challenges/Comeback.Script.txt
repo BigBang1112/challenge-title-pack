@@ -65,10 +65,15 @@ Void Problem_CannotRemoveFinish(SChWaypoint _Finish) {
 
 ***Main***
 ***
+SetStatusMessage("{{{{READING_ALL_MULTILAPS}}}}");
 declare Multilaps = GetMultilaps();
+SetStatusMessage("{{{{READING_ALL_FINISHES}}}}");
 declare FinishLines = GetFinishLines();
+SetStatusMessage("{{{{READING_MAP_INFO}}}}");
 declare MapInfo = GetMapInfo();
 declare Environment = MapInfo.CollectionName;
+
+SetStatusMessage("{{{{CONSIDERING_MULTILAP_TRACK}}}}");
 
 declare IsOneLapWithFinish = Multilaps.count == 1 && FinishLines.count > 0 && MapInfo.TMObjective_NbLaps == 1;
 declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
