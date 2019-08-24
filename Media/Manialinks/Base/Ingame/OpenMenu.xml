@@ -1,4 +1,4 @@
-<frame pos="125 0">
-	<quad z-index="0" size="60 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_BUTTON_OPENMENU" valign="center"/>
-	<label z-index="1" size="60 10" text="{{{{OPEN_MENU}}}}" valign="center2" textfont="RajdhaniMono" halign="center" pos="0 -0.3"/>
+<frame pos="-147.5 77.5">
+	<quad z-index="0" size="20 20" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_BUTTON_OPENMENU" valign="center"/>
+	<label z-index="1" size="20 20" text="" data-tooltip="{{{{OPEN_MENU}}}}" valign="center2" textfont="RajdhaniMono" halign="center" pos="0 -1.2" textsize="6"/>
 </frame>
