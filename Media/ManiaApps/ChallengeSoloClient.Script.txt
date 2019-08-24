@@ -78,36 +78,38 @@ Dictionary::SetTranslationLanguage(Settings::Get().Language);
 
 declare netread Boolean Server_IsValidationMode for UI;
 declare netread Race::SVehicle[] Server_Vehicles for UI;
-declare netread Text Server_MapVehicle for UI;
+declare netread Race::SVehicle Server_MapVehicle for UI;
 declare netread Race::SEndRaceInfo Server_EndRaceInfo for UI;
 
-wait(Server_Vehicles.count > 0 && Server_MapVehicle != "");
+wait(Server_Vehicles.count > 0 && Server_MapVehicle.File != "");
 
-declare Text[] VehicleNames;
-
-foreach(Vehicle, Server_Vehicles) {
-	VehicleNames.add(Vehicle.Name);
+declare MapVehicle = -1;
+for(I,0,Server_Vehicles.count-1) {
+	declare Vehicle = Server_Vehicles[I];
+	if(Vehicle.File == Server_MapVehicle.File) {
+		MapVehicle = I;
+	}
 }
 
 declare Music_Endscreen = Audio.CreateSound("file://Media/Musics/Endscreen.ogg", 1.0, True, False, False);
 
 declare VehicleML = "";
-for(I, 0, VehicleNames.count-1) {
-	declare Vehicle = VehicleNames[I];
-	VehicleML ^= """<frame pos="0 {{{-I*20+VehicleNames.keyof(Server_MapVehicle)*20}}}" data-id="{{{I}}}">
+for(I, 0, Server_Vehicles.count-1) {
+	declare Vehicle = Server_Vehicles[I];
+	VehicleML ^= """<frame pos="0 {{{-I*20+MapVehicle*20}}}" data-id="{{{I}}}">
 	<frame z-index="-1">
 		<quad z-index="0" size="80 19" valign="center" halign="center" style="Bgs1" substyle="BgCardList" opacity="1"/>
 		<quad z-index="1" size="80 19" valign="center" halign="center" style="Bgs1" substyle="BgGradV" opacity="1"/>
 	</frame>
 	<quad z-index="0" size="80 19" id="QUAD_VEHICLE" valign="center" halign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5"/>
-	<label pos="0 -0.5" z-index="1" size="70 10" text="{{{Vehicle}}}" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" opacity="1"/>
+	<label pos="0 -0.5" z-index="1" size="70 10" text="{{{Vehicle.Name}}}" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" opacity="1"/>
 	<label pos="37.5 -8" z-index="1" size="75 5" text="{{{Dictionary::Get("ORIGINAL")}}}" halign="right" valign="bottom" textfont="Oswald" textsize="2" textcolor="FF0" id="LABEL_ORIGINAL" hidden="1"/>
 </frame>""";
 }
 
 declare VehicleManialink = Manialink::FromFile(C_Manialink_Vehicle, True, [], Settings::Get().Theme);
 VehicleManialink = TextLib::Replace(VehicleManialink, """<frame id="FRAME_INNER_VEHICLES"/>""",
-"""<quad z-index="-1" pos="0 {{{-VehicleNames.count*20/2+VehicleNames.keyof(Server_MapVehicle)*20}}}" size="220 {{{(VehicleNames.count)*20+160}}}" halign="center" valign="center" style="Bgs1InRace" substyle="BgEmpty" scriptevents="1"/>
+"""<quad z-index="-1" pos="0 {{{-Server_Vehicles.count*20/2+MapVehicle*20}}}" size="220 {{{(Server_Vehicles.count)*20+160}}}" halign="center" valign="center" style="Bgs1InRace" substyle="BgEmpty" scriptevents="1"/>
 <frame id="FRAME_INNER_VEHICLES">{{{VehicleML}}}</frame>""");
 
 Layers::Create("Menu", Manialink::FromFile(C_Manialink_Menu, True, ["SlideText"], Settings::Get().Theme));
@@ -140,14 +142,13 @@ Layers::SendEvent("Menu", "Navigation", "True");
 
 declare Integer VehicleIndex for Layers::Get("Vehicle").LocalPage;
 declare Integer MapVehicleIndex for Layers::Get("Vehicle").LocalPage;
-if(VehicleNames.exists(Server_MapVehicle)) MapVehicleIndex = VehicleNames.keyof(Server_MapVehicle);
-else MapVehicleIndex = -1;
+MapVehicleIndex = MapVehicle;
 VehicleIndex = MapVehicleIndex;
 
 declare Integer OldVehicleIndex = VehicleIndex;
 
 declare Integer VehicleCount for Layers::Get("Vehicle").LocalPage;
-VehicleCount = VehicleNames.count;
+VehicleCount = Server_Vehicles.count;
 
 declare SAuthToken INGAME_TOKEN for LocalUser;
 
@@ -162,8 +163,8 @@ Playsession.TitleId = LoadedTitle.TitleId;
 
 log(INGAME_TOKEN.Value);
 
-declare Req = Http::SyncPOST("""{{{Service_Status::LastStatus().Service}}}/ingame/playsession""", Playsession.tojson(), "Content-Type: application/json\nContent-Length: "^TextLib::Length(Playsession.tojson()));
-//log(Req.Result);
+declare Req = Http::SyncPOST("""{{{Service_Status::LastStatus().Service}}}/ingame/playsession.php""", Playsession.tojson(), "Content-Type: application/json\nContent-Length: "^TextLib::Length(Playsession.tojson()));
+log(Req.Result);
 Http.Destroy(Req);
 
 declare netread Integer Server_VehicleLock for UI;

@@ -1,3 +1,5 @@
+#Include "TextLib" as TextLib
+
 #Include "Libs/BigBang1112/File.Script.txt" as File
 
 #Struct SRealVehicle {
@@ -35,6 +37,7 @@ Void Init(CTmMode _Mode) {
 
 Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
 	wait(_Mode.MapLoaded);
+	declare MapModelName = TextLib::Replace(_Mode.MapPlayerModelName, "\\", "/");
 	
 	foreach(Player, _Mode.AllPlayers) {
 		declare UI <=> _Mode.UIManager.GetUI(Player);
@@ -60,17 +63,26 @@ Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
 		declare netwrite Boolean Server_Outro for UI;
 		Server_Outro = False;
 		
+		declare netwrite Boolean Server_NoGravity for UI;
+		Server_NoGravity = False;
+		
 		UI.UISequence = CUIConfig::EUISequence::Playing;
 	}
 					
 	declare SVehicle MapVehicle;
-	foreach(Vehicle, RealVehicles)
-		if(Vehicle.Name == _Mode.MapPlayerModelName) RealMapVehicle = Vehicle;
+	for(I, 0, Vehicles.count-1) {
+		declare Vehicle = Vehicles[I];
+		declare RealVehicle = RealVehicles[I];
+		if(Vehicle.Name == MapModelName || Vehicle.File == MapModelName) {
+			MapVehicle = Vehicle;
+			RealMapVehicle = RealVehicle;
+		}
+	}
 	
 	foreach(Player, _Mode.AllPlayers) {
 		declare UI <=> _Mode.UIManager.GetUI(Player);
-		declare netwrite Text Server_MapVehicle for UI;
-		Server_MapVehicle = _Mode.MapPlayerModelName;
+		declare netwrite SVehicle Server_MapVehicle for UI;
+		Server_MapVehicle = MapVehicle;
 		
 		Player.RaceStartTime = -1;
 		Player.IsSpawned = True;
@@ -231,6 +243,7 @@ Void Loop(CTmMode _Mode) {
 		declare netwrite Boolean Server_EndRace for UI;
 		declare netwrite Boolean Server_Outro for UI;
 		declare netwrite Integer Server_CurrentVehicle for UI;
+		declare netwrite Boolean Server_NoGravity for UI;
 		
 		declare netread Integer Client_VehicleIndex for UI;
 		
@@ -238,6 +251,8 @@ Void Loop(CTmMode _Mode) {
 		
 		if(Server_Playing && !Server_EndRace && !Server_Outro) {			
 			Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id;
+			if(Server_NoGravity) Player.GravityCoef = 0.;
+			else Player.GravityCoef = 1.;
 			Server_CurrentVehicle = Client_VehicleIndex;
 			_Mode.SpawnPlayer(Player, 0, -1);
 		}
