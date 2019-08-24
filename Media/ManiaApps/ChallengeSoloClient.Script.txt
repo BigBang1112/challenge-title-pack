@@ -12,6 +12,7 @@
 #Include "Libs/BigBang1112/Map.Script.txt" as Map
 
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
+#Include "Libs/Challenge/Service/Map.Script.txt" as Service_Map
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
@@ -279,6 +280,26 @@ foreach(Event, PendingEvents) {
 						}
 						case "Exit": {
 							Playground.QuitServer(True);
+						}
+					}
+				}
+				case Layers::Get("Playsession"): {
+					switch(Event.CustomEventType) {
+						case "PublishMap": {
+							declare Service_Map::SPublishParams Params;
+							Params.Login = LocalUser.Login;
+							Params.Token = INGAME_TOKEN.Value;
+							Params.MapUid = Map.MapInfo.MapUid;
+							Params.MapName = Map.MapName;
+							Params.MapAuthor = Map.AuthorNickName;
+							Params.OriginalMapUid = OriginalMap.MapUid;
+							Params.OriginalMapName = OriginalMap.Name;
+							Params.OriginalMapAuthor = OriginalMap.AuthorNickName;
+							Params.OriginalGame = "";
+							Params.TitleId = LoadedTitle.TitleId;
+							Params.Modifiers = [];
+
+							Service_Map::Publish(Params);
 						}
 					}
 				}

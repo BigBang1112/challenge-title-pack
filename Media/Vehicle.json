@@ -2,51 +2,51 @@
 	{
 		"Name": "CanyonCar",
 		"Image": "",
-		"File": "CanyonCarNew.Item.Gbx"
+		"File": "Vehicles/CanyonCar.Item.Gbx"
 	},
 	{
 		"Name": "StadiumCar",
 		"Image": "",
-		"File": "StadiumCarNew.Item.Gbx"
+		"File": "Vehicles/StadiumCar.Item.Gbx"
 	},
 	{
 		"Name": "ValleyCar",
 		"Image": "",
-		"File": "ValleyCarNew.Item.Gbx"
+		"File": "Vehicles/ValleyCar.Item.Gbx"
 	},
 	{
 		"Name": "LagoonCar",
 		"Image": "",
-		"File": "LagoonCarNew.Item.Gbx"
+		"File": "Vehicles/LagoonCar.Item.Gbx"
 	},
 	{
 		"Name": "DesertCar",
 		"Image": "",
-		"File": "DesertCarNew.Item.Gbx"
+		"File": "Vehicles/DesertCar.Item.Gbx"
 	},
 	{
 		"Name": "RallyCar",
 		"Image": "",
-		"File": "RallyCarNew.Item.Gbx"
+		"File": "Vehicles/RallyCar.Item.Gbx"
 	},
 	{
 		"Name": "SnowCar",
 		"Image": "",
-		"File": "SnowCarNew.Item.Gbx"
+		"File": "Vehicles/SnowCar.Item.Gbx"
 	},
 	{
 		"Name": "IslandCar",
 		"Image": "",
-		"File": "IslandCarNew.Item.Gbx"
+		"File": "Vehicles/IslandCar.Item.Gbx"
 	},
 	{
 		"Name": "BayCar",
 		"Image": "",
-		"File": "BayCarNew.Item.Gbx"
+		"File": "Vehicles/BayCar.Item.Gbx"
 	},
 	{
 		"Name": "CoastCar",
 		"Image": "",
-		"File": "CoastCarNew.Item.Gbx"
+		"File": "Vehicles/CoastCar.Item.Gbx"
 	}
 ]

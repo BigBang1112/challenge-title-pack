@@ -1,0 +1,21 @@
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
+
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
+
+#Struct SPublishParams {
+	Text Login;
+	Text Token;
+	Text MapUid;
+	Text MapName;
+	Text MapAuthor;
+	Text OriginalMapUid;
+	Text OriginalMapName;
+	Text OriginalMapAuthor;
+	Text OriginalGame;
+	Text TitleId;
+	Text[] Modifiers;
+}
+
+Void Publish(SPublishParams _Params) {
+	//declare Request = Http::SyncPOST("""{{{Service_Status::LastStatus().Service}}}/ingame/map.php""", _Params.tojson());
+}

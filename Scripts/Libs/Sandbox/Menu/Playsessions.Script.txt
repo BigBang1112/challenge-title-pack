@@ -53,6 +53,8 @@ Void Start() {
 	Layers::SendEvent("Playsessions", "Position", ["115 0"]);
 	Layers::SendEvent("Playsessions", "Size", ["70 70"]);
 	Layers::SendEvent("Playsessions", "Animation_Out", ["200 0"]);
+	Layers::SendEvent("Playsessions", "Number_Enable", "True");
+	
 	Layers::Show("Playsessions", True);
 	
 	declare Success = Http::AsyncGET("Playsessions", """{{{Service_Status::LastStatus().Service}}}/playsessions.php?titleid={{{LoadedTitle.TitleId}}}""");
@@ -78,7 +80,7 @@ Void Async() {
 			declare SElement[] Elements;
 			foreach(Playsession,Playsessions) {
 				declare SElement Element;
-				Element.Name = Playsession.Map.Name;
+				Element.Name = Playsession.Map.OriginalName;
 				Element.Count = Playsession.Users.count;
 				Element.Selectable = True;
 				Elements.add(Element);
