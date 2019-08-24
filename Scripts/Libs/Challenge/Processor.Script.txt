@@ -1,4 +1,5 @@
 #Include "TextLib" as TextLib
+#Include "MathLib" as MathLib
 #Include "MapUnits" as MapUnits
 
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
@@ -48,25 +49,36 @@ ModifierBase::SChallengeBlock[] GetBlocks() {
 		
 		ChallengeBlocks.add(Block);
 	}
-
-	foreach(Block, Blocks) {
-		if(Block != Null && !Coords.exists(Block.Coord)) {
-			declare ModifierBase::SChallengeBlock ChBlock;
-			ChBlock.Placed = True;
-			ChBlock.Block <=> Block;
-
-			foreach(Anchor, AnchorData)
-				if(Anchor.Block != Null)
-					if(Anchor.Block.Id == Block.Id)
-						ChBlock.Anchors.add(Anchor);
-
-			if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Start) ChBlock.Waypoint = "Start";
-			else if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Checkpoint) ChBlock.Waypoint = "Checkpoint";
-			else if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Finish) ChBlock.Waypoint = "Finish";
-			else if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::StartFinish) ChBlock.Waypoint = "Multilap";
-			
-			ChallengeBlocks.add(ChBlock);
+	
+	declare CBlock[][] BlockChunks;
+	
+	for(I,0,Blocks.count-1) {
+		declare Chunk = MathLib::FloorInteger(I/1000.);
+		while(!BlockChunks.existskey(Chunk)) BlockChunks.add([]);
+		BlockChunks[Chunk].add(Blocks[I]);
+	}
+	
+	foreach(Blcks, BlockChunks) {
+		foreach(Block, Blcks) {
+			if(Block != Null && !Coords.exists(Block.Coord)) {
+				declare ModifierBase::SChallengeBlock ChBlock;
+				ChBlock.Placed = True;
+				ChBlock.Block <=> Block;
+	
+				foreach(Anchor, AnchorData)
+					if(Anchor.Block != Null)
+						if(Anchor.Block.Id == Block.Id)
+							ChBlock.Anchors.add(Anchor);
+	
+				if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Start) ChBlock.Waypoint = "Start";
+				else if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Checkpoint) ChBlock.Waypoint = "Checkpoint";
+				else if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::Finish) ChBlock.Waypoint = "Finish";
+				else if(Block.BlockModel.WaypointType == CBlockModel::EWayPointType::StartFinish) ChBlock.Waypoint = "Multilap";
+				
+				ChallengeBlocks.add(ChBlock);
+			}
 		}
+		yield;
 	}
 
 	return ChallengeBlocks;
