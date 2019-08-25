@@ -1,3 +1,8 @@
+***Start***
+***
+declare Time = -1;
+***
+
 ***Loop***
 ***
 foreach(Event,PendingEvents) {
@@ -7,8 +12,18 @@ foreach(Event,PendingEvents) {
 				case "ScriptName": {
 					(Page.GetFirstChild("LABEL_SCRIPTNAME") as CMlLabel).SetText(Event.CustomEventData[0]);
 				}
+				case "Time": {
+					Time = TextLib::ToInteger(Event.CustomEventData[0]);
+				}
 			}
 		}
 	}
+}
+
+if(Time == -1) (Page.GetFirstChild("LABEL_TIME") as CMlLabel).SetText("-.---s");
+else {
+	Time -= Period;
+	if(Time < 0) Time = 0;
+	(Page.GetFirstChild("LABEL_TIME") as CMlLabel).SetText(TextLib::FormatReal(Time/1000., 3, False, False)^"s");
 }
 ***
