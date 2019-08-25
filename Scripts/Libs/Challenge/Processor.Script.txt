@@ -4,6 +4,7 @@
 
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/File.Script.txt" as File
+#Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 #Include "Libs/Challenge/Conversion.Script.txt" as Conversion
@@ -782,7 +783,7 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			Respond(_LayerAPI, _Type, []);
 		}
 		case "Ch_SetStatusMessage": {
-			Layers::SendEvent("ModifierStatus", "Message", [_Data[0]]);
+			Layers::SendEvent("ModifierStatus", "Message", [Dictionary::TranslateAllPhrases(_Data[0])]);
 			Respond(_LayerAPI, _Type, []);
 		}
 		case "Ch_SetStatusColor": {

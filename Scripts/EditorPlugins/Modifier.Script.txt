@@ -154,7 +154,7 @@ Void Finish() {
 			declare SElement[] Elements;
 			foreach(Problem,Problems) {
 				declare SElement Element;
-				Element.Name = Problem.ShortDescription;
+				Element.Name = Dictionary::TranslateAllPhrases(Problem.ShortDescription);
 				Element.Selectable = True;
 				Elements.add(Element);
 			}
@@ -196,12 +196,14 @@ Void Finish() {
 					case "Button_Solve": {
 						Solver = True;
 						Layers::SendEvent("ModifierProblems", "Select", "0");
-						Layers::SendEvent("ModifierSolver", "Problem", Problems[0].tojson());
+						declare Problem = Problems[0];
+						Problem.ShortDescription = Dictionary::TranslateAllPhrases(Problem.ShortDescription);
+						Layers::SendEvent("ModifierSolver", "Problem", Problem.tojson());
 						
 						declare SElement[] Elements;
 						foreach(Solution,Problems[0].Solutions) {
 							declare SElement Element;
-							Element.Name = Solution.Value;
+							Element.Name = Dictionary::TranslateAllPhrases(Solution.Value);
 							Element.Selectable = Solution.IsInteractive;
 							Elements.add(Element);
 						}
@@ -289,13 +291,15 @@ Void Finish() {
 										case "Select": {
 											SelectedProblem = TextLib::ToInteger(Event.CustomEventData[0]);
 											declare Problem = Problems[SelectedProblem];
+											Problem.ShortDescription = Dictionary::TranslateAllPhrases(Problem.ShortDescription);
+											Problem.LongDescription = Dictionary::TranslateAllPhrases(Problem.LongDescription);
 											Layers::SendEvent("ModifierSolver", "Problem", Problem.tojson());
 											Layers::SendEvent("ModifierSolver", "ProblemCount", Problems.count^"");
 											
 											declare SElement[] Elements;
 											foreach(Solution,Problem.Solutions) {
 												declare SElement Element;
-												Element.Name = Solution.Value;
+												Element.Name = Dictionary::TranslateAllPhrases(Solution.Value);
 												Element.Selectable = Solution.IsInteractive;
 												Elements.add(Element);
 											}
@@ -334,6 +338,9 @@ Void Finish() {
 				}
 				
 				declare Problem = Problems[SelectedProblem];
+				Problem.ShortDescription = Dictionary::TranslateAllPhrases(Problem.ShortDescription);
+				Problem.LongDescription = Dictionary::TranslateAllPhrases(Problem.LongDescription);
+				
 				declare Offset = 0;
 				if(SelectedPoint < Problem.Waypoints.count) {
 					declare Waypoint = Problem.Waypoints[SelectedPoint];
@@ -384,7 +391,7 @@ Void Finish() {
 								
 					{{{File::Read("Media/API_Main_Solver.Script.txt")}}}""");
 					
-					LayerCustomEvent(LayerAPI, "Solver", [SelectedProblem^"", Problems[SelectedProblem].tojson(), SelectedSolution^"", SelectedPoint^""]);
+					LayerCustomEvent(LayerAPI, "Solver", [SelectedProblem^"", Problem.tojson(), SelectedSolution^"", SelectedPoint^""]);
 					
 					declare Text[Integer] LastBlocks;
 					foreach(Block,Blocks)
@@ -460,7 +467,7 @@ Void Finish() {
 						declare SElement[] Elements;
 						foreach(Problem,Problems) {
 							declare SElement Element;
-							Element.Name = Problem.ShortDescription;
+							Element.Name = Dictionary::TranslateAllPhrases(Problem.ShortDescription);
 							Element.Selectable = True;
 							Elements.add(Element);
 						}
@@ -470,13 +477,15 @@ Void Finish() {
 						SelectedProblem = 0;
 						Layers::Show("ModifierProblems", True);
 						declare Problem = Problems[0];
+						Problem.ShortDescription = Dictionary::TranslateAllPhrases(Problem.ShortDescription);
+						Problem.LongDescription = Dictionary::TranslateAllPhrases(Problem.LongDescription);
 						Layers::SendEvent("ModifierSolver", "Problem", Problem.tojson());
 						Layers::Show("ModifierSolutions", True);
 						
 						declare SElement[] SolutionElements;
 						foreach(Solution,Problem.Solutions) {
 							declare SElement Element;
-							Element.Name = Solution.Value;
+							Element.Name = Dictionary::TranslateAllPhrases(Solution.Value);
 							Element.Selectable = Solution.IsInteractive;
 							SolutionElements.add(Element);
 						}
@@ -540,9 +549,9 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 
 {{{File::Read("Media/API_Base.Script.txt")}}}
 			
-{{{Dictionary::TranslateAllPhrases(File::Read("Media/API.Script.txt"))}}}
+{{{File::Read("Media/API.Script.txt")}}}
 			
-{{{Dictionary::TranslateAllPhrases(_ScriptContent)}}}
+{{{_ScriptContent}}}
 			
 {{{File::Read("Media/API_Main.Script.txt")}}}""");
 			
@@ -565,7 +574,7 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 					Commands.add(Command);
 				}
 				if(Event.CustomEventType == "ScriptMetadata") {
-					Layers::SendEvent("ModifierMetadata", "Metadata", Event.CustomEventData[0]);
+					Layers::SendEvent("ModifierMetadata", "Metadata", Dictionary::TranslateAllPhrases(Event.CustomEventData[0]));
 				}
 			}
 		}
