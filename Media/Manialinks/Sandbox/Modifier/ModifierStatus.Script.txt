@@ -12,10 +12,10 @@ foreach(Event,PendingEvents) {
 					AnimMgr.Add(Page.GetFirstChild("LABEL_MESSAGE"), "<label opacity=\"1\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
 					(Page.GetFirstChild("LABEL_MESSAGE") as CMlLabel).SetText(Event.CustomEventData[0]);
 				}
-				case "Status": {
-					(Page.GetFirstChild("LABEL_STATUS") as CMlLabel).Opacity = 0.0;
-					AnimMgr.Add(Page.GetFirstChild("LABEL_STATUS"), "<label opacity=\"1\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
-					(Page.GetFirstChild("LABEL_STATUS") as CMlLabel).SetText(Event.CustomEventData[0]);
+				case "Stage": {
+					(Page.GetFirstChild("LABEL_STAGE") as CMlLabel).Opacity = 0.0;
+					AnimMgr.Add(Page.GetFirstChild("LABEL_STAGE"), "<label opacity=\"1\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
+					(Page.GetFirstChild("LABEL_STAGE") as CMlLabel).SetText(Event.CustomEventData[0]);
 				}
 				case "Color": {
 					declare ColorText = TextLib::Split(" ",Event.CustomEventData[0]);

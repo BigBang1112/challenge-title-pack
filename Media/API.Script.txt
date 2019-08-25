@@ -492,6 +492,11 @@ Void SetStatusMessage(Text _Message) {
 	yield;
 }
 
+Void SetStatusStage(Text _Stage) {
+	declare Response = Request("Ch_SetStatusStage", [_Stage]);
+	yield;
+}
+
 Void SetStatusColor(Vec3 _Color) {
 	declare Response = Request("Ch_SetStatusColor", [_Color.X^" "^_Color.Y^" "^_Color.Z]);
 	yield;
@@ -535,11 +540,13 @@ Void Problem(SChProblem _Problem) {
 	if(_Problem.Solutions.count == 0) {
 		SetStatusColor(<1.,0.,0.>);
 		SetStatusProgress(1.);
-		SetStatusMessage("{{{{FATAL_PROBLEM}}}}: " ^ _Problem.ShortDescription);
+		//SetStatusStage("{{{{FATAL_PROBLEM}}}}");
+		SetStatusMessage("{{{{FATAL_PROBLEM}}}}: " ^ _Problem.ShortDescription); // Should be solved somewhen
 	}
 	else {
 		SetStatusColor(<1.,.5,0.>);
-		SetStatusMessage("{{{{PROBLEM}}}}: " ^ _Problem.ShortDescription);
+		//SetStatusStage("{{{{PROBLEM}}}}");
+		SetStatusMessage("{{{{PROBLEM}}}}: " ^ _Problem.ShortDescription); // Should be solved somewhen
 	}
 	
 	sleep(1500);
@@ -611,7 +618,7 @@ SChRelationBlock[][][Text] GetRelation_StartMultilap() {
 	return Relation;
 }
 
-SChRelationBlock[][][Text] GetRelation_FinishCheckpoint() { //Canyon and Lagoon ghost blocks not done
+SChRelationBlock[][][Text] GetRelation_FinishCheckpoint() {
 	declare File = Http.CreateGet("file://Media/Relations/FinishCheckpoint.json");
 	wait(File.IsCompleted);
 	declare SChRelationBlock[][][Text] Relation;
@@ -650,100 +657,3 @@ SChRelationBlock[][][Text] GetRelation_CheckpointRoad() {
 //
 /* Pre-made problem functions */
 //
-
-/*Void Problem_MultilapTrack(SChAnchor _Anchor) {
-	declare SChProblem Problem;
-	Problem.Name = "MultilapTrack";
-	Problem.Anchor = _Anchor;
-	Problem(Problem);
-}
-
-Void Problem_CannotRemoveStartLine(SChAnchor _Anchor) {
-	declare SChProblem Problem;
-	Problem.Name = "CannotRemoveStartLine";
-	Problem.Anchor = _Anchor;
-	Problem(Problem);
-}
-
-Void Problem_CannotRemoveFinishLine(SChAnchor _Anchor) {
-	declare SChProblem Problem;
-	Problem.Name = "CannotRemoveFinishLine";
-	Problem.Anchor = _Anchor;
-	Problem(Problem);
-}
-
-Void Problem_CannotRemoveCheckpoint(SChAnchor _Anchor) {
-	declare SChProblem Problem;
-	Problem.Name = "CannotRemoveCheckpoint";
-	Problem.Anchor = _Anchor;
-	Problem(Problem);
-}
-
-Void Problem_CannotRemoveMultilap(SChAnchor _Anchor) {
-	declare SChProblem Problem;
-	Problem.Name = "CannotRemoveMultilap";
-	Problem.Anchor = _Anchor;
-	Problem(Problem);
-}
-
-Void Problem_ItemStart(SChAnchor _Anchor) {
-	declare SChProblem Problem;
-	Problem.Name = "ItemStart";
-	Problem.Anchor = _Anchor;
-	Problem(Problem);
-}
-
-Void Problem_ItemFinish(SChAnchor _Anchor) {
-	declare SChProblem Problem;
-	Problem.Name = "ItemFinish";
-	Problem.Anchor = _Anchor;
-	Problem(Problem);
-}
-
-Void Problem_ItemMultilap(SChAnchor _Anchor) {
-	declare SChProblem Problem;
-	Problem.Name = "ItemMultilap";
-	Problem.Anchor = _Anchor;
-	Problem(Problem);
-}
-
-Void Problem_MultipleFinishes(SChAnchor[] _Anchors) {
-	declare SChProblem Problem;
-	Problem.Name = "MultipleFinishes";
-	declare JsonSuccess = Problem.Anchors.fromjson(_Anchors.tojson());
-	Problem(Problem);
-}
-
-Void Problem_CannotReplaceStartLine(SChAnchor _Anchor) {
-	declare SChProblem Problem;
-	Problem.Name = "CannotReplaceStartLine";
-	Problem.Anchor = _Anchor;
-	Problem(Problem);
-}
-
-Void Problem_CannotReplaceFinishLine(SChAnchor _Anchor) {
-	declare SChProblem Problem;
-	Problem.Name = "CannotReplaceFinishLine";
-	Problem.Anchor = _Anchor;
-	Problem(Problem);
-}
-
-Void Problem_CannotReplaceMultilap(SChAnchor _Anchor) {
-	declare SChProblem Problem;
-	Problem.Name = "CannotReplaceMultilap";
-	Problem.Anchor = _Anchor;
-	Problem(Problem);
-}
-
-Void Problem_CannotPlaceGhostBlock(Int3 _Coord) {
-	declare SChProblem Problem;
-	Problem.Name = "CannotPlaceGhostBlock";
-	Problem.Coord = _Coord;
-	Problem(Problem);
-}
-
-Void Problem_NoCheckpoint() {
-	declare SChProblem Problem;
-	Problem.Name = "NoCheckpoint";
-	Problem(Problem);
-}*/

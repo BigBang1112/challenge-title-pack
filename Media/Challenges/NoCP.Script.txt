@@ -62,6 +62,7 @@ Void Problem_CannotRemoveCheckpoint(SChWaypoint _Checkpoint) {
 
 ***Main***
 ***
+SetStatusStage("{{{{ANALYZING}}}}...");
 SetStatusMessage("{{{{SEARCHING_ALL_MULTILAPS}}}}...");
 declare Multilaps = GetMultilaps();
 SetStatusMessage("{{{{SEARCHING_ALL_FINISHES}}}}...");
@@ -76,6 +77,8 @@ declare IsOneLapWithFinish = Multilaps.count == 1 && FinishLines.count > 0 && Ma
 declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
 
 if(IsMultilap) Problem_MultilapTrack(Multilaps[0]);
+
+SetStatusStage("{{{{MODIFYING}}}}...");
 
 if(IsOneLapWithFinish) {
 	declare Multilap = Multilaps[0];

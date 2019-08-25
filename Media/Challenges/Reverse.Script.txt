@@ -75,6 +75,7 @@ Void Problem_MultipleFinishes(SChWaypoint[] _Finishes) {
 
 ***Main***
 ***
+SetStatusStage("{{{{ANALYZING}}}}...");
 SetStatusMessage("{{{{SEARCHING_ALL_STARTS}}}}...");
 declare StartLines = GetStartLines();
 SetStatusMessage("{{{{SEARCHING_ALL_MULTILAPS}}}}...");
@@ -92,6 +93,7 @@ declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
 
 if(IsMultilap) Problem_MultilapTrack(Multilaps[0]);
 
+SetStatusStage("{{{{MODIFYING}}}}...");
 SetStatusProgress(.5);
 
 if(IsOneLapWithFinish) {

@@ -4,8 +4,8 @@ foreach(Event,PendingEvents) {
 	switch(Event.Type) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
-				case "QUAD_BUTTON_START": {
-					SendCustomEvent("Start",[]);
+				case "QUAD_BUTTON_REFRESH": {
+					SendCustomEvent("Refresh",[]);
 				}
 				case "QUAD_BUTTON_LEAVE": {
 					SendCustomEvent("Leave",[]);
@@ -16,12 +16,6 @@ foreach(Event,PendingEvents) {
 			switch(Event.CustomEventType) {
 				case "Show": {
 					
-				}
-				case "Hide": {
-					Page.GetFirstChild("FRAME_MODIFIER_INTRO").Hide();
-				}
-				case "Map": {
-					(Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel).SetText(Event.CustomEventData[0]);
 				}
 			}
 		}

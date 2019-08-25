@@ -26,6 +26,7 @@
 #Const C_Manialink_ModifierMetadata "Media/Manialinks/Sandbox/Modifier/ModifierMetadata"
 #Const C_Manialink_ModifierActions "Media/Manialinks/Sandbox/Modifier/ModifierActions"
 #Const C_Manialink_ModifierSolver "Media/Manialinks/Sandbox/Modifier/ModifierSolver"
+#Const C_Manialink_ModifierCrash "Media/Manialinks/Sandbox/Modifier/ModifierCrash"
 
 #Struct SCommand {
 	Text Name;
@@ -554,6 +555,9 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 {{{_ScriptContent}}}
 			
 {{{File::Read("Media/API_Main.Script.txt")}}}""");
+
+	declare Start = Now;
+	declare Crashed = False;
 			
 	declare Completed = False;
 	while(!Completed && !Terminate) {
@@ -576,6 +580,10 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 				if(Event.CustomEventType == "ScriptMetadata") {
 					Layers::SendEvent("ModifierMetadata", "Metadata", Dictionary::TranslateAllPhrases(Event.CustomEventData[0]));
 				}
+				if(Event.CustomEventType == "Leave") {
+					Layers::Hide("ModifierCrash");
+					Terminate = True;
+				}
 			}
 		}
 		
@@ -588,13 +596,21 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 		
 		UpdateCamera();
 		CameraReset();
-	
+		
+		if(!Crashed) {
+			if(!LayerAPI.IsLocalPageScriptRunning && Now - Start > 500) { // Script has crashed
+				Layers::Show("ModifierCrash");
+				Crashed = True;
+			}
+			else Layers::Hide("ModifierCrash");
+		}
+		
 		yield;
 	}
 
 	UILayerDestroy(LayerAPI);
 
-	Layers::SendEvent("ModifierStatus", "Status", Dictionary::Get("DONE"));
+	Layers::SendEvent("ModifierStatus", "Stage", Dictionary::Get("DONE"));
 	
 	declare metadata ModifierBase::SChProblem[] Problems for Map;
 	if(Terminate) Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED_UNSUCCESSFULLY"));
@@ -648,7 +664,7 @@ main() {
 	CameraToTargetDistance = CamDistance;
 	
 	HideEditorInterface = True;
-	EnableEditorInputsCustomProcessing = False;
+	EnableEditorInputsCustomProcessing = True;
 	EditMode = CMapEditorPlugin::EditMode::FreeLook;
 
 	Layers::Create("ModifierIntro",Manialink::FromFile(C_Manialink_ModifierIntro, True, ["TextAnimation"], Settings::Get().Theme));
@@ -656,6 +672,7 @@ main() {
 	Layers::Create("ModifierStatus",Manialink::FromFile(C_Manialink_ModifierStatus, True, ["TextAnimation"], Settings::Get().Theme));
 	Layers::Create("ModifierMetadata",Manialink::FromFile(C_Manialink_ModifierMetadata, True, ["TextAnimation"], Settings::Get().Theme));
 	Layers::Create("ModifierActions",Manialink::FromFile(C_Manialink_ModifierActions, True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierCrash",Manialink::FromFile(C_Manialink_ModifierCrash, True, ["TextAnimation"], Settings::Get().Theme));
 
 	Layers::SetAnimationInOut("ModifierScript",CUILayer::EUILayerAnimation::DownSlow);
 	Layers::SetAnimationInOut("ModifierStatus",CUILayer::EUILayerAnimation::DownSlow);
@@ -691,6 +708,9 @@ main() {
 						case "Start": {
 							Continue = True;
 						}
+						case "Leave": {
+							QuickQuit();
+						}
 					}
 				}
 			}
@@ -706,7 +726,7 @@ main() {
 		declare Text CHALLENGE_CODE for LocalUser;
 		SetMapStyle("Test Script");
 		Layers::SendEvent("ModifierScript", "ScriptName", [Dictionary::Get("TEST_SCRIPT")]);
-		Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
+		//Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
 		declare Continue = ProcessScript("TEST SCRIPT", CHALLENGE_CODE);
 	}
 	else {
@@ -752,7 +772,7 @@ main() {
 						}
 					}
 					
-					Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
+					//Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
 					Continue = ProcessScript(Script.Name, BuildScript);
 					sleep(500);
 					if(Problems.count > 0) Finish();
