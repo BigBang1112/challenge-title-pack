@@ -15,7 +15,6 @@
 #Include "Libs/Challenge/Menu/AuthBeta.Script.txt" as Menu_AuthBeta
 
 #Include "Libs/Challenge/Nicknames.Script.txt" as Nicknames
-#Include "Libs/Challenge/Scope.Script.txt" as Scope
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
 
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
@@ -66,7 +65,7 @@ declare SScriptInfo[] StartMapScripts;
 
 Void UpdateLocalMaps(Text _Folder, SMapInfoFilter _Filter) {
 	declare FlatSearch = (_Filter.Name != "");
-	Task::Async_DataFileMgr("MAPLIST_LOCAL_FOLDER",DataFileMgr.Map_GetFilteredGameList(Scope::C_BrowserScope,_Folder,FlatSearch));
+	Task::Async_DataFileMgr("MAPLIST_LOCAL_FOLDER",DataFileMgr.Map_GetGameList(_Folder,FlatSearch));
 	Data::Set("MAPLIST_LOCAL_FILTER",_Filter.tojson());
 }
 
@@ -121,7 +120,7 @@ Void StartMap(Text _MapLocation, Map::SMapInfo _MapInfo, SScriptInfo[] _Scripts)
 }
 
 Boolean StartMapIfExists() {	
-	declare List = Task::SyncMapList(DataFileMgr.Map_GetFilteredGameList(Scope::C_BrowserScope, MapDownloadApproximateLocation, True));
+	declare List = Task::SyncMapList(DataFileMgr.Map_GetGameList(MapDownloadApproximateLocation, True));
 	foreach(MapInfo,List.MapInfos) {
 		if(MapInfo.MapUid == MapDownloadUid && CheckMapOnline(MapInfo.MapUid)) {
 			wait(TitleControl.IsReady);
@@ -139,7 +138,7 @@ Boolean StartMapIfExists() {
 			MapDownloadApproximateLocation = "";
 			DataFileMgr.TaskResult_Release(List.Id);
 
-			Task::Async_DataFileMgr("DOWNLOADED_MAPUIDS",DataFileMgr.Map_GetFilteredGameList(Scope::C_BrowserScope, "Downloaded", True));
+			Task::Async_DataFileMgr("DOWNLOADED_MAPUIDS",DataFileMgr.Map_GetGameList("Downloaded", True));
 			
 			MapDownload = False;
 			
@@ -169,7 +168,7 @@ Void Start() {
 	UpdateLocalMaps("",Filter);
 	UpdateOfficialScripts(OfficialScripts);
 	
-	Task::Async_DataFileMgr("DOWNLOADED_MAPUIDS",DataFileMgr.Map_GetFilteredGameList(Scope::C_BrowserScope, "Downloaded", True));
+	Task::Async_DataFileMgr("DOWNLOADED_MAPUIDS",DataFileMgr.Map_GetGameList("Downloaded", True));
 }
 
 Void Event(CManiaAppEvent _Event) {
@@ -310,7 +309,7 @@ Void Event(CManiaAppEvent _Event) {
 				Nicknames::Submit(Event.CustomEventData[0]);
 			}
 			case "UpdateDownloaded": {
-				Task::Async_DataFileMgr("DOWNLOADED_MAPUIDS",DataFileMgr.Map_GetFilteredGameList(Scope::C_BrowserScope, "Downloaded", True));
+				Task::Async_DataFileMgr("DOWNLOADED_MAPUIDS",DataFileMgr.Map_GetGameList("Downloaded", True));
 			}
 			case "MapList_DestroyMapManager": {
 				Web::AsyncDestroy("MAPMANAGER_MAPS");
@@ -321,7 +320,7 @@ Void Event(CManiaAppEvent _Event) {
 			}
 			case "MapList_Local_QuickUid": {
 				ManagerMapUid = Event.CustomEventData[0];
-				Task::Async_DataFileMgr("QUICKUID_LOCAL",DataFileMgr.Map_GetFilteredGameList(Scope::C_BrowserScope, "", True));
+				Task::Async_DataFileMgr("QUICKUID_LOCAL",DataFileMgr.Map_GetGameList("", True));
 			}
 			case "MapList_ManiaExchange_QuickUid": {
 				declare Successful = MX::AsyncTrack("MX_QUICKUID", "tm", Event.CustomEventData[0], True);
@@ -465,7 +464,7 @@ Void Loop() {
 				MapDownload = True;
 			}
 			if(MXTrack.MapType == "Challenge" && MapDownloadType == "mx") {
-				declare List = Task::SyncMapList(DataFileMgr.Map_GetFilteredGameList(Scope::C_BrowserScope, MapDownloadApproximateLocation, True));
+				declare List = Task::SyncMapList(DataFileMgr.Map_GetGameList(MapDownloadApproximateLocation, True));
 				foreach(MapInfo,List.MapInfos) {
 					if(MapInfo.MapUid == MapDownloadUid) {
 						wait(TitleControl.IsReady);
@@ -474,7 +473,7 @@ Void Loop() {
 						
 						MapDownloadApproximateLocation = "";
 						DataFileMgr.TaskResult_Release(List.Id);
-						Task::Async_DataFileMgr("DOWNLOADED_MAPUIDS",DataFileMgr.Map_GetFilteredGameList(Scope::C_BrowserScope, "Downloaded", True));
+						Task::Async_DataFileMgr("DOWNLOADED_MAPUIDS",DataFileMgr.Map_GetGameList("Downloaded", True));
 						MapDownload = False;
 					}
 				}

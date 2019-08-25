@@ -10,7 +10,6 @@
 #Include "Libs/BigBang1112/Time.Script.txt" as Time
 
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
-#Include "Libs/Challenge/Scope.Script.txt" as Scope
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
 
 #Struct SElement {
@@ -67,7 +66,7 @@ Void Event(CManiaAppEvent _Event) {
 		switch(Event.CustomEventType) {
 			case "Select": {
 				SelectedPlaysession = Playsessions[TextLib::ToInteger(Event.CustomEventData[0])];
-				Task::Async_DataFileMgr("PLAYSESSION_MAP",DataFileMgr.Map_GetFilteredGameList(Scope::C_BrowserScope, "", True));
+				Task::Async_DataFileMgr("PLAYSESSION_MAP",DataFileMgr.Map_GetGameList("", True));
 			}
 		}
 	}
