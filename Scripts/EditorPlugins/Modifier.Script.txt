@@ -91,7 +91,7 @@ Void CameraReset() {
 Void CameraSpin() {
 	CamDistance = BlockSize*1.5;
 	CameraVAngle = 0.5;
-	CameraHAngle += 0.01;
+	CameraHAngle += 0.005;
 }
 
 Void UpdateCamera() {
