@@ -2,7 +2,7 @@
 	<frame id="FRAME_SUCCESS">
 		<quad pos="-150 0" z-index="-1" size="300 10" bgcolor="FFFA" style="Bgs1" substyle="BgCardList" class="opacity" scriptevents="1"/>
 		<quad pos="-150 0" z-index="0" size="300 10" bgcolor="FFFA" style="Bgs1" substyle="BgGradV" valign="top" class="opacity"/>
-		<label pos="-51 -5" z-index="0" size="20 5" text="Interface" style="CardButtonSmallS" scriptevents="1" id="LABEL_INTERFACE" valign="center"/>
+		<label pos="150 5" z-index="0" size="20 5" text="Interface" style="CardButtonSmallS" scriptevents="1" id="LABEL_INTERFACE" valign="center" halign="right"/>
 		<frame pos="-125" clip="True" clipposn="0 30" clipsizen="82 60">
 			<frame pos="0 0" id="FRAME_SHADOWS" hidden="1">
 				<quad z-index="-2" size="50 51" bgcolor="000A" valign="top" style="Bgs1" substyle="BgCardList" scriptevents="1" halign="center"/>
@@ -42,6 +42,8 @@
 			<label pos="0 -5.25" z-index="1" size="40 10" text="{{{{NOT_COMPUTED}}}}" halign="center" valign="center2" textfont="RajdhaniMono" class="opacity" id="LABEL_BUTTON_SHADOWS" textcolor="EEE"/>
 		</frame>
 		<label pos="-98 -5.25" z-index="1" size="50 5" text="{{{{SHADOW_QUALITY}}}}" valign="center2" textfont="Oswald" halign="left" textsize="2" textcolor="EEE"/>
+		<quad pos="-37 -5" z-index="1" size="10 10" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Camera" scriptevents="1" id="QUAD_FREECAM"/>
+		<quad pos="-27 -5" z-index="1" size="10 10" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Drive" scriptevents="1" id="QUAD_TEST"/>
 		<frame pos="-20 0" z-index="1">
 			<quad z-index="0" size="50 10" halign="left" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_BUTTON_SAVE" class="opacity"/>
 			<label pos="25 -5.25" z-index="1" size="50 10" text="{{{{SAVE}}}}" halign="center" valign="center2" textfont="RajdhaniMono"/>

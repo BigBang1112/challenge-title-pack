@@ -177,6 +177,8 @@ Void Finish() {
 	
 	declare Solver = False;
 	declare Continue = False;
+	declare Boolean FreeCam for Layers::Get("ModifierResult").LocalPage;
+	declare Boolean TestMode for Layers::Get("ModifierResult").LocalPage;
 	
 	while(!Continue) {
 		foreach(Event,PendingEvents) {
@@ -252,6 +254,18 @@ Void Finish() {
 			}
 		}
 		
+		if(FreeCam) {
+			EditMode = CMapEditorPlugin::EditMode::FreeLook;
+			PlaceMode = CMapEditorPlugin::PlaceMode::Block;
+		}
+		if(TestMode) {
+			EditMode = CMapEditorPlugin::EditMode::Place;
+			PlaceMode = CMapEditorPlugin::PlaceMode::Test;
+		}
+		
+		if(FreeCam || TestMode) EnableEditorInputsCustomProcessing = False;
+		else EnableEditorInputsCustomProcessing = True;
+		
 		if(LastShadowsQuality != CurrentShadowsQuality) {
 			wait(IsEditorReadyForRequest);
 			sleep(200);
@@ -269,8 +283,10 @@ Void Finish() {
 			LastShadowsQuality = CurrentShadowsQuality;
 		}
 		
-		CameraReset();
-		UpdateCamera();
+		if(EnableEditorInputsCustomProcessing) {
+			CameraReset();
+			UpdateCamera();
+		}
 		
 		if(Solver) {
 			Layers::Hide("ModifierResult", True);

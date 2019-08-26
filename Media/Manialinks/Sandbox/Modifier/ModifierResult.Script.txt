@@ -31,8 +31,14 @@ declare Quad_Button_Save_Block = (Page.GetFirstChild("QUAD_BUTTON_SAVE_BLOCK") a
 declare Quad_Button_Validate = (Page.GetFirstChild("QUAD_BUTTON_VALIDATE") as CMlQuad);
 declare Label_Button_Validate = (Page.GetFirstChild("LABEL_BUTTON_VALIDATE") as CMlLabel);
 
+declare Quad_FreeCam = (Page.GetFirstChild("QUAD_FREECAM") as CMlQuad);
+declare Quad_Test = (Page.GetFirstChild("QUAD_TEST") as CMlQuad);
+
 declare Boolean IsUltraAvailable;
 declare Boolean HasProblems;
+
+declare Boolean FreeCam for Page;
+declare Boolean TestMode for Page;
 ***
 
 ***Loop***
@@ -51,6 +57,11 @@ foreach(Event,PendingEvents) {
 					SendCustomEvent("Button_Exit",[]);
 				}
 				case "QUAD_BUTTON_VALIDATE": {
+					SendCustomEvent("FreeCam", ["False"]);
+					SendCustomEvent("Test", ["False"]);
+					Quad_FreeCam.StyleSelected = False;
+					Quad_Test.StyleSelected = False;
+
 					if(HasProblems) SendCustomEvent("Button_Solve",[]);
 					else SendCustomEvent("Button_Validate",[]);
 				}
@@ -78,6 +89,24 @@ foreach(Event,PendingEvents) {
 				}
 				case "QUAD_BUTTON_SHADOWS_ULTRA": {
 					SendCustomEvent("Button_Shadows_Ultra",[]);
+				}
+				case "QUAD_FREECAM": {
+					if(Quad_FreeCam.StyleSelected) {
+						Quad_FreeCam.StyleSelected = False;
+					}
+					else {
+						Quad_FreeCam.StyleSelected = True;
+						Quad_Test.StyleSelected = False;
+					}
+				}
+				case "QUAD_TEST": {
+					if(Quad_Test.StyleSelected) {
+						Quad_Test.StyleSelected = False;
+					}
+					else {
+						Quad_Test.StyleSelected = True;
+						Quad_FreeCam.StyleSelected = False;
+					}
 				}
 			}
 		}
@@ -197,4 +226,7 @@ foreach(Event,PendingEvents) {
 		}
 	}
 }
+
+FreeCam = Quad_FreeCam.StyleSelected;
+TestMode = Quad_Test.StyleSelected;
 ***
