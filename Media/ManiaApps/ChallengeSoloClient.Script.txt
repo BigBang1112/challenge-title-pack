@@ -10,6 +10,7 @@
 #Include "Libs/BigBang1112/Random.Script.txt" as Random
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 #Include "Libs/BigBang1112/Map.Script.txt" as Map
+#Include "Libs/BigBang1112/Discord.Script.txt" as Discord
 
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 #Include "Libs/Challenge/Service/Map.Script.txt" as Service_Map
@@ -144,8 +145,7 @@ declare Integer VehicleIndex for Layers::Get("Vehicle").LocalPage;
 declare Integer MapVehicleIndex for Layers::Get("Vehicle").LocalPage;
 MapVehicleIndex = MapVehicle;
 VehicleIndex = MapVehicleIndex;
-
-declare Integer OldVehicleIndex = VehicleIndex;
+declare OldVehicleIndex = VehicleIndex;
 
 declare Integer VehicleCount for Layers::Get("Vehicle").LocalPage;
 VehicleCount = Server_Vehicles.count;
@@ -360,7 +360,10 @@ if(Server_EndRace != RaceEnded) {
 		declare Text[] Challenges for Layers::Get("Endscreen").LocalPage;
 		Challenges = TextLib::Split("+", Map.MapStyle);
 
+		declare DiscordRequest = Discord::AsyncWidget("Discord", "311139012553211914");
+
 		Layers::SendEvent("Endscreen", "Update");
+		//Layers::SendEvent("Endscreen", "Discord", OriginalMap.Name);
 		Layers::Show("Endscreen", True);
 	}
 	else {
@@ -384,6 +387,13 @@ if(Server_Outro != IsOutro) {
 }
 
 VehicleLock = Server_VehicleLock;
+
+if(Discord::AsyncIsCompleted("Discord")) {
+	if(Discord::AsyncIsSuccessful("Discord")) {
+		Layers::SendEvent("Endscreen", "Discord", Discord::GetAsyncWidgetResult("Discord").tojson());
+	}
+	Discord::AsyncDestroy("Discord");
+}
 ***
 
 Void Main() {

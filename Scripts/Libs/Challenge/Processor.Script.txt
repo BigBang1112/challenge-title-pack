@@ -787,8 +787,6 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			
 			Layers::SendEvent("ModifierStatus", "Progress", [_Data[0]]);
 			
-			log(1./Progress*(ProgressTime-LastProgressTime));
-			
 			if(Progress == 0 || LastProgressTime == 0) Layers::SendEvent("ModifierScript", "Time", "-1");
 			else Layers::SendEvent("ModifierScript", "Time", MathLib::NearestInteger((1.-Progress)/(Progress-LastProgress)*(ProgressTime-LastProgressTime))^"");
 			

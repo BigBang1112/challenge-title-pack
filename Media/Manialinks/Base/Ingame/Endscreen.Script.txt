@@ -1,10 +1,50 @@
+#Struct SChannel {
+	Integer Position;
+	Text Id;
+	Text Name;
+}
+
+#Struct SGame {
+	Text name;
+}
+
+#Struct SMember {
+	Text Username;
+	Text Status;
+	SGame Game;
+	Text AvatarUrl;
+	Text Avatar;
+	Text Discriminator;
+	Text Id;
+}
+
+#Struct SWidget {
+	SChannel[] Channels;
+	Text InstantInvite;
+	Text Id;
+	SMember[] Members;
+	Text Name;
+	Integer Code;
+	Text Message;
+}
+
 Text TimeToTextWithMilli(Integer _Time) {
 	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
 }
 
+
+
 ***Start***
 ***
 declare Start = Now;
+declare SWidget Widget;
+
+declare Widget_Hover = False;
+declare Widget_Time = -1;
+declare Widget_CurrentMember = 0;
+
+declare Frame_Discord = (Page.GetFirstChild("FRAME_DISCORD") as CMlFrame);
+declare Frame_Discord_Users = [(Frame_Discord.GetFirstChild("FRAME_USER#1") as CMlFrame),(Frame_Discord.GetFirstChild("FRAME_USER#2") as CMlFrame)];
 ***
 
 ***Loop***
@@ -15,6 +55,26 @@ foreach(Event,PendingEvents) {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_CONTINUE": {
 					SendCustomEvent("Continue", []);
+				}
+				case "QUAD_BUTTON_DISCORD": {
+					OpenLink("https://discord.gg/v6TW88m", ::LinkType::ExternalBrowser);
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MouseOver: {
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON_DISCORD": {
+					Page.GetFirstChild("FRAME_TOOLTIP").Show();
+					Widget_CurrentMember = MathLib::Rand(0,Widget.Members.count);
+					Widget_Hover = True;
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MouseOut: {
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON_DISCORD": {
+					Page.GetFirstChild("FRAME_TOOLTIP").Hide();
+					Widget_Hover = False;
 				}
 			}
 		}
@@ -45,6 +105,10 @@ foreach(Event,PendingEvents) {
 					SlideText_Set((Page.GetFirstChild("LABEL_CAR") as CMlLabel), (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel), Car, 15);
 					SlideText_Set((Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel), (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel), TextLib::ToUpperCase(TextLib::Join(" + ", Challenges)), 15);
 				}
+				case "Discord": {
+					declare JsonSuccess = Widget.fromjson(Event.CustomEventData[0]);
+					Widget_Time = Now;
+				}
 			}
 		}
 		case CMlScriptEvent::Type::MenuNavigation: {
@@ -64,4 +128,84 @@ SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_MAPNAME") as CMlFrame), (Page.Ge
 SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_ENV") as CMlFrame), (Page.GetFirstChild("LABEL_ENV") as CMlLabel), (Page.GetFirstChild("LABEL_ENV_2") as CMlLabel), 15, .015);
 SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_CAR") as CMlFrame), (Page.GetFirstChild("LABEL_CAR") as CMlLabel), (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel), 15, .015);
 SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_CHALLENGE") as CMlFrame), (Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel), (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel), 15, .015);
+
+if(Page.GetFirstChild("FRAME_TOOLTIP").Visible) Page.GetFirstChild("FRAME_TOOLTIP").RelativePosition_V3 = <MouseX, MouseY>;
+
+if(Widget.Code == 50004) {
+	(Page.GetFirstChild("LABEL_NAME") as CMlLabel).SetText("$f00WIDGET NOT ENABLED");
+}
+else if(Widget.Id != "") {
+	(Frame_Discord.GetFirstChild("LABEL_NAME") as CMlLabel).SetText(Widget.Name);
+
+	if(Widget_Time != -1) {
+		declare Time = Now - Widget_Time;
+
+		if(Widget_Hover && Widget.Members.count != 0) {
+			(Frame_Discord.GetFirstChild("LABEL_NAME") as CMlLabel).Hide();
+			(Frame_Discord.GetFirstChild("LABEL_MEMBERCOUNT") as CMlLabel).Hide();
+			foreach(Frame, Frame_Discord_Users) Frame.Show();
+
+			if(Widget.Members.count > 1) {
+				declare Offset = 0;
+				if(Time > 3000) {
+					Offset = 1;
+				}
+
+				for(I, 0, Frame_Discord_Users.count-1) {
+					declare Frame = Frame_Discord_Users[I];
+
+					declare Pos = I;
+					if(Pos == 0) Pos = I + Offset*2;
+					if(Widget_CurrentMember+Pos > Widget.Members.count-1) Pos = -Widget_CurrentMember;
+
+					declare Quad_Avatar = (Frame.GetFirstChild("QUAD_AVATAR") as CMlQuad);
+					declare Label_Username = (Frame.GetFirstChild("LABEL_USERNAME") as CMlLabel);
+
+					declare Member = Widget.Members[Widget_CurrentMember+Pos];
+					
+					Quad_Avatar.ChangeImageUrl(Member.AvatarUrl);
+					Quad_Avatar.RefreshImages();
+
+					declare Username = Member.Username;
+					if(Username == "") Username = "$BBB[unknown]";
+
+					declare StatusColor = "$888";
+					if(Member.Status == "idle") StatusColor = "$ff0";
+					else if(Member.Status == "online") StatusColor = "$0f0";
+					else if(Member.Status == "dnd") StatusColor = "$f00";
+
+					Label_Username.SetText(Username ^ "$ACF#" ^ Member.Discriminator ^ " "^StatusColor^"•");
+				}
+
+				Frame_Discord_Users[0].RelativePosition_V3.Y = AnimLib::EaseInOutQuad(Time-2000, 0., 10., 1000) + AnimLib::EaseInOutQuad(Time-2000-2000-1000, 0., 10., 1000) + Offset*-20;
+				Frame_Discord_Users[1].RelativePosition_V3.Y = AnimLib::EaseInOutQuad(Time-2000, -10., 10., 1000) + AnimLib::EaseInOutQuad(Time-2000-2000-1000, 0., 10., 1000);
+
+				if(Time > 6000) {
+					Widget_Time = Now;
+
+					Widget_CurrentMember += 2;
+					if(Widget_CurrentMember >= Widget.Members.count) Widget_CurrentMember = 0;
+				}
+			}
+			else {
+				
+			}
+		}
+		else {
+			foreach(Frame, Frame_Discord_Users) Frame.Hide();
+
+			(Frame_Discord.GetFirstChild("LABEL_NAME") as CMlLabel).Show();
+			(Frame_Discord.GetFirstChild("LABEL_MEMBERCOUNT") as CMlLabel).Show();
+
+			(Frame_Discord.GetFirstChild("LABEL_NAME") as CMlLabel).Opacity = AnimLib::EaseOutQuad(Time, 0., 1., 300) + AnimLib::EaseOutQuad(Time-2000, 0., -1., 300);
+			(Frame_Discord.GetFirstChild("LABEL_MEMBERCOUNT") as CMlLabel).Opacity = AnimLib::EaseOutQuad(Time-2000-300, 0., 1., 300) + AnimLib::EaseOutQuad(Time-2000-2000-300, 0., -1., 300);
+			
+			if(Widget.Members.count > 1) (Frame_Discord.GetFirstChild("LABEL_MEMBERCOUNT") as CMlLabel).SetText("""$0f0• $fff{{{Widget.Members.count}}} members online""");
+			else if(Widget.Members.count == 1) (Frame_Discord.GetFirstChild("LABEL_MEMBERCOUNT") as CMlLabel).SetText("""$0f0• $fff{{{Widget.Members.count}}} member online""");
+			else (Frame_Discord.GetFirstChild("LABEL_MEMBERCOUNT") as CMlLabel).SetText("$888• $fff0 members online");
+			
+			if(Time > 4600) Widget_Time = Now;
+		}
+	}
+}
 ***
