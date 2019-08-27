@@ -70,10 +70,14 @@ main() {
 	Mode.UIManager.UIAll.ScoreTableVisibility = CUIConfig::EVisibility::ForcedHidden;
 	Mode.UIManager.UIAll.SmallScoreTableVisibility = CUIConfig::EVisibility::ForcedHidden;
 	Mode.UIManager.UIAll.ScoreTableOnlyManialink = True;
+	Mode.UIManager.UIAll.OverlayHideCheckPointTime = True;
 	
 	while(True) {
 		foreach(Event,PendingEvents) {
 			switch(Event.Type) {
+				case CMapEditorPluginEvent::Type::StartTest: {
+					// Not seem to be detected whatsoever
+				}
 				case CMapEditorPluginEvent::Type::StartValidation: {
 					Mode.ClientManiaAppUrl = "file://Media/ManiaApps/ChallengeSoloClient.Script.txt";
 					

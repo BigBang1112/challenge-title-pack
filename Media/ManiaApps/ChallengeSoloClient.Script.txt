@@ -336,6 +336,17 @@ if(Server_Stunt.Timestamp != LastStunt.Timestamp) {
 	LastStunt = Server_Stunt;
 }
 
+if(!Server_IsValidationMode) { // In validation mode, Menu and Vehicle layers are not part of the "regular" menu
+	if(Server_EndRace) {
+		Layers::Hide("Menu");
+		Layers::Hide("Vehicle");
+	}
+	else {
+		Layers::Show("Menu");
+		Layers::Show("Vehicle");
+	}
+}
+
 if(Server_EndRace != RaceEnded) {
 	if(Server_EndRace) {
 		HideIngame();
@@ -363,7 +374,6 @@ if(Server_EndRace != RaceEnded) {
 		declare DiscordRequest = Discord::AsyncWidget("Discord", "311139012553211914");
 
 		Layers::SendEvent("Endscreen", "Update");
-		//Layers::SendEvent("Endscreen", "Discord", OriginalMap.Name);
 		Layers::Show("Endscreen", True);
 	}
 	else {

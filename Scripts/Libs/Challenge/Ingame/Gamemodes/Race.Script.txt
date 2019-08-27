@@ -22,6 +22,24 @@ declare SRealVehicle[] RealVehicles;
 declare SRealVehicle RealMapVehicle;
 declare CTmPlayer[] RespawnList;
 
+Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
+	declare UI <=> _Mode.UIManager.GetUI(_Player);
+	
+	declare netwrite Boolean Server_Playing for UI;
+	declare netwrite Integer Server_VehicleLock for UI;
+	declare netwrite Integer Server_CurrentVehicle for UI;
+	declare netwrite Boolean Server_NoGravity for UI;
+		
+	declare netread Integer Client_VehicleIndex for UI;
+
+	_Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id;
+	if(Server_NoGravity) _Player.GravityCoef = 0.;
+	else _Player.GravityCoef = 1.;
+	Server_CurrentVehicle = Client_VehicleIndex;
+	_Mode.SpawnPlayer(_Player, 0, -1);
+	UI.UISequence = CUIConfig::EUISequence::Playing;
+}
+
 Void Init(CTmMode _Mode) {	
 	declare JsonSuccess = Vehicles.fromjson(File::Read("Media/Vehicle.json"));
 
@@ -170,13 +188,13 @@ Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
 							if(Server_Outro) {
 								Server_Outro = False;
 								
-								Server_VehicleLock = -1;
-								Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id;
-								_Mode.SpawnPlayer(Player, 0, -1);
+								SpawnEnvimixPlayer(_Mode, Player);
 							}
 							else {
 								Server_EndRace = False;
 								Server_Outro = True;
+								
+								_Event.UI.UISequence = CUIConfig::EUISequence::UIInteraction;
 							}
 							
 							/*_Mode.RaceGhost_RemoveAll();
@@ -250,11 +268,7 @@ Void Loop(CTmMode _Mode) {
 		Server_VehicleLock = -1;
 		
 		if(Server_Playing && !Server_EndRace && !Server_Outro) {			
-			Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id;
-			if(Server_NoGravity) Player.GravityCoef = 0.;
-			else Player.GravityCoef = 1.;
-			Server_CurrentVehicle = Client_VehicleIndex;
-			_Mode.SpawnPlayer(Player, 0, -1);
+			SpawnEnvimixPlayer(_Mode, Player);
 		}
 		
 		if(Server_Outro) {

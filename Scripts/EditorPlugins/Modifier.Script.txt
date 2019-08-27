@@ -248,6 +248,10 @@ Void Finish() {
 						ComputeShadows(::ShadowsQuality::Ultra);
 					}
 					case "Select": {
+						Layers::SendEvent("ModifierResult", "DisableSmallButtons");
+						FreeCam = False;
+						TestMode = False;
+						
 						Solver = True;
 					}
 				}

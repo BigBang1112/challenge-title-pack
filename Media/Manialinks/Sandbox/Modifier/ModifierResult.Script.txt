@@ -57,8 +57,6 @@ foreach(Event,PendingEvents) {
 					SendCustomEvent("Button_Exit",[]);
 				}
 				case "QUAD_BUTTON_VALIDATE": {
-					SendCustomEvent("FreeCam", ["False"]);
-					SendCustomEvent("Test", ["False"]);
 					Quad_FreeCam.StyleSelected = False;
 					Quad_Test.StyleSelected = False;
 
@@ -221,6 +219,10 @@ foreach(Event,PendingEvents) {
 				case "Unsolvable": {
 					Frame_Success.Hide();
 					Frame_Unsolvable.Show();
+				}
+				case "DisableSmallButtons": {
+					Quad_FreeCam.StyleSelected = False;
+					Quad_Test.StyleSelected = False;
 				}
 			}
 		}
