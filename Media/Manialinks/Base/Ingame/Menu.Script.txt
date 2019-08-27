@@ -13,20 +13,13 @@ Void Select(CMlControl _Control) {
 	foreach(Control => NavControl, NavControls) {
 		if(Control is CMlQuad) {
 			declare Quad = (Control as CMlQuad);
-			if(Quad.Parent.HasClass("BUTTON")) {
-				Quad.Parent.RelativeScale = 1.;
-			}
-			else if(Quad.Substyle == "BgCard") Quad.Substyle = "BgCardInventoryItem";
+			Quad.StyleSelected = False;
 		}
 	}
 
 	if(_Control != Null && (_Control is CMlQuad)) {
 		declare Quad = (_Control as CMlQuad);
-		if(Quad.Parent.HasClass("BUTTON")) {
-			Quad.Parent.RelativeScale = 1.05;
-		}
-		else if(Quad.Substyle == "BgCardInventoryItem")
-			Quad.Substyle = "BgCard";
+		Quad.StyleSelected = True;
 	}
 
 	SelectedNav = _Control;

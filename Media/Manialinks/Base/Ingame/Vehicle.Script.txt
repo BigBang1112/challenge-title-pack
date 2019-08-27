@@ -158,6 +158,8 @@ foreach(Event,PendingEvents) {
 				}
 				case "Navigation": {
 					EnableMenuNavigationInputs = Event.CustomEventData[0] == "True";
+					if(EnableMenuNavigationInputs) (Page.GetFirstChild("LABEL_ARROW") as CMlLabel).TextColor = <.0,.2,.4>;
+					else (Page.GetFirstChild("LABEL_ARROW") as CMlLabel).TextColor = <.93,.93,.93>;
 				}
 			}
 		}
@@ -174,10 +176,12 @@ foreach(Event,PendingEvents) {
 				}
 				case CMlEvent::EMenuNavAction::Left: {
 					EnableMenuNavigationInputs = False;
+					(Page.GetFirstChild("LABEL_ARROW") as CMlLabel).TextColor = <.93,.93,.93>;
 					SendCustomEvent("Navigation", ["Menu"]);
 				}
-				case CMlEvent::EMenuNavAction::Left: {
+				case CMlEvent::EMenuNavAction::Right: {
 					EnableMenuNavigationInputs = False;
+					(Page.GetFirstChild("LABEL_ARROW") as CMlLabel).TextColor = <.93,.93,.93>;
 					SendCustomEvent("Navigation", ["Menu"]);
 				}
 			}
