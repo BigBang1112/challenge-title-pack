@@ -1,13 +1,16 @@
 ***Start***
 ***
+declare Frame_MapName_Bg = (Page.GetFirstChild("FRAME_MAPNAME_BG") as CMlFrame);
 declare Frame_Label_MapName = (Page.GetFirstChild("FRAME_LABEL_MAPNAME") as CMlFrame);
 declare Label_MapName = (Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel);
 declare Label_MapName2 = (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel);
 
+declare Frame_Challenge_Bg = (Page.GetFirstChild("FRAME_CHALLENGE_BG") as CMlFrame);
 declare Frame_Label_Challenge = (Page.GetFirstChild("FRAME_LABEL_CHALLENGE") as CMlFrame);
 declare Label_Challenge = (Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel);
 declare Label_Challenge2 = (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel);
 
+declare Frame_Car_Bg = (Page.GetFirstChild("FRAME_CAR_BG") as CMlFrame);
 declare Frame_Label_Car = (Page.GetFirstChild("FRAME_LABEL_CAR") as CMlFrame);
 declare Label_Car = (Page.GetFirstChild("LABEL_CAR") as CMlLabel);
 declare Label_Car2 = (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel);
@@ -23,14 +26,59 @@ foreach(Event,PendingEvents) {
 			switch(Event.CustomEventType) {
 				case "MapName": {
 					declare MapName = Event.CustomEventData[0];
+
+					declare TextLength = Label_MapName.ComputeWidth(MapName);
+					if(TextLength < 74.5) {
+						foreach(Control, Frame_MapName_Bg.Controls) {
+							declare Quad <=> (Control as CMlQuad);
+							Quad.Size.X = TextLength+7.;
+						}
+					}
+					else {
+						foreach(Control, Frame_MapName_Bg.Controls) {
+							declare Quad <=> (Control as CMlQuad);
+							Quad.Size.X = 80.;
+						}
+					}
+
 					SlideText_Set(Label_MapName, Label_MapName2, MapName, LabelDistance);
 				}
 				case "Challenge": {
 					declare Challenge = Event.CustomEventData[0];
+
+					declare TextLength = Label_Challenge.ComputeWidth(Challenge);
+					if(TextLength < 65) {
+						foreach(Control, Frame_Challenge_Bg.Controls) {
+							declare Quad <=> (Control as CMlQuad);
+							Quad.Size.X = TextLength+6.;
+						}
+					}
+					else {
+						foreach(Control, Frame_Challenge_Bg.Controls) {
+							declare Quad <=> (Control as CMlQuad);
+							Quad.Size.X = 70.;
+						}
+					}
+
 					SlideText_Set(Label_Challenge, Label_Challenge2, Challenge, LabelDistance);
 				}
 				case "Car": {
 					declare Car = Event.CustomEventData[0];
+
+					declare TextLength = Label_Car.ComputeWidth(Car);
+					if(TextLength < 50) {
+						foreach(Control, Frame_Car_Bg.Controls) {
+							declare Quad <=> (Control as CMlQuad);
+							Quad.Size.X = TextLength+6.;
+						}
+					}
+					else {
+						foreach(Control, Frame_Car_Bg.Controls) {
+							declare Quad <=> (Control as CMlQuad);
+							Quad.Size.X = 55.;
+						}
+					}
+
 					SlideText_Set(Label_Car, Label_Car2, Car, LabelDistance);
 				}
 			}
@@ -38,7 +86,7 @@ foreach(Event,PendingEvents) {
 	}
 }
 
-SlideText_Loop(Frame_Label_MapName, Label_MapName, Label_MapName2, LabelDistance, -.015);
-SlideText_Loop(Frame_Label_Challenge, Label_Challenge, Label_Challenge2, LabelDistance, .015);
-SlideText_Loop(Frame_Label_Car, Label_Car, Label_Car2, LabelDistance, -.015);
+SlideText_Loop(Frame_Label_MapName, Label_MapName, Label_MapName2, LabelDistance, -.01);
+SlideText_Loop(Frame_Label_Challenge, Label_Challenge, Label_Challenge2, LabelDistance, .01);
+SlideText_Loop(Frame_Label_Car, Label_Car, Label_Car2, LabelDistance, -.01);
 ***

@@ -1,26 +1,32 @@
 <frame>
 	<frame pos="117.5 80">
-		<quad z-index="0" size="80 15" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCardList"/>
-		<quad z-index="1" size="80 15" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgGradV"/>
-		<quad z-index="2" size="80 15" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
+		<frame pos="40 0" id="FRAME_MAPNAME_BG">
+			<quad z-index="0" size="80 15" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="80 15" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgGradV"/>
+			<quad z-index="2" size="80 15" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
+		</frame>
 		<frame pos="37.5 7" clip="True" clipposn="-38 -7.5" clipsizen="74.5 15" id="FRAME_LABEL_MAPNAME" z-index="3">
 			<label z-index="0" size="90 12" text="E3" textsize="12" textfont="Oswald" id="LABEL_MAPNAME" halign="right" pos="0 -1.25" textemboss="1"/>
 			<label z-index="0" size="90 12" text="E3" textsize="12" textfont="Oswald" id="LABEL_MAPNAME_2" halign="right" pos="0 -1.25" textemboss="1"/>
 		</frame>
 	</frame>
 	<frame pos="122.5 67">
-		<quad z-index="0" size="70 10" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCardList"/>
-		<quad z-index="1" size="70 10" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgGradV"/>
-		<quad z-index="2" size="70 10" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
+		<frame pos="35 0" id="FRAME_CHALLENGE_BG">
+			<quad z-index="0" size="70 10" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="70 10" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgGradV"/>
+			<quad z-index="2" size="70 10" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
+		</frame>
 		<frame pos="32.5 4.5" clip="True" clipposn="-32.5 -5" clipsizen="65 10" id="FRAME_LABEL_CHALLENGE" z-index="3">
 			<label z-index="0" size="90 7" text="REVERSE + CHECKPOINTLESS" textsize="6" textfont="Oswald" id="LABEL_CHALLENGE" halign="right" pos="0 -1.25" textemboss="1"/>
 			<label z-index="0" size="90 7" text="REVERSE + CHECKPOINTLESS" textsize="6" textfont="Oswald" id="LABEL_CHALLENGE_2" halign="right" pos="0 -1.25" textemboss="1"/>
 		</frame>
 	</frame>
 	<frame pos="130 57.5">
-		<quad z-index="0" size="55 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCardList"/>
-		<quad z-index="1" size="55 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgGradV"/>
-		<quad z-index="2" size="55 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
+		<frame pos="27.5 0" id="FRAME_CAR_BG">
+			<quad z-index="0" size="55 8" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="55 8" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgGradV"/>
+			<quad z-index="2" size="55 8" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
+		</frame>
 		<frame pos="25 4.5" clip="True" clipposn="-25 -5" clipsizen="50 10" id="FRAME_LABEL_CAR" z-index="3">
 			<label z-index="0" size="90 7" text="StadiumCarStadiumCarStadiumCar" textsize="4" textfont="Oswald" id="LABEL_CAR" halign="right" pos="0 -1.9" textprefix="$o"/>
 			<label z-index="0" size="90 7" text="StadiumCarStadiumCarStadiumCar" textsize="4" textfont="Oswald" id="LABEL_CAR_2" halign="right" pos="0 -1.9" textprefix="$o"/>
