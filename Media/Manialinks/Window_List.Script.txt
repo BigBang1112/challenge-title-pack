@@ -332,22 +332,35 @@ foreach(Event,PendingEvents) {
 
 declare Time = Now - Start - 1000;
 
-if(Time <= 1500) {
-	foreach(Control,Frame_Background.Controls) {
-		Control.Size.Y = AnimLib::EaseOutQuad(Time, 15.0, Window_Size.Y-15, 500);
-		if(Time >= 0) (Control as CMlQuad).Style = "Bgs1";
+if(End == -1) {
+	if(Time <= 1500) {
+		foreach(Control,Frame_Background.Controls) {
+			Control.Size.Y = AnimLib::EaseOutQuad(Time, 15.0, Window_Size.Y-15, 500);
+			if(Time >= 0) (Control as CMlQuad).Style = "Bgs1";
+		}
+		Quad_Scrollbar_Background.Size.Y = AnimLib::EaseOutQuad(Time, 0.0, Window_Size.Y-20, 500);
+		Quad_List_Bg.Size.Y = AnimLib::EaseOutQuad(Time, 0.0, Window_Size.Y-20, 500);
+		Frame_List.ClipWindowRelativePosition.Y = AnimLib::EaseOutQuad(Time, 0.0, -(Window_Size.Y-20)/2, 500);
+		Frame_List.ClipWindowSize.Y = AnimLib::EaseOutQuad(Time, 0.0, Window_Size.Y-20, 500);
+		Quad_Scrollbar.Size.Y = AnimLib::EaseOutQuad(Time, 0.0, Window_ScrollbarHeight, 500);
+
+		Animating = True;
 	}
-	Quad_Scrollbar_Background.Size.Y = AnimLib::EaseOutQuad(Time, 0.0, Window_Size.Y-20, 500);
-	Quad_List_Bg.Size.Y = AnimLib::EaseOutQuad(Time, 0.0, Window_Size.Y-20, 500);
-	Frame_List.ClipWindowRelativePosition.Y = AnimLib::EaseOutQuad(Time, 0.0, -(Window_Size.Y-20)/2, 500);
-	Frame_List.ClipWindowSize.Y = AnimLib::EaseOutQuad(Time, 0.0, Window_Size.Y-20, 500);
-	Quad_Scrollbar.Size.Y = AnimLib::EaseOutQuad(Time, 0.0, Window_ScrollbarHeight, 500);
+	else {
+		Animating = False; 
 
-	Animating = True;
+		foreach(Control,Frame_Background.Controls) {
+			Control.Size.Y = Window_Size.Y;
+			if(Time >= 0) (Control as CMlQuad).Style = "Bgs1";
+		}
+		Quad_Scrollbar_Background.Size.Y = Window_Size.Y-20;
+		Quad_List_Bg.Size.Y = Window_Size.Y-20;
+		Frame_List.ClipWindowRelativePosition.Y = -(Window_Size.Y-20)/2;
+		Frame_List.ClipWindowSize.Y = Window_Size.Y-20;
+		Quad_Scrollbar.Size.Y = Window_ScrollbarHeight;
+	}
 }
-else { Animating = False; }
-
-if(End != -1) {
+else {
 	if(Now - End > 1000) {
 		SendCustomEvent("Hide_Response", []);
 		End = -1;
