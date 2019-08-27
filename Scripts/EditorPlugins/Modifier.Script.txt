@@ -19,14 +19,14 @@
 #Setting S_Build False
 #Setting S_TestMode False
 
-#Const C_Manialink_ModifierResult "Media/Manialinks/Sandbox/Modifier/ModifierResult"
-#Const C_Manialink_ModifierIntro "Media/Manialinks/Sandbox/Modifier/ModifierIntro"
-#Const C_Manialink_ModifierScript "Media/Manialinks/Sandbox/Modifier/ModifierScript"
-#Const C_Manialink_ModifierStatus "Media/Manialinks/Sandbox/Modifier/ModifierStatus"
-#Const C_Manialink_ModifierMetadata "Media/Manialinks/Sandbox/Modifier/ModifierMetadata"
-#Const C_Manialink_ModifierActions "Media/Manialinks/Sandbox/Modifier/ModifierActions"
-#Const C_Manialink_ModifierSolver "Media/Manialinks/Sandbox/Modifier/ModifierSolver"
-#Const C_Manialink_ModifierCrash "Media/Manialinks/Sandbox/Modifier/ModifierCrash"
+#Const C_Manialink_ModifierResult "Media/Manialinks/Base/Modifier/Result"
+#Const C_Manialink_ModifierIntro "Media/Manialinks/Base/Modifier/Intro"
+#Const C_Manialink_ModifierScript "Media/Manialinks/Base/Modifier/Script"
+#Const C_Manialink_ModifierStatus "Media/Manialinks/Base/Modifier/Status"
+#Const C_Manialink_ModifierMetadata "Media/Manialinks/Base/Modifier/Metadata"
+#Const C_Manialink_ModifierActions "Media/Manialinks/Base/Modifier/Actions"
+#Const C_Manialink_ModifierSolver "Media/Manialinks/Base/Modifier/Solver"
+#Const C_Manialink_ModifierCrash "Media/Manialinks/Base/Modifier/Crash"
 
 #Struct SCommand {
 	Text Name;

@@ -4,6 +4,10 @@
 	<label z-index="0" size="130 5" text="{{{{CHECK_CONSOLE}}}}" textsize="2" valign="center2" textfont="RajdhaniMono" pos="0 -4.3" class="opacity" textcolor="EEE" halign="center"/>
 	<quad pos="0 0" z-index="-1" size="130 20" halign="center" valign="center" style="Bgs1InRace" substyle="BgCardList" class="opacity"/>
 	<quad pos="0 0" z-index="0" size="130 20" halign="center" valign="center" style="Bgs1InRace" substyle="BgGradV" class="opacity"/>
+	<frame pos="-71 0" z-index="1">
+		<quad z-index="0" size="10 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="930" id="QUAD_BUTTON_RELOAD" class="opacity"/>
+		<label pos="0 -5.3" z-index="1" size="10 10" text="" halign="center" valign="center2" textfont="RajdhaniMono" class="opacity" textsize="3"/>
+	</frame>
 	<frame pos="71 0" z-index="1">
 		<quad z-index="0" size="10 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="600" id="QUAD_BUTTON_LEAVE" class="opacity"/>
 		<label pos="0 -5.6" z-index="1" size="10 10" text="🏃" halign="center" valign="center2" textfont="RajdhaniMono" class="opacity" textsize="3"/>
