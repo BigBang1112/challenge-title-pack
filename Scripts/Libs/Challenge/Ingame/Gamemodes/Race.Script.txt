@@ -31,7 +31,8 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 	declare netwrite Boolean Server_NoGravity for UI;
 		
 	declare netread Integer Client_VehicleIndex for UI;
-
+	
+	Server_VehicleLock = -1;
 	_Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id;
 	if(Server_NoGravity) _Player.GravityCoef = 0.;
 	else _Player.GravityCoef = 1.;
