@@ -385,7 +385,9 @@ if(Frame_List.ScrollOffset != PreviousScroll) {
 	Page.GetFirstChild("FRAME_LIST_INNER").RelativePosition_V3 = -Frame_List.ScrollOffset;
 	UpdateElements();
 
-	declare ScrollRatio = Frame_List.ScrollOffset.Y / Frame_List.ScrollMax.Y;
+	declare ScrollRatio = 0.;
+	if(Frame_List.ScrollMax.Y != 0)
+		ScrollRatio = Frame_List.ScrollOffset.Y / Frame_List.ScrollMax.Y;
 	Quad_Scrollbar.RelativePosition_V3.Y = -ScrollRatio*(Window_Size.Y-20-Quad_Scrollbar.Size.Y);
 
 	PreviousScroll = Frame_List.ScrollOffset;
