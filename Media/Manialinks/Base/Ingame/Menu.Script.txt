@@ -84,6 +84,8 @@ NavControls[Quad_Button_Continue] = Button_Continue;
 declare SNavControl Button_Start;
 Button_Start.Up = Quad_Button_Continue;
 NavControls[Quad_Button_Start] = Button_Start;
+
+Select(FirstNav);
 ***
 
 ***Loop***
@@ -152,9 +154,11 @@ foreach(Event,PendingEvents) {
 						Playground.QuitServer(False);	
 				}
 				case CMlEvent::EMenuNavAction::Select: {
-					if(SelectedNav.ControlId == "QUAD_BUTTON_CONTINUE") Button_Continue();
-					else if(SelectedNav.ControlId == "QUAD_BUTTON_EXIT") Button_Exit();
-					else if(SelectedNav.ControlId == "QUAD_BUTTON_START") Button_Start();
+					if(SelectedNav != Null) {
+						if(SelectedNav.ControlId == "QUAD_BUTTON_CONTINUE") Button_Continue();
+						else if(SelectedNav.ControlId == "QUAD_BUTTON_EXIT") Button_Exit();
+						else if(SelectedNav.ControlId == "QUAD_BUTTON_START") Button_Start();
+					}
 				}
 				case CMlEvent::EMenuNavAction::Up: {
 					if(SelectedNav != Null) {
