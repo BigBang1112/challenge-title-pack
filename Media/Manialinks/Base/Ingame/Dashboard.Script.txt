@@ -77,6 +77,8 @@ foreach(Event,RaceEvents) {
 
 			}
 			else {
+				PlayAudio(Sound_TimeChange);
+
 				if(Event.Player.Score != Null)
 				if(Event.Player.Score.BestRace.Checkpoints.count == 0) {
 					SlowSetText(Label_CP_Start,TimeToTextWithMilli(Event.RaceTime),500);

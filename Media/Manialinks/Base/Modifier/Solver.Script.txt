@@ -168,12 +168,16 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_LEAVE": {
+					PlayAudio(Sound_Click);
 					SendCustomEvent("Button_Leave",[]);
 				}
 				case "QUAD_BUTTON_NEXT": {
+					PlayAudio(Sound_Click);
 					SendCustomEvent("Button_Next",[]);
 				}
 				case "QUAD_BUTTON_NEXT_POINT": {
+					PlayAudio(Sound_Click);
+					
 					if(SelectedPoint == TotalPoints-1)
 						SelectedPoint = 0;
 					else
@@ -182,6 +186,8 @@ foreach(Event,PendingEvents) {
 					SendCustomEvent("UpdatePoint", [SelectedPoint^""]);
 				}
 				case "QUAD_BUTTON_PREVIOUS_POINT": {
+					PlayAudio(Sound_Click);
+
 					if(SelectedPoint == 0)
 						SelectedPoint = TotalPoints-1;
 					else

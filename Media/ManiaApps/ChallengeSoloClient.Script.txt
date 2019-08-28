@@ -92,7 +92,7 @@ for(I,0,Server_Vehicles.count-1) {
 	}
 }
 
-declare Music_Endscreen = Audio.CreateSound("file://Media/Musics/Endscreen.ogg", 1.0, True, False, False);
+declare Music_Endscreen = Audio.CreateSound("file://Media/Musics/Never Give Up.ogg", 1.0, True, False, False);
 
 declare VehicleML = "";
 for(I, 0, Server_Vehicles.count-1) {
@@ -108,20 +108,20 @@ for(I, 0, Server_Vehicles.count-1) {
 </frame>""";
 }
 
-declare VehicleManialink = Manialink::FromFile(C_Manialink_Vehicle, True, [], Settings::Get().Theme);
+declare VehicleManialink = Manialink::FromFile(C_Manialink_Vehicle, True, ["Audio"], Settings::Get().Theme);
 VehicleManialink = TextLib::Replace(VehicleManialink, """<frame id="FRAME_INNER_VEHICLES"/>""",
 """<quad z-index="-1" pos="0 {{{-Server_Vehicles.count*20/2+MapVehicle*20}}}" size="220 {{{(Server_Vehicles.count)*20+160}}}" halign="center" valign="center" style="Bgs1InRace" substyle="BgEmpty" scriptevents="1"/>
 <frame id="FRAME_INNER_VEHICLES">{{{VehicleML}}}</frame>""");
 
-Layers::Create("Menu", Manialink::FromFile(C_Manialink_Menu, True, ["SlideText"], Settings::Get().Theme));
+Layers::Create("Menu", Manialink::FromFile(C_Manialink_Menu, True, ["Audio", "SlideText"], Settings::Get().Theme));
 Layers::Create("Vehicle", VehicleManialink);
-Layers::Create("Dashboard", Manialink::FromFile(C_Manialink_Dashboard, True, ["TextAnimation"], Settings::Get().Theme));
-Layers::Create("Stunts", Manialink::FromFile(C_Manialink_Stunts, True, ["TextAnimation"], Settings::Get().Theme));
-Layers::Create("Playsession", Manialink::FromFile(C_Manialink_Playsession, True, ["TextAnimation"], Settings::Get().Theme));
-Layers::Create("Spotify", Manialink::FromFile(C_Manialink_Spotify, True, [], Settings::Get().Theme));
-Layers::Create("Map", Manialink::FromFile(C_Manialink_Map, True, ["SlideText"], Settings::Get().Theme));
-Layers::Create("Endscreen", Manialink::FromFile(C_Manialink_Endscreen, True, ["SlideText"], Settings::Get().Theme));
-Layers::Create("Outro", Manialink::FromFile(C_Manialink_Outro, True, [], Settings::Get().Theme));
+Layers::Create("Dashboard", Manialink::FromFile(C_Manialink_Dashboard, True, ["Audio", "TextAnimation"], Settings::Get().Theme));
+Layers::Create("Stunts", Manialink::FromFile(C_Manialink_Stunts, True, ["Audio", "TextAnimation"], Settings::Get().Theme));
+Layers::Create("Playsession", Manialink::FromFile(C_Manialink_Playsession, True, ["Audio", "TextAnimation"], Settings::Get().Theme));
+Layers::Create("Spotify", Manialink::FromFile(C_Manialink_Spotify, True, ["Audio"], Settings::Get().Theme));
+Layers::Create("Map", Manialink::FromFile(C_Manialink_Map, True, ["Audio", "SlideText"], Settings::Get().Theme));
+Layers::Create("Endscreen", Manialink::FromFile(C_Manialink_Endscreen, True, ["Audio", "SlideText"], Settings::Get().Theme));
+Layers::Create("Outro", Manialink::FromFile(C_Manialink_Outro, True, ["Audio"], Settings::Get().Theme));
 
 Layers::Create("Flash", Manialink::FromFile(C_Manialink_Flash, True, [], Settings::Get().Theme));
 ***
@@ -129,7 +129,7 @@ Layers::Create("Flash", Manialink::FromFile(C_Manialink_Flash, True, [], Setting
 ***Start***
 ***
 if(Server_IsValidationMode) {
-	Layers::Create("OpenMenu", Manialink::FromFile(C_Manialink_OpenMenu, True, [], Settings::Get().Theme));
+	Layers::Create("OpenMenu", Manialink::FromFile(C_Manialink_OpenMenu, True, ["Audio"], Settings::Get().Theme));
 }
 else {
 	Layers::SetType("Menu", CUILayer::EUILayerType::InGameMenu);
@@ -195,6 +195,7 @@ declare IsOutro = Server_Outro;
 
 declare netread Stunt::SStunt Server_Stunt for UI;
 declare LastStunt = Server_Stunt;
+
 ***
 
 ***Loop***

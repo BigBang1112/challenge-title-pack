@@ -1,0 +1,10 @@
+declare CAudioSource Sound_Click;
+declare CAudioSource Sound_ClickSoft;
+declare CAudioSource Sound_Hover;
+declare CAudioSource Sound_TimeChange;
+declare CAudioSource Sound_Swish;
+
+Void PlayAudio(CAudioSource _Audio) {
+	_Audio.Stop();
+	_Audio.Play();
+}

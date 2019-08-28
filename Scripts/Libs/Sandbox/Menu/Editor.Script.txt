@@ -11,7 +11,7 @@
 #Const C_Manialink "Media/Manialinks/Sandbox/Editor"
 
 Void Init() {
-	Layers::Create("Editor", Manialink::FromFile(C_Manialink, True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("Editor", Manialink::FromFile(C_Manialink, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
 }
 
 Void Start() {

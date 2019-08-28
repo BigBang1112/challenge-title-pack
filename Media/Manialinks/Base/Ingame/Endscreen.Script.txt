@@ -54,9 +54,11 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_CONTINUE": {
+					PlayAudio(Sound_Click);
 					SendCustomEvent("Continue", []);
 				}
 				case "QUAD_BUTTON_DISCORD": {
+					PlayAudio(Sound_Click);
 					OpenLink("https://discord.gg/v6TW88m", ::LinkType::ExternalBrowser);
 				}
 			}

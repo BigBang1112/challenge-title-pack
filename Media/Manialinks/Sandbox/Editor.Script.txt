@@ -19,19 +19,18 @@ foreach(Event,PendingEvents) {
 			Page.GetFirstChild("LABEL_BUTTON_TEST").Hide();
 			Page.GetFirstChild("QUAD_LOADING_TEST").Show();
 			SendCustomEvent("Test", []);
-		}
-		if(Event.ControlId == "Designer") {
-			SendCustomEvent("Designer", []);
+			PlayAudio(Sound_Click);
 		}
 		if(Event.ControlId == "QUAD_BUTTON_SCRIPT") {
-			
+			PlayAudio(Sound_Click);
 		}
 		if(Event.ControlId == "QUAD_BUTTON_PUBLISH") {
-			
+			PlayAudio(Sound_Click);
 		}
 		if(Event.ControlId == "BUTTON_CREATECHALLENGE_BACK") {
 			if(End == -1)
 			SendCustomEvent("Button_CreateChallenge_Back", []);
+			PlayAudio(Sound_Click);
 		}
 		if(Event.ControlId == "QUAD_LIGHT") {
 			declare QuadBackground = (Page.GetFirstChild("QUAD_BACKGROUND") as CMlQuad);
@@ -44,6 +43,7 @@ foreach(Event,PendingEvents) {
 				QuadLight.ModulateColor = <1.0,1.0,1.0>;
 				AnimMgr.Add(QuadBackground, "<quad opacity=\"0\" />", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 			}
+			PlayAudio(Sound_Click);
 		}
 	}
 	if(Event.Type == CMlScriptEvent::Type::PluginCustomEvent) {

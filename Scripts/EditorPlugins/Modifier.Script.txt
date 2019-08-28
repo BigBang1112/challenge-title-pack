@@ -124,17 +124,17 @@ Void Finish() {
 	
 	sleep(500);
 	
-	Layers::Create("ModifierResult",Manialink::FromFile(C_Manialink_ModifierResult, True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierResult",Manialink::FromFile(C_Manialink_ModifierResult, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
 	
-	Layers::Create("ModifierProblems",Manialink::FromFile("Media/Manialinks/Window_List", True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierProblems",Manialink::FromFile("Media/Manialinks/Window_List", True, ["Audio"], Settings::Get().Theme));
 	Layers::SendEvent("ModifierProblems", "Title", Dictionary::Get("PROBLEMS"));
 	Layers::SendEvent("ModifierProblems", "Position", "120 10");
 	Layers::SendEvent("ModifierProblems", "Size", "60 60");
 	Layers::SendEvent("ModifierProblems", "Animation_Out", "200 10");
 	
-	Layers::Create("ModifierSolver",Manialink::FromFile(C_Manialink_ModifierSolver, True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierSolver",Manialink::FromFile(C_Manialink_ModifierSolver, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
 	
-	Layers::Create("ModifierSolutions",Manialink::FromFile("Media/Manialinks/Window_List", True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierSolutions",Manialink::FromFile("Media/Manialinks/Window_List", True, ["Audio"], Settings::Get().Theme));
 	Layers::SendEvent("ModifierSolutions", "Title", Dictionary::Get("POSSIBLE_SOLUTIONS"));
 	Layers::SendEvent("ModifierSolutions", "Title_Align", "left");
 	Layers::SendEvent("ModifierSolutions", "Position", "-100 10");
@@ -687,12 +687,12 @@ main() {
 	EnableEditorInputsCustomProcessing = True;
 	EditMode = CMapEditorPlugin::EditMode::FreeLook;
 
-	Layers::Create("ModifierIntro",Manialink::FromFile(C_Manialink_ModifierIntro, True, ["TextAnimation"], Settings::Get().Theme));
-	Layers::Create("ModifierScript",Manialink::FromFile(C_Manialink_ModifierScript, True, ["TextAnimation"], Settings::Get().Theme));
-	Layers::Create("ModifierStatus",Manialink::FromFile(C_Manialink_ModifierStatus, True, ["TextAnimation"], Settings::Get().Theme));
-	Layers::Create("ModifierMetadata",Manialink::FromFile(C_Manialink_ModifierMetadata, True, ["TextAnimation"], Settings::Get().Theme));
-	Layers::Create("ModifierActions",Manialink::FromFile(C_Manialink_ModifierActions, True, ["TextAnimation"], Settings::Get().Theme));
-	Layers::Create("ModifierCrash",Manialink::FromFile(C_Manialink_ModifierCrash, True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("ModifierIntro",Manialink::FromFile(C_Manialink_ModifierIntro, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+	Layers::Create("ModifierScript",Manialink::FromFile(C_Manialink_ModifierScript, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+	Layers::Create("ModifierStatus",Manialink::FromFile(C_Manialink_ModifierStatus, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+	Layers::Create("ModifierMetadata",Manialink::FromFile(C_Manialink_ModifierMetadata, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+	Layers::Create("ModifierActions",Manialink::FromFile(C_Manialink_ModifierActions, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+	Layers::Create("ModifierCrash",Manialink::FromFile(C_Manialink_ModifierCrash, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
 
 	Layers::SetAnimationInOut("ModifierScript",CUILayer::EUILayerAnimation::DownSlow);
 	Layers::SetAnimationInOut("ModifierStatus",CUILayer::EUILayerAnimation::DownSlow);

@@ -63,6 +63,10 @@ declare Text StartMapLocation;
 declare Map::SMapInfo StartMapInfo;
 declare SScriptInfo[] StartMapScripts;
 
+Void Init() {
+	Layers::Create("Quickplay", Manialink::FromFile(C_Manialink, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+}
+
 Void UpdateLocalMaps(Text _Folder, SMapInfoFilter _Filter) {
 	declare FlatSearch = (_Filter.Name != "");
 	Task::Async_DataFileMgr("MAPLIST_LOCAL_FOLDER",DataFileMgr.Map_GetGameList(_Folder,FlatSearch));
@@ -147,10 +151,6 @@ Boolean StartMapIfExists() {
 	}
 	DataFileMgr.TaskResult_Release(List.Id);
 	return False;
-}
-
-Void Init() {
-	Layers::Create("Quickplay", Manialink::FromFile(C_Manialink, True, ["TextAnimation"], Settings::Get().Theme));
 }
 
 Void Start() {

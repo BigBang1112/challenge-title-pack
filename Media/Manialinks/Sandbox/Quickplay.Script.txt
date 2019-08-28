@@ -669,6 +669,13 @@ foreach(Event,PendingEvents) {
 				}
 			}
 		}
+		case CMlScriptEvent::Type::MouseOver: {
+			switch(Event.ControlId) {
+				case "QUAD_SELECTOR": {
+					PlayAudio(Sound_Hover);
+				}
+			}
+		}
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_MAPLIST_FILTERS": {
@@ -685,6 +692,7 @@ foreach(Event,PendingEvents) {
 					if(MapLocation == "MapManager") {
 						SendCustomEvent("Button_Start", [MapLocation, SelectedManagerMapInfo.tojson(), SelectedScripts.tojson()]);
 					}
+					PlayAudio(Sound_Click);
 				}
 				case "QUAD_BUTTON_MAP": {
 					if(Page.GetFirstChild("FRAME_MAP").DataAttributeGet("open") == "1") {
@@ -699,6 +707,7 @@ foreach(Event,PendingEvents) {
 						if(MapLocation == "ManiaExchange") UpdateManiaExchange(MathLib::NearestInteger((Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollOffset.Y/10.0));
 						if(MapLocation == "MapManager") UpdateMapManager(MathLib::NearestInteger((Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollOffset.Y/10.0));
 					}
+					PlayAudio(Sound_ClickSoft);
 				}
 				case "QUAD_BUTTON_CHALLENGE_SCRIPT": {
 					if(Page.GetFirstChild("FRAME_CHALLENGE_SCRIPT").DataAttributeGet("open") == "1") {
@@ -711,8 +720,10 @@ foreach(Event,PendingEvents) {
 
 						if(ScriptLocation == "Official") UpdateScriptList(MathLib::NearestInteger((Page.GetFirstChild("FRAME_SCRIPTLIST") as CMlFrame).ScrollOffset.Y/10.0));
 					}
+					PlayAudio(Sound_ClickSoft);
 				}
 				case "QUAD_SELECTOR": {
+					PlayAudio(Sound_ClickSoft);
 					if(MapLocation == "Local") {
 						declare Folder = Event.Control.Parent.DataAttributeGet("folder");
 						if(Folder == "") {
@@ -796,10 +807,12 @@ foreach(Event,PendingEvents) {
 
 						UpdateScriptList(MathLib::NearestInteger((Page.GetFirstChild("FRAME_SCRIPTLIST") as CMlFrame).ScrollOffset.Y/10.0));
 					}
+					PlayAudio(Sound_ClickSoft);
 				}
 				case "QUAD_LOCATION_MAP_LOCAL": {
 					SendCustomEvent("MapList_Local_Folder", ["",FilterLocal.tojson()]);
 					MapLocation = "Local";
+					PlayAudio(Sound_Click);
 				}
 				case "QUAD_LOCATION_MAP_MX": {
 					if(MapLocation != "ManiaExchange") {
@@ -834,6 +847,8 @@ foreach(Event,PendingEvents) {
 							UpdateManiaExchange(0);
 							Page.GetFirstChild("FRAME_MAPLIST_LOADING").Hide();
 						}
+
+						PlayAudio(Sound_Click);
 					}
 				}
 				case "QUAD_LOCATION_MAP_MAPMANAGER": {
@@ -861,6 +876,8 @@ foreach(Event,PendingEvents) {
 							UpdateMapManager(0);
 							Page.GetFirstChild("FRAME_MAPLIST_LOADING").Hide();
 						}
+						
+						PlayAudio(Sound_Click);
 					}
 				}
 
@@ -870,6 +887,8 @@ foreach(Event,PendingEvents) {
 					(Page.GetFirstChild("QUAD_LOCATION_SCRIPT_ONLINE") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
 
 					ScriptLocation = "Official";
+					
+					PlayAudio(Sound_Click);
 				}
 				case "QUAD_LOCATION_SCRIPT_LOCAL": {
 					/*(Event.Control as CMlQuad).ModulateColor = <0.0,0.2,0.4>;
@@ -895,9 +914,13 @@ foreach(Event,PendingEvents) {
 							SelectedScripts.removekey(SelectedScripts.count - 1);
 					}
 					UpdateScriptList(MathLib::NearestInteger((Page.GetFirstChild("FRAME_SCRIPTLIST") as CMlFrame).ScrollOffset.Y/10.0));
+
+					PlayAudio(Sound_Click);
 				}
-				case "LABEL_MAPLIST_REFRESH": {
+				case "QUAD_MAPLIST_REFRESH": {
 					SendCustomEvent("MapList_Local_Refresh", []);
+
+					PlayAudio(Sound_Click);
 				}
 				case "QUAD_MANAGER_SHOWPRIVATE": {
 					if((Event.Control as CMlQuad).ModulateColor == <0.2,0.2,0.2>) {
@@ -910,6 +933,8 @@ foreach(Event,PendingEvents) {
 						SendCustomEvent("MapList_MapManager_Update", [(Page.GetFirstChild("ENTRY_MAPLIST_MANAGER_SEARCH") as CMlEntry).Value, "False"]);
 						Page.GetFirstChild("FRAME_MAPLIST_LOADING").Show();
 					}
+
+					PlayAudio(Sound_Click);
 				}
 
 				case "LABEL_MOREFILTERS_MX": {

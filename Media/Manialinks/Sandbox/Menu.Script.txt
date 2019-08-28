@@ -22,7 +22,7 @@ foreach(Event,PendingEvents) {
 		}
 		case CMlScriptEvent::Type::MouseOver: {
 			if(TextLib::StartsWith("QUAD_BUTTON",Event.ControlId)) {
-				//Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 0, 1.0);
+				
 			}
 			switch(Event.ControlId) {
 				case "QUAD_SIGN": {
@@ -43,10 +43,12 @@ foreach(Event,PendingEvents) {
 			if(Event.ControlId == "QUAD_BUTTON_CREATECHALLENGE") {
 				if(End == -1)
 				SendCustomEvent("Button_CreateChallenge", []);
+				PlayAudio(Sound_Click);
 			}
 			if(Event.ControlId == "QUAD_BUTTON_EXIT") {
 				if(End == -1)
 				SendCustomEvent("Button_Exit", []);
+				PlayAudio(Sound_Click);
 			}
 		}
 		

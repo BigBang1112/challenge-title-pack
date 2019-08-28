@@ -94,17 +94,29 @@ foreach(Event,PendingEvents) {
 			if(Event.Control is CMlQuad) {
 				Select(Null);
 			}
+
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON_EXIT": {
+					PlayAudio(Sound_Hover);
+				}
+				case "QUAD_BUTTON_CONTINUE": {
+					PlayAudio(Sound_Hover);
+				}
+			}
 		}
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_START": {
 					Button_Start();
+					PlayAudio(Sound_Click);
 				}
 				case "QUAD_BUTTON_EXIT": {
 					Button_Exit();
+					PlayAudio(Sound_ClickSoft);
 				}
 				case "QUAD_BUTTON_CONTINUE": {
 					Button_Continue();
+					PlayAudio(Sound_ClickSoft);
 				}
 			}
 		}

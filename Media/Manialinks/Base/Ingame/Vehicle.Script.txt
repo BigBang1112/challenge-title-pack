@@ -136,6 +136,13 @@ UpdateVehicles();
 ***
 foreach(Event,PendingEvents) {
 	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseOver: {
+			switch(Event.ControlId) {
+				case "QUAD_VEHICLE": {
+					PlayAudio(Sound_Hover);
+				}
+			}
+		}
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_VEHICLE": {
@@ -147,6 +154,8 @@ foreach(Event,PendingEvents) {
 						SendCustomEvent("Start", ["True"]);
 						CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
 					}
+
+					PlayAudio(Sound_ClickSoft);
 				}
 			}
 		}
@@ -165,21 +174,21 @@ foreach(Event,PendingEvents) {
 		}
 		case CMlScriptEvent::Type::MenuNavigation: {
 			switch(Event.MenuNavAction) {
-				case CMlEvent::EMenuNavAction::Cancel: {
+				case CMlScriptEvent::EMenuNavAction::Cancel: {
 					
 				}
-				case CMlEvent::EMenuNavAction::Up: {
+				case CMlScriptEvent::EMenuNavAction::Up: {
 					Frame_Vehicles.Scroll(<0., -1.>);
 				}
-				case CMlEvent::EMenuNavAction::Down: {
+				case CMlScriptEvent::EMenuNavAction::Down: {
 					Frame_Vehicles.Scroll(<0., 1.>);
 				}
-				case CMlEvent::EMenuNavAction::Left: {
+				case CMlScriptEvent::EMenuNavAction::Left: {
 					EnableMenuNavigationInputs = False;
 					(Page.GetFirstChild("LABEL_ARROW") as CMlLabel).TextColor = <.93,.93,.93>;
 					SendCustomEvent("Navigation", ["Menu"]);
 				}
-				case CMlEvent::EMenuNavAction::Right: {
+				case CMlScriptEvent::EMenuNavAction::Right: {
 					EnableMenuNavigationInputs = False;
 					(Page.GetFirstChild("LABEL_ARROW") as CMlLabel).TextColor = <.93,.93,.93>;
 					SendCustomEvent("Navigation", ["Menu"]);

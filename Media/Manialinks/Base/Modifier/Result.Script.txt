@@ -45,18 +45,46 @@ declare Boolean TestMode for Page;
 ***
 foreach(Event,PendingEvents) {
 	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseOver: {
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON_SHADOWS": {
+					PlayAudio(Sound_Hover);
+				}
+				case "QUAD_BUTTON_SHADOWS_VERYFAST": {
+					PlayAudio(Sound_Hover);
+				}
+				case "QUAD_BUTTON_SHADOWS_FAST": {
+					PlayAudio(Sound_Hover);
+				}
+				case "QUAD_BUTTON_SHADOWS_DEFAULT": {
+					PlayAudio(Sound_Hover);
+				}
+				case "QUAD_BUTTON_SHADOWS_HIGH": {
+					PlayAudio(Sound_Hover);
+				}
+				case "QUAD_BUTTON_SHADOWS_ULTRA": {
+					PlayAudio(Sound_Hover);
+				}
+			}
+		}
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "LABEL_INTERFACE": {
 					SendCustomEvent("Button_Interface",[]);
 				}
 				case "QUAD_BUTTON_SAVE": {
+					PlayAudio(Sound_Click);
+
 					SendCustomEvent("Button_Save",[]);
 				}
 				case "QUAD_BUTTON_EXIT": {
+					PlayAudio(Sound_Click);
+
 					SendCustomEvent("Button_Exit",[]);
 				}
 				case "QUAD_BUTTON_VALIDATE": {
+					PlayAudio(Sound_Click);
+
 					Quad_FreeCam.StyleSelected = False;
 					Quad_Test.StyleSelected = False;
 
@@ -64,6 +92,8 @@ foreach(Event,PendingEvents) {
 					else SendCustomEvent("Button_Validate",[]);
 				}
 				case "QUAD_BUTTON_SHADOWS": {
+					PlayAudio(Sound_ClickSoft);
+
 					if(Page.GetFirstChild("FRAME_SHADOWS").DataAttributeGet("open") == "1") {
 						AnimMgr.Add(Page.GetFirstChild("FRAME_SHADOWS"), "<frame pos=\"0 0\" hidden=\"1\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 						Page.GetFirstChild("FRAME_SHADOWS").DataAttributeSet("open","0");
@@ -74,18 +104,23 @@ foreach(Event,PendingEvents) {
 					}
 				}
 				case "QUAD_BUTTON_SHADOWS_VERYFAST": {
+					PlayAudio(Sound_ClickSoft);
 					SendCustomEvent("Button_Shadows_VeryFast",[]);
 				}
 				case "QUAD_BUTTON_SHADOWS_FAST": {
+					PlayAudio(Sound_ClickSoft);
 					SendCustomEvent("Button_Shadows_Fast",[]);
 				}
 				case "QUAD_BUTTON_SHADOWS_DEFAULT": {
+					PlayAudio(Sound_ClickSoft);
 					SendCustomEvent("Button_Shadows_Default",[]);
 				}
 				case "QUAD_BUTTON_SHADOWS_HIGH": {
+					PlayAudio(Sound_ClickSoft);
 					SendCustomEvent("Button_Shadows_High",[]);
 				}
 				case "QUAD_BUTTON_SHADOWS_ULTRA": {
+					PlayAudio(Sound_ClickSoft);
 					SendCustomEvent("Button_Shadows_Ultra",[]);
 				}
 				case "QUAD_FREECAM": {

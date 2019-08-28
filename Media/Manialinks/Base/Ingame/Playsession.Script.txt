@@ -5,6 +5,7 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_PUBLISH": {
+					PlayAudio(Sound_Click);
 					SendCustomEvent("PublishMap", []);
 				}
 			}

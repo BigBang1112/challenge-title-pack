@@ -212,6 +212,8 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON": {
+					PlayAudio(Sound_ClickSoft);
+
 					Select(TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("element")));
 				}
 			}
@@ -219,6 +221,8 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseOver: {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON": {
+					PlayAudio(Sound_Hover);
+
 					declare Label = ((Event.Control.Parent.GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).GetFirstChild("LABEL_BUTTON") as CMlLabel);
 					declare ListWidth = Window_Size.X-12;
 					if(Window_Number_Enable) ListWidth -= 10;
@@ -352,7 +356,10 @@ if(End == -1) {
 		foreach(Control,Frame_Background.Controls) {
 			Control.Size.Y = Window_Size.Y;
 			if(Time >= 0) (Control as CMlQuad).Style = "Bgs1";
+			(Control as CMlQuad).Opacity = 1.;
 		}
+
+		Label_Name.Opacity = 1.;
 		Quad_Scrollbar_Background.Size.Y = Window_Size.Y-20;
 		Quad_List_Bg.Size.Y = Window_Size.Y-20;
 		Frame_List.ClipWindowRelativePosition.Y = -(Window_Size.Y-20)/2;

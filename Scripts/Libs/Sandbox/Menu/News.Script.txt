@@ -13,7 +13,7 @@
 }
 
 Void Init() {
-	Layers::Create("News", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme));
+	Layers::Create("News", Manialink::FromFile(C_Manialink, True, ["Audio"], Settings::Get().Theme));
 }
 
 Void Start() {

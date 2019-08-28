@@ -8,7 +8,7 @@
 #Const C_Manialink "Media/Manialinks/Sandbox/Top"
 
 Void Init() {
-	Layers::Create("Top", Manialink::FromFile(C_Manialink, True, ["TextAnimation"], Settings::Get().Theme));
+	Layers::Create("Top", Manialink::FromFile(C_Manialink, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
 }
 
 Void Start() {

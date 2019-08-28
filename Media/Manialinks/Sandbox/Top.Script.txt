@@ -12,6 +12,7 @@ foreach(Event,PendingEvents) {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_SKINS": {
 					SendCustomEvent("Button_Skins", []);
+					PlayAudio(Sound_Click);
 				}
 				case "QUAD_BUTTON_SETTINGS": {
 					if(Page.GetFirstChild("FRAME_SETTINGS").DataAttributeGet("open") == "1") {
@@ -22,6 +23,7 @@ foreach(Event,PendingEvents) {
 						AnimMgr.Add(Page.GetFirstChild("FRAME_SETTINGS"), "<frame pos=\"0 0\" hidden=\"0\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 						Page.GetFirstChild("FRAME_SETTINGS").DataAttributeSet("open","1");
 					}
+					PlayAudio(Sound_Click);
 				}
 			}
 		}

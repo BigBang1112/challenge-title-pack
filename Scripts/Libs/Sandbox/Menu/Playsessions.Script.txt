@@ -44,7 +44,7 @@ declare SPlaysession[] Playsessions;
 declare SPlaysession SelectedPlaysession;
 
 Void Init() {
-	Layers::Create("Playsessions", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme));
+	Layers::Create("Playsessions", Manialink::FromFile(C_Manialink, True, ["Audio"], Settings::Get().Theme));
 }
 
 Void Start() {

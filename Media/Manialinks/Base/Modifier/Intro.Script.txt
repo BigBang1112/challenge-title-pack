@@ -5,9 +5,11 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_START": {
+					PlayAudio(Sound_Click);
 					SendCustomEvent("Start",[]);
 				}
 				case "QUAD_BUTTON_LEAVE": {
+					PlayAudio(Sound_Click);
 					SendCustomEvent("Leave",[]);
 				}
 			}
