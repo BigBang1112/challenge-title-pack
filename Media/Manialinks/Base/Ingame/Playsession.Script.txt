@@ -37,6 +37,7 @@ foreach(Event,PendingEvents) {
 					Page.GetFirstChild("FRAME_UNPUBLISHED").Hide();
 					Page.GetFirstChild("FRAME_PUBLISHED").Show();
 					(Page.GetFirstChild("LABEL_COUNT") as CMlLabel).SetText("-");
+					PreviousCount = -1;
 				}
 				case "Private": {
 					Page.GetFirstChild("FRAME_UNPUBLISHED").Show();

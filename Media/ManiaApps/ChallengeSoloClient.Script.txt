@@ -475,8 +475,9 @@ if(Service_Status::AsyncIsCompleted("STATUS")) {
 
 if(Service_Map::AsyncIsCompleted("PUBLISH")) {
 	if(Service_Map::AsyncIsSuccessful("PUBLISH")) {
-		AsyncPlaysession(PlaysessionSecret, "Playing");
 		UpdatePublicMap(Service_Map::GetAsyncPublishResult("PUBLISH"));
+		PlaysessionSecret = Random::String(32);
+		AsyncPlaysession(PlaysessionSecret, "Playing");
 	}
 	Service_Map::AsyncDestroy("PUBLISH");
 }
