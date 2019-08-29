@@ -44,7 +44,12 @@ foreach(Event,PendingEvents) {
 				case "Count": {
 					declare Count = TextLib::ToInteger(Event.CustomEventData[0]);
 
-					if(Count != PreviousCount) PlayAudio(Sound_NumberChange);
+					if(Count != PreviousCount) {
+						(Page.GetFirstChild("LABEL_COUNT") as CMlLabel).TextColor = <1., 1., 0.>;
+						Page.GetFirstChild("LABEL_COUNT").RelativeScale = 1.05;
+						AnimMgr.Add(Page.GetFirstChild("LABEL_COUNT"), "<label textcolor=\"FFF\" scale=\"1\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+						PlayAudio(Sound_NumberChange);
+					}
 
 					if(Count < 0) {
 						(Page.GetFirstChild("LABEL_COUNT") as CMlLabel).SetText("-");
