@@ -8,7 +8,7 @@
 #Include "Libs/BigBang1112/Auth.Script.txt" as Auth
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
-#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Time.Script.txt" as Time
 
 #Include "Libs/Sandbox/Menu/Quickplay.Script.txt" as Menu_Quickplay
 #Include "Libs/Sandbox/Menu/Main.Script.txt" as Menu_Main
@@ -36,10 +36,10 @@ main() {
 		Dictionary::SetTranslationFolder("Media/Translations");
 		Dictionary::SetTranslationLanguage(Settings::Get().Language);
 		
-		declare Status = Service_Status::CheckStatus();
+		declare Status = Service_Status::CheckStatus(LocalUser);
 		while(!Status.Running) {
 			sleep(10000);
-			Status = Service_Status::CheckStatus();
+			Status = Service_Status::CheckStatus(LocalUser);
 		}
 		
 		Menu_Main::Init();
@@ -68,7 +68,7 @@ main() {
 		while(!(Status.InsiderAccess || Menu_AuthBeta::GetAccess().Organizer || Menu_AuthBeta::GetAccess().Owner)) {
 			log("Insiders don't have access to the title pack at the moment.");
 			sleep(10000);
-			Status = Service_Status::CheckStatus();
+			Status = Service_Status::CheckStatus(LocalUser);
 		}
 		
 		Menu_Main::Start();
@@ -109,6 +109,18 @@ main() {
 			Menu_Editor::Loop();
 			Menu_Playsessions::Loop();
 			Menu_News::Loop();
+			
+			if(!Time::Stamp_CreateOnce("STATUS", 10*1000)) {
+				if(Time::Stamp_Reached("STATUS")) {
+					declare Success = Service_Status::AsyncCheckStatus("STATUS");
+				}
+			}
+			
+			if(Service_Status::AsyncIsCompleted("STATUS")) {
+				if(Service_Status::AsyncIsSuccessful("STATUS")) {
+					declare Status = Service_Status::GetAsyncCheckStatusResult("STATUS", LocalUser);
+				}
+			}
 		
 			yield;
 		}

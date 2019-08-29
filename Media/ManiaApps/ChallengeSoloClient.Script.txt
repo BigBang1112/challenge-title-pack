@@ -11,6 +11,7 @@
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 #Include "Libs/BigBang1112/Map.Script.txt" as Map
 #Include "Libs/BigBang1112/Discord.Script.txt" as Discord
+#Include "Libs/BigBang1112/Time.Script.txt" as Time
 
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 #Include "Libs/Challenge/Service/Map.Script.txt" as Service_Map
@@ -58,6 +59,26 @@ Void ShowMenu() {
 
 }
 
+Boolean AsyncPlaysession(Text _Secret, Text _Action) {
+	declare SAuthToken INGAME_TOKEN for LocalUser;
+	declare netread Race::SVehicle[] Server_Vehicles for UI;
+	declare netread Integer Server_CurrentVehicle for UI;
+
+	declare SPlaysession Playsession;
+	Playsession.Login = LocalUser.Login;
+	Playsession.Token = INGAME_TOKEN.Value;
+	Playsession.MapUid = Map.MapInfo.MapUid;
+	if(Server_CurrentVehicle == -1)
+		Playsession.Car = "";
+	else
+		Playsession.Car = Server_Vehicles[Server_CurrentVehicle].Name;
+	Playsession.Secret = _Secret;
+	Playsession.Action = _Action;
+	Playsession.TitleId = LoadedTitle.TitleId;
+
+	return Http::AsyncPOST("PLAYSESSION", """{{{Service_Status::LastStatus(LocalUser).Service}}}/ingame/playsession.php""", Playsession.tojson());
+}
+
 Void ShowIngame() {
 	Layers::Show("Dashboard", True);
 	Layers::Show("Stunts", True);
@@ -70,6 +91,15 @@ Void HideIngame() {
 	Layers::Hide("Stunts");
 	Layers::Hide("Playsession");
 	Layers::Hide("Map");
+}
+
+Void UpdatePublicMap(Service_Status::SPublicMap _PublicMap) {
+	if(_PublicMap.Public) {
+		Layers::SendEvent("Playsession", "Public", _PublicMap.tojson());
+	}
+	else {
+		Layers::SendEvent("Playsession", "Private");
+	}
 }
 
 ***Init***
@@ -128,6 +158,8 @@ Layers::Create("Flash", Manialink::FromFile(C_Manialink_Flash, True, [], Setting
 
 ***Start***
 ***
+declare Close = False;
+
 if(Server_IsValidationMode) {
 	Layers::Create("OpenMenu", Manialink::FromFile(C_Manialink_OpenMenu, True, ["Audio"], Settings::Get().Theme));
 }
@@ -152,20 +184,11 @@ VehicleCount = Server_Vehicles.count;
 
 declare SAuthToken INGAME_TOKEN for LocalUser;
 
-declare SPlaysession Playsession;
-Playsession.Login = LocalUser.Login;
-Playsession.Token = INGAME_TOKEN.Value;
-Playsession.MapUid = Map.MapInfo.MapUid;
-Playsession.Car = "StadiumCar";
-Playsession.Secret = Random::String(32);
-Playsession.Action = "Playing";
-Playsession.TitleId = LoadedTitle.TitleId;
+declare Service_Status::SPublicMap PublicMap;
+declare ReqMap = Http::SyncGET("""{{{Service_Status::LastStatus(LocalUser).Service}}}/map.php?{{{Map.MapInfo.MapUid}}}""");
+declare JsonSuccess = PublicMap.fromjson(ReqMap.Result);
 
-log(INGAME_TOKEN.Value);
-
-declare Req = Http::SyncPOST("""{{{Service_Status::LastStatus().Service}}}/ingame/playsession.php""", Playsession.tojson(), "Content-Type: application/json\nContent-Length: "^TextLib::Length(Playsession.tojson()));
-log(Req.Result);
-Http.Destroy(Req);
+UpdatePublicMap(PublicMap);
 
 declare netread Integer Server_VehicleLock for UI;
 declare netread Integer Server_CurrentVehicle for UI;
@@ -196,6 +219,10 @@ declare IsOutro = Server_Outro;
 declare netread Stunt::SStunt Server_Stunt for UI;
 declare LastStunt = Server_Stunt;
 
+declare PlaysessionSecret = Random::String(32);
+if(PublicMap.Public && !Server_IsValidationMode) AsyncPlaysession(PlaysessionSecret, "Playing");
+
+if(Server_IsValidationMode) Layers::SendEvent("Playsession", "DisablePublish");
 ***
 
 ***Loop***
@@ -246,7 +273,7 @@ foreach(Event, PendingEvents) {
 							}
 						}
 						case "Exit": {
-							Playground.QuitServer(False);
+							Close = True;
 						}
 					}
 				}
@@ -281,7 +308,7 @@ foreach(Event, PendingEvents) {
 							Layers::Hide("Outro");
 						}
 						case "Exit": {
-							Playground.QuitServer(True);
+							Close = True;
 						}
 					}
 				}
@@ -301,7 +328,7 @@ foreach(Event, PendingEvents) {
 							Params.TitleId = LoadedTitle.TitleId;
 							Params.Modifiers = [];
 
-							Service_Map::Publish(Params);
+							declare Success = Service_Map::AsyncPublish("PUBLISH", LocalUser, Params);
 						}
 					}
 				}
@@ -399,11 +426,66 @@ if(Server_Outro != IsOutro) {
 
 VehicleLock = Server_VehicleLock;
 
+if(Close) {
+	if(!Server_IsValidationMode) {
+		declare Success = AsyncPlaysession(PlaysessionSecret, "Close");
+		wait(Service_Status::AsyncIsCompleted("PLAYSESSION"));
+	}
+	Playground.QuitServer(True);
+	Layers::SendEvent("Menu", "Exit");
+}
+
 if(Discord::AsyncIsCompleted("Discord")) {
 	if(Discord::AsyncIsSuccessful("Discord")) {
 		Layers::SendEvent("Endscreen", "Discord", Discord::GetAsyncWidgetResult("Discord").tojson());
 	}
 	Discord::AsyncDestroy("Discord");
+}
+
+if(!Time::Stamp_CreateOnce("STATUS", 10*1000)) {
+	if(Time::Stamp_Reached("STATUS")) {
+		declare Success = Service_Status::AsyncCheckStatus("STATUS");
+	}
+}
+
+if(Service_Status::AsyncIsCompleted("STATUS")) {
+	if(Service_Status::AsyncIsSuccessful("STATUS")) {
+		declare Status = Service_Status::GetAsyncCheckStatusResult("STATUS", LocalUser);
+
+		declare ContainsThisMap = False;
+
+		foreach(Playsession, Status.Playsessions) {
+			if(Playsession.Map.Uid == Map.MapInfo.MapUid) {
+				ContainsThisMap = True;
+				log(Playsession.Users);
+				Layers::SendEvent("Playsession", "Count", Playsession.Users.count^"");
+				
+				if(!Server_IsValidationMode)
+					declare Success = AsyncPlaysession(PlaysessionSecret, "Playing");
+			}
+		}
+
+		if(!ContainsThisMap) {
+			declare Service_Status::SPublicMap DeletedMap;
+			UpdatePublicMap(DeletedMap);
+		}
+	}
+	Service_Status::AsyncDestroy("STATUS");
+}
+
+if(Service_Map::AsyncIsCompleted("PUBLISH")) {
+	if(Service_Map::AsyncIsSuccessful("PUBLISH")) {
+		AsyncPlaysession(PlaysessionSecret, "Playing");
+		UpdatePublicMap(Service_Map::GetAsyncPublishResult("PUBLISH"));
+	}
+	Service_Map::AsyncDestroy("PUBLISH");
+}
+
+if(Http::IsCompleted("PLAYSESSION")) {
+	if(Http::IsSuccessful("PLAYSESSION")) {
+		log(Http::GetResult("PLAYSESSION"));
+	}
+	Http::Destroy("PLAYSESSION");
 }
 ***
 

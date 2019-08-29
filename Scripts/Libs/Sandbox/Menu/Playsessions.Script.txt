@@ -19,29 +19,9 @@
 	Boolean Selectable;
 }
 
-#Struct SPublicMap {
-	Text Name;
-	Text Uid;
-	Text Author;
-	Text OriginalName;
-	Text OriginalUid;
-	Text OriginalAuthor;
-}
-
-#Struct SUser {
-	Text Login;
-	Text Nickname;
-}
-
-#Struct SPlaysession {
-	SPublicMap Map;
-	SUser[] Users;
-}
-
 #Const C_Manialink "Media/Manialinks/Window_List"
 
-declare SPlaysession[] Playsessions;
-declare SPlaysession SelectedPlaysession;
+declare Service_Status::SPlaysession SelectedPlaysession;
 
 Void Init() {
 	Layers::Create("Playsessions", Manialink::FromFile(C_Manialink, True, ["Audio"], Settings::Get().Theme));
@@ -53,10 +33,9 @@ Void Start() {
 	Layers::SendEvent("Playsessions", "Size", ["70 70"]);
 	Layers::SendEvent("Playsessions", "Animation_Out", ["200 0"]);
 	Layers::SendEvent("Playsessions", "Number_Enable", "True");
+	Layers::SendEvent("Playsessions", "Do_Not_Show_One", "True");
 	
 	Layers::Show("Playsessions", True);
-	
-	declare Success = Http::AsyncGET("Playsessions", """{{{Service_Status::LastStatus().Service}}}/playsessions.php?titleid={{{LoadedTitle.TitleId}}}""");
 }
 
 Void Event(CManiaAppEvent _Event) {
@@ -65,33 +44,14 @@ Void Event(CManiaAppEvent _Event) {
 	if(Event.Type == CManiaAppEvent::EType::LayerCustomEvent) {
 		switch(Event.CustomEventType) {
 			case "Select": {
-				SelectedPlaysession = Playsessions[TextLib::ToInteger(Event.CustomEventData[0])];
+				SelectedPlaysession = Service_Status::LastStatus(LocalUser).Playsessions[TextLib::ToInteger(Event.CustomEventData[0])];
 				Task::Async_DataFileMgr("PLAYSESSION_MAP",DataFileMgr.Map_GetGameList("", True));
 			}
 		}
 	}
 }
 
-Void Async() {
-	if(Http::IsCompleted("Playsessions")) {
-		if(Http::IsSuccessful("Playsessions")) {
-			declare JsonSuccess = Playsessions.fromjson(Http::GetResult("Playsessions"));
-			declare SElement[] Elements;
-			foreach(Playsession,Playsessions) {
-				declare SElement Element;
-				Element.Name = Playsession.Map.OriginalName;
-				Element.Count = Playsession.Users.count;
-				Element.Selectable = True;
-				Elements.add(Element);
-			}
-			Layers::SendEvent("Playsessions", "Elements", Elements.tojson());
-		}
-		else {
-			
-		}
-		Http::Destroy("Playsessions");
-	}
-	
+Void Async() {	
 	if(Task::IsCompleted("PLAYSESSION_MAP")) {
 		if(Task::IsSuccessful("PLAYSESSION_MAP")) {
 			declare MapList = (Task::Get("PLAYSESSION_MAP") as CTaskResult_MapList);
@@ -109,9 +69,18 @@ Void Async() {
 }
 
 Void Loop() {
-	if(!Time::Stamp_CreateOnce("PLAYSESSION_REFRESH", 10*1000)) {
+	if(!Time::Stamp_CreateOnce("PLAYSESSION_REFRESH", 1*1000)) {
 		if(Time::Stamp_Reached("PLAYSESSION_REFRESH")) {
-			declare Success = Http::AsyncGET("Playsessions", """{{{Service_Status::LastStatus().Service}}}/playsessions.php?titleid={{{LoadedTitle.TitleId}}}""");
+			declare Playsessions = Service_Status::LastStatus(LocalUser).Playsessions;
+			declare SElement[] Elements;
+			foreach(Playsession,Playsessions) {
+				declare SElement Element;
+				Element.Name = Playsession.Map.OriginalName;
+				Element.Count = Playsession.Users.count;
+				Element.Selectable = True;
+				Elements.add(Element);
+			}
+			Layers::SendEvent("Playsessions", "Elements", Elements.tojson());
 		}
 	}
 }

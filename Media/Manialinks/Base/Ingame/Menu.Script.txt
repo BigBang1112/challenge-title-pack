@@ -37,8 +37,7 @@ Void Button_Continue() {
 }
 
 Void Button_Exit() {
-	CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Quit);
-	Playground.QuitServer(False);
+	SendCustomEvent("Exit", []);
 }
 
 Void Button_Start() {
@@ -142,6 +141,10 @@ foreach(Event,PendingEvents) {
 				case "Navigation": {
 					EnableMenuNavigationInputs = Event.CustomEventData[0] == "True";
 					if(EnableMenuNavigationInputs) Select(FirstNav);
+				}
+				case "Exit": {
+					CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Quit);
+					Playground.QuitServer(False);
 				}
 			}
 		}

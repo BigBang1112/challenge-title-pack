@@ -130,6 +130,8 @@ foreach(Event,RaceEvents) {
 			}
 		}
 		case CTmRaceClientEvent::EType::Respawn: {
+			PlayAudio(Sound_TimeReset);
+
 			SlowSetText(Label_CP_Start,"-:--.---",500);
 			Label_CP_Start.Show();
 

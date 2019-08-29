@@ -32,7 +32,7 @@ Void Async() {
 				NewLogins.add(Login);
 			}
 		}
-		declare Success = Http::AsyncGET("RefreshNicknames", Service_Status::LastStatus().Service ^ "/players?login=" ^ TextLib::URLEncode(TextLib::Join(" ",NewLogins)) ^ "&nickname_only=1");
+		declare Success = Http::AsyncGET("RefreshNicknames", Service_Status::LastStatus(LocalUser).Service ^ "/players?login=" ^ TextLib::URLEncode(TextLib::Join(" ",NewLogins)) ^ "&nickname_only=1");
 	}
 	
 	if(Http::IsCompleted("RefreshNicknames")) {

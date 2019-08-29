@@ -29,8 +29,9 @@ SAccess GetAccess() {
 }
 
 Void Start() {
+	declare Status = Service_Status::LastStatus(LocalUser);
 	Layers::Create("AuthBeta", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme), True);
-	declare Success = Auth2::AsyncAuthorize("Authorize", "b1a3d10ba7", "basic maps", Service_Status::LastStatus().Service^"/auth.php");
+	declare Success = Auth2::AsyncAuthorize("Authorize", "b1a3d10ba7", "basic maps", Status.Service^"/auth.php");
 }
 
 Void Event(CManiaAppEvent _Event) {

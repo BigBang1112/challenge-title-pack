@@ -85,7 +85,7 @@ Void UpdateOfficialScripts(Text[] _Scripts) {
 }
 
 Boolean CheckMapOnline(Text _MapUid) {
-	declare Status = Service_Status::LastStatus();
+	declare Status = Service_Status::LastStatus(LocalUser);
 	declare Map = Http::SyncGET(Status.Service ^"/map.php?"^_MapUid);
 	declare SMapOnline MapOnline;
 	declare JsonSuccess = MapOnline.fromjson(Map.Result);

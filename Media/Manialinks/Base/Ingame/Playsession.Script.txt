@@ -1,3 +1,20 @@
+#Struct SPublicMap {
+	Boolean Public;
+	Boolean IsNadeoMap;
+	Text Name;
+	Text Uid;
+	Text Author;
+	Text OriginalName;
+	Text OriginalUid;
+	Text OriginalAuthor;
+}
+
+***Start***
+***
+declare SPublicMap PublicMap;
+declare Integer PreviousCount;
+***
+
 ***Loop***
 ***
 foreach(Event,PendingEvents) {
@@ -12,8 +29,35 @@ foreach(Event,PendingEvents) {
 		}
 		case CMlScriptEvent::Type::PluginCustomEvent: {
 			switch(Event.CustomEventType) {
-				case "": {
-					
+				case "Public": {
+					declare JsonSuccess = PublicMap.fromjson(Event.CustomEventData[0]);
+					(Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel).SetText(PublicMap.OriginalName);
+
+					Page.GetFirstChild("FRAME_UNPUBLISHED").Hide();
+					Page.GetFirstChild("FRAME_PUBLISHED").Show();
+					(Page.GetFirstChild("LABEL_COUNT") as CMlLabel).SetText("-");
+				}
+				case "Private": {
+					Page.GetFirstChild("FRAME_UNPUBLISHED").Show();
+					Page.GetFirstChild("FRAME_PUBLISHED").Hide();
+				}
+				case "Count": {
+					declare Count = TextLib::ToInteger(Event.CustomEventData[0]);
+
+					if(Count != PreviousCount) PlayAudio(Sound_NumberChange);
+
+					if(Count < 0) {
+						(Page.GetFirstChild("LABEL_COUNT") as CMlLabel).SetText("-");
+					}
+					else {
+						(Page.GetFirstChild("LABEL_COUNT") as CMlLabel).SetText(Count^"");
+					}
+					PreviousCount = Count;
+				}
+				case "DisablePublish": {
+					(Page.GetFirstChild("QUAD_BUTTON_PUBLISH_DISABLE") as CMlQuad).Show();
+					(Page.GetFirstChild("QUAD_BUTTON_PUBLISH") as CMlQuad).ModulateColor = <0., .2, 0.>;
+					(Page.GetFirstChild("LABEL_BUTTON_PUBLISH") as CMlLabel).TextColor = <.5, .5, .5>;
 				}
 			}
 		}
