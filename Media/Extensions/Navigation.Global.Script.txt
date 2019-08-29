@@ -1,0 +1,25 @@
+declare SNavControl[CMlControl] NavControls;
+declare CMlControl SelectedNav;
+declare CMlControl FirstNav;
+
+Void Select(CMlControl _Control) {
+	foreach(Control => NavControl, NavControls) {
+		if(Control is CMlQuad) {
+			declare Quad = (Control as CMlQuad);
+			Quad.StyleSelected = False;
+		}
+	}
+
+	if(_Control != Null && (_Control is CMlQuad)) {
+		declare Quad = (_Control as CMlQuad);
+		Quad.StyleSelected = True;
+	}
+
+	SelectedNav = _Control;
+}
+
+Void PassNavigation(Text _Layer) {
+	EnableMenuNavigationInputs = False;
+	Select(Null);
+	SendCustomEvent("Navigation", [_Layer]);
+}

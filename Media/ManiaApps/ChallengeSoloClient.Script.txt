@@ -143,7 +143,7 @@ VehicleManialink = TextLib::Replace(VehicleManialink, """<frame id="FRAME_INNER_
 """<quad z-index="-1" pos="0 {{{-Server_Vehicles.count*20/2+MapVehicle*20}}}" size="220 {{{(Server_Vehicles.count)*20+160}}}" halign="center" valign="center" style="Bgs1InRace" substyle="BgEmpty" scriptevents="1"/>
 <frame id="FRAME_INNER_VEHICLES">{{{VehicleML}}}</frame>""");
 
-Layers::Create("Menu", Manialink::FromFile(C_Manialink_Menu, True, ["Audio", "SlideText"], Settings::Get().Theme));
+Layers::Create("Menu", Manialink::FromFile(C_Manialink_Menu, True, ["Audio", "SlideText", "Navigation"], Settings::Get().Theme));
 Layers::Create("Vehicle", VehicleManialink);
 Layers::Create("Dashboard", Manialink::FromFile(C_Manialink_Dashboard, True, ["Audio", "TextAnimation"], Settings::Get().Theme));
 Layers::Create("Stunts", Manialink::FromFile(C_Manialink_Stunts, True, ["Audio", "TextAnimation"], Settings::Get().Theme));
@@ -151,7 +151,7 @@ Layers::Create("Playsession", Manialink::FromFile(C_Manialink_Playsession, True,
 Layers::Create("Spotify", Manialink::FromFile(C_Manialink_Spotify, True, ["Audio"], Settings::Get().Theme));
 Layers::Create("Map", Manialink::FromFile(C_Manialink_Map, True, ["Audio", "SlideText"], Settings::Get().Theme));
 Layers::Create("Endscreen", Manialink::FromFile(C_Manialink_Endscreen, True, ["Audio", "SlideText"], Settings::Get().Theme));
-Layers::Create("Outro", Manialink::FromFile(C_Manialink_Outro, True, ["Audio"], Settings::Get().Theme));
+Layers::Create("Outro", Manialink::FromFile(C_Manialink_Outro, True, ["Audio", "Navigation"], Settings::Get().Theme));
 
 Layers::Create("Flash", Manialink::FromFile(C_Manialink_Flash, True, [], Settings::Get().Theme));
 ***
@@ -413,7 +413,11 @@ if(Server_EndRace != RaceEnded) {
 }
 
 if(Server_Outro != IsOutro) {
-	if(!Server_Outro) {
+	if(Server_Outro) {
+		Layers::SendEvent("Outro", "Navigation", "True");
+	}
+	else {
+		Layers::SendEvent("Outro", "Navigation", "False");
 		ShowIngame();
 		if(Server_IsValidationMode)
 			Layers::Show("OpenMenu", True);

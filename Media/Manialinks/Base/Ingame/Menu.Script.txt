@@ -1,36 +1,3 @@
-#Struct SNavControl {
-	CMlControl Left;
-	CMlControl Right;
-	CMlControl Up;
-	CMlControl Down;
-}
-
-declare SNavControl[CMlControl] NavControls;
-declare CMlControl SelectedNav;
-declare CMlControl FirstNav;
-
-Void Select(CMlControl _Control) {
-	foreach(Control => NavControl, NavControls) {
-		if(Control is CMlQuad) {
-			declare Quad = (Control as CMlQuad);
-			Quad.StyleSelected = False;
-		}
-	}
-
-	if(_Control != Null && (_Control is CMlQuad)) {
-		declare Quad = (_Control as CMlQuad);
-		Quad.StyleSelected = True;
-	}
-
-	SelectedNav = _Control;
-}
-
-Void PassNavigation(Text _Layer) {
-	EnableMenuNavigationInputs = False;
-	Select(Null);
-	SendCustomEvent("Navigation", [_Layer]);
-}
-
 Void Button_Continue() {
 	SendCustomEvent("Start", ["False"]);
 	CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
@@ -148,22 +115,22 @@ foreach(Event,PendingEvents) {
 				}
 			}
 		}
-		case CMlEvent::Type::MenuNavigation: {
+		case CMlScriptEvent::Type::MenuNavigation: {
 			switch(Event.MenuNavAction) {
-				case CMlEvent::EMenuNavAction::Cancel: {
+				case CMlScriptEvent::EMenuNavAction::Cancel: {
 					if(IsPauseMenu)
 						CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
 					else
 						Playground.QuitServer(False);	
 				}
-				case CMlEvent::EMenuNavAction::Select: {
+				case CMlScriptEvent::EMenuNavAction::Select: {
 					if(SelectedNav != Null) {
 						if(SelectedNav.ControlId == "QUAD_BUTTON_CONTINUE") Button_Continue();
 						else if(SelectedNav.ControlId == "QUAD_BUTTON_EXIT") Button_Exit();
 						else if(SelectedNav.ControlId == "QUAD_BUTTON_START") Button_Start();
 					}
 				}
-				case CMlEvent::EMenuNavAction::Up: {
+				case CMlScriptEvent::EMenuNavAction::Up: {
 					if(SelectedNav != Null) {
 						if(NavControls[SelectedNav].Up != Null)
 							Select(NavControls[SelectedNav].Up);
@@ -174,7 +141,7 @@ foreach(Event,PendingEvents) {
 						Select(FirstNav);
 					}
 				}
-				case CMlEvent::EMenuNavAction::Down: {
+				case CMlScriptEvent::EMenuNavAction::Down: {
 					if(SelectedNav != Null) {
 						if(NavControls[SelectedNav].Down != Null)
 							Select(NavControls[SelectedNav].Down);
@@ -185,7 +152,7 @@ foreach(Event,PendingEvents) {
 						Select(FirstNav);
 					}
 				}
-				case CMlEvent::EMenuNavAction::Left: {
+				case CMlScriptEvent::EMenuNavAction::Left: {
 					if(SelectedNav != Null) {
 						if(NavControls[SelectedNav].Left != Null)
 							Select(NavControls[SelectedNav].Left);
@@ -196,7 +163,7 @@ foreach(Event,PendingEvents) {
 						Select(FirstNav);
 					}
 				}
-				case CMlEvent::EMenuNavAction::Right: {
+				case CMlScriptEvent::EMenuNavAction::Right: {
 					if(SelectedNav != Null) {
 						if(NavControls[SelectedNav].Right != Null)
 							Select(NavControls[SelectedNav].Right);

@@ -1,0 +1,6 @@
+#Struct SNavControl {
+	CMlControl Left;
+	CMlControl Right;
+	CMlControl Up;
+	CMlControl Down;
+}

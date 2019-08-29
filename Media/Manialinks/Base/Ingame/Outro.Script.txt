@@ -1,6 +1,27 @@
 ***Start***
 ***
 EnableMenuNavigationInputs = True;
+
+declare Quad_Button_Exit = (Page.GetFirstChild("QUAD_BUTTON_EXIT") as CMlQuad);
+declare Quad_Button_Continue = (Page.GetFirstChild("QUAD_BUTTON_CONTINUE") as CMlQuad);
+declare Quad_Button_SaveReplay = (Page.GetFirstChild("QUAD_BUTTON_SAVEREPLAY") as CMlQuad);
+
+FirstNav = Quad_Button_Continue;
+
+declare SNavControl Button_Exit;
+Button_Exit.Right = Quad_Button_Continue;
+NavControls[Quad_Button_Exit] = Button_Exit;
+
+declare SNavControl Button_Continue;
+Button_Continue.Left = Quad_Button_Exit;
+Button_Continue.Right = Quad_Button_SaveReplay;
+NavControls[Quad_Button_Continue] = Button_Continue;
+
+declare SNavControl Button_SaveReplay;
+Button_SaveReplay.Left = Quad_Button_Continue;
+NavControls[Quad_Button_SaveReplay] = Button_SaveReplay;
+
+Select(FirstNav);
 ***
 
 ***Loop***
@@ -18,12 +39,69 @@ foreach(Event,PendingEvents) {
 					PlayAudio(Sound_Click);
 					SendCustomEvent("Exit", []);
 				}
+				case "QUAD_BUTTON_SAVEREPLAY": {
+					PlayAudio(Sound_Click);
+					SendCustomEvent("SaveReplay", []);
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MouseOver: {
+			if(Event.Control is CMlQuad) {
+				Select(Null);
 			}
 		}
 		case CMlScriptEvent::Type::PluginCustomEvent: {
 			switch(Event.CustomEventType) {
-				case "": {
-					
+				case "Navigation": {
+					EnableMenuNavigationInputs = Event.CustomEventData[0] == "True";
+					if(EnableMenuNavigationInputs) Select(FirstNav);
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MenuNavigation: {
+			switch(Event.MenuNavAction) {
+				case CMlScriptEvent::EMenuNavAction::Select: {
+					if(SelectedNav != Null) {
+						if(SelectedNav.ControlId == "QUAD_BUTTON_CONTINUE") SendCustomEvent("Continue", []);
+						else if(SelectedNav.ControlId == "QUAD_BUTTON_EXIT") SendCustomEvent("Exit", []);
+						else if(SelectedNav.ControlId == "QUAD_BUTTON_SAVEREPLAY") SendCustomEvent("SaveReplay", []);
+					}
+				}
+				case CMlScriptEvent::EMenuNavAction::Up: {
+					if(SelectedNav != Null) {
+						if(NavControls[SelectedNav].Up != Null)
+							Select(NavControls[SelectedNav].Up);
+					}
+					else {
+						Select(FirstNav);
+					}
+				}
+				case CMlScriptEvent::EMenuNavAction::Down: {
+					if(SelectedNav != Null) {
+						if(NavControls[SelectedNav].Down != Null)
+							Select(NavControls[SelectedNav].Down);
+					}
+					else {
+						Select(FirstNav);
+					}
+				}
+				case CMlScriptEvent::EMenuNavAction::Left: {
+					if(SelectedNav != Null) {
+						if(NavControls[SelectedNav].Left != Null)
+							Select(NavControls[SelectedNav].Left);
+					}
+					else {
+						Select(FirstNav);
+					}
+				}
+				case CMlScriptEvent::EMenuNavAction::Right: {
+					if(SelectedNav != Null) {
+						if(NavControls[SelectedNav].Right != Null)
+							Select(NavControls[SelectedNav].Right);
+					}
+					else {
+						Select(FirstNav);
+					}
 				}
 			}
 		}
