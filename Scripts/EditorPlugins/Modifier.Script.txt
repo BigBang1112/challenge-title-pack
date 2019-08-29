@@ -24,7 +24,7 @@
 #Const C_Manialink_ModifierScript "Media/Manialinks/Base/Modifier/Script"
 #Const C_Manialink_ModifierStatus "Media/Manialinks/Base/Modifier/Status"
 #Const C_Manialink_ModifierMetadata "Media/Manialinks/Base/Modifier/Metadata"
-#Const C_Manialink_ModifierActions "Media/Manialinks/Base/Modifier/Actions"
+#Const C_Manialink_ModifierMap "Media/Manialinks/Base/Modifier/Map"
 #Const C_Manialink_ModifierSolver "Media/Manialinks/Base/Modifier/Solver"
 #Const C_Manialink_ModifierCrash "Media/Manialinks/Base/Modifier/Crash"
 
@@ -119,7 +119,6 @@ Void UpdateCamera() {
 Void Finish() {
 	Layers::Hide("ModifierScript");
 	Layers::Hide("ModifierStatus");
-	Layers::Hide("ModifierActions");
 	Layers::Hide("ModifierMetadata");
 	
 	sleep(500);
@@ -691,12 +690,12 @@ main() {
 	Layers::Create("ModifierScript",Manialink::FromFile(C_Manialink_ModifierScript, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
 	Layers::Create("ModifierStatus",Manialink::FromFile(C_Manialink_ModifierStatus, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
 	Layers::Create("ModifierMetadata",Manialink::FromFile(C_Manialink_ModifierMetadata, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
-	Layers::Create("ModifierActions",Manialink::FromFile(C_Manialink_ModifierActions, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+	Layers::Create("ModifierMap",Manialink::FromFile(C_Manialink_ModifierMap, True, ["TextAnimation", "SlideText", "Audio"], Settings::Get().Theme));
 	Layers::Create("ModifierCrash",Manialink::FromFile(C_Manialink_ModifierCrash, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
 
 	Layers::SetAnimationInOut("ModifierScript",CUILayer::EUILayerAnimation::DownSlow);
 	Layers::SetAnimationInOut("ModifierStatus",CUILayer::EUILayerAnimation::DownSlow);
-	Layers::SetAnimationInOut("ModifierActions",CUILayer::EUILayerAnimation::RightSlow);
+	Layers::SetAnimationInOut("ModifierMap",CUILayer::EUILayerAnimation::RightSlow);
 	Layers::SetAnimationInOut("ModifierMetadata",CUILayer::EUILayerAnimation::UpSlow);
 		
 	Layers::SetAnimationInOut("ModifierResult",CUILayer::EUILayerAnimation::DownSlow);
@@ -771,7 +770,9 @@ main() {
 					Layers::SendEvent("ModifierStatus", "Status", "...");
 					Layers::SendEvent("ModifierStatus", "Message", "");
 					sleep(100);
-					Layers::Show("ModifierActions");
+					Layers::Show("ModifierMap");
+					Layers::SendEvent("ModifierMap", "MapName", OriginalMap.Name);
+					Layers::SendEvent("ModifierMap", "Challenge", TextLib::Join(" + ",_Scripts));
 					sleep(100);
 					Layers::Show("ModifierMetadata");
 					sleep(200);
