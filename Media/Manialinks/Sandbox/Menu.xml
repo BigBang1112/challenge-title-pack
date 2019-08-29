@@ -15,7 +15,7 @@
 				<quad z-index="2" size="90 10" halign="center" valign="bottom" style="Bgs1InRace" substyle="BgWindow4" id="QUAD_BUTTON_CREATECHALLENGE_FLASH" opacity="0"/>
 			</frame>
 			<frame pos="-0.5 -1">
-				<quad z-index="0" size="44.5 10" halign="right" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036"/>
+				<quad z-index="0" size="44.5 10" halign="right" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_BUTTON_REPLAYS"/>
 				<label pos="-22.25 -5.25" z-index="1" size="44 10" text="{{{{REPLAYS}}}}" valign="center2" halign="center" textfont="RajdhaniMono"/>
 				<quad z-index="2" size="44.5 10" halign="right" style="Bgs1InRace" substyle="BgWindow4" id="QUAD_BUTTON_REPLAYS_FLASH" opacity="0"/>
 			</frame>

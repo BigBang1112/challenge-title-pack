@@ -1,0 +1,53 @@
+<frame pos="-25 0" id="FRAME_REPLAYINFO">
+	<frame pos="0 25">
+		<quad z-index="-1" size="150 70" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgCardList"/>
+		<quad z-index="0" size="150 70" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgGradV"/>
+		<frame pos="35 0" z-index="1">
+			<quad z-index="0" size="60 60" halign="center" valign="center" style="Bgs1" substyle="BgMetalBar" opacity=".75" modulatecolor="222"/>
+			<quad z-index="1" size="58 58" halign="center" valign="center" id="QUAD_THUMBNAIL" bgcolor="000A"/>
+		</frame>
+		<label pos="70 25" z-index="1" size="75 10" valign="center" textsize="5" textfont="Oswald" id="LABEL_MAPNAME" text="..."/>
+		<label pos="70 18" z-index="1" size="75 6" valign="center" textsize="1" textfont="BiryaniDemiBold" id="LABEL_MAPUID" text="..." textcolor="888"/>
+		<frame pos="107.5 -2.5" z-index="1">
+			<quad z-index="-1" size="75 30" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgCardList" halign="center"/>
+			<label pos="-19.5 10" z-index="0" size="30 5" text="{{{{GHOSTS}}}}" textfont="RajdhaniMono" textsize="2" valign="center2" halign="center"/>
+			<frame pos="17 10">
+				<quad z-index="-1" size="35 5" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgCardList" halign="center"/>
+				<label pos="0 .2" z-index="0" size="25 5" text="" halign="center" valign="center" textsize=".5" textfont="BiryaniDemiBold" id="LABEL_GHOST_NICKNAME"/>
+				<quad pos="-15 0" z-index="0" size="5 5" bgcolor="FFFA" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Quit" scriptevents="1" id="QUAD_GHOST_PREVIOUS" hidden="1"/>
+				<quad pos="15 0" z-index="0" size="5 5" bgcolor="FFFA" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Quit" scriptevents="1" rot="180" id="QUAD_GHOST_NEXT" hidden="1"/>
+			</frame>
+			<frame pos="34 5" clip="True" clipsizen="20 17.5" clipposn="-10 -8.75">
+				<label z-index="0" size="20 17.5" text="" halign="right" textsize="1" autonewline="1" textfont="RajdhaniMono" id="LABEL_GHOST_CHECKPOINTS"/>
+			</frame>
+			<label pos="-33 3" z-index="0" size="45 5" text="{{{{TIME}}}}: {{{{None}}}}" textsize="2" autonewline="1" textfont="Oswald" id="LABEL_GHOST_TIME"/>
+			<label pos="-33 -2" z-index="0" size="45 5" text="{{{{SCORE}}}}: 0" textsize="2" autonewline="1" textfont="Oswald" id="LABEL_GHOST_SCORE"/>
+			<label pos="-33 -7" z-index="0" size="45 5" text="{{{{RESPAWNS}}}}: {{{{None}}}}" textsize="2" autonewline="1" textfont="Oswald" id="LABEL_GHOST_RESPAWNS"/>
+		</frame>
+		<frame pos="70 -20" z-index="1">
+			<quad z-index="0" size="44.5 10" halign="left" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="363" id="QUAD_BUTTON_PLAY"/>
+			<label pos="22.25 -5.25" z-index="1" size="44.5 10" text="{{{{PLAY}}}}" halign="center" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON_PLAY" textcolor="888"/>
+			<quad z-index="2" size="44.5 10" halign="left" scriptevents="1" id="QUAD_BUTTON_PLAY_DISABLE"/>
+		</frame>
+		<frame pos="135 -20" z-index="1">
+			<quad z-index="0" size="10 10" halign="left" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="369" id="QUAD_BUTTON_MX"/>
+			<quad z-index="1" size="10 10" bgcolor="FFFA" image="file://Media/Images/MX.png" id="QUAD_BUTTON_MX_IMG" modulatecolor="888"/>
+			<quad z-index="2" size="10 10" halign="left" scriptevents="1" id="QUAD_BUTTON_MX_DISABLE"/>
+		</frame>
+	</frame>
+	<frame pos="0 -27.5">
+		<quad z-index="-1" size="150 30" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgCardList"/>
+		<quad z-index="0" size="150 30" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgGradV"/>
+		<quad pos="16 0" z-index="1" size="20 20" bgcolor="FFFA" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Reload" scriptevents="1" id="QUAD_REFRESH"/>
+		<quad pos="134 0" z-index="1" size="20 20" bgcolor="FFFA" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Quit" scriptevents="1" rot="180" id="QUAD_BUTTON_BACK"/>
+	</frame>
+	<frame pos="0 -52.5">
+		<quad z-index="-1" size="150 15" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgCardList"/>
+		<quad z-index="0" size="150 15" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgGradV"/>
+		<entry pos="3.5 0" z-index="1" size="97 9.5" default="" valign="center2" id="ENTRY_REPLAYFILE"/>
+		<frame pos="102.5 5" z-index="1">
+			<quad z-index="0" size="44.5 10" halign="left" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="060" id="QUAD_BUTTON_OPEN"/>
+			<label pos="22.25 -5.25" z-index="1" size="44.5 10" text="{{{{OPEN}}}}" halign="center" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON_OPEN"/>
+		</frame>
+	</frame>
+</frame>

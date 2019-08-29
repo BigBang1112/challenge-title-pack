@@ -37,7 +37,7 @@ Void Async() {
 Void Loop() {
 	if(VisitMap) {
 		wait(TitleControl.IsReady);
-		declare Map = Map::MapInfo("SkinSelect.Map.Gbx", 2);
+		declare Map = Map::MapInfo("SkinSelect.Map.Gbx");
 		Loading::SetLoading(Map.CollectionName, Map.MapUid);
 		TitleControl.PlayMap(Map.FileName, "TrackMania/SkinSelect.Script.txt", "");
 		VisitMap = False;

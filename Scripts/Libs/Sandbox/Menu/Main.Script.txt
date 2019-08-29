@@ -31,6 +31,15 @@ Void Event(CManiaAppEvent _Event) {
 				
 				Layers::SendEvent("Editor", "Code_SetText", File::Read("Media/Challenges/Default.Script.txt"));
 			}
+			case "Button_Replays": {
+				Layers::Show("Replays", True);
+				Layers::Show("ReplayInfo", True);
+				Layers::Hide("Menu", True);
+				Layers::Hide("Quickplay", True);
+				Layers::Hide("Top", True);
+				Layers::Hide("Playsessions", True);
+				Layers::Hide("News", True);
+			}
 		}
 	}
 }

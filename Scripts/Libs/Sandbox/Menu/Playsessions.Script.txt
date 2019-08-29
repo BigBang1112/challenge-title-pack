@@ -42,6 +42,7 @@ Void Event(CManiaAppEvent _Event) {
 	declare Event <=> _Event;
 
 	if(Event.Type == CManiaAppEvent::EType::LayerCustomEvent) {
+		if(Event.CustomEventLayer == Layers::Get("Playsessions"))
 		switch(Event.CustomEventType) {
 			case "Select": {
 				SelectedPlaysession = Service_Status::LastStatus(LocalUser).Playsessions[TextLib::ToInteger(Event.CustomEventData[0])];

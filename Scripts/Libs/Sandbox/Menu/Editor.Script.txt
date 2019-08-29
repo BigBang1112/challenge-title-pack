@@ -49,7 +49,7 @@ Void Async() {
 Void Loop() {
 	if(StartTest) {
 		declare Map::SMapInfo OriginalMapInfo for LocalUser;
-		OriginalMapInfo = Map::MapInfo("2FRV EXCLUSIVE 001.Map.Gbx", 2);
+		OriginalMapInfo = Map::MapInfo("2FRV EXCLUSIVE 001.Map.Gbx");
 		Loading::SetLoading(OriginalMapInfo.CollectionName, OriginalMapInfo.MapUid);
 		TitleControl.EditNewMapFromBaseMap(OriginalMapInfo.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt","""<settings>
 	<setting name="S_Build" type="boolean" value="True"/>

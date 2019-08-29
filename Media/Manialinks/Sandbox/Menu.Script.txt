@@ -50,6 +50,11 @@ foreach(Event,PendingEvents) {
 				SendCustomEvent("Button_Exit", []);
 				PlayAudio(Sound_Click);
 			}
+			if(Event.ControlId == "QUAD_BUTTON_REPLAYS") {
+				if(End == -1)
+				SendCustomEvent("Button_Replays", []);
+				PlayAudio(Sound_Click);
+			}
 		}
 		
 		case CMlScriptEvent::Type::PluginCustomEvent: {

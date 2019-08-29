@@ -1,0 +1,298 @@
+#Struct SMapInfo {
+	Text MapUid;
+	Text Comments;
+	Integer CopperPrice;
+	Text CollectionName;
+	Text AuthorLogin;
+	Text AuthorNickName;
+	Text AuthorZonePath;
+	Text AuthorZoneFlagUrl;
+	Text AuthorCountryFlagUrl;
+	Text MapType;
+	Text MapStyle;
+	Boolean Unlocked;
+	Boolean IsPlayable;
+	Boolean CreatedWithSimpleEditor;
+	Boolean CreatedWithPartyEditor;
+	Integer TMObjective_AuthorTime;
+	Integer TMObjective_GoldTime;
+	Integer TMObjective_SilverTime;
+	Integer TMObjective_BronzeTime;
+	Integer TMObjective_NbLaps;
+	Boolean TMObjective_IsLapRace;
+	Text Name;
+	Text Path;
+	Text FileName;
+}
+
+#Struct SMXTrack {
+	Integer TrackID;
+	Integer UserID;
+	Text Username;
+	Text UploadedAt;
+	Text UpdatedAt;
+	Text Name;
+	Text TypeName;
+	Text MapType;
+	Text TitlePack;
+	Text StyleName;
+	Text Mood;
+	Integer DisplayCost;
+	Text ModName;
+	Integer Lightmap;
+	Text ExeVersion;
+	Text ExeBuild;
+	Text EnvironmentName;
+	Text VehicleName;
+	Text PlayerModel;
+	Text RouteName;
+	Text LengthName;
+	Integer Laps;
+	Text DifficultyName;
+	Text ReplayTypeName;
+	Integer ReplayWRID;
+	Integer ReplayCount;
+	Integer TrackValue;
+	Text Comments;
+	Integer AwardCount;
+	Integer CommentCount;
+	Integer ReplayWRTime;
+	Integer ReplayWRUserID;
+	Text ReplayWRUsername;
+	Boolean UnlimiterRequired;
+	Text TrackUID;
+	Boolean Unreleased;
+	Text GbxMapName;
+	Integer RatingVoteCount;
+	Integer RatingVoteAverage;
+	Boolean HasScreenshot;
+	Boolean HasThumbnail;
+	Boolean HasGhostBlocks;
+	Integer EmbeddedObjectsCount;
+	Text AuthorLogin;
+	Boolean IsMP4;
+}
+
+#Struct SGhostInfo {
+	Text Nickname;
+	Integer Time;
+	Integer Score;
+	Integer Respawns;
+	Integer[] Checkpoints;
+}
+
+Text TimeToTextWithMilli(Integer _Time) {
+	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
+}
+
+Void EnablePlayButton() {
+	Page.GetFirstChild("QUAD_BUTTON_PLAY_DISABLE").Hide();
+	(Page.GetFirstChild("QUAD_BUTTON_PLAY") as CMlQuad).ModulateColor = <.0, .4, .0>;
+	(Page.GetFirstChild("LABEL_BUTTON_PLAY") as CMlLabel).TextColor = <1., 1., 1.>;
+}
+
+Void DisablePlayButton() {
+	Page.GetFirstChild("QUAD_BUTTON_PLAY_DISABLE").Show();
+	(Page.GetFirstChild("QUAD_BUTTON_PLAY") as CMlQuad).ModulateColor = <.2, .4, .2>;
+	(Page.GetFirstChild("LABEL_BUTTON_PLAY") as CMlLabel).TextColor = <.5, .5, .5>;
+}
+
+Void EnableMXButton() {
+	Page.GetFirstChild("QUAD_BUTTON_MX_DISABLE").Hide();
+	(Page.GetFirstChild("QUAD_BUTTON_MX") as CMlQuad).ModulateColor = <.0, .6, .8>;
+	(Page.GetFirstChild("QUAD_BUTTON_MX_IMG") as CMlQuad).ModulateColor = <1., 1., 1.>;
+}
+
+Void DisableMXButton() {
+	Page.GetFirstChild("QUAD_BUTTON_MX_DISABLE").Show();
+	(Page.GetFirstChild("QUAD_BUTTON_MX") as CMlQuad).ModulateColor = <.2, .4, .6>;
+	(Page.GetFirstChild("QUAD_BUTTON_MX_IMG") as CMlQuad).ModulateColor = <.5, .5, .5>;
+}
+
+declare SGhostInfo[] Ghosts;
+declare Integer SelectedGhost;
+
+Void UpdateGhosts() {
+	if(Ghosts.count > 0 && SelectedGhost >= 0) {
+		declare Ghost = Ghosts[SelectedGhost];
+		(Page.GetFirstChild("LABEL_GHOST_NICKNAME") as CMlLabel).SetText(Ghost.Nickname);
+
+		if(Ghost.Time == -1)
+			(Page.GetFirstChild("LABEL_GHOST_TIME") as CMlLabel).SetText("{{{{TIME}}}}: {{{{None}}}}");
+		else
+			(Page.GetFirstChild("LABEL_GHOST_TIME") as CMlLabel).SetText("{{{{TIME}}}}: " ^ TimeToTextWithMilli(Ghost.Time));
+		(Page.GetFirstChild("LABEL_GHOST_SCORE") as CMlLabel).SetText("{{{{SCORE}}}}: " ^ Ghost.Score);
+		if(Ghost.Respawns == -1)
+			(Page.GetFirstChild("LABEL_GHOST_RESPAWNS") as CMlLabel).SetText("{{{{RESPAWNS}}}}: {{{{None}}}}");
+		else
+			(Page.GetFirstChild("LABEL_GHOST_RESPAWNS") as CMlLabel).SetText("{{{{RESPAWNS}}}}: " ^ Ghost.Respawns);
+
+		declare CheckpointText = "";
+		if(Ghost.Checkpoints.count > 0) {
+			CheckpointText = TimeToTextWithMilli(Ghost.Checkpoints[0]);
+			for(I,1,Ghost.Checkpoints.count-1) CheckpointText ^= "\n"^TimeToTextWithMilli(Ghost.Checkpoints[I]);
+		}
+		(Page.GetFirstChild("LABEL_GHOST_CHECKPOINTS") as CMlLabel).SetText(CheckpointText);
+	}
+	else {
+		(Page.GetFirstChild("LABEL_GHOST_NICKNAME") as CMlLabel).SetText("");
+		(Page.GetFirstChild("LABEL_GHOST_TIME") as CMlLabel).SetText("{{{{TIME}}}}: {{{{None}}}}");
+		(Page.GetFirstChild("LABEL_GHOST_SCORE") as CMlLabel).SetText("{{{{SCORE}}}}: 0");
+		(Page.GetFirstChild("LABEL_GHOST_RESPAWNS") as CMlLabel).SetText("{{{{RESPAWNS}}}}: {{{{None}}}}");
+		(Page.GetFirstChild("LABEL_GHOST_CHECKPOINTS") as CMlLabel).SetText("");
+	}
+
+	if(Ghosts.count > 1) {
+		Page.GetFirstChild("QUAD_GHOST_PREVIOUS").Show();
+		Page.GetFirstChild("QUAD_GHOST_NEXT").Show();
+	}
+	else {
+		Page.GetFirstChild("QUAD_GHOST_PREVIOUS").Hide();
+		Page.GetFirstChild("QUAD_GHOST_NEXT").Hide();
+	}
+}
+
+***Start***
+***
+declare Start = Now;
+declare End = -1;
+
+declare Mode = "View";
+
+declare MXTrackUrl = "";
+
+SelectedGhost = -1;
+***
+
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseClick: {
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON_BACK": {
+					PlayAudio(Sound_Click);
+					SendCustomEvent("Back", []);
+				}
+				case "QUAD_BUTTON_OPEN": {
+					PlayAudio(Sound_Click);
+					SendCustomEvent("Open", []);
+				}
+				case "QUAD_BUTTON_PLAY": {
+					PlayAudio(Sound_Click);
+					SendCustomEvent("Play", []);
+				}
+				case "QUAD_BUTTON_MX": {
+					PlayAudio(Sound_Click);
+					if(MXTrackUrl != "") {
+						OpenLink(MXTrackUrl, ::LinkType::ExternalBrowser);
+					}
+				}
+				case "QUAD_GHOST_NEXT": {
+					if(SelectedGhost != -1) {
+						if(SelectedGhost+1 >= Ghosts.count) SelectedGhost = 0;
+						else SelectedGhost += 1;
+					}
+					UpdateGhosts();
+				}
+				case "QUAD_GHOST_PREVIOUS": {
+					if(SelectedGhost != -1) {
+						if(SelectedGhost-1 < 0) SelectedGhost = Ghosts.count-1;
+						else SelectedGhost -= 1;
+					}
+					UpdateGhosts();
+				}
+			}
+		}
+		case CMlScriptEvent::Type::PluginCustomEvent: {
+			switch(Event.CustomEventType) {
+				case "Show": {
+					(Page.GetFirstChild("FRAME_REPLAYINFO") as CMlFrame).RelativePosition_V3.X = -25.;
+					Start = Now;
+					End = -1;
+				}
+				case "Hide": {
+					End = Now;
+					Start = -1;
+				}
+				case "Info": {
+					declare File = Event.CustomEventData[0];
+					declare MapUid = Event.CustomEventData[1];
+					declare Folders = TextLib::Split("\\", File);
+
+					(Page.GetFirstChild("ENTRY_REPLAYFILE") as CMlEntry).SetText(Folders[Folders.count-1], False);
+					if(MapUid != "") {
+						(Page.GetFirstChild("QUAD_THUMBNAIL") as CMlQuad).ChangeImageUrl("file://Thumbnails/MapUid/"^MapUid);
+						(Page.GetFirstChild("LABEL_MAPUID") as CMlLabel).SetText(MapUid);
+					}
+					else {
+						(Page.GetFirstChild("QUAD_THUMBNAIL") as CMlQuad).ChangeImageUrl("");
+						(Page.GetFirstChild("LABEL_MAPUID") as CMlLabel).SetText("...");
+					}
+				}
+				case "Details": {
+					declare MapData = Event.CustomEventData[0];
+					if(MapData == "") {
+						(Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel).SetText("...");
+						DisablePlayButton();
+					}
+					else {
+						declare SMapInfo Map;
+						declare JsonSuccess = Map.fromjson(MapData);
+						(Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel).SetText(Map.Name);
+						if(Map.MapType == "TrackMania\\Challenge" && Mode == "View")
+							EnablePlayButton();
+						else
+							DisablePlayButton();
+					}
+				}
+				case "Mode": {
+					Mode = Event.CustomEventData[0];
+					if(Mode == "View") {
+						(Page.GetFirstChild("LABEL_BUTTON_OPEN") as CMlLabel).SetText("{{{{OPEN}}}}");
+					}
+					else if(Mode == "Save") {
+						(Page.GetFirstChild("LABEL_BUTTON_OPEN") as CMlLabel).SetText("{{{{SAVE}}}}");
+					}
+				}
+				case "MX": {
+					if(Event.CustomEventData[0] == "") {
+						DisableMXButton();
+					}
+					else {
+						declare SMXTrack Track;
+						declare JsonSuccess = Track.fromjson(Event.CustomEventData[0]);
+
+						if((Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel).Value == "...")
+							(Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel).SetText(Track.GbxMapName);
+						MXTrackUrl = "https://tm.mania-exchange.com/s/tr/"^Track.TrackID;
+
+						EnableMXButton();
+					}
+				}
+				case "Ghosts": {
+					if(Event.CustomEventData[0] == "") {
+						Ghosts.clear();
+					}
+					else {
+						declare JsonSuccess = Ghosts.fromjson(Event.CustomEventData[0]);
+						
+						if(Ghosts.count > 0)
+							SelectedGhost = 0;
+						else
+							SelectedGhost = -1;
+					}
+
+					UpdateGhosts();
+				}
+			}
+		}
+	}
+}
+
+if(Start != -1) (Page.GetFirstChild("FRAME_REPLAYINFO") as CMlFrame).RelativeScale = AnimLib::EaseOutQuad(Now - Start - 1000, 0.0, 1.0, 500);
+if(End != -1) {
+	(Page.GetFirstChild("FRAME_REPLAYINFO") as CMlFrame).RelativePosition_V3.X = AnimLib::EaseOutQuad(Now - End, -25.0, 200.0, 600);
+	if(Now - End > 1000) SendCustomEvent("Hide_Response", []);
+}
+***

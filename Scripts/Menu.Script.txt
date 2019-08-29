@@ -18,6 +18,7 @@
 #Include "Libs/Sandbox/Menu/News.Script.txt" as Menu_News
 
 #Include "Libs/Challenge/Menu/AuthBeta.Script.txt" as Menu_AuthBeta
+#Include "Libs/Challenge/Menu/Replays.Script.txt" as Menu_Replays
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
 
 #Include "Libs/Challenge/Devmode.Script.txt" as Devmode
@@ -48,6 +49,7 @@ main() {
 		Menu_Editor::Init();
 		Menu_Playsessions::Init();
 		Menu_News::Init();
+		Menu_Replays::Init();
 		
 		Auth::Start();
 		
@@ -77,6 +79,7 @@ main() {
 		Menu_Editor::Start();
 		Menu_Playsessions::Start();
 		Menu_News::Start();
+		Menu_Replays::Start();
 		
 		if(S_Devmode) {
 			Devmode::Start();
@@ -93,6 +96,7 @@ main() {
 				Menu_Editor::Event(Event);
 				Menu_Playsessions::Event(Event);
 				Menu_News::Event(Event);
+				Menu_Replays::Event(Event);
 			}
 			
 			Menu_Quickplay::Async();
@@ -101,6 +105,7 @@ main() {
 			Menu_Editor::Async();
 			Menu_Playsessions::Async();
 			Menu_News::Async();
+			Menu_Replays::Async();
 	
 			Auth::Loop();
 			Menu_Quickplay::Loop();
@@ -109,6 +114,7 @@ main() {
 			Menu_Editor::Loop();
 			Menu_Playsessions::Loop();
 			Menu_News::Loop();
+			Menu_Replays::Loop();
 			
 			if(!Time::Stamp_CreateOnce("STATUS", 10*1000)) {
 				if(Time::Stamp_Reached("STATUS")) {
