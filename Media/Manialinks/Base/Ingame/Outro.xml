@@ -1,16 +1,17 @@
 <frame>
-	<quad pos="0 -59" halign="center" z-index="0" size="320 1" bgcolor="222C"/>
-	<quad pos="0 -59" halign="center" z-index="-1" size="320 31" style="Bgs1" substyle="BgEmpty"/>
+	<quad pos="0 -75" halign="center" z-index="-1" size="310 20" style="Bgs1" substyle="BgCardList" valign="center"/>
+	<quad pos="0 -75" halign="center" z-index="-1" size="310 20" style="Bgs1" substyle="BgGradV" valign="center"/>
+	
 	<frame pos="105 -75">
-		<quad z-index="-2" size="90 20" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCard" modulatecolor="036" scriptevents="1" id="QUAD_BUTTON_SAVEREPLAY"/>
-		<label pos="0 -.7" z-index="0" size="90 20" text="{{{{SAVE_REPLAY}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="7" textcolor="EEE"/>
+		<quad z-index="-2" size="90 15" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCard" modulatecolor="036" scriptevents="1" id="QUAD_BUTTON_SAVEREPLAY"/>
+		<label pos="0 -.5" z-index="0" size="90 15" text="{{{{SAVE_REPLAY}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="5" textcolor="EEE"/>
 	</frame>
 	<frame pos="0 -75">
-		<quad z-index="-2" size="100 20" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCard" modulatecolor="036" scriptevents="1" id="QUAD_BUTTON_CONTINUE"/>
-		<label pos="0 -.7" z-index="0" size="100 20" text="{{{{CONTINUE}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="7" textcolor="EEE"/>
+		<quad z-index="-2" size="100 15" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCard" modulatecolor="036" scriptevents="1" id="QUAD_BUTTON_CONTINUE"/>
+		<label pos="0 -.5" z-index="0" size="100 15" text="{{{{CONTINUE}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="5" textcolor="EEE"/>
 	</frame>
 	<frame pos="-120 -75">
-		<quad z-index="-2" size="60 20" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCard" modulatecolor="600" scriptevents="1" id="QUAD_BUTTON_EXIT"/>
-		<label pos="0 -.7" z-index="0" size="60 20" text="{{{{EXIT}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="7" textcolor="EEE"/>
+		<quad z-index="-2" size="60 15" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCard" modulatecolor="600" scriptevents="1" id="QUAD_BUTTON_EXIT"/>
+		<label pos="0 -.5" z-index="0" size="60 15" text="{{{{EXIT}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="5" textcolor="EEE"/>
 	</frame>
 </frame>
