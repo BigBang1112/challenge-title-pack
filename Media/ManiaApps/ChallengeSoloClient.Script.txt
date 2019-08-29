@@ -436,7 +436,8 @@ if(Close) {
 		wait(Service_Status::AsyncIsCompleted("PLAYSESSION"));
 	}
 	Playground.QuitServer(True);
-	Layers::SendEvent("Menu", "Exit");
+	Layers::SendEvent("Menu", "Exit", Server_IsValidationMode^"");
+	Close = False;
 }
 
 if(Discord::AsyncIsCompleted("Discord")) {

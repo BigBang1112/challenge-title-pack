@@ -111,7 +111,8 @@ foreach(Event,PendingEvents) {
 				}
 				case "Exit": {
 					CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Quit);
-					Playground.QuitServer(False);
+					declare ValidationMode = Event.CustomEventData[0] == "True";
+					Playground.QuitServer(!ValidationMode);
 				}
 			}
 		}
