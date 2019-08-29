@@ -13,6 +13,7 @@
 ***
 declare SPublicMap PublicMap;
 declare Integer PreviousCount;
+declare Integer EndOfYellow = -1;
 ***
 
 ***Loop***
@@ -48,6 +49,7 @@ foreach(Event,PendingEvents) {
 						(Page.GetFirstChild("LABEL_COUNT") as CMlLabel).TextColor = <1., 1., 0.>;
 						Page.GetFirstChild("LABEL_COUNT").RelativeScale = 1.05;
 						AnimMgr.Add(Page.GetFirstChild("LABEL_COUNT"), "<label textcolor=\"FFF\" scale=\"1\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+						EndOfYellow = Now+500;
 						PlayAudio(Sound_NumberChange);
 					}
 
@@ -67,5 +69,10 @@ foreach(Event,PendingEvents) {
 			}
 		}
 	}
+}
+
+if(EndOfYellow != -1 && EndOfYellow < Now) {
+	(Page.GetFirstChild("LABEL_COUNT") as CMlLabel).TextColor = <1., 1., 1.>;
+	Page.GetFirstChild("LABEL_COUNT").RelativeScale = 1.;
 }
 ***
