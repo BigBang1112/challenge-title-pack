@@ -162,6 +162,10 @@ declare Mode = "View";
 declare MXTrackUrl = "";
 
 SelectedGhost = -1;
+
+declare CurrentFolder = "";
+
+EnableMenuNavigationInputs = True;
 ***
 
 ***Loop***
@@ -176,7 +180,10 @@ foreach(Event,PendingEvents) {
 				}
 				case "QUAD_BUTTON_OPEN": {
 					PlayAudio(Sound_Click);
-					SendCustomEvent("Open", []);
+					if(Mode == "View")
+						SendCustomEvent("Open", []);
+					else if(Mode == "Save")
+						SendCustomEvent("Save", [CurrentFolder^(Page.GetFirstChild("ENTRY_REPLAYFILE") as CMlEntry).Value]);
 				}
 				case "QUAD_BUTTON_PLAY": {
 					PlayAudio(Sound_Click);
@@ -284,6 +291,12 @@ foreach(Event,PendingEvents) {
 					}
 
 					UpdateGhosts();
+				}
+				case "SetReplay": {
+					(Page.GetFirstChild("ENTRY_REPLAYFILE") as CMlEntry).SetText(Event.CustomEventData[0], False);
+				}
+				case "Refresh": {
+					CurrentFolder = Event.CustomEventData[0];
 				}
 			}
 		}

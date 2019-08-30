@@ -1,6 +1,7 @@
 #Include "TextLib" as TextLib
 
 #Include "Libs/BigBang1112/File.Script.txt" as File
+#Include "Libs/BigBang1112/Task.Script.txt" as Task
 
 #Struct SRealVehicle {
 	Text Name;
@@ -15,6 +16,14 @@
 
 #Struct SEndRaceInfo {
 	Integer Time;
+}
+
+#Struct SFinish {
+	Integer Timestamp;
+	Integer Time;
+	CTmPlayer Player;
+	CGhost Ghost;
+	CGhost NicerGhost;
 }
 
 declare SVehicle[] Vehicles;
@@ -132,6 +141,15 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 			if(_Event.IsEndRace) { // Finish
 				if(Server_CurrentVehicle < 0) return;
 				log(RealVehicles[Server_CurrentVehicle]);
+				
+				declare SFinish[] Finishes for _Event.Player.Score;
+				
+				declare SFinish Finish;
+				Finish.Timestamp = Now;
+				Finish.Time = _Event.RaceTime;
+				Finish.Ghost = ScoreMgr.Playground_GetPlayerGhost(_Event.Player);
+				Finishes.add(Finish);
+				
 				Server_EndRace = True;
 				Server_EndRaceInfo.Time = _Event.RaceTime;
 			}
@@ -197,15 +215,17 @@ Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
 								
 								_Event.UI.UISequence = CUIConfig::EUISequence::UIInteraction;
 							}
+						}
+						case "Replay": {
+							declare FilePath = _Event.CustomEventData[0];
 							
-							/*_Mode.RaceGhost_RemoveAll();
-							declare Ghost = _Mode.ScoreMgr.Playground_GetPlayerGhost(Player);
-							if(Ghost != Null) {
-								declare GhostId = _Mode.RaceGhost_AddWithOffset(Ghost, -2500);
-								Event.UI.SpectatorForcedTarget = GhostId;
-								Event.UI.SpectatorForceCameraType = 1;
-							}
-							else log("ghost is null");*/
+							declare SFinish[] Finishes for Player.Score;
+							
+							if(Finishes[Finishes.count-1].NicerGhost == Null)
+								Task::Async_DataFileMgr("SAVEREPLAY", DataFileMgr.Replay_Save(FilePath, Map, Finishes[Finishes.count-1].Ghost));
+							else
+								Task::Async_DataFileMgr("SAVEREPLAY", DataFileMgr.Replay_Save(FilePath, Map, Finishes[Finishes.count-1].NicerGhost));
+							//Needs some kind of response from the "server" ("server" cuz DataFileMgr is solo mode only anyway)
 						}
 					}
 				}
@@ -250,6 +270,13 @@ Void Loop(CTmMode _Mode) {
 				RespawnList.add(Player);
 					
 				OldModelId = Player.ForceModelId;
+			}
+		}
+		
+		declare SFinish[] Finishes for Player.Score;
+		if(Finishes.count > 0) {
+			if(Finishes[Finishes.count-1].NicerGhost == Null && Now - Finishes[Finishes.count-1].Timestamp >= 3000) {
+				Finishes[Finishes.count-1].NicerGhost = ScoreMgr.Playground_GetPlayerGhost(Player);
 			}
 		}
 	}

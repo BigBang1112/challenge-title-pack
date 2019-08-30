@@ -10,81 +10,29 @@
 #Include "Libs/BigBang1112/MX.Script.txt" as MX
 
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
+#Include "Libs/Challenge/ReplayBrowser.Script.txt" as ReplayBrowser
 
 #Const C_Manialink "Media/Manialinks/Window_List"
 #Const C_Manialink_ReplayInfo "Media/Manialinks/Base/ReplayInfo"
 
-#Struct SElement {
-	Text Name;
-	Boolean Selectable;
-	Integer Count;
-	Boolean IsFolder;
-	Text Folder;
-	Boolean IsFile;
-	Text File;
-	Text MapUid;
-}
-
-#Struct SGhostInfo {
-	Text Nickname;
-	Integer Time;
-	Integer Score;
-	Integer Respawns;
-	Integer[] Checkpoints;
-}
-
-declare SElement[] Elements;
-declare SElement SelectedElement;
-declare Map::SMapInfo SelectedMap;
-
 Void Init() {
-	Layers::Create("Replays", Manialink::FromFile(C_Manialink, True, ["Audio"], Settings::Get().Theme), True);
-	Layers::SendEvent("Replays", "Title", Dictionary::Get("REPLAYS"));
-	Layers::SendEvent("Replays", "Title_Align", "left");
-	Layers::SendEvent("Replays", "Position", ["-80 0"]);
-	Layers::SendEvent("Replays", "Size", ["100 200"]);
-	Layers::SendEvent("Replays", "Animation_Out", ["-210 0"]);
-	Layers::Hide("Replays");
-	
-	Layers::Create("ReplayInfo", Manialink::FromFile(C_Manialink_ReplayInfo, True, ["Audio"], Settings::Get().Theme));
+	ReplayBrowser::Init();
 }
 
 Void Start() {
-	
+	ReplayBrowser::Start();
 }
 
 Void Refresh() {
-	
+	ReplayBrowser::Refresh();
 }
-
-declare Text SuggestedUid;
 
 Void Event(CManiaAppEvent _Event) {
 	declare Event <=> _Event;
 
+	ReplayBrowser::Event(Event);
+
 	if(Event.Type == CManiaAppEvent::EType::LayerCustomEvent) {
-		if(Event.CustomEventLayer == Layers::Get("Replays"))
-		switch(Event.CustomEventType) {
-			case "Show": {
-				Task::Async_DataFileMgr("REPLAYS", DataFileMgr.Replay_GetGameList("Replays", False));
-			}
-			case "Select": {
-				SelectedElement = Elements[TextLib::ToInteger(Event.CustomEventData[0])];
-				if(SelectedElement.IsFolder)
-					Task::Async_DataFileMgr("REPLAYS", DataFileMgr.Replay_GetGameList(SelectedElement.Folder, False));
-				else if(SelectedElement.IsFile) {
-					Layers::SendEvent("ReplayInfo", "Info", [SelectedElement.File, SelectedElement.MapUid]);
-					Layers::SendEvent("ReplayInfo", "Details", "");
-					Layers::SendEvent("ReplayInfo", "MX", "");
-					Layers::SendEvent("ReplayInfo", "Ghosts", "");
-					SuggestedUid = SelectedElement.MapUid;
-					Task::Async_DataFileMgr("FINDMAP", DataFileMgr.Map_GetGameList("", True));
-					Task::Async_DataFileMgr("FINDGHOSTS", DataFileMgr.Replay_Load(SelectedElement.File));
-					declare Success = MX::AsyncTrackMultiple("FINDMAP_MX", "tm", [SuggestedUid], True);
-				}
-			}
-		}
-		
 		if(Event.CustomEventLayer == Layers::Get("ReplayInfo"))
 		switch(Event.CustomEventType) {
 			case "Back": {
@@ -98,12 +46,12 @@ Void Event(CManiaAppEvent _Event) {
 			}
 			case "Open": {
 				if(TitleControl.IsReady)
-					TitleControl.ViewReplay(SelectedElement.File);
+					TitleControl.ViewReplay(ReplayBrowser::GetSelectedElement().File);
 			}
 			case "Play": {
 				if(TitleControl.IsReady) {
-					Loading::SetLoading(SelectedMap.CollectionName, SelectedMap.MapUid);
-					TitleControl.PlayMap(SelectedMap.FileName, "", "");
+					Loading::SetLoading(ReplayBrowser::GetSelectedMap().CollectionName, ReplayBrowser::GetSelectedMap().MapUid);
+					TitleControl.PlayMap(ReplayBrowser::GetSelectedMap().FileName, "", "");
 				}
 			}
 		}
@@ -111,104 +59,9 @@ Void Event(CManiaAppEvent _Event) {
 }
 
 Void Async() {
-	if(MX::AsyncIsCompleted("FINDMAP_MX")) {
-		if(MX::AsyncIsSuccessful("FINDMAP_MX")) {
-			declare TrackMultiple = MX::GetAsyncTrackMultipleResult("FINDMAP_MX");
-			if(TrackMultiple.count > 0)
-			Layers::SendEvent("ReplayInfo", "MX", TrackMultiple[0].tojson());
-		}
-		MX::AsyncDestroy("FINDMAP_MX");
-	}
-	if(Task::IsCompleted("FINDMAP")) {
-		if(Task::IsSuccessful("FINDMAP")) {
-			declare MapList = (Task::Get("FINDMAP") as CTaskResult_MapList);
-			
-			foreach(MapInfo,MapList.MapInfos) {
-				if(MapInfo.MapUid == SuggestedUid) {
-					SelectedMap = Map::ToSMapInfo(MapInfo);
-					Layers::SendEvent("ReplayInfo", "Details", Map::ToSMapInfo(MapInfo).tojson());
-				}
-			}
-		}
-		Task::Destroy_DataFileMgr("FINDMAP");
-	}
-	if(Task::IsCompleted("FINDGHOSTS")) {
-		if(Task::IsSuccessful("FINDGHOSTS")) {
-			declare GhostList = (Task::Get("FINDGHOSTS") as CTaskResult_GhostList);
-			
-			declare SGhostInfo[] Ghosts;
-			
-			foreach(Ghost,GhostList.Ghosts) {
-				declare SGhostInfo G;
-				G.Nickname = Ghost.Nickname;
-				G.Time = Ghost.Result.Time;
-				G.Score = Ghost.Result.Score;
-				G.Respawns = Ghost.Result.NbRespawns;
-				foreach(Checkpoint, Ghost.Result.Checkpoints)
-					G.Checkpoints.add(Checkpoint);
-				Ghosts.add(G);
-			}
-			
-			Layers::SendEvent("ReplayInfo", "Ghosts", Ghosts.tojson());
-		}
-		Task::Destroy_DataFileMgr("FINDGHOSTS");
-	}
-	if(Task::IsCompleted("REPLAYS")) {
-		if(Task::IsSuccessful("REPLAYS")) {
-			declare ReplayList = (Task::Get("REPLAYS") as CTaskResult_ReplayList);
-			
-			declare Text[] SubFolders;
-			declare Text[] Files;
-			
-			declare Text Filter = "";
-			
-			Elements.clear();
-			
-			if(Filter == "") {
-				if(ReplayList.Path != "") {					
-					declare SElement ElementRoot;
-					ElementRoot.Name = " ...";
-					ElementRoot.Selectable = True;
-					ElementRoot.IsFolder = True;
-					ElementRoot.Folder = ReplayList.ParentPath;
-					Elements.add(ElementRoot);
-				}
-				
-				foreach(SubFolder,ReplayList.SubFolders) {
-					SubFolders.add(SubFolder);
-					
-					declare Folders = TextLib::Split("\\", SubFolder);
-					
-					declare SElement Element;
-					Element.Name = " " ^ Folders[Folders.count-1];
-					Element.Selectable = True;
-					Element.IsFolder = True;
-					Element.Folder = SubFolder;
-					Elements.add(Element);
-				}
-			}
-			
-			foreach(ReplayInfo,ReplayList.ReplayInfos) {
-				if(Filter != "")
-					if(!TextLib::Find(Filter, ReplayInfo.Name, False, False)) continue;
-				
-				Files.add(ReplayInfo.Name);
-				
-				declare SElement Element;
-				Element.Name = ReplayInfo.Name;
-				Element.Selectable = True;
-				Element.IsFile = True;
-				Element.File = ReplayInfo.FileName;
-				Element.MapUid = ReplayInfo.MapUid;
-				Elements.add(Element);
-			}
-			
-			Layers::SendEvent("Replays", "Elements", Elements.tojson());
-			Task::Destroy_DataFileMgr("REPLAYS");
-		}
-	}
+	ReplayBrowser::Async();
 }
 
 Void Loop() {
-	
+	ReplayBrowser::Loop();
 }

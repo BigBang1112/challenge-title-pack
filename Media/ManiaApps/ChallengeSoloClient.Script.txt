@@ -16,6 +16,7 @@
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 #Include "Libs/Challenge/Service/Map.Script.txt" as Service_Map
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
+#Include "Libs/Challenge/ReplayBrowser.Script.txt" as ReplayBrowser
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
 #Include "Libs/Challenge/Ingame/Gamemodes/Stunt.Script.txt" as Stunt
@@ -102,6 +103,10 @@ Void UpdatePublicMap(Service_Status::SPublicMap _PublicMap) {
 	}
 }
 
+Text TimeToTextWithMilli(Integer _Time) {
+	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
+}
+
 ***Init***
 ***
 Dictionary::SetTranslationFolder("Media/Translations");
@@ -154,6 +159,8 @@ Layers::Create("Endscreen", Manialink::FromFile(C_Manialink_Endscreen, True, ["A
 Layers::Create("Outro", Manialink::FromFile(C_Manialink_Outro, True, ["Audio", "Navigation"], Settings::Get().Theme));
 
 Layers::Create("Flash", Manialink::FromFile(C_Manialink_Flash, True, [], Settings::Get().Theme));
+
+ReplayBrowser::Init();
 ***
 
 ***Start***
@@ -310,6 +317,29 @@ foreach(Event, PendingEvents) {
 						case "Exit": {
 							Close = True;
 						}
+						case "SaveReplay": {
+							Layers::Show("Replays", True);
+							Layers::Show("ReplayInfo", True);
+							Layers::SendEvent("ReplayInfo", "Mode", "Save");
+							Layers::SendEvent("ReplayInfo", "SetReplay", """{{{TextLib::StripFormatting(OriginalMap.Name)}}}_{{{Map.MapStyle}}}_({{{TimeToTextWithMilli(Server_EndRaceInfo.Time)}}})""");
+							Layers::Hide("Outro");
+						}
+					}
+				}
+				case Layers::Get("ReplayInfo"): {
+					switch(Event.CustomEventType) {
+						case "Back": {
+							Layers::Hide("Replays", True);
+							Layers::Hide("ReplayInfo", True);
+							Layers::Show("Outro", True);
+						}
+						case "Save": {
+							declare FilePath = Event.CustomEventData[0];
+							SendCustomEvent("Replay", [FilePath]);
+							Layers::Hide("Replays", True);
+							Layers::Hide("ReplayInfo", True);
+							Layers::Show("Outro", True);
+						}
 					}
 				}
 				case Layers::Get("Playsession"): {
@@ -335,6 +365,8 @@ foreach(Event, PendingEvents) {
 			}
 		}
 	}
+
+	ReplayBrowser::Event(Event);
 }
 
 if(Server_CurrentVehicle >= 0) {
@@ -493,6 +525,8 @@ if(Http::IsCompleted("PLAYSESSION")) {
 	}
 	Http::Destroy("PLAYSESSION");
 }
+
+ReplayBrowser::Async();
 ***
 
 Void Main() {

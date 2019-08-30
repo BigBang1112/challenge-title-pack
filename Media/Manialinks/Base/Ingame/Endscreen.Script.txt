@@ -32,8 +32,6 @@ Text TimeToTextWithMilli(Integer _Time) {
 	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
 }
 
-
-
 ***Start***
 ***
 declare Start = Now;
