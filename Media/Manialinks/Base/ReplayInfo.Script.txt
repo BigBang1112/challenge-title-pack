@@ -128,9 +128,9 @@ Void UpdateGhosts() {
 			(Page.GetFirstChild("LABEL_GHOST_RESPAWNS") as CMlLabel).SetText("{{{{RESPAWNS}}}}: " ^ Ghost.Respawns);
 
 		declare CheckpointText = "";
-		if(Ghost.Checkpoints.count > 0) {
+		if(Ghost.Checkpoints.count > 1) {
 			CheckpointText = TimeToTextWithMilli(Ghost.Checkpoints[0]);
-			for(I,1,Ghost.Checkpoints.count-1) CheckpointText ^= "\n"^TimeToTextWithMilli(Ghost.Checkpoints[I]);
+			for(I,1,Ghost.Checkpoints.count-2) CheckpointText ^= "\n"^TimeToTextWithMilli(Ghost.Checkpoints[I]);
 		}
 		(Page.GetFirstChild("LABEL_GHOST_CHECKPOINTS") as CMlLabel).SetText(CheckpointText);
 	}
