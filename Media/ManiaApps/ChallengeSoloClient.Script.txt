@@ -107,6 +107,10 @@ Text TimeToTextWithMilli(Integer _Time) {
 	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
 }
 
+Text TimeToFileNameSupportedText(Integer _Time) {
+	return TextLib::Replace(TextLib::Replace(TimeToTextWithMilli(_Time), ":", "'"), ".", "''");
+}
+
 ***Init***
 ***
 Dictionary::SetTranslationFolder("Media/Translations");
@@ -321,7 +325,7 @@ foreach(Event, PendingEvents) {
 							Layers::Show("Replays", True);
 							Layers::Show("ReplayInfo", True);
 							Layers::SendEvent("ReplayInfo", "Mode", "Save");
-							Layers::SendEvent("ReplayInfo", "SetReplay", """{{{TextLib::StripFormatting(OriginalMap.Name)}}}_{{{Map.MapStyle}}}_({{{TimeToTextWithMilli(Server_EndRaceInfo.Time)}}})""");
+							Layers::SendEvent("ReplayInfo", "SetReplay", """{{{TextLib::StripFormatting(OriginalMap.Name)}}}_{{{Map.MapStyle}}}_{{{Server_Vehicles[Server_CurrentVehicle].Name}}}_({{{TimeToFileNameSupportedText(Server_EndRaceInfo.Time)}}})""");
 							Layers::Hide("Outro");
 						}
 					}

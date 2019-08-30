@@ -204,11 +204,13 @@ Void Event(CManiaAppEvent _Event) {
 					if(MapInfo.MapType == "TrackMania\\Challenge") {
 						if(MapInfo.IsPlayable) {
 							Loading::SetLoading(MapInfo.CollectionName, MapInfo.MapUid);
-							TitleControl.PlayMap(MapInfo.FileName,"","");
+							if(TitleControl.IsReady)
+								TitleControl.PlayMap(MapInfo.FileName,"","");
 						}
 						else {
 							Loading::SetLoading(MapInfo.CollectionName, MapInfo.MapUid);
-							TitleControl.EditMap(MapInfo.FileName, "Modifier.Script.txt", """<settings>
+							if(TitleControl.IsReady)
+								TitleControl.EditMap(MapInfo.FileName, "Modifier.Script.txt", """<settings>
 	<setting name="S_Build" type="boolean" value="True"/>
 </settings>""");
 						}

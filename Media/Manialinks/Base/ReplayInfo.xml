@@ -38,8 +38,8 @@
 	<frame pos="0 -45">
 		<quad z-index="-1" size="150 30" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgCardList"/>
 		<quad z-index="0" size="150 30" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgGradV"/>
-		<quad pos="16 0" z-index="1" size="20 20" bgcolor="FFFA" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" id="QUAD_REFRESH" colorize="036"/>
-		<quad pos="16 0" z-index="2" size="20 20" bgcolor="FFFA" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Reload" id="QUAD_REFRESH"/>
+		<quad pos="16 0" z-index="1" size="20 20" bgcolor="FFFA" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" id="QUAD_BUTTON_REFRESH" colorize="036"/>
+		<quad pos="16 0" z-index="2" size="20 20" bgcolor="FFFA" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Reload"/>
 		<quad pos="134 0" z-index="1" size="20 20" bgcolor="FFFA" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" id="QUAD_BUTTON_BACK" colorize="600"/>
 		<label pos="134 -0.5" z-index="2" size="20 20" text="" halign="center" valign="center" textsize="12"/>
 	</frame>

@@ -172,8 +172,12 @@ foreach(Event,PendingEvents) {
 	switch(Event.Type) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
+				case "QUAD_BUTTON_REFRESH": {
+					PlayAudio(Sound_ClickSoft);
+					SendCustomEvent("Refresh", []);
+				}
 				case "QUAD_BUTTON_BACK": {
-					PlayAudio(Sound_Click);
+					PlayAudio(Sound_ClickSoft);
 					SendCustomEvent("Back", []);
 				}
 				case "QUAD_BUTTON_OPEN": {
@@ -223,11 +227,10 @@ foreach(Event,PendingEvents) {
 					EnableMenuNavigationInputs = False;
 				}
 				case "Info": {
-					declare File = Event.CustomEventData[0];
+					declare Name = Event.CustomEventData[0];
 					declare MapUid = Event.CustomEventData[1];
-					declare Folders = TextLib::Split("\\", File);
 
-					(Page.GetFirstChild("ENTRY_REPLAYFILE") as CMlEntry).SetText(Folders[Folders.count-1], False);
+					(Page.GetFirstChild("ENTRY_REPLAYFILE") as CMlEntry).SetText(Name, False);
 					if(MapUid != "") {
 						(Page.GetFirstChild("QUAD_THUMBNAIL") as CMlQuad).ChangeImageUrl("file://Thumbnails/MapUid/"^MapUid);
 						(Page.GetFirstChild("LABEL_MAPUID") as CMlLabel).SetText(MapUid);

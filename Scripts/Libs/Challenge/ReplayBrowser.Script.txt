@@ -36,6 +36,7 @@
 declare SElement[] Elements;
 declare SElement SelectedElement;
 declare Map::SMapInfo SelectedMap;
+declare Text CurrentFolder;
 
 Map::SMapInfo GetSelectedMap() {
 	return SelectedMap;
@@ -81,7 +82,7 @@ Void Event(CManiaAppEvent _Event) {
 				if(SelectedElement.IsFolder)
 					Task::Async_DataFileMgr("REPLAYS", DataFileMgr.Replay_GetGameList(SelectedElement.Folder, False));
 				else if(SelectedElement.IsFile) {
-					Layers::SendEvent("ReplayInfo", "Info", [SelectedElement.File, SelectedElement.MapUid]);
+					Layers::SendEvent("ReplayInfo", "Info", [SelectedElement.Name, SelectedElement.MapUid]);
 					Layers::SendEvent("ReplayInfo", "Details", "");
 					Layers::SendEvent("ReplayInfo", "MX", "");
 					Layers::SendEvent("ReplayInfo", "Ghosts", "");
@@ -90,6 +91,18 @@ Void Event(CManiaAppEvent _Event) {
 					Task::Async_DataFileMgr("FINDGHOSTS", DataFileMgr.Replay_Load(SelectedElement.File));
 					declare Success = MX::AsyncTrackMultiple("FINDMAP_MX", "tm", [SuggestedUid], True);
 				}
+			}
+			
+		}
+		if(Event.CustomEventLayer == Layers::Get("ReplayInfo"))
+		switch(Event.CustomEventType) {
+			case "Refresh": {
+				DataFileMgr.Replay_RefreshFromDisk();
+				Task::Async_DataFileMgr("REPLAYS", DataFileMgr.Replay_GetGameList(CurrentFolder, False));
+				Layers::SendEvent("ReplayInfo", "Info", ["", ""]);
+				Layers::SendEvent("ReplayInfo", "Details", "");
+				Layers::SendEvent("ReplayInfo", "MX", "");
+				Layers::SendEvent("ReplayInfo", "Ghosts", "");
 			}
 		}
 	}
@@ -187,7 +200,8 @@ Void Async() {
 				Element.MapUid = ReplayInfo.MapUid;
 				Elements.add(Element);
 			}
-
+			
+			CurrentFolder = ReplayList.Path;
 			Layers::SendEvent("ReplayInfo", "Refresh", ReplayList.Path);
 			
 			Layers::SendEvent("Replays", "Elements", Elements.tojson());
