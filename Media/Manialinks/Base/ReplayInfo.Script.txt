@@ -164,8 +164,6 @@ declare MXTrackUrl = "";
 SelectedGhost = -1;
 
 declare CurrentFolder = "";
-
-EnableMenuNavigationInputs = True;
 ***
 
 ***Loop***
@@ -217,10 +215,12 @@ foreach(Event,PendingEvents) {
 					(Page.GetFirstChild("FRAME_REPLAYINFO") as CMlFrame).RelativePosition_V3.X = -25.;
 					Start = Now;
 					End = -1;
+					EnableMenuNavigationInputs = True;
 				}
 				case "Hide": {
 					End = Now;
 					Start = -1;
+					EnableMenuNavigationInputs = False;
 				}
 				case "Info": {
 					declare File = Event.CustomEventData[0];
