@@ -35,13 +35,15 @@
 			<quad z-index="2" size="10 10" halign="left" scriptevents="1" id="QUAD_BUTTON_MX_DISABLE"/>
 		</frame>
 	</frame>
-	<frame pos="0 -27.5">
+	<frame pos="0 -45">
 		<quad z-index="-1" size="150 30" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgCardList"/>
 		<quad z-index="0" size="150 30" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgGradV"/>
-		<quad pos="16 0" z-index="1" size="20 20" bgcolor="FFFA" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Reload" scriptevents="1" id="QUAD_REFRESH"/>
-		<quad pos="134 0" z-index="1" size="20 20" bgcolor="FFFA" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Quit" scriptevents="1" rot="180" id="QUAD_BUTTON_BACK"/>
+		<quad pos="16 0" z-index="1" size="20 20" bgcolor="FFFA" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" id="QUAD_REFRESH" colorize="036"/>
+		<quad pos="16 0" z-index="2" size="20 20" bgcolor="FFFA" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Reload" id="QUAD_REFRESH"/>
+		<quad pos="134 0" z-index="1" size="20 20" bgcolor="FFFA" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" id="QUAD_BUTTON_BACK" colorize="600"/>
+		<label pos="134 -0.5" z-index="2" size="20 20" text="" halign="center" valign="center" textsize="12"/>
 	</frame>
-	<frame pos="0 -52.5">
+	<frame pos="0 -20">
 		<quad z-index="-1" size="150 15" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgCardList"/>
 		<quad z-index="0" size="150 15" bgcolor="FFFA" valign="center" style="Bgs1" substyle="BgGradV"/>
 		<entry pos="3.5 0" z-index="1" size="97 9.5" default="" valign="center2" id="ENTRY_REPLAYFILE"/>
