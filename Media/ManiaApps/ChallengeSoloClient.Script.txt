@@ -500,8 +500,8 @@ if(Service_Status::AsyncIsCompleted("STATUS")) {
 		foreach(Playsession, Status.Playsessions) {
 			if(Playsession.Map.Uid == Map.MapInfo.MapUid) {
 				ContainsThisMap = True;
-				log(Playsession.Users);
 				Layers::SendEvent("Playsession", "Count", Playsession.Users.count^"");
+				Layers::SendEvent("Playsession", "Users", Playsession.Users.tojson());
 				
 				if(!Server_IsValidationMode)
 					declare Success = AsyncPlaysession(PlaysessionSecret, "Playing");

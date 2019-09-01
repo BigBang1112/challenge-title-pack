@@ -9,6 +9,11 @@
 	Text OriginalAuthor;
 }
 
+#Struct SUser {
+	Text Login;
+	Text Nickname;
+}
+
 ***Start***
 ***
 declare SPublicMap PublicMap;
@@ -20,6 +25,21 @@ declare Integer EndOfYellow = -1;
 ***
 foreach(Event,PendingEvents) {
 	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseOver: {
+			switch(Event.ControlId) {
+				case "LABEL_COUNT": {
+					if(PreviousCount > 0)
+						Page.GetFirstChild("FRAME_TOOLTIP").Show();
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MouseOut: {
+			switch(Event.ControlId) {
+				case "LABEL_COUNT": {
+					Page.GetFirstChild("FRAME_TOOLTIP").Hide();
+				}
+			}
+		}
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_PUBLISH": {
@@ -62,9 +82,33 @@ foreach(Event,PendingEvents) {
 					}
 					PreviousCount = Count;
 				}
+				case "Users": {
+					declare Label_Tooltip = (Page.GetFirstChild("LABEL_TOOLTIP") as CMlLabel);
+					declare Quad_Tooltip = (Page.GetFirstChild("QUAD_TOOLTIP") as CMlQuad);
+
+					declare SUser[] Users;
+					declare JsonSuccess = Users.fromjson(Event.CustomEventData[0]);
+					declare UserText = "";
+					if(Users.count > 10) UserText = "and "^Users.count-10^" more...";
+					for(I,0,9) {
+						if(Users.existskey(I)) {
+							if(Users[I].Nickname == "")
+								UserText ^= "\n$z"^Users[I].Login;
+							else
+								UserText ^= "\n$z"^Users[I].Nickname;
+						}
+					}
+					Label_Tooltip.SetText(UserText);
+					declare Width = Label_Tooltip.ComputeWidth(UserText);
+					Label_Tooltip.Size.X = Width+2.;
+					declare Height = Label_Tooltip.ComputeHeight(UserText);
+					Label_Tooltip.Size.Y = Height;
+					Quad_Tooltip.Size = <Width+4., Height>;
+					if(Users.count > 10) Quad_Tooltip.Size.Y += 3.;
+				}
 				case "DisablePublish": {
 					(Page.GetFirstChild("QUAD_BUTTON_PUBLISH_DISABLE") as CMlQuad).Show();
-					(Page.GetFirstChild("QUAD_BUTTON_PUBLISH") as CMlQuad).ModulateColor = <0., .2, 0.>;
+					(Page.GetFirstChild("QUAD_BUTTON_PUBLISH") as CMlQuad).ModulateColor = <.2, .4, .2>;
 					(Page.GetFirstChild("LABEL_BUTTON_PUBLISH") as CMlLabel).TextColor = <.5, .5, .5>;
 				}
 			}
@@ -76,4 +120,6 @@ if(EndOfYellow != -1 && EndOfYellow < Now) {
 	(Page.GetFirstChild("LABEL_COUNT") as CMlLabel).TextColor = <1., 1., 1.>;
 	Page.GetFirstChild("LABEL_COUNT").RelativeScale = 1.;
 }
+
+if(Page.GetFirstChild("FRAME_TOOLTIP").Visible) Page.GetFirstChild("FRAME_TOOLTIP").RelativePosition_V3 = <MouseX, MouseY>;
 ***

@@ -29,4 +29,8 @@
 			</frame>
 		</frame>
 	</frame>
+	<frame z-index="2" id="FRAME_TOOLTIP" hidden="1">
+		<quad z-index="-1" size="40 60" bgcolor="FFFA" style="Bgs1" substyle="BgCardOnline" colorize="000" valign="bottom" id="QUAD_TOOLTIP"/>
+		<label pos="2 2" z-index="0" size="200 55" text="fdsfdsfsdfdsfsdfs dfsdffsafds af sdfas fsa fsdf sdafsdf sa fsd as d as dfsdafsdf adsf dsaf d af" valign="bottom" textsize="2" textfont="BiryaniDemiBold" autonewline="1" id="LABEL_TOOLTIP"/>
+	</frame>
 </frame>
