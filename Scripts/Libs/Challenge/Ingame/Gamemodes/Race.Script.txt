@@ -3,16 +3,7 @@
 #Include "Libs/BigBang1112/File.Script.txt" as File
 #Include "Libs/BigBang1112/Task.Script.txt" as Task
 
-#Struct SRealVehicle {
-	Text Name;
-	Ident Id;
-}
-
-#Struct SVehicle {
-	Text Name;
-	Text Image;
-	Text File;
-}
+#Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
 
 #Struct SEndRaceInfo {
 	Integer Time;
@@ -26,9 +17,9 @@
 	CGhost NicerGhost;
 }
 
-declare SVehicle[] Vehicles;
-declare SRealVehicle[] RealVehicles;
-declare SRealVehicle RealMapVehicle;
+declare Vehicle::SVehicle[] Vehicles;
+declare Vehicle::SRealVehicle[] RealVehicles;
+declare Vehicle::SRealVehicle RealMapVehicle;
 declare CTmPlayer[] RespawnList;
 
 Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
@@ -41,26 +32,23 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 		
 	declare netread Integer Client_VehicleIndex for UI;
 	
+	declare persistent Text[Text] P_Skin for _Player.User;
+	
 	Server_VehicleLock = -1;
-	_Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id;
+	if(!Vehicles.existskey(Client_VehicleIndex)) return;
+	Server_CurrentVehicle = Client_VehicleIndex;
+	
+	declare VehicleName = Vehicles[Server_CurrentVehicle].Name;
+	_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[P_Skin[VehicleName]];
 	if(Server_NoGravity) _Player.GravityCoef = 0.;
 	else _Player.GravityCoef = 1.;
-	Server_CurrentVehicle = Client_VehicleIndex;
 	_Mode.SpawnPlayer(_Player, 0, -1);
 	UI.UISequence = CUIConfig::EUISequence::Playing;
 }
 
-Void Init(CTmMode _Mode) {	
-	declare JsonSuccess = Vehicles.fromjson(File::Read("Media/Vehicle.json"));
-
-	_Mode.ItemList_Begin();
-	foreach(Vehicle, Vehicles) {
-		declare SRealVehicle RealVehicle;
-		RealVehicle.Name = Vehicle.Name;
-		RealVehicle.Id = _Mode.ItemList_Add(Vehicle.File);
-		RealVehicles.add(RealVehicle);
-	}
-	_Mode.ItemList_End();
+Void Init(CTmMode _Mode) {
+	Vehicles = Vehicle::FromFile("Media/Vehicle.json");
+	RealVehicles = Vehicle::Load(Vehicles, _Mode);
 }
 
 Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
@@ -73,7 +61,7 @@ Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
 		declare netwrite Boolean Server_IsValidationMode for UI;
 		Server_IsValidationMode = _IsValidationMode;
 
-		declare netwrite SVehicle[] Server_Vehicles for UI;
+		declare netwrite Vehicle::SVehicle[] Server_Vehicles for UI;
 		Server_Vehicles = Vehicles;
 		
 		declare netwrite Integer Server_VehicleLock for UI;
@@ -97,7 +85,7 @@ Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
 		UI.UISequence = CUIConfig::EUISequence::Playing;
 	}
 					
-	declare SVehicle MapVehicle;
+	declare Vehicle::SVehicle MapVehicle;
 	for(I, 0, Vehicles.count-1) {
 		declare Vehicle = Vehicles[I];
 		declare RealVehicle = RealVehicles[I];
@@ -109,7 +97,7 @@ Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
 	
 	foreach(Player, _Mode.AllPlayers) {
 		declare UI <=> _Mode.UIManager.GetUI(Player);
-		declare netwrite SVehicle Server_MapVehicle for UI;
+		declare netwrite Vehicle::SVehicle Server_MapVehicle for UI;
 		Server_MapVehicle = MapVehicle;
 		
 		Player.RaceStartTime = -1;
@@ -180,18 +168,25 @@ Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
 				if(_Event.UI == _Mode.UIManager.GetUI(Player)) {
 					declare netwrite Boolean Server_Playing for _Event.UI;
 					declare netwrite Integer Server_VehicleLock for _Event.UI;
+					declare netwrite Integer Server_CurrentVehicle for _Event.UI;
 					declare netwrite Boolean Server_EndRace for _Event.UI;
 					declare netwrite Boolean Server_Outro for _Event.UI;
 					
 					declare netread Integer Client_VehicleIndex for _Event.UI;
+					
+					declare persistent Text[Text] P_Skin for Player.User;
 					
 					switch(_Event.CustomEventType) {
 						case "Start": {
 							declare Force = (_Event.CustomEventData[0] == "True");
 							
 							if(Force || Server_VehicleLock == -1) {
-								if(Vehicles.existskey(Client_VehicleIndex)) Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id;
-								else Player.ForceModelId = RealMapVehicle.Id;
+								if(!Vehicles.existskey(Client_VehicleIndex)) continue;
+								Server_CurrentVehicle = Client_VehicleIndex;
+								
+								declare VehicleName = Vehicles[Server_CurrentVehicle].Name;
+								Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[P_Skin[VehicleName]];
+								//else Player.ForceModelId = RealMapVehicle.Id[P_Skin[VehicleName]];
 								Player.IsSpawned = True;
 								Player.RaceStartTime = -1;
 								
@@ -249,20 +244,27 @@ Void Loop(CTmMode _Mode) {
 		
 		declare netread Integer Client_VehicleIndex for UI;
 		
+		declare persistent Text[Text] P_Skin for Player.User;
+		
 		if(Server_Playing) {
 			
 		}
 		else {
 			declare Ident OldModelId for Player;
-				
-			if(Server_VehicleLock == -1) {
-				if(Vehicles.existskey(Client_VehicleIndex)) Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id;
-				else Player.ForceModelId = RealMapVehicle.Id;
-				Server_CurrentVehicle = Client_VehicleIndex;
-			}
-			else {
-				Player.ForceModelId = RealVehicles[Server_VehicleLock].Id;
-				Server_CurrentVehicle = Server_VehicleLock;
+			
+			if(Vehicles.existskey(Client_VehicleIndex)) {
+				if(Server_VehicleLock == -1) {
+					if(!Vehicles.existskey(Client_VehicleIndex)) continue;
+					Server_CurrentVehicle = Client_VehicleIndex;
+					declare VehicleName = Vehicles[Server_CurrentVehicle].Name;
+					if(Vehicles.existskey(Client_VehicleIndex)) Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id[P_Skin[VehicleName]];
+					else Player.ForceModelId = RealMapVehicle.Id[P_Skin[VehicleName]];
+				}
+				else {
+					Server_CurrentVehicle = Server_VehicleLock;
+					declare VehicleName = Vehicles[Server_CurrentVehicle].Name;
+					Player.ForceModelId = RealVehicles[Server_VehicleLock].Id[P_Skin[VehicleName]];
+				}
 			}
 				
 			if(Player.ForceModelId != OldModelId) {
@@ -288,7 +290,6 @@ Void Loop(CTmMode _Mode) {
 		declare netwrite Integer Server_VehicleLock for UI;
 		declare netwrite Boolean Server_EndRace for UI;
 		declare netwrite Boolean Server_Outro for UI;
-		declare netwrite Integer Server_CurrentVehicle for UI;
 		declare netwrite Boolean Server_NoGravity for UI;
 		
 		declare netread Integer Client_VehicleIndex for UI;

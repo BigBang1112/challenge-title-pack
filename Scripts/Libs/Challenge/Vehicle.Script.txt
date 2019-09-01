@@ -1,0 +1,52 @@
+#Include "Libs/BigBang1112/File.Script.txt" as File
+
+#Struct SSkin {
+	Text File;
+	Text Icon;
+}
+
+#Struct SVehicle {
+	Text Name;
+	Text Image;
+	Text File;
+	SSkin[] Skins;
+}
+
+#Struct SRealVehicle {
+	Text Name;
+	Ident[Text] Id; //Basically each one is skin
+}
+
+SRealVehicle[] Load(SVehicle[] _Vehicles, CMode _Mode) {
+	declare SRealVehicle[] RealVehicles;
+
+	_Mode.ItemList_Begin();
+	foreach(Vehicle, _Vehicles) {
+		declare SRealVehicle RealVehicle;
+		RealVehicle.Name = Vehicle.Name;
+		
+		RealVehicle.Id[""] = _Mode.ItemList_Add(Vehicle.File);
+		if(Vehicle.Skins.count > 0) {
+			foreach(Skin, Vehicle.Skins) {
+				RealVehicle.Id[Skin.File] = _Mode.ItemList_AddWithSkin(Vehicle.File, "Skins/Models/"^Skin.File);
+			}
+		}
+		
+		RealVehicles.add(RealVehicle);
+	}
+	_Mode.ItemList_End();
+
+	return RealVehicles;
+}
+
+SRealVehicle[] LoadFromFile(Text _FileName, CMode _Mode) {
+	declare SVehicle[] Vehicles;
+	declare JsonSuccess = Vehicles.fromjson(File::Read(_FileName));
+	return Load(Vehicles, _Mode);
+}
+
+SVehicle[] FromFile(Text _FileName) {
+	declare SVehicle[] Vehicles;
+	declare JsonSuccess = Vehicles.fromjson(File::Read(_FileName));
+	return Vehicles;
+}

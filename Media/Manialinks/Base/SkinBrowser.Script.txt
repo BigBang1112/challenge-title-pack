@@ -1,0 +1,187 @@
+declare CMlFrame Frame_Inner_Vehicles;
+declare CMlFrame Frame_Vehicles;
+
+Void UpdateVehicles() {
+	declare Integer VehicleIndex for Page;
+	declare Integer VehicleCount for Page;
+	declare Integer MapVehicleIndex for Page;
+
+	foreach(Frame,Frame_Inner_Vehicles.Controls) {
+		foreach(Control,(Frame as CMlFrame).Controls) {
+			if(Control is CMlFrame)
+				foreach(C, (Control as CMlFrame).Controls)
+					if(C is CMlQuad) AnimMgr.Add(C, """<quad opacity="1"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+			if(Control is CMlQuad) AnimMgr.Add(Control, """<quad opacity="1"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+			if(Control is CMlLabel) (Control as CMlLabel).Opacity = 1.;
+		}
+	}
+
+	for(I, 0, VehicleCount-1) {
+		declare Frame_Vehicle = (Frame_Inner_Vehicles.Controls[I] as CMlFrame);
+		declare Quad_Vehicle = (Frame_Vehicle.GetFirstChild("QUAD_VEHICLE") as CMlQuad);
+
+		if(I == VehicleIndex) {
+			Quad_Vehicle.Substyle = "BgCard";
+			
+			for(J,0,1) {
+				declare Invert = J*2-1;
+				for(K,2,4) {
+					if(Frame_Inner_Vehicles.Controls.existskey(I+K*Invert)) {
+						foreach(Control,(Frame_Inner_Vehicles.Controls[I+K*Invert] as CMlFrame).Controls) {
+							if(Control is CMlFrame)
+								foreach(C, (Control as CMlFrame).Controls)
+									if(C is CMlQuad) AnimMgr.Add(C, """<quad opacity="{{{1-(K-1)*.25}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+							if(Control is CMlQuad) AnimMgr.Add(Control, """<quad opacity="{{{1-(K-1)*.25}}}"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+							if(Control is CMlLabel) (Control as CMlLabel).Opacity = 1-(K-1)*.25;
+						}
+					}
+				}
+				for(K,5,VehicleCount-1) {
+					if(Frame_Inner_Vehicles.Controls.existskey(I+K*Invert)) {
+						foreach(Control,(Frame_Inner_Vehicles.Controls[I+K*Invert] as CMlFrame).Controls) {
+							if(Control is CMlFrame)
+								foreach(C, (Control as CMlFrame).Controls)
+									if(C is CMlQuad) AnimMgr.Add(C, """<quad opacity=".25"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+							if(Control is CMlQuad) AnimMgr.Add(Control, """<quad opacity=".25"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+							if(Control is CMlLabel) (Control as CMlLabel).Opacity = .25;
+						}
+					}
+				}
+			}
+
+			declare Frame_Skins = (Frame_Vehicle.GetFirstChild("FRAME_SKINS") as CMlFrame);
+			
+			for(I,0,Frame_Skins.Controls.count-1) {
+				declare Control = (Frame_Skins.Controls[I] as CMlFrame);
+				Control.RelativeScale = .5;
+				AnimMgr.Add(Control, """<frame scale="1"/>""", Now+I*50, 200, CAnimManager::EAnimManagerEasing::QuadOut);
+
+				declare Quad_Skin = (Control.GetFirstChild("QUAD_SKIN") as CMlQuad);
+				Quad_Skin.Opacity = 0.;
+				AnimMgr.Add(Quad_Skin, """<quad opacity="1"/>""", Now+I*50, 400, CAnimManager::EAnimManagerEasing::QuadOut);
+
+				declare Quad_Img = (Control.GetFirstChild("QUAD_IMG") as CMlQuad);
+				if(Quad_Img != Null) {
+					Quad_Img.Opacity = 0.;
+					AnimMgr.Add(Quad_Img, """<quad opacity="1"/>""", Now+I*50, 400, CAnimManager::EAnimManagerEasing::QuadOut);
+				}
+			}
+			Frame_Skins.Show();
+		}
+		else {
+			Quad_Vehicle.Substyle = "BgCardInventoryItem";
+			Frame_Vehicle.GetFirstChild("FRAME_SKINS").Hide();
+		}
+	}
+}
+
+Void UpdateSkinSelection() {
+	declare Integer VehicleIndex for Page;
+	declare Integer VehicleCount for Page;
+
+	declare persistent Text[Text] P_Skin for LocalUser;
+
+	for(I, 0, VehicleCount-1) {
+		if(I == VehicleIndex) {
+			declare Frame_Vehicle = (Frame_Inner_Vehicles.Controls[I] as CMlFrame);
+			declare VehicleName = Frame_Vehicle.DataAttributeGet("name");
+			if(!P_Skin.existskey(VehicleName)) P_Skin[VehicleName] = "";
+
+			declare Frame_Skins = (Frame_Vehicle.GetFirstChild("FRAME_SKINS") as CMlFrame);
+			for(I,0,Frame_Skins.Controls.count-1) {
+				declare Control = (Frame_Skins.Controls[I] as CMlFrame);
+				declare SkinFile = Control.DataAttributeGet("file");
+				declare Quad_Skin = (Control.GetFirstChild("QUAD_SKIN") as CMlQuad);
+				if(P_Skin[VehicleName] == SkinFile)
+					Quad_Skin.ModulateColor = <.0, .2, .4>;
+				else
+					Quad_Skin.ModulateColor = <.2, .2, .2>;
+			}
+		}
+	}
+}
+
+Void UpdatePositions(Vec2 _Scroll, Vec2 _OldScroll, Boolean _Instantly) {
+	declare Integer VehicleIndex for Page;
+	declare Integer MapVehicleIndex for Page;
+
+	VehicleIndex = MathLib::NearestInteger(_Scroll.Y/16+MapVehicleIndex);
+
+	Frame_Inner_Vehicles.RelativePosition_V3.Y -= _Scroll.Y-_OldScroll.Y;
+	AnimMgr.Add(Frame_Inner_Vehicles, """<frame pos="0 0"/>""", 200, CAnimManager::EAnimManagerEasing::QuadOut);
+}
+
+Void UpdatePositions(Vec2 _Scroll, Vec2 _OldScroll) {
+	UpdatePositions(_Scroll, _OldScroll, False);
+}
+
+***Start***
+***
+Frame_Vehicles = (Page.GetFirstChild("FRAME_VEHICLES") as CMlFrame);
+Frame_Inner_Vehicles = (Page.GetFirstChild("FRAME_INNER_VEHICLES") as CMlFrame);
+
+declare Integer VehicleCount for Page;
+declare Integer MapVehicleIndex for Page;
+declare Integer VehicleIndex for Page;
+
+Frame_Vehicles = (Page.GetFirstChild("FRAME_VEHICLES") as CMlFrame);
+if(VehicleCount > 0) {
+	Frame_Vehicles.ScrollActive = True;
+	Frame_Vehicles.ScrollMax = <0.,(VehicleCount-MapVehicleIndex-1)*16.>;
+	Frame_Vehicles.ScrollMin = <0.,-MapVehicleIndex*16.>;
+	Frame_Vehicles.ScrollGridSnap = True;
+	Frame_Vehicles.ScrollGrid = <0.,16.>;
+}
+
+declare OldScroll = Frame_Vehicles.ScrollOffset;
+
+declare Integer OldVehicleIndex = -1;
+***
+
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseOver: {
+			switch(Event.ControlId) {
+				case "QUAD_VEHICLE": {
+					PlayAudio(Sound_Hover);
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MouseClick: {
+			switch(Event.ControlId) {
+				case "QUAD_VEHICLE": {
+					declare PreviousIndex = VehicleIndex;
+					VehicleIndex = TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("id"));
+					Frame_Vehicles.Scroll(<0.,(VehicleIndex-PreviousIndex)*1.>);
+
+					PlayAudio(Sound_ClickSoft);
+				}
+				case "QUAD_SKIN": {
+					PlayAudio(Sound_Click);
+
+					declare VehicleName = Event.Control.Parent.Parent.Parent.DataAttributeGet("name");
+					declare SkinFile = Event.Control.Parent.DataAttributeGet("file");
+
+					declare persistent Text[Text] P_Skin for LocalUser;
+					P_Skin[VehicleName] = SkinFile;
+
+					UpdateSkinSelection();
+				}
+			}
+		}
+	}
+}
+
+if(Frame_Vehicles.ScrollOffset != OldScroll) {
+	UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll);
+	OldScroll = Frame_Vehicles.ScrollOffset;
+}
+
+if(VehicleIndex != OldVehicleIndex) {
+	UpdateVehicles();
+	UpdateSkinSelection();
+	OldVehicleIndex = VehicleIndex;
+}
+***

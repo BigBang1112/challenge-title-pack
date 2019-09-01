@@ -1,11 +1,19 @@
 #RequireContext CTmMode
 
-ItemList_Begin();
-declare CanyonCar = ItemList_Add("CanyonCar");
-declare StadiumCar = ItemList_Add("StadiumCar");
-declare ValleyCar = ItemList_Add("ValleyCar");
-declare LagoonCar = ItemList_Add("LagoonCar");
-ItemList_End();
+#Include "TextLib" as TextLib
+
+#Include "Libs/BigBang1112/File.Script.txt" as File
+
+#Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
+
+declare Vehicle::SVehicle[] Vehicles;
+declare Vehicle::SRealVehicle[] RealVehicles;
+declare Vehicle::SRealVehicle RealMapVehicle;
+
+Vehicles = Vehicle::FromFile("Media/Vehicle.json");
+RealVehicles = Vehicle::Load(Vehicles, This);
+
+ClientManiaAppUrl = "file://Media/ManiaApps/ChallengeSkinClient.Script.txt";
 
 RequestLoadMap();
 
@@ -30,14 +38,51 @@ UIManager.UIAll.ScoreTableOnlyManialink = True;
 
 wait(Players.count>0);
 declare Player <=> Players[0];
-Player.RaceStartTime = -1;
-Player.IsSpawned = True;
+declare UI <=> UIManager.GetUI(Player);
 
-while(True) {	
-	foreach(Player,PlayersWaiting) {
-		
+SpawnPlayer(Player,0,Now-10000);
+
+UI.UISequence = CUIConfig::EUISequence::CustomMTClip;
+UI.UISequence_CustomMTClip = "CH_SHOWCASE";
+
+//Player.RaceStartTime = -1;
+
+declare netwrite Vehicle::SVehicle[] Server_Vehicles for UI;
+Server_Vehicles = Vehicles;
+
+declare netwrite Integer Server_CurrentVehicle for UI;
+Server_CurrentVehicle = -1;
+
+wait(MapLoaded);
+declare MapModelName = TextLib::Replace(This.MapPlayerModelName, "\\", "/");
+
+declare Vehicle::SVehicle MapVehicle;
+for(I, 0, Vehicles.count-1) {
+	declare Vehicle = Vehicles[I];
+	declare RealVehicle = RealVehicles[I];
+	if(Vehicle.Name == MapModelName || Vehicle.File == MapModelName) {
+		MapVehicle = Vehicle;
+		RealMapVehicle = RealVehicle;
 	}
-	
+}
+
+declare netwrite Vehicle::SVehicle Server_MapVehicle for UI;
+Server_MapVehicle = MapVehicle;
+
+declare netread Integer Client_VehicleIndex for UI;
+
+declare CTmPlayer[] RespawnList;
+
+declare persistent Text[Text] P_Skin for Player.User;
+
+declare Text PrevSkin;
+
+while(True) {
+	foreach(Player,RespawnList) {
+		This.SpawnPlayer(Player, 0, Now-10000);
+	}
+	RespawnList.clear();
+
 	foreach(Event,PendingEvents) {
 		switch(Event.Type) {
 			case CTmModeEvent ::EType::WayPoint: {
@@ -53,5 +98,47 @@ while(True) {
 			}
 		}
 	}
+	
+	foreach(Event,UIManager.PendingEvents) {
+		switch(Event.Type) {
+			case CUIConfigEvent::EType::OnLayerCustomEvent: {
+				foreach(Player,This.Players) {
+					if(Event.UI == This.UIManager.GetUI(Player)) {						
+						declare netread Integer Client_VehicleIndex for Event.UI;
+						
+						switch(Event.CustomEventType) {
+							case "VehicleIndexChanged": {
+								
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	declare Ident OldModelId for Player;
+	
+	declare VehicleName = Server_Vehicles[Client_VehicleIndex].Name;
+	if(Vehicles.existskey(Client_VehicleIndex)) Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id[P_Skin[VehicleName]];
+	else Player.ForceModelId = RealMapVehicle.Id[P_Skin[VehicleName]];
+	Server_CurrentVehicle = Client_VehicleIndex;
+		
+	if(Player.ForceModelId != OldModelId) {
+		This.SpawnPlayer(Player, 0, -1);
+		RespawnList.add(Player);
+			
+		OldModelId = Player.ForceModelId;
+	}
+	
+	
+	if(P_Skin.existskey(VehicleName)) {
+		if(P_Skin[VehicleName] != PrevSkin) {
+			// skin changed
+			
+			PrevSkin = P_Skin[VehicleName];
+		}
+	}
+	
 	yield;
 }

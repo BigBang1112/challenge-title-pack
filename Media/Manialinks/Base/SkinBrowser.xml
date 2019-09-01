@@ -1,0 +1,11 @@
+<frame>
+	<quad pos="60 80" z-index="0" size="90 20" style="TitleLogos" substyle="Title" image="file://Media/Images/Challenge.png"/>
+	<label pos="143 62" z-index="0" size="78 5" text="{{{{MADE_BY}}}} $i$o$nBIGBANG1112" halign="right" textfont="RajdhaniMono" textsize="2"/>
+	<frame z-index="-1" pos="0 -70">
+		<quad z-index="0" size="310 15" valign="center" halign="center" style="Bgs1" substyle="BgCardList" opacity="1"/>
+		<quad z-index="1" size="310 15" valign="center" halign="center" style="Bgs1" substyle="BgGradV" opacity="1"/>
+	</frame>
+	<frame pos="-120 -70" id="FRAME_VEHICLES">
+		<frame id="FRAME_INNER_VEHICLES"/>
+	</frame>
+</frame>

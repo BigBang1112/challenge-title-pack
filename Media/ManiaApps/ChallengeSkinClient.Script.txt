@@ -1,0 +1,116 @@
+#RequireContext CManiaAppPlayground
+
+#Include "TextLib" as TextLib
+#Include "MathLib" as MathLib
+
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
+#Include "Libs/BigBang1112/Random.Script.txt" as Random
+#Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
+#Include "Libs/BigBang1112/Map.Script.txt" as Map
+#Include "Libs/BigBang1112/Discord.Script.txt" as Discord
+#Include "Libs/BigBang1112/Time.Script.txt" as Time
+
+#Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
+
+#Const C_Manialink_SkinBrowser "Media/Manialinks/Base/SkinBrowser"
+
+***Init***
+***
+Dictionary::SetTranslationFolder("Media/Translations");
+Dictionary::SetTranslationLanguage(Settings::Get().Language);
+
+declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+declare netread Vehicle::SVehicle Server_MapVehicle for UI;
+declare netread Integer Server_CurrentVehicle for UI;
+
+wait(Server_Vehicles.count > 0 && Server_MapVehicle.File != "");
+
+declare MapVehicle = -1;
+for(I,0,Server_Vehicles.count-1) {
+	declare Vehicle = Server_Vehicles[I];
+	if(Vehicle.File == Server_MapVehicle.File) {
+		MapVehicle = I;
+	}
+}
+
+declare VehicleML = "";
+for(I, 0, Server_Vehicles.count-1) {
+	declare Vehicle = Server_Vehicles[I];
+
+	declare SkinsML = """<frame pos="0 0" data-file="">
+	<quad z-index="0" size="30 20" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" colorize="333" id="QUAD_SKIN"/>
+	<frame clip="True" clipsizen="25 13" z-index="1">
+		<label z-index="0" size="25 25" halign="center" valign="center" text="{{{Dictionary::Get("DEFAULT")}}}" textfont="Oswald" id="LABEL_NAME"/>
+	</frame>
+</frame>""";
+
+	for(J, 0, Vehicle.Skins.count-1) {
+		declare Skin = Vehicle.Skins[J];
+		SkinsML^="""<frame pos="{{{(J+1)*32.5}}} 0" data-file="{{{Skin.File}}}">
+	<quad z-index="0" size="30 20" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" colorize="333" id="QUAD_SKIN"/>
+	<frame clip="True" clipsizen="25 13" z-index="1">
+		<quad z-index="0" size="25 25" halign="center" valign="center" image="file://Media/{{{Skin.Icon}}}" id="QUAD_IMG"/>
+		<label z-index="0" size="25 25" halign="center" valign="center" text="" textfont="Oswald" id="LABEL_NAME" hidden="1"/>
+	</frame>
+</frame>""";
+	}
+
+	VehicleML ^= """<frame pos="0 {{{-I*16+MapVehicle*16}}}" data-id="{{{I}}}" data-name="{{{Vehicle.Name}}}">
+	<frame z-index="-1" pos="0">
+		<quad z-index="0" size="60 15" valign="center" halign="center" style="Bgs1" substyle="BgCardList" opacity="1"/>
+		<quad z-index="1" size="60 15" valign="center" halign="center" style="Bgs1" substyle="BgGradV" opacity="1"/>
+	</frame>
+	<quad z-index="0" size="60 15" id="QUAD_VEHICLE" valign="center" style="Bgs1InRace" substyle="BgCardInventoryItem" colorize="036" scriptevents="1" halign="center" pos="0 0"/>
+	<label pos="0 -0.5" z-index="1" size="60 10" text="{{{Vehicle.Name}}}" halign="center" valign="center2" textsize="5" textfont="RajdhaniMono" opacity="1"/>
+	<frame pos="50 0" z-index="1" id="FRAME_SKINS" hidden="0">
+		{{{SkinsML}}}
+	</frame>
+</frame>""";
+}
+
+declare SkinManialink = Manialink::FromFile(C_Manialink_SkinBrowser, True, ["Audio", "SlideText", "Navigation"], Settings::Get().Theme);
+SkinManialink = TextLib::Replace(SkinManialink, """<frame id="FRAME_INNER_VEHICLES"/>""",
+"""<quad z-index="-1" pos="0 {{{-Server_Vehicles.count*16/2+MapVehicle*16}}}" size="120 {{{(Server_Vehicles.count)*16+360}}}" halign="center" valign="center" style="Bgs1InRace" substyle="BgEmpty" scriptevents="1"/>
+<frame id="FRAME_INNER_VEHICLES">{{{VehicleML}}}</frame>""");
+Layers::Create("SkinBrowser", SkinManialink, True, True);
+
+declare Integer VehicleIndex for Layers::Get("SkinBrowser").LocalPage;
+declare Integer MapVehicleIndex for Layers::Get("SkinBrowser").LocalPage;
+MapVehicleIndex = MapVehicle;
+VehicleIndex = MapVehicleIndex;
+declare OldVehicleIndex = VehicleIndex;
+
+declare Integer VehicleCount for Layers::Get("SkinBrowser").LocalPage;
+VehicleCount = Server_Vehicles.count;
+
+declare netwrite Integer Client_VehicleIndex for UI;
+Client_VehicleIndex = VehicleIndex;
+
+declare persistent Text[Text] P_Skin for LocalUser;
+***
+
+***Loop***
+***
+if(VehicleIndex != OldVehicleIndex) {
+	Client_VehicleIndex = VehicleIndex;
+	SendCustomEvent("VehicleIndexChanged", [VehicleIndex^""]);
+	OldVehicleIndex = VehicleIndex;
+}
+***
+
+Void Main() {
+	+++Init+++
+	+++Start+++
+
+	while(True) {
+		+++Loop+++
+		yield;
+	}
+}
+
+main() {
+	Main();
+}

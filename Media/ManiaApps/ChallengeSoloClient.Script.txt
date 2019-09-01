@@ -21,6 +21,8 @@
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
 #Include "Libs/Challenge/Ingame/Gamemodes/Stunt.Script.txt" as Stunt
 
+#Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
+
 #Const C_Manialink_Menu "Media/Manialinks/Base/Ingame/Menu"
 #Const C_Manialink_Vehicle "Media/Manialinks/Base/Ingame/Vehicle"
 #Const C_Manialink_Dashboard "Media/Manialinks/Base/Ingame/Dashboard"
@@ -62,7 +64,7 @@ Void ShowMenu() {
 
 Boolean AsyncPlaysession(Text _Secret, Text _Action) {
 	declare SAuthToken INGAME_TOKEN for LocalUser;
-	declare netread Race::SVehicle[] Server_Vehicles for UI;
+	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
 	declare netread Integer Server_CurrentVehicle for UI;
 
 	declare SPlaysession Playsession;
@@ -117,8 +119,8 @@ Dictionary::SetTranslationFolder("Media/Translations");
 Dictionary::SetTranslationLanguage(Settings::Get().Language);
 
 declare netread Boolean Server_IsValidationMode for UI;
-declare netread Race::SVehicle[] Server_Vehicles for UI;
-declare netread Race::SVehicle Server_MapVehicle for UI;
+declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+declare netread Vehicle::SVehicle Server_MapVehicle for UI;
 declare netread Race::SEndRaceInfo Server_EndRaceInfo for UI;
 
 wait(Server_Vehicles.count > 0 && Server_MapVehicle.File != "");
