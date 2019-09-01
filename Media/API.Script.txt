@@ -7,6 +7,8 @@ declare Integer Solver_Solution;
 declare Integer Solver_Point;
 declare Boolean Solver_Success;
 
+declare Integer RandomProgression;
+
 SResponse Request(Text _Command, Text[] _Arguments) {
 	declare SResponse Response;
 
@@ -416,7 +418,8 @@ Boolean RemoveSpecificBlock(SChBlock _Block) {
 }
 
 Integer Random(Integer _Min, Integer _Max) { // Consistent randomizer
-	return MathLib::Rand(_Min, _Max, GetMapInfo().CopperPrice);
+	RandomProgression += 1;
+	return MathLib::Rand(_Min, _Max, GetMapInfo().CopperPrice+RandomProgression);
 }
 
 Integer Random(Integer _Max) {
@@ -424,7 +427,8 @@ Integer Random(Integer _Max) {
 }
 
 Real Random(Real _Min, Real _Max) { // Consistent randomizer
-	return MathLib::Rand(_Min, _Max, GetMapInfo().CopperPrice);
+	RandomProgression += 1;
+	return MathLib::Rand(_Min, _Max, GetMapInfo().CopperPrice+RandomProgression);
 }
 
 Real Random(Real _Max) {
