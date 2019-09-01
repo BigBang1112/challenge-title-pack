@@ -22,6 +22,16 @@ declare Vehicle::SRealVehicle[] RealVehicles;
 declare Vehicle::SRealVehicle RealMapVehicle;
 declare CTmPlayer[] RespawnList;
 
+Void SetCarModel(CTmPlayer _Player, CUIConfig _UI) {
+	declare netwrite Integer Server_CurrentVehicle for _UI;
+	declare persistent Text[Text] P_Skin for _Player.User;
+
+	declare VehicleName = Vehicles[Server_CurrentVehicle].Name;
+	declare Skin = "";
+	if(P_Skin.existskey(VehicleName)) Skin = P_Skin[VehicleName];
+	_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[Skin];
+}
+
 Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 	declare UI <=> _Mode.UIManager.GetUI(_Player);
 	
@@ -32,14 +42,11 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 		
 	declare netread Integer Client_VehicleIndex for UI;
 	
-	declare persistent Text[Text] P_Skin for _Player.User;
-	
 	Server_VehicleLock = -1;
 	if(!Vehicles.existskey(Client_VehicleIndex)) return;
 	Server_CurrentVehicle = Client_VehicleIndex;
 	
-	declare VehicleName = Vehicles[Server_CurrentVehicle].Name;
-	_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[P_Skin[VehicleName]];
+	SetCarModel(_Player, UI);
 	if(Server_NoGravity) _Player.GravityCoef = 0.;
 	else _Player.GravityCoef = 1.;
 	_Mode.SpawnPlayer(_Player, 0, -1);
@@ -184,9 +191,7 @@ Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
 								if(!Vehicles.existskey(Client_VehicleIndex)) continue;
 								Server_CurrentVehicle = Client_VehicleIndex;
 								
-								declare VehicleName = Vehicles[Server_CurrentVehicle].Name;
-								Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[P_Skin[VehicleName]];
-								//else Player.ForceModelId = RealMapVehicle.Id[P_Skin[VehicleName]];
+								SetCarModel(Player, _Event.UI);
 								Player.IsSpawned = True;
 								Player.RaceStartTime = -1;
 								
@@ -256,15 +261,11 @@ Void Loop(CTmMode _Mode) {
 				if(Server_VehicleLock == -1) {
 					if(!Vehicles.existskey(Client_VehicleIndex)) continue;
 					Server_CurrentVehicle = Client_VehicleIndex;
-					declare VehicleName = Vehicles[Server_CurrentVehicle].Name;
-					if(Vehicles.existskey(Client_VehicleIndex)) Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id[P_Skin[VehicleName]];
-					else Player.ForceModelId = RealMapVehicle.Id[P_Skin[VehicleName]];
 				}
-				else {
+				else
 					Server_CurrentVehicle = Server_VehicleLock;
-					declare VehicleName = Vehicles[Server_CurrentVehicle].Name;
-					Player.ForceModelId = RealVehicles[Server_VehicleLock].Id[P_Skin[VehicleName]];
-				}
+
+				SetCarModel(Player, UI);
 			}
 				
 			if(Player.ForceModelId != OldModelId) {
