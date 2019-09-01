@@ -3,6 +3,7 @@
 Script.Name = "Checkpointless";
 Script.AuthorLogin = "bigbang1112";
 Script.Description = "{{{{CHECKPOINTLESS_DESCRIPTION}}}}";
+Script.CompatibleCollections = "Canyon,Stadium,Valley,Lagoon";
 ***
 
 Void Problem_BlockMissing(Text _BlockName, Int3 _Coord) {

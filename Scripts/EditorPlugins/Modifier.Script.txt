@@ -38,6 +38,7 @@
 	Text AuthorLogin;
 	Text AuthorNickname;
 	Text Description;
+	Text CompatibleCollections;
 }
 
 #Struct SScriptInfo {

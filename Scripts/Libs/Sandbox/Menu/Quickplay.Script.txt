@@ -24,6 +24,7 @@
 	Text AuthorLogin;
 	Text AuthorNickname;
 	Text Description;
+	Text CompatibleCollections;
 }
 
 #Struct SScriptInfo {
@@ -108,6 +109,12 @@ Void StartMap(Text _MapLocation, Map::SMapInfo _MapInfo, SScriptInfo[] _Scripts)
 	if(!CheckMapOnline(_MapInfo.MapUid)) {
 		Dialog_Message("This map is currently disabled: Strategy reasons");
 		return;
+	}
+	foreach(Script, _Scripts) {
+		if(!TextLib::Split(",",Script.Metadata.CompatibleCollections).exists(_MapInfo.CollectionName)) {
+			Dialog_Message("Incompatible collection.\nMap's environment is not supported: "^Script.Name);
+			return;
+		}
 	}
 
 	if(TitleControl.IsReady) {

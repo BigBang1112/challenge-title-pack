@@ -3,6 +3,7 @@
 Script.Name = "Reverse";
 Script.AuthorLogin = "bigbang1112";
 Script.Description = "{{{{REVERSE_DESCRIPTION}}}}";
+Script.CompatibleCollections = "Canyon,Stadium,Valley,Lagoon";
 ***
 
 Void Problem_BlockMissing(Text _BlockName, Int3 _Coord, Text _Direction) {

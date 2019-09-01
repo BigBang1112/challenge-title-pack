@@ -3,6 +3,7 @@
 Script.Name = "Default";
 Script.AuthorLogin = "bigbang1112";
 Script.Description = "";
+Script.CompatibleCollections = "Canyon,Stadium,Valley,Lagoon";
 ***
 
 ***Main***

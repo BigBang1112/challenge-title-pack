@@ -3,6 +3,7 @@
 Script.Name = "Comeback";
 Script.AuthorLogin = "bigbang1112";
 Script.Description = "{{{{COMEBACK_DESCRIPTION}}}}";
+Script.CompatibleCollections = "Canyon,Stadium,Valley,Lagoon";
 ***
 
 Void Problem_MultilapTrack(SChWaypoint _Multilap) {

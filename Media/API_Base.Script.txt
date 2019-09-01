@@ -16,6 +16,7 @@
 	Text Name;
 	Text AuthorLogin;
 	Text Description;
+	Text CompatibleCollections;
 }
 
 #Struct SChBlock {
