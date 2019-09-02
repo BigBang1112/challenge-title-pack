@@ -11,6 +11,21 @@
 	Text OriginalAuthor;
 }
 
+#Struct SNotification {
+	Text Name;
+	Text Title;
+	Text Content;
+	Text Type;
+	Text Date;
+}
+
+#Struct SUserStatus {
+	Boolean HasSandbox;
+	Boolean HasCampaign;
+	Boolean HasMaker;
+	SNotification[] Notifications;
+}
+
 #Struct SMessage {
 	Text Login;
 	Text Nickname;
@@ -29,7 +44,7 @@
 	SMessage[] Chat;
 }
 
-#Struct SStatus {
+#Struct SGlobalStatus {
 	Text Date;
 	Text Service;
 	Boolean Running;
@@ -38,20 +53,44 @@
 	Boolean Maintenance;
 	Boolean IsUpdating;
 	Boolean NadeoMapsBlocked;
+}
+
+#Struct STitleStatus {
 	SPlaysession[] Playsessions;
 }
 
-#Const C_Host "https://challenge.bigbang1112.eu"
+#Struct SStatus {
+	SGlobalStatus Global;
+	STitleStatus[Text] Titles;
+	SUserStatus[] User;
+}
+
+#Struct SStatusParams {
+	Text TitleId;
+	Text Token;
+}
+
+#Const C_Host "http://server.bigbang1112.eu/challenge"
+
+SStatusParams GetStatusParams(CUser _User) {
+	declare SStatusParams Params;
+	Params.TitleId = LoadedTitle.TitleId;
+	if(_User != Null) {
+		declare Text CHALLENGE_TOKEN for _User;
+		Params.Token = CHALLENGE_TOKEN;
+	}
+	return Params;
+}
 
 SStatus CheckStatus(CUser _User) {
-	declare Request = Http::SyncGET(C_Host^"/status.php?titleid="^LoadedTitle.TitleId);
-	
-	declare SStatus[Text] Status;
+	declare Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User).tojson());
+	log(Request.Result);
+	declare SStatus Status;
 	declare JsonSuccess = Status.fromjson(Request.Result);
 	
 	declare SStatus[] States for _User;
-	States.add(Status[LoadedTitle.TitleId]);
-	return Status[LoadedTitle.TitleId];
+	States.add(Status);
+	return Status;
 }
 
 SStatus LastStatus(CUser _User) {
@@ -157,8 +196,8 @@ Text AsyncGetResult(Text _Name) {
 	return Http::GetResult(_Name);
 }
 
-Boolean AsyncCheckStatus(Text _Name) {
-	return Http::AsyncGET(_Name, C_Host^"/status.php?titleid="^LoadedTitle.TitleId);
+Boolean AsyncCheckStatus(Text _Name, CUser _User) {
+	return Http::AsyncPOST(_Name, C_Host^"/status.php", GetStatusParams(_User).tojson());
 }
 
 SStatus GetAsyncCheckStatusResult(Text _Name, CUser _User) {
@@ -166,9 +205,8 @@ SStatus GetAsyncCheckStatusResult(Text _Name, CUser _User) {
 	
 	if(AsyncIsCompleted(_Name, True)) {
 		if(AsyncIsSuccessful(_Name)) {
-			declare SStatus[Text] Result;
-			declare JsonSuccess = Result.fromjson(AsyncGetResult(_Name));
-			Status = Result[LoadedTitle.TitleId];
+			declare JsonSuccess = Status.fromjson(AsyncGetResult(_Name));
+			log(Status);
 			declare SStatus[] States for _User;
 			States.add(Status);
 		}

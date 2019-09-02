@@ -17,6 +17,8 @@
 #Include "Libs/Challenge/Service/Map.Script.txt" as Service_Map
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 #Include "Libs/Challenge/ReplayBrowser.Script.txt" as ReplayBrowser
+#Include "Libs/Challenge/Notification.Script.txt" as Notification
+#Include "Libs/Challenge/NotificationPresets.Script.txt" as NotificationPresets
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
 #Include "Libs/Challenge/Ingame/Gamemodes/Stunt.Script.txt" as Stunt
@@ -58,6 +60,10 @@
 	Text Response; // Short informational response
 }
 
+
+
+declare Boolean SkinNotified;
+
 Void ShowMenu() {
 
 }
@@ -79,7 +85,7 @@ Boolean AsyncPlaysession(Text _Secret, Text _Action) {
 	Playsession.Action = _Action;
 	Playsession.TitleId = LoadedTitle.TitleId;
 
-	return Http::AsyncPOST("PLAYSESSION", """{{{Service_Status::LastStatus(LocalUser).Service}}}/ingame/playsession.php""", Playsession.tojson());
+	return Http::AsyncPOST("PLAYSESSION", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/ingame/playsession.php""", Playsession.tojson());
 }
 
 Void ShowIngame() {
@@ -87,6 +93,13 @@ Void ShowIngame() {
 	Layers::Show("Stunts", True);
 	Layers::Show("Playsession", True);
 	Layers::Show("Map", True);
+
+	if(!SkinNotified) {
+		declare persistent Text[Text] P_Skin for LocalUser;
+		if(P_Skin.count == 0)
+			NotificationPresets::Notify_Skins(LocalUser);
+		SkinNotified = True;
+	}
 }
 
 Void HideIngame() {
@@ -167,6 +180,7 @@ Layers::Create("Outro", Manialink::FromFile(C_Manialink_Outro, True, ["Audio", "
 Layers::Create("Flash", Manialink::FromFile(C_Manialink_Flash, True, [], Settings::Get().Theme));
 
 ReplayBrowser::Init();
+Notification::Init();
 ***
 
 ***Start***
@@ -198,7 +212,7 @@ VehicleCount = Server_Vehicles.count;
 declare SAuthToken INGAME_TOKEN for LocalUser;
 
 declare Service_Status::SPublicMap PublicMap;
-declare ReqMap = Http::SyncGET("""{{{Service_Status::LastStatus(LocalUser).Service}}}/map.php?{{{Map.MapInfo.MapUid}}}""");
+declare ReqMap = Http::SyncGET("""{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?{{{Map.MapInfo.MapUid}}}""");
 declare JsonSuccess = PublicMap.fromjson(ReqMap.Result);
 
 UpdatePublicMap(PublicMap);
@@ -236,6 +250,10 @@ declare PlaysessionSecret = Random::String(32);
 if(PublicMap.Public && !Server_IsValidationMode) AsyncPlaysession(PlaysessionSecret, "Playing");
 
 if(Server_IsValidationMode) Layers::SendEvent("Playsession", "DisablePublish");
+
+Notification::Start(<157.5,40.>);
+
+SkinNotified = False;
 ***
 
 ***Loop***
@@ -373,6 +391,7 @@ foreach(Event, PendingEvents) {
 	}
 
 	ReplayBrowser::Event(Event);
+	Notification::Event(Event);
 }
 
 if(Server_CurrentVehicle >= 0) {
@@ -487,7 +506,7 @@ if(Discord::AsyncIsCompleted("Discord")) {
 
 if(!Time::Stamp_CreateOnce("STATUS", 10*1000)) {
 	if(Time::Stamp_Reached("STATUS")) {
-		declare Success = Service_Status::AsyncCheckStatus("STATUS");
+		declare Success = Service_Status::AsyncCheckStatus("STATUS", LocalUser);
 	}
 }
 
@@ -496,8 +515,7 @@ if(Service_Status::AsyncIsCompleted("STATUS")) {
 		declare Status = Service_Status::GetAsyncCheckStatusResult("STATUS", LocalUser);
 
 		declare ContainsThisMap = False;
-
-		foreach(Playsession, Status.Playsessions) {
+		foreach(Playsession, Status.Titles[LoadedTitle.TitleId].Playsessions) {
 			if(Playsession.Map.Uid == Map.MapInfo.MapUid) {
 				ContainsThisMap = True;
 				Layers::SendEvent("Playsession", "Count", Playsession.Users.count^"");

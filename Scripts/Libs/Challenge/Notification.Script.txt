@@ -1,0 +1,65 @@
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
+#Include "Libs/BigBang1112/Random.Script.txt" as Random
+
+#Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+
+#Struct SNotification {
+	Text Name;
+	Text Title;
+	Text ShortDescription;
+	Text Type;
+	Vec3 Color;
+}
+
+#Const C_Manialink "Media/Manialinks/Base/Notification"
+
+Void Init() {
+	Layers::Create("Notification", Manialink::FromFile(C_Manialink, True, ["Audio"], Settings::Get().Theme));
+}
+
+Void Start(Vec2 _Position) {
+	Layers::Show("Notification", True);
+	Layers::SendEvent("Notification", "Position", [_Position.X ^ " " ^ _Position.Y]);
+}
+
+Void Event(CManiaAppEvent _Event) {
+	declare Event <=> _Event;
+
+	if(Event.Type == CManiaAppEvent::EType::LayerCustomEvent) {
+		switch(Event.CustomEventType) {
+			case "": {
+				
+			}
+		}
+	}
+}
+
+Void Notify(CUser _User, SNotification _Notification) {
+	declare persistent SNotification[] P_Notifications for _User;
+	P_Notifications.addfirst(_Notification);
+	Layers::SendEvent("Notification", "Notification", _Notification.tojson());
+}
+
+Void Refresh(CUser _User, Text _Name) {
+	declare persistent SNotification[] P_Notifications for _User;
+	foreach(Notif,P_Notifications)
+		if(Notif.Name == _Name)
+			Layers::SendEvent("Notification", "Notification", Notif.tojson());
+}
+
+Boolean Exists(CUser _User, Text _Name) {
+	declare persistent SNotification[] P_Notifications for _User;
+	foreach(Notif,P_Notifications)
+		if(Notif.Name == _Name) return True;
+	return False;
+}
+
+Void Async() {
+
+}
+
+Void Loop() {
+	
+}

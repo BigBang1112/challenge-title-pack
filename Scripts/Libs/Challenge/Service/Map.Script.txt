@@ -17,7 +17,7 @@
 }
 
 Void Publish(CUser _User, SPublishParams _Params) {
-	declare Request = Http::SyncPOST("""{{{Service_Status::LastStatus(_User).Service}}}/ingame/map.php""", _Params.tojson());
+	declare Request = Http::SyncPOST("""{{{Service_Status::LastStatus(_User).Global.Service}}}/ingame/map.php""", _Params.tojson());
 }
 
 /*
@@ -117,7 +117,7 @@ Text AsyncGetResult(Text _Name) {
 }
 
 Boolean AsyncPublish(Text _Name, CUser _User, SPublishParams _Params) {
-	return Http::AsyncPOST(_Name, """{{{Service_Status::LastStatus(_User).Service}}}/ingame/map.php""", _Params.tojson());
+	return Http::AsyncPOST(_Name, """{{{Service_Status::LastStatus(_User).Global.Service}}}/ingame/map.php""", _Params.tojson());
 }
 
 Service_Status::SPublicMap GetAsyncPublishResult(Text _Name) {

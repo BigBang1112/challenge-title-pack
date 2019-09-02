@@ -65,6 +65,12 @@ Void UpdateVehicles() {
 					Quad_Img.Opacity = 0.;
 					AnimMgr.Add(Quad_Img, """<quad opacity="1"/>""", Now+I*50, 400, CAnimManager::EAnimManagerEasing::QuadOut);
 				}
+
+				declare Label_Name = (Control.GetFirstChild("LABEL_NAME") as CMlLabel);
+				if(Label_Name != Null) {
+					Label_Name.Opacity = 0.;
+					AnimMgr.Add(Label_Name, """<label opacity="1"/>""", Now+I*50, 400, CAnimManager::EAnimManagerEasing::QuadOut);
+				}
 			}
 			Frame_Skins.Show();
 		}

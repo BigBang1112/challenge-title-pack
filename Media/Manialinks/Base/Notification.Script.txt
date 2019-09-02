@@ -1,0 +1,177 @@
+#Struct SNotification {
+	Text Name;
+	Text Title;
+	Text ShortDescription;
+	Text Type;
+	Vec3 Color;
+}
+
+declare Boolean IsOpen;
+declare Integer OpenStartTime;
+declare Integer OpenEndTime;
+declare Integer PrevNotificationCount;
+declare Boolean Fully;
+
+Void Open() {
+	AnimMgr.Add((Page.GetFirstChild("FRAME_BG") as CMlFrame), "<frame pos=\"0 5\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
+	foreach(Bg, (Page.GetFirstChild("FRAME_BG") as CMlFrame).Controls) {
+		AnimMgr.Add(Bg, "<quad size=\"10 20\" pos=\"0 -5\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
+		AnimMgr.AddChain(Bg, "<quad size=\"60 20\"/>", 200, CAnimManager::EAnimManagerEasing::QuadIn);
+	}
+	IsOpen = True;
+	OpenStartTime = Now;
+	OpenEndTime = -1;
+	
+	declare persistent SNotification[] P_Notifications for LocalUser;
+
+	Page.GetFirstChild("FRAME_OLDER_NOTIFICATIONS").RelativePosition_V3.X = 0.;
+	if(Fully) AnimMgr.Add(Page.GetFirstChild("FRAME_OLDER_NOTIFICATIONS"), "<frame pos=\"0 "^(100-MathLib::Clamp(P_Notifications.count-1,0,9)*10+.1)^"\"/>", Now+400, 500, CAnimManager::EAnimManagerEasing::QuadOut);
+}
+
+Void Close() {
+	AnimMgr.Add((Page.GetFirstChild("FRAME_BG") as CMlFrame), "<frame pos=\"0 0\"/>", Now+200, 200, CAnimManager::EAnimManagerEasing::QuadIn);
+	foreach(Bg, (Page.GetFirstChild("FRAME_BG") as CMlFrame).Controls) {
+		AnimMgr.Add(Bg, "<quad size=\"10 20\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
+		AnimMgr.AddChain(Bg, "<quad size=\"10 10\"/>", 200, CAnimManager::EAnimManagerEasing::QuadIn);
+	}
+	AnimMgr.Add(Page.GetFirstChild("FRAME_OLDER_NOTIFICATIONS"), "<frame pos=\"55 100.1\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+
+	IsOpen = False;
+	OpenStartTime = -1;
+	OpenEndTime = Now;
+}
+
+Void UpdateNotifications() {
+	declare Frame_Notification = (Page.GetFirstChild("FRAME_NOTIFICATION") as CMlFrame);
+
+	declare persistent SNotification[] P_Notifications for LocalUser;
+
+	if(P_Notifications.count > 0) {
+		declare Notification = P_Notifications[0];
+		(Page.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText(TextLib::ToUpperCase(Notification.Title));
+		(Page.GetFirstChild("LABEL_SHORTDESCRIPTION") as CMlLabel).SetText(Notification.ShortDescription ^ " ");
+
+		switch(Notification.Type) {
+			case "Red": {
+				(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <1.,0.,0.>;
+			}
+			case "Yellow": {
+				(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <1.,.9,.0>;
+			}
+			case "Blue": {
+				(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <.0,.0,1.>;
+			}
+			default: {
+				(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <.0,.0,.0>;
+			}
+		}
+	}
+	else {
+		(Page.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText("");
+		(Page.GetFirstChild("LABEL_SHORTDESCRIPTION") as CMlLabel).SetText("");
+		(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <.0,.0,.0>;
+
+		Close();
+	}
+
+	declare Frame_Older_Notification = (Page.GetFirstChild("FRAME_OLDER_NOTIFICATIONS") as CMlFrame);
+
+	for(I, 0, Frame_Older_Notification.Controls.count-1) {
+		if(P_Notifications.existskey(I) && Frame_Older_Notification.Controls.existskey(I)) {
+			declare Frame_MiniNotification = (Frame_Older_Notification.Controls[I+MathLib::Max(0,Frame_Older_Notification.Controls.count-P_Notifications.count)] as CMlFrame);
+			declare Notification = P_Notifications[I];
+			Frame_MiniNotification.DataAttributeSet("id", I^"");
+			(Frame_MiniNotification.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText(TextLib::ToUpperCase(Notification.Title));
+		}
+	}
+
+	if(Fully) AnimMgr.Add(Page.GetFirstChild("FRAME_OLDER_NOTIFICATIONS"), "<frame pos=\"0 "^(100-MathLib::Clamp(P_Notifications.count-1,0,9)*10+.1)^"\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+}
+
+***Start***
+***
+foreach(Bg, (Page.GetFirstChild("FRAME_BG") as CMlFrame).Controls) {
+	declare Quad = (Bg as CMlQuad);
+	Quad.Size.X = 10.;
+	Quad.Size.Y = 10.;
+	Quad.RelativePosition_V3.Y = -5.;
+}
+
+IsOpen = False;
+OpenStartTime = -1;
+OpenEndTime = -1;
+
+declare NotificationTime = -1;
+***
+
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseClick: {
+			if(Event.ControlId == "QUAD_INFO") {
+				if(IsOpen) {
+					Close();
+				}
+				else {
+					Fully = True;
+					Open();
+				}
+
+				NotificationTime = -1;
+			}
+			if(Event.ControlId == "QUAD_CLOSE") {
+				declare persistent SNotification[] P_Notifications for LocalUser;
+				if(Event.Control.Parent.Parent.Parent.ControlId == "FRAME_FIRST_NOTIFICATION") {
+					if(P_Notifications.count > 0) P_Notifications.removekey(0);
+					NotificationTime = -1;
+				}
+				else {
+					declare Id = TextLib::ToInteger(Event.Control.Parent.Parent.Parent.DataAttributeGet("id"));
+					if(P_Notifications.count > Id) P_Notifications.removekey(Id);
+				}
+				UpdateNotifications();
+			}
+		}
+		case CMlScriptEvent::Type::PluginCustomEvent: {
+			switch(Event.CustomEventType) {
+				case "Show": {
+					
+				}
+				case "Notification": {
+					NotificationTime = Now;
+
+					Fully = False;
+					UpdateNotifications();
+
+					Open();
+				}
+				case "Position": {
+					declare Location = TextLib::Split(" ", Event.CustomEventData[0]);
+					AnimMgr.Add(Page.GetFirstChild("FRAME_NOTIFICATION"), "<frame pos=\""^Event.CustomEventData[0]^"\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+				}
+			}
+		}
+	}
+}
+
+if(OpenStartTime != -1) {
+	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowRelativePosition.Y = AnimLib::EaseOutQuad(Now - OpenStartTime, -5., 5., 200);
+	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseOutQuad(Now - OpenStartTime, 10., 10., 200);
+
+	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowRelativePosition.X = AnimLib::EaseInQuad(Now - OpenStartTime-200, -5., -25., 200);
+	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowSize.X = AnimLib::EaseInQuad(Now - OpenStartTime-200, 10., 50., 200);
+}
+if(OpenEndTime != -1) {
+	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - OpenEndTime, -30., 25., 200);
+	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowSize.X = AnimLib::EaseOutQuad(Now - OpenEndTime, 60., -50., 200);
+
+	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowRelativePosition.Y = AnimLib::EaseInQuad(Now - OpenEndTime-200, 0., -5., 200);
+	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseInQuad(Now - OpenEndTime-200, 20., -10., 200);
+}
+
+if(NotificationTime != -1 && Now - NotificationTime > 5*1000) {
+	NotificationTime = -1;
+	Close();
+}
+***

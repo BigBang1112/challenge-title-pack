@@ -45,7 +45,7 @@ Void Event(CManiaAppEvent _Event) {
 		if(Event.CustomEventLayer == Layers::Get("Playsessions"))
 		switch(Event.CustomEventType) {
 			case "Select": {
-				SelectedPlaysession = Service_Status::LastStatus(LocalUser).Playsessions[TextLib::ToInteger(Event.CustomEventData[0])];
+				SelectedPlaysession = Service_Status::LastStatus(LocalUser).Titles[LoadedTitle.TitleId].Playsessions[TextLib::ToInteger(Event.CustomEventData[0])];
 				Task::Async_DataFileMgr("PLAYSESSION_MAP",DataFileMgr.Map_GetGameList("", True));
 			}
 		}
@@ -72,7 +72,7 @@ Void Async() {
 Void Loop() {
 	if(!Time::Stamp_CreateOnce("PLAYSESSION_REFRESH", 1*1000)) {
 		if(Time::Stamp_Reached("PLAYSESSION_REFRESH")) {
-			declare Playsessions = Service_Status::LastStatus(LocalUser).Playsessions;
+			declare Playsessions = Service_Status::LastStatus(LocalUser).Titles[LoadedTitle.TitleId].Playsessions;
 			declare SElement[] Elements;
 			foreach(Playsession,Playsessions) {
 				declare SElement Element;

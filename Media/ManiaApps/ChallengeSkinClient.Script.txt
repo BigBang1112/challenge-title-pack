@@ -14,6 +14,9 @@
 #Include "Libs/BigBang1112/Time.Script.txt" as Time
 
 #Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
+#Include "Libs/Challenge/Notification.Script.txt" as Notification
+#Include "Libs/Challenge/NotificationPresets.Script.txt" as NotificationPresets
 
 #Const C_Manialink_SkinBrowser "Media/Manialinks/Base/SkinBrowser"
 
@@ -89,15 +92,33 @@ VehicleCount = Server_Vehicles.count;
 declare netwrite Integer Client_VehicleIndex for UI;
 Client_VehicleIndex = VehicleIndex;
 
-declare persistent Text[Text] P_Skin for LocalUser;
+Notification::Init();
+Notification::Start(<150.,40.>);
 ***
 
 ***Loop***
 ***
+foreach(Event, PendingEvents) {
+	Notification::Event(Event);
+}
+
 if(VehicleIndex != OldVehicleIndex) {
 	Client_VehicleIndex = VehicleIndex;
 	SendCustomEvent("VehicleIndexChanged", [VehicleIndex^""]);
 	OldVehicleIndex = VehicleIndex;
+}
+
+if(!Time::Stamp_CreateOnce("STATUS", 10*1000)) {
+	if(Time::Stamp_Reached("STATUS")) {
+		declare Success = Service_Status::AsyncCheckStatus("STATUS", LocalUser);
+	}
+}
+
+if(Service_Status::AsyncIsCompleted("STATUS")) {
+	if(Service_Status::AsyncIsSuccessful("STATUS")) {
+		declare Status = Service_Status::GetAsyncCheckStatusResult("STATUS", LocalUser);
+	}
+	Service_Status::AsyncDestroy("STATUS");
 }
 ***
 

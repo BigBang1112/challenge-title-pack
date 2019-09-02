@@ -20,6 +20,8 @@
 #Include "Libs/Challenge/Menu/AuthBeta.Script.txt" as Menu_AuthBeta
 #Include "Libs/Challenge/Menu/Replays.Script.txt" as Menu_Replays
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
+#Include "Libs/Challenge/Notification.Script.txt" as Notification
+#Include "Libs/Challenge/NotificationPresets.Script.txt" as NotificationPresets
 
 #Include "Libs/Challenge/Devmode.Script.txt" as Devmode
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
@@ -38,7 +40,7 @@ main() {
 		Dictionary::SetTranslationLanguage(Settings::Get().Language);
 		
 		declare Status = Service_Status::CheckStatus(LocalUser);
-		while(!Status.Running) {
+		while(!Status.Global.Running) {
 			sleep(10000);
 			Status = Service_Status::CheckStatus(LocalUser);
 		}
@@ -50,7 +52,9 @@ main() {
 		Menu_Playsessions::Init();
 		Menu_News::Init();
 		Menu_Replays::Init();
+		Notification::Init();
 		
+		Notification::Start(<150.,55.>);
 		Auth::Start();
 		
 		Menu_AuthBeta::Start();
@@ -67,19 +71,27 @@ main() {
 		}
 		Menu_AuthBeta::End();
 		
-		while(!(Status.InsiderAccess || Menu_AuthBeta::GetAccess().Organizer || Menu_AuthBeta::GetAccess().Owner)) {
+		while(!(Status.Global.InsiderAccess || Menu_AuthBeta::GetAccess().Organizer || Menu_AuthBeta::GetAccess().Owner)) {
 			log("Insiders don't have access to the title pack at the moment.");
 			sleep(10000);
 			Status = Service_Status::CheckStatus(LocalUser);
 		}
 		
 		Menu_Main::Start();
+		yield;
 		Menu_Quickplay::Start();
+		yield;
 		Menu_Top::Start();
+		yield;
 		Menu_Editor::Start();
+		yield;
 		Menu_Playsessions::Start();
+		yield;
 		Menu_News::Start();
+		yield;
 		Menu_Replays::Start();
+		
+		NotificationPresets::Notify_Campaign(LocalUser);
 		
 		if(S_Devmode) {
 			Devmode::Start();
@@ -97,6 +109,7 @@ main() {
 				Menu_Playsessions::Event(Event);
 				Menu_News::Event(Event);
 				Menu_Replays::Event(Event);
+				Notification::Event(Event);
 			}
 			
 			Menu_Quickplay::Async();
@@ -106,6 +119,7 @@ main() {
 			Menu_Playsessions::Async();
 			Menu_News::Async();
 			Menu_Replays::Async();
+			Notification::Async();
 	
 			Auth::Loop();
 			Menu_Quickplay::Loop();
@@ -115,10 +129,11 @@ main() {
 			Menu_Playsessions::Loop();
 			Menu_News::Loop();
 			Menu_Replays::Loop();
+			Notification::Loop();
 			
 			if(!Time::Stamp_CreateOnce("STATUS", 10*1000)) {
 				if(Time::Stamp_Reached("STATUS")) {
-					declare Success = Service_Status::AsyncCheckStatus("STATUS");
+					declare Success = Service_Status::AsyncCheckStatus("STATUS", LocalUser);
 				}
 			}
 			

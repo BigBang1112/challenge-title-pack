@@ -37,6 +37,7 @@ Void Event(CManiaAppEvent _Event) {
 				Layers::Show("Playsessions", True);
 				Layers::Show("News", True);
 				Layers::Hide("Editor", True);
+				Layers::SendEvent("Notification", "Position", ["150 55"]);
 			}
 		}
 	}
