@@ -2,23 +2,23 @@
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
 Void Notify(CUser _User, Notification::SNotification _Notification) {
-	if(Service_Status::LastStatus(_User).User.count > 0)
-	if(!Service_Status::LastStatus(_User).User[0].HasCampaign) {
-		if(Notification::Exists(_User, _Notification.Name)) {
-			Notification::Refresh(_User, _Notification.Name);
-		}
-		else {
-			Notification::Notify(_User, _Notification);
-		}
+	if(Notification::Exists(_User, _Notification.Name)) {
+		Notification::Refresh(_User, _Notification.Name);
+	}
+	else {
+		Notification::Notify(_User, _Notification);
 	}
 }
 
 Void Notify_Campaign(CUser _User) {
-	declare Notification::SNotification Notification;
-	Notification.Name = "TRY_CAMPAIGN";
-	Notification.Title = "Wanna try the campaign?";
-	Notification.ShortDescription = "The largest campaign ever packed with Nadeo Reverse, Checkpointless, and Reverse Checkpointless! Click here.";
-	Notify(_User, Notification);
+	if(Service_Status::LastStatus(_User).User.count > 0)
+	if(!Service_Status::LastStatus(_User).User[0].HasCampaign) {
+		declare Notification::SNotification Notification;
+		Notification.Name = "TRY_CAMPAIGN";
+		Notification.Title = "Wanna try the campaign?";
+		Notification.ShortDescription = "The largest campaign ever packed with Nadeo Reverse, Checkpointless, and Reverse Checkpointless! Click here.";
+		Notify(_User, Notification);
+	}
 }
 
 Void Notify_Skins(CUser _User) {
