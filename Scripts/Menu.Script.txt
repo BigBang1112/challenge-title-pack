@@ -46,12 +46,19 @@ main() {
 		}
 		
 		Menu_Main::Init();
+		yield;
 		Menu_Quickplay::Init();
+		yield;
 		Menu_Top::Init();
+		yield;
 		Menu_Editor::Init();
+		yield;
 		Menu_Playsessions::Init();
+		yield;
 		Menu_News::Init();
+		yield;
 		Menu_Replays::Init();
+		yield;
 		Notification::Init();
 		
 		Notification::Start(<150.,55.>);
@@ -71,6 +78,7 @@ main() {
 		}
 		Menu_AuthBeta::End();
 		
+		Status = Service_Status::CheckStatus(LocalUser);
 		while(!(Status.Global.InsiderAccess || Menu_AuthBeta::GetAccess().Organizer || Menu_AuthBeta::GetAccess().Owner)) {
 			log("Insiders don't have access to the title pack at the moment.");
 			sleep(10000);
