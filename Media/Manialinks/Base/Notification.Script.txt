@@ -92,7 +92,8 @@ Void UpdateNotifications() {
 		(Page.GetFirstChild("LABEL_SHORTDESCRIPTION") as CMlLabel).SetText("");
 		(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <.0,.0,.0>;
 
-		Close();
+		if(IsOpen)
+			Close();
 	}
 
 	declare Frame_Older_Notification = (Page.GetFirstChild("FRAME_OLDER_NOTIFICATIONS") as CMlFrame);
