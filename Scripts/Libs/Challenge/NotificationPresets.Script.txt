@@ -16,7 +16,7 @@ Void Notify_Campaign(CUser _User) {
 		declare Notification::SNotification Notification;
 		Notification.Name = "TRY_CAMPAIGN";
 		Notification.Title = "Wanna try the campaign?";
-		Notification.ShortDescription = "The largest campaign ever packed with Nadeo Reverse, Checkpointless, and Reverse Checkpointless! Click here.";
+		Notification.Content = "The largest campaign ever packed with Nadeo Reverse, Checkpointless, and Reverse Checkpointless! Click here.";
 		Notify(_User, Notification);
 	}
 }
@@ -25,6 +25,6 @@ Void Notify_Skins(CUser _User) {
 	declare Notification::SNotification Notification;
 	Notification.Name = "SKINS";
 	Notification.Title = "What about skins?";
-	Notification.ShortDescription = "New skin selector will allow you to change skin for every car. Click here to redirect instantly.";
+	Notification.Content = "New skin selector will allow you to change skin for every car. Click here to redirect instantly.";
 	Notify(_User, Notification);
 }

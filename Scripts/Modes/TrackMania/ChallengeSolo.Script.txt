@@ -7,7 +7,6 @@
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
 #Include "Libs/Challenge/Ingame/Gamemodes/Stunt.Script.txt" as Stunt
-#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
 #Const CompatibleMapTypes  "Challenge"
 #Const Version             "1.0.0"

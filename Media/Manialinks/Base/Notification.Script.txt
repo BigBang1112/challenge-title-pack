@@ -1,9 +1,9 @@
 #Struct SNotification {
 	Text Name;
 	Text Title;
-	Text ShortDescription;
+	Text Content;
 	Text Type;
-	Vec3 Color;
+	Text Date;
 }
 
 declare Boolean IsOpen;
@@ -22,10 +22,10 @@ Void Open() {
 	OpenStartTime = Now;
 	OpenEndTime = -1;
 	
-	declare persistent SNotification[] P_Notifications for LocalUser;
+	declare SNotification[] TempNotifications for LocalUser;
 
 	Page.GetFirstChild("FRAME_OLDER_NOTIFICATIONS").RelativePosition_V3.X = 0.;
-	if(Fully) AnimMgr.Add(Page.GetFirstChild("FRAME_OLDER_NOTIFICATIONS"), "<frame pos=\"0 "^(100-MathLib::Clamp(P_Notifications.count-1,0,9)*10+.1)^"\"/>", Now+400, 500, CAnimManager::EAnimManagerEasing::QuadOut);
+	if(Fully) AnimMgr.Add(Page.GetFirstChild("FRAME_OLDER_NOTIFICATIONS"), "<frame pos=\"0 "^(100-MathLib::Clamp(TempNotifications.count-1,0,9)*10+.1)^"\"/>", Now+400, 500, CAnimManager::EAnimManagerEasing::QuadOut);
 }
 
 Void Close() {
@@ -44,25 +44,46 @@ Void Close() {
 Void UpdateNotifications() {
 	declare Frame_Notification = (Page.GetFirstChild("FRAME_NOTIFICATION") as CMlFrame);
 
-	declare persistent SNotification[] P_Notifications for LocalUser;
+	declare SNotification[] TempNotifications for LocalUser;
 
-	if(P_Notifications.count > 0) {
-		declare Notification = P_Notifications[0];
-		(Page.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText(TextLib::ToUpperCase(Notification.Title));
-		(Page.GetFirstChild("LABEL_SHORTDESCRIPTION") as CMlLabel).SetText(Notification.ShortDescription ^ " ");
+	if(TempNotifications.count > 0) {
+		declare Notification = TempNotifications[0];
 
 		switch(Notification.Type) {
-			case "Red": {
+			case "Ban": {
 				(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <1.,0.,0.>;
+				(Page.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText("{{{{YOU_HAVE_BEEN_BANNED}}}}");
+				(Page.GetFirstChild("LABEL_SHORTDESCRIPTION") as CMlLabel).SetText("{{{{REASON}}}}: "^Notification.Content ^ " ({{{{kicking_in_5_seconds}}}}) ");
 			}
-			case "Yellow": {
+			case "CriticalUpdate": {
+				(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <1.,0.,0.>;
+				(Page.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText("{{{{CRITICAL_UPDATE}}}}");
+				(Page.GetFirstChild("LABEL_SHORTDESCRIPTION") as CMlLabel).SetText("{{{{ACCEPT_CRITICAL_UPDATE}}}} ({{{{kicking_in_5_seconds}}}}) ");
+			}
+			case "Update": {
 				(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <1.,.9,.0>;
+				(Page.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText("{{{{NEW_UPDATE}}}}");
+				(Page.GetFirstChild("LABEL_SHORTDESCRIPTION") as CMlLabel).SetText("$o"^Notification.Title^":$z "^Notification.Content ^ " ");
 			}
-			case "Blue": {
+			case "Shutdown": {
+				(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <1.,.6,.0>;
+				(Page.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText("{{{{SERVICE_SHUTDOWN}}}}");
+				(Page.GetFirstChild("LABEL_SHORTDESCRIPTION") as CMlLabel).SetText(Notification.Content ^ " ");
+			}
+			case "Moderator": {
+				(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <0.,.8,.0>;
+				(Page.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText("MODERATOR {{{{SAYS_TO_YOU}}}}...");
+				(Page.GetFirstChild("LABEL_SHORTDESCRIPTION") as CMlLabel).SetText("\""^Notification.Content ^ "\" ");
+			}
+			case "Achievement": {
 				(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <.0,.0,1.>;
+				(Page.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText(TextLib::ToUpperCase(Notification.Title));
+				(Page.GetFirstChild("LABEL_SHORTDESCRIPTION") as CMlLabel).SetText(Notification.Content ^ " ");
 			}
 			default: {
 				(Page.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <.0,.0,.0>;
+				(Page.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText(TextLib::ToUpperCase(Notification.Title));
+				(Page.GetFirstChild("LABEL_SHORTDESCRIPTION") as CMlLabel).SetText(Notification.Content ^ " ");
 			}
 		}
 	}
@@ -77,15 +98,45 @@ Void UpdateNotifications() {
 	declare Frame_Older_Notification = (Page.GetFirstChild("FRAME_OLDER_NOTIFICATIONS") as CMlFrame);
 
 	for(I, 0, Frame_Older_Notification.Controls.count-1) {
-		if(P_Notifications.existskey(I) && Frame_Older_Notification.Controls.existskey(I)) {
-			declare Frame_MiniNotification = (Frame_Older_Notification.Controls[I+MathLib::Max(0,Frame_Older_Notification.Controls.count-P_Notifications.count)] as CMlFrame);
-			declare Notification = P_Notifications[I];
+		if(TempNotifications.existskey(I) && Frame_Older_Notification.Controls.existskey(I)) {
+			declare Frame_MiniNotification = (Frame_Older_Notification.Controls[I+MathLib::Max(0,Frame_Older_Notification.Controls.count-TempNotifications.count)] as CMlFrame);
+			declare Notification = TempNotifications[I];
 			Frame_MiniNotification.DataAttributeSet("id", I^"");
-			(Frame_MiniNotification.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText(TextLib::ToUpperCase(Notification.Title));
+			
+			switch(Notification.Type) {
+				case "Ban": {
+					(Frame_MiniNotification.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <1.,0.,0.>;
+					(Frame_MiniNotification.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText("{{{{YOU_HAVE_BEEN_BANNED}}}}");
+				}
+				case "CriticalUpdate": {
+					(Frame_MiniNotification.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <1.,0.,0.>;
+					(Frame_MiniNotification.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText("{{{{CRITICAL_UPDATE}}}}");
+				}
+				case "Update": {
+					(Frame_MiniNotification.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <1.,.9,.0>;
+					(Frame_MiniNotification.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText("{{{{NEW_UPDATE}}}}");
+				}
+				case "Shutdown": {
+					(Frame_MiniNotification.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <1.,.6,.0>;
+					(Frame_MiniNotification.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText("{{{{SERVICE_SHUTDOWN}}}}");
+				}
+				case "Moderator": {
+					(Frame_MiniNotification.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <0.,.8,.0>;
+					(Frame_MiniNotification.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText("MODERATOR {{{{SAYS_TO_YOU}}}}...");
+				}
+				case "Achievement": {
+					(Frame_MiniNotification.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <.0,.0,1.>;
+					(Frame_MiniNotification.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText(TextLib::ToUpperCase(Notification.Title));
+				}
+				default: {
+					(Frame_MiniNotification.GetFirstChild("QUAD_COLOR") as CMlQuad).Colorize = <.0,.0,.0>;
+					(Frame_MiniNotification.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText(TextLib::ToUpperCase(Notification.Title));
+				}
+			}
 		}
 	}
 
-	if(Fully) AnimMgr.Add(Page.GetFirstChild("FRAME_OLDER_NOTIFICATIONS"), "<frame pos=\"0 "^(100-MathLib::Clamp(P_Notifications.count-1,0,9)*10+.1)^"\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+	if(Fully) AnimMgr.Add(Page.GetFirstChild("FRAME_OLDER_NOTIFICATIONS"), "<frame pos=\"0 "^(100-MathLib::Clamp(TempNotifications.count-1,0,9)*10+.1)^"\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 }
 
 ***Start***
@@ -102,6 +153,8 @@ OpenStartTime = -1;
 OpenEndTime = -1;
 
 declare NotificationTime = -1;
+
+UpdateNotifications();
 ***
 
 ***Loop***
@@ -121,14 +174,14 @@ foreach(Event,PendingEvents) {
 				NotificationTime = -1;
 			}
 			if(Event.ControlId == "QUAD_CLOSE") {
-				declare persistent SNotification[] P_Notifications for LocalUser;
+				declare SNotification[] TempNotifications for LocalUser;
 				if(Event.Control.Parent.Parent.Parent.ControlId == "FRAME_FIRST_NOTIFICATION") {
-					if(P_Notifications.count > 0) P_Notifications.removekey(0);
+					if(TempNotifications.count > 0) TempNotifications.removekey(0);
 					NotificationTime = -1;
 				}
 				else {
 					declare Id = TextLib::ToInteger(Event.Control.Parent.Parent.Parent.DataAttributeGet("id"));
-					if(P_Notifications.count > Id) P_Notifications.removekey(Id);
+					if(TempNotifications.count > Id) TempNotifications.removekey(Id);
 				}
 				UpdateNotifications();
 			}
@@ -137,6 +190,9 @@ foreach(Event,PendingEvents) {
 			switch(Event.CustomEventType) {
 				case "Show": {
 					
+				}
+				case "UpdateNotifications": {
+					UpdateNotifications();
 				}
 				case "Notification": {
 					NotificationTime = Now;
@@ -155,14 +211,14 @@ foreach(Event,PendingEvents) {
 	}
 }
 
-if(OpenStartTime != -1) {
+if(OpenStartTime != -1 && OpenEndTime == -1) {
 	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowRelativePosition.Y = AnimLib::EaseOutQuad(Now - OpenStartTime, -5., 5., 200);
 	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseOutQuad(Now - OpenStartTime, 10., 10., 200);
 
 	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowRelativePosition.X = AnimLib::EaseInQuad(Now - OpenStartTime-200, -5., -25., 200);
 	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowSize.X = AnimLib::EaseInQuad(Now - OpenStartTime-200, 10., 50., 200);
 }
-if(OpenEndTime != -1) {
+if(OpenEndTime != -1 && OpenStartTime == -1) {
 	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - OpenEndTime, -30., 25., 200);
 	(Page.GetFirstChild("FRAME_INNER_NOTIFICATION") as CMlFrame).ClipWindowSize.X = AnimLib::EaseOutQuad(Now - OpenEndTime, 60., -50., 200);
 

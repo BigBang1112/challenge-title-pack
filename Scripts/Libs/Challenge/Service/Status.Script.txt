@@ -1,5 +1,7 @@
 #Include "Libs/BigBang1112/Http.Script.txt" as Http
 
+#Include "Libs/Challenge/Notification.Script.txt" as Notification
+
 #Struct SPublicMap {
 	Boolean Public;
 	Boolean IsNadeoMap;
@@ -11,19 +13,11 @@
 	Text OriginalAuthor;
 }
 
-#Struct SNotification {
-	Text Name;
-	Text Title;
-	Text Content;
-	Text Type;
-	Text Date;
-}
-
 #Struct SUserStatus {
 	Boolean HasSandbox;
 	Boolean HasCampaign;
 	Boolean HasMaker;
-	SNotification[] Notifications;
+	Notification::SNotification[] Notifications;
 }
 
 #Struct SMessage {
@@ -70,7 +64,15 @@
 	Text Token;
 }
 
-#Const C_Host "http://server.bigbang1112.eu/challenge"
+#Const C_Host "https://challenge.bigbang1112.eu"
+
+Void ProcessNotifications(CUser _User, SStatus _Status) {
+	if(_Status.User.count > 0)
+	foreach(Notification,_Status.User[0].Notifications) {
+		Notification::Notify(_User,Notification);
+	}
+	Notification::Update();
+}
 
 SStatusParams GetStatusParams(CUser _User) {
 	declare SStatusParams Params;
@@ -84,9 +86,9 @@ SStatusParams GetStatusParams(CUser _User) {
 
 SStatus CheckStatus(CUser _User) {
 	declare Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User).tojson());
-	log(Request.Result);
 	declare SStatus Status;
 	declare JsonSuccess = Status.fromjson(Request.Result);
+	ProcessNotifications(_User, Status);
 	
 	declare SStatus[] States for _User;
 	States.add(Status);
@@ -206,7 +208,7 @@ SStatus GetAsyncCheckStatusResult(Text _Name, CUser _User) {
 	if(AsyncIsCompleted(_Name, True)) {
 		if(AsyncIsSuccessful(_Name)) {
 			declare JsonSuccess = Status.fromjson(AsyncGetResult(_Name));
-			log(Status);
+			ProcessNotifications(_User, Status);
 			declare SStatus[] States for _User;
 			States.add(Status);
 		}

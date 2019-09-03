@@ -8,9 +8,9 @@
 #Struct SNotification {
 	Text Name;
 	Text Title;
-	Text ShortDescription;
+	Text Content;
 	Text Type;
-	Vec3 Color;
+	Text Date;
 }
 
 #Const C_Manialink "Media/Manialinks/Base/Notification"
@@ -37,23 +37,28 @@ Void Event(CManiaAppEvent _Event) {
 }
 
 Void Notify(CUser _User, SNotification _Notification) {
-	declare persistent SNotification[] P_Notifications for _User;
-	P_Notifications.addfirst(_Notification);
+	declare SNotification[] TempNotifications for _User;
+	TempNotifications.addfirst(_Notification);
 	Layers::SendEvent("Notification", "Notification", _Notification.tojson());
 }
 
 Void Refresh(CUser _User, Text _Name) {
-	declare persistent SNotification[] P_Notifications for _User;
-	foreach(Notif,P_Notifications)
+	declare SNotification[] TempNotifications for _User;
+	foreach(Notif,TempNotifications)
 		if(Notif.Name == _Name)
 			Layers::SendEvent("Notification", "Notification", Notif.tojson());
 }
 
 Boolean Exists(CUser _User, Text _Name) {
-	declare persistent SNotification[] P_Notifications for _User;
-	foreach(Notif,P_Notifications)
+	declare SNotification[] TempNotifications for _User;
+	foreach(Notif,TempNotifications)
 		if(Notif.Name == _Name) return True;
 	return False;
+}
+
+Void Update() {
+	if(Layers::Exists("Notification"))
+		Layers::SendEvent("Notification", "UpdateNotifications");
 }
 
 Void Async() {
