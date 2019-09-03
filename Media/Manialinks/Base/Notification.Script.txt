@@ -193,6 +193,7 @@ foreach(Event,PendingEvents) {
 					
 				}
 				case "UpdateNotifications": {
+					Fully = False;
 					UpdateNotifications();
 				}
 				case "Notification": {
