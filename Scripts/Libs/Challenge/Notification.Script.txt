@@ -44,9 +44,14 @@ Void Notify(CUser _User, SNotification _Notification) {
 
 Void Refresh(CUser _User, Text _Name) {
 	declare SNotification[] TempNotifications for _User;
-	foreach(Notif,TempNotifications)
-		if(Notif.Name == _Name)
+	for(I, 0, TempNotifications.count-1) {
+		declare Notif = TempNotifications[I];
+		if(Notif.Name == _Name) {
+			declare Removed = TempNotifications.removekey(I);
+			TempNotifications.addfirst(Notif);
 			Layers::SendEvent("Notification", "Notification", Notif.tojson());
+		}
+	}
 }
 
 Boolean Exists(CUser _User, Text _Name) {
