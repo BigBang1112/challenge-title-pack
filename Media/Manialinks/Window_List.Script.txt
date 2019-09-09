@@ -331,6 +331,11 @@ foreach(Event,PendingEvents) {
 					End = Now;
 					AnimMgr.Add(Frame_Window_List, """<frame pos="{{{Window_AnimationOut.X}}} {{{Window_AnimationOut.Y+Window_Size.Y/2}}}"/>""", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 				}
+				case "InnerClip": {
+					foreach(Frame,(Page.GetFirstChild("FRAME_LIST_INNER") as CMlFrame).Controls) {
+						((Frame as CMlFrame).GetFirstChild("FRAME_LABEL_BUTTON") as CMlFrame).ClipWindowActive = (Event.CustomEventData[0] == "True");
+					}
+				}
 			}
 		}
 	}
