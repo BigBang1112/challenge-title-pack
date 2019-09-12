@@ -150,7 +150,7 @@ else {
 	if(AverageDifficultyValue == -1)
 		(Page.GetFirstChild("GAUGE_DIFFICULTY") as CMlGauge).Ratio = DifficultyValue;
 	else if(AverageDifficultyCount > 0)
-		(Page.GetFirstChild("GAUGE_DIFFICULTY") as CMlGauge).Ratio = AverageDifficultyValue+(DifficultyValue/AverageDifficultyCount);
+		(Page.GetFirstChild("GAUGE_DIFFICULTY") as CMlGauge).Ratio = AverageDifficultyValue+(DifficultyValue-AverageDifficultyValue)/AverageDifficultyCount;
 	else
 		(Page.GetFirstChild("GAUGE_DIFFICULTY") as CMlGauge).Ratio = 0.;
 }
@@ -165,7 +165,7 @@ else {
 	if(AverageQualityValue == -1)
 		(Page.GetFirstChild("GAUGE_QUALITY") as CMlGauge).Ratio = QualityValue;
 	else if(AverageQualityCount > 0)
-		(Page.GetFirstChild("GAUGE_QUALITY") as CMlGauge).Ratio = AverageQualityValue+(QualityValue/AverageQualityCount);
+		(Page.GetFirstChild("GAUGE_QUALITY") as CMlGauge).Ratio = AverageQualityValue+(QualityValue-AverageQualityValue)/AverageQualityCount;
 	else
 		(Page.GetFirstChild("GAUGE_QUALITY") as CMlGauge).Ratio = 0.;
 }
