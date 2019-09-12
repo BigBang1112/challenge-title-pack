@@ -213,7 +213,7 @@ Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
 								Server_EndRace = False;
 								Server_Outro = True;
 								
-								_Event.UI.UISequence = CUIConfig::EUISequence::UIInteraction;
+								_Event.UI.UISequence = CUIConfig::EUISequence::EndRound;
 							}
 						}
 						case "Replay": {

@@ -1,0 +1,45 @@
+<frame z-index="10">
+	<quad pos="0 0" z-index="-1" size="320 180" halign="center" valign="center" style="Bgs1" substyle="BgEmpty" hidden="1" scriptevents="1" id="QUAD_BLUR"/>
+	<frame id="FRAME_CENTERED">
+		<label pos="0 25" z-index="0" size="100 10" text="RATE THIS COMBINATION" halign="center" valign="center" textfont="Oswald" textsize="6" textemboss="1"/>
+		<label pos="0 19.5" z-index="0" size="140 10" text="(by spamming clearly false ratings, you're in a risk of a rate ban)" halign="center" valign="center" textfont="BiryaniDemiBold" textsize="1" textemboss="1"/>
+		<frame pos="-10 -25" class="BUTTON">
+			<quad z-index="0" size="50 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_BUTTON_APPLY" class="opacity" pos="0 0" valign="center"/>
+			<label z-index="1" size="50 10" text="{{{{APPLY}}}}" valign="center2" textfont="RajdhaniMono" halign="center" pos="0 -0.3" textsize="3"/>
+		</frame>
+		<frame pos="25 -25" class="BUTTON">
+			<quad z-index="0" size="10 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="600" id="QUAD_BUTTON_EXIT" class="opacity" pos="0 0" valign="center"/>
+			<label z-index="1" size="10 10" text="" valign="center2" textfont="RajdhaniMono" halign="center" pos="0 -0.8" textsize="3"/>
+		</frame>
+	</frame>
+	<frame id="FRAME_RATING">
+		<frame pos="0 8.5">
+			<quad pos="0 0" halign="center" z-index="-1" size="100 15" style="Bgs1" substyle="BgCardList" valign="center"/>
+			<quad pos="0 0" halign="center" z-index="-1" size="100 15" style="Bgs1" substyle="BgGradV" valign="center"/>
+			<frame pos="0 3" z-index="1" id="FRAME_DIFFICULTY_INNER">
+				<quad z-index="0" size="95 6" halign="center" valign="center" style="Bgs1" substyle="BgCardList" scriptevents="1" id="QUAD_BOX"/>
+				<label z-index="1" size="40 5" text="{{{{CLICK_TO_RATE}}}}" textfont="RajdhaniMono" textsize="1.5" halign="center" valign="center" opacity=".75" pos="0 .3" id="LABEL_RATENAME"/>
+				<frame z-index="2" pos="-45 0" id="FRAME_DRAGGABLE" hidden="1">
+					<quad z-index="0" size="4 6" halign="center" valign="center" style="Bgs1" substyle="BgMetalBar"/>
+					<quad z-index="1" size="4 6" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" opacity=".5" id="QUAD_DRAGGABLE"/>
+				</frame>
+			</frame>
+			<label pos="45 -5.5" z-index="0" size="40 5" text="{{{{DIFFICULTY}}}}" textfont="RajdhaniMono" halign="right" textsize="2" valign="bottom"/>
+			<gauge pos="-47.5 -3.5" z-index="0" size="50 9" valign="center" drawbg="0" ratio=".5" id="GAUGE_DIFFICULTY"/>
+		</frame>
+		<frame pos="0 -8.5">
+			<quad pos="0 0" halign="center" z-index="-1" size="100 15" style="Bgs1" substyle="BgCardList" valign="center"/>
+			<quad pos="0 0" halign="center" z-index="-1" size="100 15" style="Bgs1" substyle="BgGradV" valign="center"/>
+			<frame pos="0 3" z-index="1" id="FRAME_QUALITY_INNER">
+				<quad z-index="0" size="95 6" halign="center" valign="center" style="Bgs1" substyle="BgCardList" scriptevents="1" id="QUAD_BOX"/>
+				<label z-index="1" size="40 5" text="{{{{CLICK_TO_RATE}}}}" textfont="RajdhaniMono" textsize="1.5" halign="center" valign="center" opacity=".75" pos="0 .3" id="LABEL_RATENAME"/>
+				<frame z-index="2" pos="-45 0" id="FRAME_DRAGGABLE" hidden="1">
+					<quad z-index="0" size="4 6" halign="center" valign="center" style="Bgs1" substyle="BgMetalBar"/>
+					<quad z-index="1" size="4 6" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" opacity=".5" id="QUAD_DRAGGABLE"/>
+				</frame>
+			</frame>
+			<label pos="45 -5.5" z-index="0" size="40 5" text="{{{{QUALITY}}}}" textfont="RajdhaniMono" halign="right" textsize="2" valign="bottom"/>
+			<gauge pos="-47.5 -3.5" z-index="0" size="50 9" valign="center" drawbg="0" ratio=".5" id="GAUGE_QUALITY"/>
+		</frame>
+	</frame>
+</frame>

@@ -19,6 +19,7 @@
 #Include "Libs/Challenge/ReplayBrowser.Script.txt" as ReplayBrowser
 #Include "Libs/Challenge/Notification.Script.txt" as Notification
 #Include "Libs/Challenge/NotificationPresets.Script.txt" as NotificationPresets
+#Include "Libs/Challenge/Ingame/Rating.Script.txt" as Rating
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
 #Include "Libs/Challenge/Ingame/Gamemodes/Stunt.Script.txt" as Stunt
@@ -126,6 +127,41 @@ Text TimeToFileNameSupportedText(Integer _Time) {
 	return TextLib::Replace(TextLib::Replace(TimeToTextWithMilli(_Time), ":", "'"), ".", "''");
 }
 
+Void ApplyRating() {
+	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+	declare netread Integer Server_CurrentVehicle for UI;
+
+	declare Real DifficultyValue for Layers::Page("Rating");
+	declare Real QualityValue for Layers::Page("Rating");
+	declare Text CHALLENGE_TOKEN for LocalUser;
+
+	declare Rating::SRateParams Params;
+	Params.UserToken = CHALLENGE_TOKEN;
+	Params.MapUid = Map.MapInfo.MapUid;
+	Params.Car = Server_Vehicles[Server_CurrentVehicle].Name;
+	Params.Difficulty = DifficultyValue;
+	Params.Quality = QualityValue;
+
+	declare Success = Http::AsyncPOST("RATE", Service_Status::LastStatus(LocalUser).Global.Service^"/ingame/rate.php", Params.tojson());
+}
+
+Void UpdateRating(Service_Status::SPublicMap _PublicMap) {
+	declare Real DifficultyValue for Layers::Page("Rating");
+	declare Real AverageDifficultyValue for Layers::Page("Rating");
+	declare Integer AverageDifficultyCount for Layers::Page("Rating");
+	declare Real QualityValue for Layers::Page("Rating");
+	declare Real AverageQualityValue for Layers::Page("Rating");
+	declare Integer AverageQualityCount for Layers::Page("Rating");
+
+	DifficultyValue = _PublicMap.Rating.Difficulty.User;
+	QualityValue = _PublicMap.Rating.Quality.User;
+
+	AverageDifficultyValue = _PublicMap.Rating.Difficulty.AverageWithoutYou;
+	AverageDifficultyCount = _PublicMap.Rating.Difficulty.Count;
+	AverageQualityValue = _PublicMap.Rating.Quality.AverageWithoutYou;
+	AverageQualityCount = _PublicMap.Rating.Quality.Count;
+}
+
 ***Init***
 ***
 Dictionary::SetTranslationFolder("Media/Translations");
@@ -181,6 +217,7 @@ Layers::Create("Flash", Manialink::FromFile(C_Manialink_Flash, True, [], Setting
 
 ReplayBrowser::Init();
 Notification::Init();
+Rating::Init();
 ***
 
 ***Start***
@@ -212,13 +249,14 @@ VehicleCount = Server_Vehicles.count;
 declare SAuthToken INGAME_TOKEN for LocalUser;
 
 declare Service_Status::SPublicMap PublicMap;
-declare ReqMap = Http::SyncGET("""{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?{{{Map.MapInfo.MapUid}}}""");
+declare ReqMap = Http::SyncGET("""{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}""");
 declare JsonSuccess = PublicMap.fromjson(ReqMap.Result);
 
 UpdatePublicMap(PublicMap);
 
 declare netread Integer Server_VehicleLock for UI;
 declare netread Integer Server_CurrentVehicle for UI;
+declare Integer OldVehicle;
 
 declare metadata ModifierBase::SChMap OriginalMap for Map;
 Layers::SendEvent("Menu", "MapName", OriginalMap.Name);
@@ -252,8 +290,11 @@ if(PublicMap.Public && !Server_IsValidationMode) AsyncPlaysession(PlaysessionSec
 if(Server_IsValidationMode) Layers::SendEvent("Playsession", "DisablePublish");
 
 Notification::Start(<157.5,40.>);
+Rating::Start();
 
 SkinNotified = False;
+
+UpdateRating(PublicMap);
 ***
 
 ***Loop***
@@ -308,6 +349,13 @@ foreach(Event, PendingEvents) {
 						}
 					}
 				}
+				case Layers::Get("Map"): {
+					switch(Event.CustomEventType) {
+						case "RateCombination": {
+							Rating::Show();
+						}
+					}
+				}
 				case Layers::Get("OpenMenu"): {
 					switch(Event.CustomEventType) {
 						case "Menu": {
@@ -329,6 +377,7 @@ foreach(Event, PendingEvents) {
 						case "Continue": {
 							SendCustomEvent("Continue", []);
 							Layers::Show("Outro");
+							Rating::ShowInOutro();
 						}
 					}
 				}
@@ -337,9 +386,14 @@ foreach(Event, PendingEvents) {
 						case "Continue": {
 							SendCustomEvent("Continue", []);
 							Layers::Hide("Outro");
+							Layers::Hide("Rating");
+
+							ApplyRating();
 						}
 						case "Exit": {
 							Close = True;
+
+							ApplyRating();
 						}
 						case "SaveReplay": {
 							Layers::Show("Replays", True);
@@ -347,6 +401,7 @@ foreach(Event, PendingEvents) {
 							Layers::SendEvent("ReplayInfo", "Mode", "Save");
 							Layers::SendEvent("ReplayInfo", "SetReplay", """{{{TextLib::StripFormatting(OriginalMap.Name)}}}_{{{Map.MapStyle}}}_{{{Server_Vehicles[Server_CurrentVehicle].Name}}}_({{{TimeToFileNameSupportedText(Server_EndRaceInfo.Time)}}})""");
 							Layers::Hide("Outro");
+							Layers::Hide("Rating");
 						}
 					}
 				}
@@ -356,6 +411,7 @@ foreach(Event, PendingEvents) {
 							Layers::Hide("Replays", True);
 							Layers::Hide("ReplayInfo", True);
 							Layers::Show("Outro", True);
+							Rating::Show();
 						}
 						case "Save": {
 							declare FilePath = Event.CustomEventData[0];
@@ -363,6 +419,7 @@ foreach(Event, PendingEvents) {
 							Layers::Hide("Replays", True);
 							Layers::Hide("ReplayInfo", True);
 							Layers::Show("Outro", True);
+							Rating::Show();
 						}
 					}
 				}
@@ -386,12 +443,25 @@ foreach(Event, PendingEvents) {
 						}
 					}
 				}
+				case Layers::Get("Rating"): {
+					switch(Event.CustomEventType) {
+						case "Apply": {
+							ApplyRating();
+
+							Layers::Hide("Rating");
+						}
+						case "Exit": {
+							Layers::Hide("Rating");
+						}
+					}
+				}
 			}
 		}
 	}
 
 	ReplayBrowser::Event(Event);
 	Notification::Event(Event);
+	Rating::Event(Event);
 }
 
 if(Server_CurrentVehicle >= 0) {
@@ -411,6 +481,12 @@ if(VehicleIndex != OldVehicleIndex) {
 	OldVehicleIndex = VehicleIndex;
 
 	if(Server_VehicleLock == -1) IsBlurred = False;
+}
+
+if(Server_CurrentVehicle != OldVehicle) {
+	declare Text CHALLENGE_TOKEN for LocalUser;
+	declare Success = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&car={{{Server_Vehicles[Server_CurrentVehicle].Name}}}""", CHALLENGE_TOKEN);
+	OldVehicle = Server_CurrentVehicle;
 }
 
 if(Server_Stunt.Timestamp != LastStunt.Timestamp) {
@@ -481,6 +557,7 @@ if(Server_Outro != IsOutro) {
 		Layers::Show("Flash");
 		Layers::Hide("Endscreen");
 		Layers::Hide("Outro");
+		Layers::Hide("Rating");
 	}
 	IsOutro = Server_Outro;
 }
@@ -550,7 +627,23 @@ if(Http::IsCompleted("PLAYSESSION")) {
 	Http::Destroy("PLAYSESSION");
 }
 
+if(Http::IsCompleted("RATE")) {
+	if(Http::IsSuccessful("RATE")) {
+		log(Http::GetResult("RATE"));
+	}
+	Http::Destroy("RATE");
+}
+
+if(Http::IsCompleted("MAP")) {
+	if(Http::IsSuccessful("MAP")) {
+		declare JsonSuccess = PublicMap.fromjson(Http::GetResult("MAP"));
+		UpdateRating(PublicMap);
+	}
+	Http::Destroy("MAP");
+}
+
 ReplayBrowser::Async();
+Rating::Async();
 ***
 
 Void Main() {

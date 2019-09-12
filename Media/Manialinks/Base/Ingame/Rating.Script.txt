@@ -1,0 +1,172 @@
+Void UpdateRating(CMlControl _Hold) {
+	declare Real DifficultyValue for Page;
+	declare Real QualityValue for Page;
+	declare Text[] Difficulties for Page;
+	declare Text[] Qualities for Page;
+
+	if(_Hold != Null) {
+		if(_Hold.Parent.ControlId == "FRAME_DIFFICULTY_INNER") {
+			declare Difficulty = "";
+			if(Difficulties.count > 0) {
+				if(DifficultyValue == -1) {
+					Difficulty = "{{{{CLICK_TO_RATE}}}}";
+				}
+				else {
+					Difficulty = Difficulties[MathLib::FloorInteger(DifficultyValue*(Difficulties.count-1))];
+				}
+			}
+			((Page.GetFirstChild("FRAME_DIFFICULTY_INNER") as CMlFrame).GetFirstChild("LABEL_RATENAME") as CMlLabel).SetText(Difficulty);
+		}
+		if(_Hold.Parent.ControlId == "FRAME_QUALITY_INNER") {
+			declare Quality = "";
+			if(Qualities.count > 0) {
+				if(QualityValue == -1) {
+					Quality = "{{{{CLICK_TO_RATE}}}}";
+				}
+				else {
+					Quality = Qualities[MathLib::FloorInteger(QualityValue*(Qualities.count-1))];
+				}
+			}
+			((Page.GetFirstChild("FRAME_QUALITY_INNER") as CMlFrame).GetFirstChild("LABEL_RATENAME") as CMlLabel).SetText(Quality);
+		}
+	}
+}
+
+***Start***
+***
+declare CMlControl Hold;
+
+declare Real DifficultyValue for Page;
+declare Real AverageDifficultyValue for Page;
+declare Integer AverageDifficultyCount for Page;
+declare Real QualityValue for Page;
+declare Real AverageQualityValue for Page;
+declare Integer AverageQualityCount for Page;
+
+declare LastDifficultyValue = -1.;
+declare LastQualityValue = -1.;
+
+declare Text[] Difficulties for Page;
+declare Text[] Qualities for Page;
+
+EnableMenuNavigationInputs = True;
+***
+
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseClick: {
+			switch(Event.ControlId) {
+				case "QUAD_DRAGGABLE": {
+					Hold = Event.Control.Parent;
+				}
+				case "QUAD_BOX": {
+					declare Frame_Draggable = (Event.Control.Parent.GetFirstChild("FRAME_DRAGGABLE") as CMlFrame);
+					Frame_Draggable.Show();
+					Hold = Frame_Draggable;
+				}
+				case "QUAD_BUTTON_APPLY": {
+					SendCustomEvent("Apply", []);
+				}
+				case "QUAD_BUTTON_EXIT": {
+					DifficultyValue = LastDifficultyValue;
+					QualityValue = LastQualityValue;
+					SendCustomEvent("Exit", []);
+				}
+			}
+		}
+		case CMlScriptEvent::Type::PluginCustomEvent: {
+			switch(Event.CustomEventType) {
+				case "Position": {
+					declare Position = TextLib::Split(" ", Event.CustomEventData[0]);
+					Page.GetFirstChild("FRAME_RATING").RelativePosition_V3 = <TextLib::ToReal(Position[0]), TextLib::ToReal(Position[1])>;
+				}
+				case "Blur": {
+					declare Condition = (Event.CustomEventData[0] == "True");
+					Page.GetFirstChild("QUAD_BLUR").Visible = Condition;
+					Page.GetFirstChild("FRAME_CENTERED").Visible = Condition;
+				}
+				case "Show": {
+					LastDifficultyValue = DifficultyValue;
+					LastQualityValue = QualityValue;
+					
+					declare Frame_Draggable_Difficulty = ((Page.GetFirstChild("FRAME_DIFFICULTY_INNER") as CMlFrame).GetFirstChild("FRAME_DRAGGABLE") as CMlFrame);
+					declare Frame_Draggable_Quality = ((Page.GetFirstChild("FRAME_QUALITY_INNER") as CMlFrame).GetFirstChild("FRAME_DRAGGABLE") as CMlFrame);
+
+					if(DifficultyValue == -1) {
+						Frame_Draggable_Difficulty.Hide();
+					}
+					else {
+						Frame_Draggable_Difficulty.RelativePosition_V3.X = DifficultyValue*90-45;
+						Frame_Draggable_Difficulty.Show();
+					}
+
+					if(QualityValue == -1) {
+						Frame_Draggable_Quality.Hide();
+					}
+					else {
+						Frame_Draggable_Quality.RelativePosition_V3.X = QualityValue*90-45;
+						Frame_Draggable_Quality.Show();
+					}
+
+					UpdateRating(Frame_Draggable_Difficulty);
+					UpdateRating(Frame_Draggable_Quality);
+				}
+			}
+		}
+	}
+}
+
+if(MouseLeftButton && Hold != Null) {
+	Hold.RelativePosition_V3.X = MathLib::Clamp(MouseX-Page.GetFirstChild("FRAME_RATING").RelativePosition_V3.X,-45.,45.);
+
+	if(Hold.Parent.ControlId == "FRAME_DIFFICULTY_INNER")
+		DifficultyValue = (Hold.RelativePosition_V3.X+45)/90.;
+	if(Hold.Parent.ControlId == "FRAME_QUALITY_INNER")
+		QualityValue = (Hold.RelativePosition_V3.X+45)/90.;
+
+	UpdateRating(Hold);
+}
+else {
+	if(Hold != Null) {
+		if(Hold.Parent.ControlId == "FRAME_DIFFICULTY_INNER") {
+			DifficultyValue = (Hold.RelativePosition_V3.X+45)/90.;
+		}
+		if(Hold.Parent.ControlId == "FRAME_QUALITY_INNER") {
+			QualityValue = (Hold.RelativePosition_V3.X+45)/90.;
+		}
+		Hold = Null;
+	}
+}
+
+if(DifficultyValue == -1) {
+	if(AverageDifficultyValue == -1)
+		(Page.GetFirstChild("GAUGE_DIFFICULTY") as CMlGauge).Ratio = 0.;
+	else
+		(Page.GetFirstChild("GAUGE_DIFFICULTY") as CMlGauge).Ratio = AverageDifficultyValue;
+}
+else {
+	if(AverageDifficultyValue == -1)
+		(Page.GetFirstChild("GAUGE_DIFFICULTY") as CMlGauge).Ratio = DifficultyValue;
+	else if(AverageDifficultyCount > 0)
+		(Page.GetFirstChild("GAUGE_DIFFICULTY") as CMlGauge).Ratio = AverageDifficultyValue+(DifficultyValue/AverageDifficultyCount);
+	else
+		(Page.GetFirstChild("GAUGE_DIFFICULTY") as CMlGauge).Ratio = 0.;
+}
+
+if(QualityValue == -1) {
+	if(AverageQualityValue == -1)
+		(Page.GetFirstChild("GAUGE_QUALITY") as CMlGauge).Ratio = 0.;
+	else
+		(Page.GetFirstChild("GAUGE_QUALITY") as CMlGauge).Ratio = AverageQualityValue;
+}
+else {
+	if(AverageQualityValue == -1)
+		(Page.GetFirstChild("GAUGE_QUALITY") as CMlGauge).Ratio = QualityValue;
+	else if(AverageQualityCount > 0)
+		(Page.GetFirstChild("GAUGE_QUALITY") as CMlGauge).Ratio = AverageQualityValue+(QualityValue/AverageQualityCount);
+	else
+		(Page.GetFirstChild("GAUGE_QUALITY") as CMlGauge).Ratio = 0.;
+}
+***

@@ -1,0 +1,97 @@
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
+
+#Struct SRateParams {
+	Text UserToken;
+	Text MapUid;
+	Text Car;
+	Real Difficulty;
+	Real Quality;
+}
+
+#Const C_Manialink "Media/Manialinks/Base/Ingame/Rating"
+
+Text[] GetDifficultyNames() {
+	return [
+		Dictionary::Get("VERY_EASY"),
+		Dictionary::Get("EASY"),
+		Dictionary::Get("SIMPLE"),
+		Dictionary::Get("INTERMEDIATE"),
+		Dictionary::Get("ADVANCED"),
+		Dictionary::Get("HARD"),
+		Dictionary::Get("VERY_HARD"),
+		Dictionary::Get("COMPLICATED"),
+		Dictionary::Get("EXTREME"),
+		Dictionary::Get("NEARLY_IMPOSSIBLE")
+	];
+}
+
+Text[] GetQualityNames() {
+	return [
+		Dictionary::Get("THE_WORST"),
+		Dictionary::Get("BAD"),
+		Dictionary::Get("WEIRD"),
+		Dictionary::Get("ALRIGHT"),
+		Dictionary::Get("NOT_BAD"),
+		Dictionary::Get("GOOD"),
+		Dictionary::Get("ENJOYABLE"),
+		Dictionary::Get("GREAT"),
+		Dictionary::Get("VERY_FUN"),
+		Dictionary::Get("INCREDIBLE")
+	];
+}
+
+Void Init() {
+	Layers::Create("Rating", Manialink::FromFile(C_Manialink, True, ["Audio"], Settings::Get().Theme));
+
+	declare Real DifficultyValue for Layers::Page("Rating");
+	declare Real AverageDifficultyValue for Layers::Page("Rating");
+	declare Integer AverageDifficultyCount for Layers::Page("Rating");
+	declare Real QualityValue for Layers::Page("Rating");
+	declare Real AverageQualityValue for Layers::Page("Rating");
+	declare Integer AverageQualityCount for Layers::Page("Rating");
+
+	DifficultyValue = -1.;
+	QualityValue = -1.;
+
+	declare Text[] Difficulties for Layers::Page("Rating");
+	declare Text[] Qualities for Layers::Page("Rating");
+
+	Difficulties = GetDifficultyNames();
+	Qualities = GetQualityNames();
+}
+
+Void ShowInOutro() {
+	Layers::Show("Rating", True);
+	Layers::SendEvent("Rating", "Position", "105 51.5");
+	Layers::SendEvent("Rating", "Blur", "False");
+}
+
+Void Show() {
+	Layers::Show("Rating", True);
+	Layers::SendEvent("Rating", "Position", "0 0");
+	Layers::SendEvent("Rating", "Blur", "True");
+}
+
+Void Start() {
+	
+}
+
+Void Event(CManiaAppEvent _Event) {
+	declare Event <=> _Event;
+
+	if(Event.Type == CManiaAppEvent::EType::LayerCustomEvent) {
+		
+	}
+}
+
+Void Async() {
+	
+}
+
+Void Loop() {
+	
+}

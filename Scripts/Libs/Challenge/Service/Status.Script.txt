@@ -2,6 +2,25 @@
 
 #Include "Libs/Challenge/Notification.Script.txt" as Notification
 
+#Struct SRatingQuality {
+	Real Average;
+	Real AverageWithoutYou;
+	Real User;
+	Integer Count;
+}
+
+#Struct SRatingDifficulty {
+	Real Average;
+	Real AverageWithoutYou;
+	Real User;
+	Integer Count;
+}
+
+#Struct SRating {
+	SRatingDifficulty Difficulty;
+	SRatingQuality Quality;
+}
+
 #Struct SPublicMap {
 	Boolean Public;
 	Boolean IsNadeoMap;
@@ -11,6 +30,7 @@
 	Text OriginalName;
 	Text OriginalUid;
 	Text OriginalAuthor;
+	SRating Rating;
 }
 
 #Struct SUserStatus {
@@ -64,7 +84,7 @@
 	Text Token;
 }
 
-#Const C_Host "https://challenge.bigbang1112.eu"
+#Const C_Host "http://server.bigbang1112.eu/challenge"
 
 Void ProcessNotifications(CUser _User, SStatus _Status) {
 	if(_Status.User.count > 0)
