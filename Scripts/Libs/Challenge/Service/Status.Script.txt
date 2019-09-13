@@ -84,7 +84,7 @@
 	Text Token;
 }
 
-#Const C_Host "http://server.bigbang1112.eu/challenge"
+#Const C_Host "https://challenge.bigbang1112.eu"
 
 Void ProcessNotifications(CUser _User, SStatus _Status) {
 	if(_Status.User.count > 0)

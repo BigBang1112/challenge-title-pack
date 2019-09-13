@@ -87,7 +87,7 @@ Void UpdateOfficialScripts(Text[] _Scripts) {
 
 Boolean CheckMapOnline(Text _MapUid) {
 	declare Status = Service_Status::LastStatus(LocalUser);
-	declare Map = Http::SyncGET(Status.Global.Service ^"/map.php?"^_MapUid);
+	declare Map = Http::SyncGET(Status.Global.Service ^"/map.php?uid="^_MapUid);
 	declare SMapOnline MapOnline;
 	declare JsonSuccess = MapOnline.fromjson(Map.Result);
 	return !(MapOnline.IsNadeoMap && Status.Global.NadeoMapsBlocked) || Menu_AuthBeta::GetAccess().Owner || Menu_AuthBeta::GetAccess().Organizer;

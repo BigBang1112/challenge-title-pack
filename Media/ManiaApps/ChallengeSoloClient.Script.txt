@@ -153,7 +153,9 @@ Void UpdateRating(Service_Status::SPublicMap _PublicMap) {
 	declare Real AverageQualityValue for Layers::Page("Rating");
 	declare Integer AverageQualityCount for Layers::Page("Rating");
 
+	if(AverageDifficultyCount > 0)
 	DifficultyValue = _PublicMap.Rating.Difficulty.User;
+	if(AverageQualityCount > 0)
 	QualityValue = _PublicMap.Rating.Quality.User;
 
 	AverageDifficultyValue = _PublicMap.Rating.Difficulty.AverageWithoutYou;
@@ -352,7 +354,8 @@ foreach(Event, PendingEvents) {
 				case Layers::Get("Map"): {
 					switch(Event.CustomEventType) {
 						case "RateCombination": {
-							Rating::Show();
+							if(PublicMap.Public)
+								Rating::Show();
 						}
 					}
 				}
@@ -377,7 +380,9 @@ foreach(Event, PendingEvents) {
 						case "Continue": {
 							SendCustomEvent("Continue", []);
 							Layers::Show("Outro");
-							Rating::ShowInOutro();
+
+							if(PublicMap.Public)
+								Rating::ShowInOutro();
 						}
 					}
 				}
@@ -411,7 +416,8 @@ foreach(Event, PendingEvents) {
 							Layers::Hide("Replays", True);
 							Layers::Hide("ReplayInfo", True);
 							Layers::Show("Outro", True);
-							Rating::Show();
+							if(PublicMap.Public)
+								Rating::ShowInOutro();
 						}
 						case "Save": {
 							declare FilePath = Event.CustomEventData[0];
@@ -419,7 +425,8 @@ foreach(Event, PendingEvents) {
 							Layers::Hide("Replays", True);
 							Layers::Hide("ReplayInfo", True);
 							Layers::Show("Outro", True);
-							Rating::Show();
+							if(PublicMap.Public)
+								Rating::ShowInOutro();
 						}
 					}
 				}
@@ -485,7 +492,8 @@ if(VehicleIndex != OldVehicleIndex) {
 
 if(Server_CurrentVehicle != OldVehicle) {
 	declare Text CHALLENGE_TOKEN for LocalUser;
-	declare Success = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&car={{{Server_Vehicles[Server_CurrentVehicle].Name}}}""", CHALLENGE_TOKEN);
+	if(Server_CurrentVehicle >= 0 && PublicMap.Public)
+		declare Success = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&car={{{Server_Vehicles[Server_CurrentVehicle].Name}}}""", CHALLENGE_TOKEN);
 	OldVehicle = Server_CurrentVehicle;
 }
 
@@ -605,6 +613,7 @@ if(Service_Status::AsyncIsCompleted("STATUS")) {
 
 		if(!ContainsThisMap) {
 			declare Service_Status::SPublicMap DeletedMap;
+			PublicMap = DeletedMap;
 			UpdatePublicMap(DeletedMap);
 		}
 	}
@@ -613,7 +622,9 @@ if(Service_Status::AsyncIsCompleted("STATUS")) {
 
 if(Service_Map::AsyncIsCompleted("PUBLISH")) {
 	if(Service_Map::AsyncIsSuccessful("PUBLISH")) {
-		UpdatePublicMap(Service_Map::GetAsyncPublishResult("PUBLISH"));
+		PublicMap = Service_Map::GetAsyncPublishResult("PUBLISH");
+		UpdatePublicMap(PublicMap);
+		UpdateRating(PublicMap);
 		PlaysessionSecret = Random::String(32);
 		AsyncPlaysession(PlaysessionSecret, "Playing");
 	}
