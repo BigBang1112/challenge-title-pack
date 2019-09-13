@@ -153,15 +153,15 @@ Void UpdateRating(Service_Status::SPublicMap _PublicMap) {
 	declare Real AverageQualityValue for Layers::Page("Rating");
 	declare Integer AverageQualityCount for Layers::Page("Rating");
 
-	if(AverageDifficultyCount > 0)
-	DifficultyValue = _PublicMap.Rating.Difficulty.User;
-	if(AverageQualityCount > 0)
-	QualityValue = _PublicMap.Rating.Quality.User;
-
 	AverageDifficultyValue = _PublicMap.Rating.Difficulty.AverageWithoutYou;
 	AverageDifficultyCount = _PublicMap.Rating.Difficulty.Count;
 	AverageQualityValue = _PublicMap.Rating.Quality.AverageWithoutYou;
 	AverageQualityCount = _PublicMap.Rating.Quality.Count;
+
+	if(AverageDifficultyCount > 0)
+	DifficultyValue = _PublicMap.Rating.Difficulty.User;
+	if(AverageQualityCount > 0)
+	QualityValue = _PublicMap.Rating.Quality.User;
 }
 
 ***Init***
