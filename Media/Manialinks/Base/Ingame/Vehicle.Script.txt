@@ -132,6 +132,11 @@ UpdateVehicles();
 //EnableMenuNavigationInputs = True;
 ***
 
+Void Start() {
+	SendCustomEvent("Start", ["True"]);
+	CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+}
+
 ***Loop***
 ***
 foreach(Event,PendingEvents) {
@@ -151,8 +156,7 @@ foreach(Event,PendingEvents) {
 					Frame_Vehicles.Scroll(<0.,(VehicleIndex-PreviousIndex)*1.>);
 
 					if(PreviousIndex - VehicleIndex == 0) {
-						SendCustomEvent("Start", ["True"]);
-						CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+						Start();
 					}
 
 					PlayAudio(Sound_ClickSoft);
@@ -192,6 +196,9 @@ foreach(Event,PendingEvents) {
 					EnableMenuNavigationInputs = False;
 					(Page.GetFirstChild("LABEL_ARROW") as CMlLabel).TextColor = <.93,.93,.93>;
 					SendCustomEvent("Navigation", ["Menu"]);
+				}
+				case CMlScriptEvent::EMenuNavAction::Select: {
+					Start();
 				}
 			}
 		}
