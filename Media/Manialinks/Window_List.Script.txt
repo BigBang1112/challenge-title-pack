@@ -94,6 +94,9 @@ Void UpdateElements() {
 		Window_ScrollbarHeight = (Window_Size.Y-20)*VisibleRatio;
 		Quad_Scrollbar.Size.Y = Window_ScrollbarHeight;
 	}
+
+	if(Window_Elements.count > 10) Frame_List.ScrollActive = True;
+	else Frame_List.ScrollActive = False;
 }
 
 Void UpdateLayout() {
