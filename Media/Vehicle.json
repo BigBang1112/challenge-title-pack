@@ -189,28 +189,28 @@
 		"File": "Vehicles/DesertCar.Item.Gbx",
 		"Skins": [
 			{
-				"File": "DesertCar/Blackdevil.zip",
-				"Icon": "SkinIcons/DesertCar/Blackdevil.dds"
+				"File": "AmericanCar/Blackdevil.zip",
+				"Icon": "SkinIcons/AmericanCar/Blackdevil.dds"
 			},
 			{
-				"File": "DesertCar/Default.zip",
-				"Icon": "SkinIcons/DesertCar/Default.dds"
+				"File": "AmericanCar/Default.zip",
+				"Icon": "SkinIcons/AmericanCar/Default.dds"
 			},
 			{
-				"File": "DesertCar/Funkyrace.zip",
-				"Icon": "SkinIcons/DesertCar/Funkyrace.dds"
+				"File": "AmericanCar/Funkyrace.zip",
+				"Icon": "SkinIcons/AmericanCar/Funkyrace.dds"
 			},
 			{
-				"File": "DesertCar/Lagoonracer.zip",
-				"Icon": "SkinIcons/DesertCar/Lagoonracer.dds"
+				"File": "AmericanCar/Lagoonracer.zip",
+				"Icon": "SkinIcons/AmericanCar/Lagoonracer.dds"
 			},
 			{
-				"File": "DesertCar/Silvermania.zip",
-				"Icon": "SkinIcons/DesertCar/Silvermania.dds"
+				"File": "AmericanCar/Silvermania.zip",
+				"Icon": "SkinIcons/AmericanCar/Silvermania.dds"
 			},
 			{
-				"File": "DesertCar/Toggleindustry.zip",
-				"Icon": "SkinIcons/DesertCar/Toggleindustry.dds"
+				"File": "AmericanCar/Toggleindustry.zip",
+				"Icon": "SkinIcons/AmericanCar/Toggleindustry.dds"
 			}
 		]
 	},
@@ -282,28 +282,28 @@
 		"File": "Vehicles/IslandCar.Item.Gbx",
 		"Skins": [
 			{
-				"File": "IslandCar/U_Black.zip",
-				"Icon": "SkinIcons/IslandCar/U_Black.dds"
+				"File": "SportCar/U_Black.zip",
+				"Icon": "SkinIcons/SportCar/U_Black.dds"
 			},
 			{
-				"File": "IslandCar/U_Blue.zip",
-				"Icon": "SkinIcons/IslandCar/U_Blue.dds"
+				"File": "SportCar/U_Blue.zip",
+				"Icon": "SkinIcons/SportCar/U_Blue.dds"
 			},
 			{
-				"File": "IslandCar/U_Green.zip",
-				"Icon": "SkinIcons/IslandCar/U_Green.dds"
+				"File": "SportCar/U_Green.zip",
+				"Icon": "SkinIcons/SportCar/U_Green.dds"
 			},
 			{
-				"File": "IslandCar/U_Red.zip",
-				"Icon": "SkinIcons/IslandCar/U_Red.dds"
+				"File": "SportCar/U_Red.zip",
+				"Icon": "SkinIcons/SportCar/U_Red.dds"
 			},
 			{
-				"File": "IslandCar/U_White.zip",
-				"Icon": "SkinIcons/IslandCar/U_White.dds"
+				"File": "SportCar/U_White.zip",
+				"Icon": "SkinIcons/SportCar/U_White.dds"
 			},
 			{
-				"File": "IslandCar/U_Yellow.zip",
-				"Icon": "SkinIcons/IslandCar/U_Yellow.dds"
+				"File": "SportCar/U_Yellow.zip",
+				"Icon": "SkinIcons/SportCar/U_Yellow.dds"
 			}
 		]
 	},
