@@ -21,6 +21,10 @@
 	SRatingQuality Quality;
 }
 
+#Struct SVehicle {
+	SRating Rating;
+}
+
 #Struct SPublicMap {
 	Boolean Public;
 	Boolean IsNadeoMap;
@@ -30,7 +34,7 @@
 	Text OriginalName;
 	Text OriginalUid;
 	Text OriginalAuthor;
-	SRating Rating;
+	SVehicle[Text] Vehicles;
 }
 
 #Struct SUserStatus {
@@ -84,7 +88,7 @@
 	Text Token;
 }
 
-#Const C_Host "https://challenge.bigbang1112.eu"
+#Const C_Host "http://server.bigbang1112.eu/challenge"
 
 Void ProcessNotifications(CUser _User, SStatus _Status) {
 	if(_Status.User.count > 0)

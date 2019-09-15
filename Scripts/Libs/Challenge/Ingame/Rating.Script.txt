@@ -1,3 +1,5 @@
+#Include "TextLib" as TextLib
+
 #Include "Libs/BigBang1112/Http.Script.txt" as Http
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
@@ -67,6 +69,11 @@ Void ApplyRating() {
 }
 
 Void UpdateRating(Service_Status::SPublicMap _PublicMap) {
+	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+	declare netread Integer Server_CurrentVehicle for UI;
+
+	declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
+
 	declare Real DifficultyValue for Layers::Page("Rating");
 	declare Real AverageDifficultyValue for Layers::Page("Rating");
 	declare Integer AverageDifficultyCount for Layers::Page("Rating");
@@ -74,13 +81,13 @@ Void UpdateRating(Service_Status::SPublicMap _PublicMap) {
 	declare Real AverageQualityValue for Layers::Page("Rating");
 	declare Integer AverageQualityCount for Layers::Page("Rating");
 
-	DifficultyValue = _PublicMap.Rating.Difficulty.User;
-	QualityValue = _PublicMap.Rating.Quality.User;
+	DifficultyValue = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.User;
+	QualityValue = _PublicMap.Vehicles[VehicleName].Rating.Quality.User;
 
-	AverageDifficultyValue = _PublicMap.Rating.Difficulty.AverageWithoutYou;
-	AverageDifficultyCount = _PublicMap.Rating.Difficulty.Count;
-	AverageQualityValue = _PublicMap.Rating.Quality.AverageWithoutYou;
-	AverageQualityCount = _PublicMap.Rating.Quality.Count;
+	AverageDifficultyValue = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.AverageWithoutYou;
+	AverageDifficultyCount = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.Count;
+	AverageQualityValue = _PublicMap.Vehicles[VehicleName].Rating.Quality.AverageWithoutYou;
+	AverageQualityCount = _PublicMap.Vehicles[VehicleName].Rating.Quality.Count;
 }
 
 Void Init() {
@@ -107,12 +114,18 @@ Void ShowInOutro() {
 	Layers::Show("Rating", True);
 	Layers::SendEvent("Rating", "Position", "105 51.5");
 	Layers::SendEvent("Rating", "Blur", "False");
+
+	declare Service_Status::SPublicMap PublicMap for This;
+	UpdateRating(PublicMap);
 }
 
 Void Show() {
 	Layers::Show("Rating", True);
 	Layers::SendEvent("Rating", "Position", "0 0");
 	Layers::SendEvent("Rating", "Blur", "True");
+
+	declare Service_Status::SPublicMap PublicMap for This;
+	UpdateRating(PublicMap);
 }
 
 Void Start() {
@@ -145,6 +158,14 @@ Void Async() {
 	if(Http::IsCompleted("RATE")) {
 		if(Http::IsSuccessful("RATE")) {
 			log(Http::GetResult("RATE")); // TODO: give response that the request was successful
+
+			declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+			declare Text[] VehicleNames;
+			foreach(Vehicle, Server_Vehicles) VehicleNames.add(Vehicle.Name);
+
+			declare Service_Status::SPublicMap PublicMap for This;
+			declare Text CHALLENGE_TOKEN for LocalUser;
+			declare Success = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&vehicle={{{TextLib::Join(",",VehicleNames)}}}""", CHALLENGE_TOKEN);
 		}
 		Http::Destroy("RATE");
 	}

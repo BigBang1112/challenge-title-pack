@@ -293,8 +293,6 @@ if(VehicleIndex != OldVehicleIndex) { // If vehicle was changed
 }
 
 if(Server_CurrentVehicle != OldVehicle) { // If server vehicle was changed
-	declare Text CHALLENGE_TOKEN for LocalUser;
-	declare Success = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&car={{{Server_Vehicles[Server_CurrentVehicle].Name}}}""", CHALLENGE_TOKEN);
 	OldVehicle = Server_CurrentVehicle;
 }
 
