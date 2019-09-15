@@ -27,9 +27,14 @@ Void SetCarModel(CTmPlayer _Player, CUIConfig _UI) {
 	declare persistent Text[Text] P_Skin for _Player.User;
 
 	declare VehicleName = Vehicles[Server_CurrentVehicle].Name;
-	declare Skin = "";
-	if(P_Skin.existskey(VehicleName)) Skin = P_Skin[VehicleName];
-	_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[Skin];
+	
+	if(P_Skin.existskey(VehicleName)) {
+		if(Vehicles.existskey(Server_CurrentVehicle)) {
+			if(RealVehicles[Server_CurrentVehicle].Id.existskey(P_Skin[VehicleName])) // If exact skin doesnt exist
+				_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[P_Skin[VehicleName]];
+			else _Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[""];
+		} else _Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[""];
+	} else _Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[""];
 }
 
 Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {

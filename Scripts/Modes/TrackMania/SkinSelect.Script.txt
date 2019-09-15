@@ -120,9 +120,14 @@ while(True) {
 	declare Ident OldModelId for Player;
 	
 	declare VehicleName = Server_Vehicles[Client_VehicleIndex].Name;
-	if(Vehicles.existskey(Client_VehicleIndex)) Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id[P_Skin[VehicleName]];
-	else Player.ForceModelId = RealMapVehicle.Id[P_Skin[VehicleName]];
-	Server_CurrentVehicle = Client_VehicleIndex;
+	
+	if(P_Skin.existskey(VehicleName)) {
+		if(Vehicles.existskey(Client_VehicleIndex)) {
+			if(RealVehicles[Client_VehicleIndex].Id.existskey(P_Skin[VehicleName]))
+				Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id[P_Skin[VehicleName]];
+			else Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id[""];
+		} else Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id[""];
+	} else Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id[""];
 		
 	if(Player.ForceModelId != OldModelId) {
 		This.SpawnPlayer(Player, 0, -1);
