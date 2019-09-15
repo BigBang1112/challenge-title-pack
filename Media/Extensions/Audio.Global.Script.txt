@@ -5,6 +5,7 @@ declare CAudioSource Sound_TimeChange;
 declare CAudioSource Sound_TimeReset;
 declare CAudioSource Sound_Swish;
 declare CAudioSource Sound_NumberChange;
+declare CAudioSource Sound_Notification;
 
 Void PlayAudio(CAudioSource _Audio) {
 	_Audio.Stop();

@@ -5,3 +5,4 @@ Sound_TimeChange = Audio.CreateSound("file://Media/Sounds/TimeChange.ogg");
 Sound_TimeReset = Audio.CreateSound("file://Media/Sounds/TimeReset.ogg");
 Sound_Swish = Audio.CreateSound("file://Media/Sounds/Swish.ogg");
 Sound_NumberChange = Audio.CreateSound("file://Media/Sounds/NumberChange.ogg");
+Sound_Notification = Audio.CreateSound("file://Media/Sounds/Notification.ogg");

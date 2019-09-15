@@ -173,6 +173,8 @@ foreach(Event,PendingEvents) {
 				}
 
 				NotificationTime = -1;
+
+				PlayAudio(Sound_ClickSoft);
 			}
 			if(Event.ControlId == "QUAD_CLOSE") {
 				declare SNotification[] TempNotifications for LocalUser;
@@ -185,6 +187,8 @@ foreach(Event,PendingEvents) {
 					if(TempNotifications.count > Id) TempNotifications.removekey(Id);
 				}
 				UpdateNotifications();
+
+				PlayAudio(Sound_ClickSoft);
 			}
 		}
 		case CMlScriptEvent::Type::PluginCustomEvent: {
@@ -198,6 +202,8 @@ foreach(Event,PendingEvents) {
 				}
 				case "Notification": {
 					NotificationTime = Now;
+
+					PlayAudio(Sound_Notification);
 
 					Fully = False;
 					UpdateNotifications();
