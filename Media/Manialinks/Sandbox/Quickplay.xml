@@ -120,7 +120,7 @@
 				
 				<quad size="150 81" bgcolor="FFFA" style="Bgs1" substyle="BgGradV" pos="0 -19"/>
 				<quad pos="99.25 -20" z-index="0" size="2 20" bgcolor="FFFA" style="Bgs1" substyle="BgMetalBar" id="QUAD_MAPLIST_BAR" scriptevents="1"/>
-				<quad pos="99.25 -20" z-index="-1" size="2 80" bgcolor="FFFA" style="Bgs1InRace" substyle="BgMetalBar" modulatecolor="222" opacity=".5"/>
+				<quad pos="99.25 -20" z-index="-1" size="2 80" bgcolor="FFFA" style="Bgs1InRace" substyle="BgMetalBar" modulatecolor="222" opacity=".5" scriptevents="1" id="QUAD_MAPLIST_BAR_BACKGROUND"/>
 				<gauge pos="100 -8" z-index="1" size="94 9" valign="center" rot="90" ratio=".5" id="GAUGE_MAPLIST" style="BgCard" drawbg="0" hidden="1"/>
 				<frame pos="0 -20" clip="True" clipposn="50 -40" clipsizen="100 80" z-index="1" id="FRAME_MAPLIST">
 					<frame pos="0 -5" data-index="0">
@@ -225,7 +225,7 @@
 					<quad pos="25 -24" z-index="0" size="44 44" halign="center" valign="center" style="Bgs1" substyle="BgMetalBar" opacity=".75" modulatecolor="222"/>
 					<frame pos="25 -24" clipsizen="42.5 42.5" z-index="1">
 						<quad size="42.5 42.5" halign="center" valign="center" opacity=".9" id="QUAD_MAPLIST_THUMBNAIL" bgcolor="000A"/>
-						<quad size="58.62 42.5" halign="center" valign="center" opacity=".9" id="QUAD_MAPLIST_SCREENSHOT" hidden="1"/>
+						<quad size="30 21.75" halign="center" valign="center" opacity=".9" id="QUAD_MAPLIST_SCREENSHOT" hidden="0" z-index="1" pos="-4 8"/>
 					</frame>
 					
 					<label pos="25 -50" z-index="1" size="40 10" halign="center" valign="center2" text="???" textfont="BiryaniDemiBold" id="LABEL_MAPLIST_MAPNAME" textsize="2"/>

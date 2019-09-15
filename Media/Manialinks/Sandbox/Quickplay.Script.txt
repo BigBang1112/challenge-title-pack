@@ -197,6 +197,7 @@ Void UpdateLocalMapsFolder(Integer _Offset) {
 
 	if(SelectedMapInfo.MapUid != "") {
 		(Page.GetFirstChild("QUAD_MAPLIST_THUMBNAIL") as CMlQuad).ChangeImageUrl("file://Thumbnails/MapUid/"^SelectedMapInfo.MapUid);
+		(Page.GetFirstChild("QUAD_MAPLIST_SCREENSHOT") as CMlQuad).ChangeImageUrl("");
 		(Page.GetFirstChild("LABEL_MAPLIST_MAPNAME") as CMlLabel).SetText(SelectedMapInfo.Name);
 		(Page.GetFirstChild("ENTRY_MAPLIST_UID") as CMlEntry).Value = SelectedMapInfo.MapUid;
 
@@ -330,6 +331,7 @@ Void UpdateManiaExchange(Integer _Offset) {
 
 	if(SelectedMXTrackInfo.TrackUID != "") {
 		(Page.GetFirstChild("QUAD_MAPLIST_THUMBNAIL") as CMlQuad).ChangeImageUrl("https://tm.mania-exchange.com/tracks/thumbnail/"^SelectedMXTrackInfo.TrackID^"?.jpg");
+		(Page.GetFirstChild("QUAD_MAPLIST_SCREENSHOT") as CMlQuad).ChangeImageUrl("https://tm.mania-exchange.com/tracks/screenshot/small/"^SelectedMXTrackInfo.TrackID^"?.jpg");
 		(Page.GetFirstChild("LABEL_MAPLIST_MAPNAME") as CMlLabel).SetText("$l[https://tm.mania-exchange.com/tracks/"^SelectedMXTrackInfo.TrackID^"]"^SelectedMXTrackInfo.GbxMapName);
 		(Page.GetFirstChild("LABEL_MAPLIST_AUTHORNAME") as CMlLabel).SetText("{{{{by}}}} $l[https://tm.mania-exchange.com/user/profile/"^SelectedMXTrackInfo.UserID^"]"^SelectedMXTrackInfo.Username);
 		(Page.GetFirstChild("ENTRY_MAPLIST_UID") as CMlEntry).Value = SelectedMXTrackInfo.TrackUID;
@@ -435,6 +437,7 @@ Void UpdateMapManager(Integer _Offset) {
 
 	if(SelectedManagerMapInfo.Uid != "") {
 		(Page.GetFirstChild("QUAD_MAPLIST_THUMBNAIL") as CMlQuad).ChangeImageUrl(SelectedManagerMapInfo.ThumbnailUrl);
+		(Page.GetFirstChild("QUAD_MAPLIST_SCREENSHOT") as CMlQuad).ChangeImageUrl("");
 		(Page.GetFirstChild("LABEL_MAPLIST_MAPNAME") as CMlLabel).SetText("$l[https://www.maniaplanet.com/maps/manager/"^SelectedManagerMapInfo.Uid^"]"^SelectedManagerMapInfo.Name);
 		if(Nicknames.existskey(SelectedManagerMapInfo.AuthorLogin) && Nicknames[SelectedManagerMapInfo.AuthorLogin] != "")
 			(Page.GetFirstChild("LABEL_MAPLIST_AUTHORNAME") as CMlLabel).SetText("{{{{by}}}} "^Nicknames[SelectedManagerMapInfo.AuthorLogin]);
@@ -831,6 +834,7 @@ foreach(Event,PendingEvents) {
 						(Page.GetFirstChild("QUAD_LOCATION_MAP_MAPMANAGER") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
 
 						(Page.GetFirstChild("QUAD_MAPLIST_THUMBNAIL") as CMlQuad).ChangeImageUrl("https://tm.mania-exchange.com/tracks/thumbnail/"^SelectedMXTrackInfo.TrackID^"?.jpg");
+						(Page.GetFirstChild("QUAD_MAPLIST_SCREENSHOT") as CMlQuad).ChangeImageUrl("https://tm.mania-exchange.com/tracks/screenshot/small/"^SelectedMXTrackInfo.TrackID^"?.jpg");
 						(Page.GetFirstChild("LABEL_MAPLIST_MAPNAME") as CMlLabel).SetText(SelectedMXTrackInfo.GbxMapName);
 						if(SelectedMXTrackInfo.Username == "") (Page.GetFirstChild("LABEL_MAPLIST_AUTHORNAME") as CMlLabel).SetText("");
 						else (Page.GetFirstChild("LABEL_MAPLIST_AUTHORNAME") as CMlLabel).SetText("{{{{by}}}} "^SelectedMXTrackInfo.Username);
