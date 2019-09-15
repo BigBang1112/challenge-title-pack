@@ -26,7 +26,6 @@ Select(FirstNav);
 
 ***Loop***
 ***
-
 foreach(Event,PendingEvents) {
 	switch(Event.Type) {
 		case CMlScriptEvent::Type::MouseClick: {

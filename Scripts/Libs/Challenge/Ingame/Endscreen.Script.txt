@@ -1,0 +1,99 @@
+#Include "TextLib" as TextLib
+
+#Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+#Include "Libs/BigBang1112/Discord.Script.txt" as Discord
+
+#Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
+#Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
+#Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
+
+#Const C_Manialink "Media/Manialinks/Base/Ingame/Endscreen"
+
+declare Boolean RaceEnded;
+declare CAudioSource Music_Endscreen;
+
+Void Init() {
+	Music_Endscreen = Audio.CreateSound("file://Media/Musics/Never Give Up.ogg", 1.0, True, False, False);
+
+	Layers::Create("Endscreen", Manialink::FromFile(C_Manialink, True, ["Audio", "SlideText"], Settings::Get().Theme));
+}
+
+Void Event(CManiaAppEvent _Event) {
+	declare Text[] Exchange for This;
+
+	switch(_Event.Type) {
+		case CManiaAppPlaygroundEvent::EType::LayerCustomEvent: {
+			switch(_Event.CustomEventLayer) {
+				case Layers::Get("Endscreen"): {
+					switch(_Event.CustomEventType) {
+						case "Continue": {
+							SendCustomEvent("Continue", []);
+							Layers::Show("Outro");
+							Exchange.add("Rating_ShowInOutro");
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+Void Async() {
+	if(Discord::AsyncIsCompleted("Discord")) {
+		if(Discord::AsyncIsSuccessful("Discord")) {
+			Layers::SendEvent("Endscreen", "Discord", Discord::GetAsyncWidgetResult("Discord").tojson());
+		}
+		Discord::AsyncDestroy("Discord");
+	}
+}
+
+Void Loop() {
+	declare netread Boolean Server_EndRace for UI;
+
+	if(Server_EndRace != RaceEnded) {
+		if(Server_EndRace) {
+			declare netread Boolean Server_IsValidationMode for UI;
+			declare netread Race::SEndRaceInfo Server_EndRaceInfo for UI;
+			declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+			declare netread Integer Server_CurrentVehicle for UI;
+
+			declare metadata ModifierBase::SChMap OriginalMap for Map;
+
+			declare Text[] Exchange for This;
+			Exchange.add("HideIngame");
+
+			if(Server_IsValidationMode)
+				Layers::Hide("OpenMenu");
+
+			Music_Endscreen.Play();
+
+			declare Integer Time for Layers::Page("Endscreen");
+			Time = Server_EndRaceInfo.Time;
+
+			declare Text Map_Name for Layers::Page("Endscreen");
+			Map_Name = OriginalMap.Name;
+
+			declare Text Map_Env for Layers::Page("Endscreen");
+			Map_Env = OriginalMap.CollectionName;
+
+			declare Text Car for Layers::Page("Endscreen");
+			Car = Server_Vehicles[Server_CurrentVehicle].Name;
+
+			declare Text[] Challenges for Layers::Page("Endscreen");
+			Challenges = TextLib::Split("+", Map.MapStyle);
+
+			declare DiscordRequest = Discord::AsyncWidget("Discord", "311139012553211914");
+
+			Layers::SendEvent("Endscreen", "Update");
+			Layers::Show("Endscreen", True);
+		}
+		else {
+			Layers::Hide("Endscreen");
+			Layers::Hide("Flash");
+			Music_Endscreen.Stop();
+		}
+		RaceEnded = Server_EndRace;
+	}
+}

@@ -1,0 +1,96 @@
+#Include "TextLib" as TextLib
+
+#Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+#Include "Libs/BigBang1112/Discord.Script.txt" as Discord
+#Include "Libs/BigBang1112/Time.Script.txt" as Time
+
+#Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
+#Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
+#Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
+
+#Const C_Manialink "Media/Manialinks/Base/Ingame/Outro"
+
+declare Boolean IsOutro;
+
+Void Init() {
+	Layers::Create("Outro", Manialink::FromFile(C_Manialink, True, ["Audio", "Navigation"], Settings::Get().Theme));
+
+	declare netread Boolean Server_Outro for UI;
+	IsOutro = Server_Outro;
+}
+
+Void Start() {
+
+}
+
+Void Event(CManiaAppEvent _Event) {
+	switch(_Event.Type) {
+		case CManiaAppPlaygroundEvent::EType::LayerCustomEvent: {
+			switch(_Event.CustomEventLayer) {
+				case Layers::Get("Outro"): {
+					switch(_Event.CustomEventType) {
+						case "Continue": {
+							SendCustomEvent("Continue", []);
+							Layers::Hide("Outro");
+							Layers::Hide("Rating");
+
+							declare Text[] Exchange for This;
+							Exchange.add("Rating_ApplyRating");
+						}
+						case "Exit": {
+							declare Boolean Close for This;
+							Close = True;
+
+							declare Text[] Exchange for This;
+							Exchange.add("Rating_ApplyRating");
+						}
+						case "SaveReplay": {
+							declare metadata ModifierBase::SChMap OriginalMap for Map;
+							declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+							declare netread Integer Server_CurrentVehicle for UI;
+							declare netread Race::SEndRaceInfo Server_EndRaceInfo for UI;
+
+							Layers::Show("Replays", True);
+							Layers::Show("ReplayInfo", True);
+							Layers::SendEvent("ReplayInfo", "Mode", "Save");
+							Layers::SendEvent("ReplayInfo", "SetReplay", """{{{TextLib::StripFormatting(OriginalMap.Name)}}}_{{{Map.MapStyle}}}_{{{Server_Vehicles[Server_CurrentVehicle].Name}}}_({{{Time::TimeToFileNameSupportedText(Server_EndRaceInfo.Time)}}})""");
+							Layers::Hide("Outro");
+							Layers::Hide("Rating");
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+Void Loop() {
+	declare netread Boolean Server_Outro for UI;
+	declare netread Boolean Server_IsValidationMode for UI;
+
+	if(Server_Outro != IsOutro) {
+		if(Server_Outro) {
+			Layers::SendEvent("Outro", "Navigation", "True");
+		}
+		else {
+			Layers::SendEvent("Outro", "Navigation", "False");
+			
+			declare Text[] Exchange for This;
+			Exchange.add("ShowIngame");
+
+			if(Server_IsValidationMode)
+				Layers::Show("OpenMenu", True);
+			Layers::Show("Flash");
+			Layers::Hide("Endscreen");
+			Layers::Hide("Outro");
+			Layers::Hide("Rating");
+		}
+		IsOutro = Server_Outro;
+	}
+}
+
+Void Async() {
+
+}

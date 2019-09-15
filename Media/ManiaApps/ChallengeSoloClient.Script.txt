@@ -19,75 +19,25 @@
 #Include "Libs/Challenge/ReplayBrowser.Script.txt" as ReplayBrowser
 #Include "Libs/Challenge/Notification.Script.txt" as Notification
 #Include "Libs/Challenge/NotificationPresets.Script.txt" as NotificationPresets
-#Include "Libs/Challenge/Ingame/Rating.Script.txt" as Rating
+
+#Include "Libs/Challenge/Ingame/Vehicle.Script.txt" as Ingame_Vehicle
+#Include "Libs/Challenge/Ingame/Rating.Script.txt" as Ingame_Rating
+#Include "Libs/Challenge/Ingame/Map.Script.txt" as Ingame_Map
+#Include "Libs/Challenge/Ingame/Spotify.Script.txt" as Ingame_Spotify
+#Include "Libs/Challenge/Ingame/Dashboard.Script.txt" as Ingame_Dashboard
+#Include "Libs/Challenge/Ingame/Playsession.Script.txt" as Ingame_Playsession
+#Include "Libs/Challenge/Ingame/Endscreen.Script.txt" as Ingame_Endscreen
+#Include "Libs/Challenge/Ingame/Menu.Script.txt" as Ingame_Menu
+#Include "Libs/Challenge/Ingame/Flash.Script.txt" as Ingame_Flash
+#Include "Libs/Challenge/Ingame/Outro.Script.txt" as Ingame_Outro
+#Include "Libs/Challenge/Ingame/Stunts.Script.txt" as Ingame_Stunts
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
 #Include "Libs/Challenge/Ingame/Gamemodes/Stunt.Script.txt" as Stunt
 
 #Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
 
-#Const C_Manialink_Menu "Media/Manialinks/Base/Ingame/Menu"
-#Const C_Manialink_Vehicle "Media/Manialinks/Base/Ingame/Vehicle"
-#Const C_Manialink_Dashboard "Media/Manialinks/Base/Ingame/Dashboard"
-#Const C_Manialink_Stunts "Media/Manialinks/Base/Ingame/Stunts"
-#Const C_Manialink_Playsession "Media/Manialinks/Base/Ingame/Playsession"
-#Const C_Manialink_Map "Media/Manialinks/Base/Ingame/Map"
-#Const C_Manialink_Spotify "Media/Manialinks/Base/Ingame/Spotify"
-#Const C_Manialink_Endscreen "Media/Manialinks/Base/Ingame/Endscreen"
-#Const C_Manialink_Outro "Media/Manialinks/Base/Ingame/Outro"
-
-#Const C_Manialink_OpenMenu "Media/Manialinks/Base/Ingame/OpenMenu"
-
-#Const C_Manialink_Flash "Media/Manialinks/Base/Flash"
-
-#Struct SPlaysession {
-	Text Login;
-	Text Token;
-	Text MapUid;
-	Text Car;
-	Text Secret;
-	Text Action;
-	Text TitleId;
-}
-
-#Struct SAuthToken {
-	Text Value; // Token value
-	Integer Length;
-	Boolean Successful; // If token was received successfully
-	Boolean Verified; // If token was verified as valid
-	Integer Time; // How long the request took
-	Integer EndTime; // When request was finished
-	Integer Expires;
-	Text Response; // Short informational response
-}
-
-
-
 declare Boolean SkinNotified;
-
-Void ShowMenu() {
-
-}
-
-Boolean AsyncPlaysession(Text _Secret, Text _Action) {
-	declare SAuthToken INGAME_TOKEN for LocalUser;
-	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
-	declare netread Integer Server_CurrentVehicle for UI;
-
-	declare SPlaysession Playsession;
-	Playsession.Login = LocalUser.Login;
-	Playsession.Token = INGAME_TOKEN.Value;
-	Playsession.MapUid = Map.MapInfo.MapUid;
-	if(Server_CurrentVehicle == -1)
-		Playsession.Car = "";
-	else
-		Playsession.Car = Server_Vehicles[Server_CurrentVehicle].Name;
-	Playsession.Secret = _Secret;
-	Playsession.Action = _Action;
-	Playsession.TitleId = LoadedTitle.TitleId;
-
-	return Http::AsyncPOST("PLAYSESSION", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/ingame/playsession.php""", Playsession.tojson());
-}
 
 Void ShowIngame() {
 	Layers::Show("Dashboard", True);
@@ -110,190 +60,126 @@ Void HideIngame() {
 	Layers::Hide("Map");
 }
 
-Void UpdatePublicMap(Service_Status::SPublicMap _PublicMap) {
-	if(_PublicMap.Public) {
-		Layers::SendEvent("Playsession", "Public", _PublicMap.tojson());
+Void CheckStatus() {
+	if(!Time::Stamp_CreateOnce("STATUS", 10*1000)) {
+		if(Time::Stamp_Reached("STATUS")) {
+			declare Success = Service_Status::AsyncCheckStatus("STATUS", LocalUser);
+		}
 	}
-	else {
-		Layers::SendEvent("Playsession", "Private");
+
+	if(Service_Status::AsyncIsCompleted("STATUS")) {
+		if(Service_Status::AsyncIsSuccessful("STATUS")) {
+			declare Status = Service_Status::GetAsyncCheckStatusResult("STATUS", LocalUser);
+			
+			declare ContainsThisMap = False;
+			foreach(Playsession, Status.Titles[LoadedTitle.TitleId].Playsessions) {
+				if(Playsession.Map.Uid == Map.MapInfo.MapUid) {
+					ContainsThisMap = True;
+					Layers::SendEvent("Playsession", "Count", Playsession.Users.count^"");
+					Layers::SendEvent("Playsession", "Users", Playsession.Users.tojson());
+
+					declare Text PlaysessionSecret for This;
+					
+					declare netread Boolean Server_IsValidationMode for UI;
+					if(!Server_IsValidationMode)
+						declare Success = Ingame_Playsession::AsyncPlaysession(PlaysessionSecret, "Playing");
+				}
+			}
+
+			if(!ContainsThisMap) {
+				declare Service_Status::SPublicMap DeletedMap;
+				Ingame_Playsession::UpdatePublicMap(DeletedMap);
+			}
+		}
+		Service_Status::AsyncDestroy("STATUS");
 	}
 }
 
-Text TimeToTextWithMilli(Integer _Time) {
-	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
-}
+Void Init() {
+	Dictionary::SetTranslationFolder("Media/Translations");
+	Dictionary::SetTranslationLanguage(Settings::Get().Language);
 
-Text TimeToFileNameSupportedText(Integer _Time) {
-	return TextLib::Replace(TextLib::Replace(TimeToTextWithMilli(_Time), ":", "'"), ".", "''");
-}
-
-Void ApplyRating() {
 	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
-	declare netread Integer Server_CurrentVehicle for UI;
+	declare netread Vehicle::SVehicle Server_MapVehicle for UI;
 
-	declare Real DifficultyValue for Layers::Page("Rating");
-	declare Real QualityValue for Layers::Page("Rating");
-	declare Text CHALLENGE_TOKEN for LocalUser;
-
-	declare Rating::SRateParams Params;
-	Params.UserToken = CHALLENGE_TOKEN;
-	Params.MapUid = Map.MapInfo.MapUid;
-	Params.Car = Server_Vehicles[Server_CurrentVehicle].Name;
-	Params.Difficulty = DifficultyValue;
-	Params.Quality = QualityValue;
-
-	declare Success = Http::AsyncPOST("RATE", Service_Status::LastStatus(LocalUser).Global.Service^"/ingame/rate.php", Params.tojson());
-}
-
-Void UpdateRating(Service_Status::SPublicMap _PublicMap) {
-	declare Real DifficultyValue for Layers::Page("Rating");
-	declare Real AverageDifficultyValue for Layers::Page("Rating");
-	declare Integer AverageDifficultyCount for Layers::Page("Rating");
-	declare Real QualityValue for Layers::Page("Rating");
-	declare Real AverageQualityValue for Layers::Page("Rating");
-	declare Integer AverageQualityCount for Layers::Page("Rating");
-
-	AverageDifficultyValue = _PublicMap.Rating.Difficulty.AverageWithoutYou;
-	AverageDifficultyCount = _PublicMap.Rating.Difficulty.Count;
-	AverageQualityValue = _PublicMap.Rating.Quality.AverageWithoutYou;
-	AverageQualityCount = _PublicMap.Rating.Quality.Count;
-	DifficultyValue = _PublicMap.Rating.Difficulty.User;
-	QualityValue = _PublicMap.Rating.Quality.User;
+	wait(Server_Vehicles.count > 0 && Server_MapVehicle.File != "");
 }
 
 ***Init***
 ***
-Dictionary::SetTranslationFolder("Media/Translations");
-Dictionary::SetTranslationLanguage(Settings::Get().Language);
+declare netwrite Integer Client_VehicleIndex for UI;
 
-declare netread Boolean Server_IsValidationMode for UI;
 declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
 declare netread Vehicle::SVehicle Server_MapVehicle for UI;
-declare netread Race::SEndRaceInfo Server_EndRaceInfo for UI;
+declare netread Integer Server_CurrentVehicle for UI;
+declare netread Integer Server_VehicleLock for UI;
+declare netread Boolean Server_IsValidationMode for UI;
 
-wait(Server_Vehicles.count > 0 && Server_MapVehicle.File != "");
+declare metadata ModifierBase::SChMap OriginalMap for Map;
 
-declare MapVehicle = -1;
-for(I,0,Server_Vehicles.count-1) {
-	declare Vehicle = Server_Vehicles[I];
-	if(Vehicle.File == Server_MapVehicle.File) {
-		MapVehicle = I;
-	}
-}
-
-declare Music_Endscreen = Audio.CreateSound("file://Media/Musics/Never Give Up.ogg", 1.0, True, False, False);
-
-declare VehicleML = "";
-for(I, 0, Server_Vehicles.count-1) {
-	declare Vehicle = Server_Vehicles[I];
-	VehicleML ^= """<frame pos="0 {{{-I*20+MapVehicle*20}}}" data-id="{{{I}}}">
-	<frame z-index="-1">
-		<quad z-index="0" size="80 19" valign="center" halign="center" style="Bgs1" substyle="BgCardList" opacity="1"/>
-		<quad z-index="1" size="80 19" valign="center" halign="center" style="Bgs1" substyle="BgGradV" opacity="1"/>
-	</frame>
-	<quad z-index="0" size="80 19" id="QUAD_VEHICLE" valign="center" halign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5"/>
-	<label pos="0 -0.5" z-index="1" size="70 10" text="{{{Vehicle.Name}}}" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" opacity="1"/>
-	<label pos="37.5 -8" z-index="1" size="75 5" text="{{{Dictionary::Get("ORIGINAL")}}}" halign="right" valign="bottom" textfont="Oswald" textsize="2" textcolor="FF0" id="LABEL_ORIGINAL" hidden="1"/>
-</frame>""";
-}
-
-declare VehicleManialink = Manialink::FromFile(C_Manialink_Vehicle, True, ["Audio"], Settings::Get().Theme);
-VehicleManialink = TextLib::Replace(VehicleManialink, """<frame id="FRAME_INNER_VEHICLES"/>""",
-"""<quad z-index="-1" pos="0 {{{-Server_Vehicles.count*20/2+MapVehicle*20}}}" size="220 {{{(Server_Vehicles.count)*20+160}}}" halign="center" valign="center" style="Bgs1InRace" substyle="BgEmpty" scriptevents="1"/>
-<frame id="FRAME_INNER_VEHICLES">{{{VehicleML}}}</frame>""");
-
-Layers::Create("Menu", Manialink::FromFile(C_Manialink_Menu, True, ["Audio", "SlideText", "Navigation"], Settings::Get().Theme));
-Layers::Create("Vehicle", VehicleManialink);
-Layers::Create("Dashboard", Manialink::FromFile(C_Manialink_Dashboard, True, ["Audio", "TextAnimation"], Settings::Get().Theme));
-Layers::Create("Stunts", Manialink::FromFile(C_Manialink_Stunts, True, ["Audio", "TextAnimation"], Settings::Get().Theme));
-Layers::Create("Playsession", Manialink::FromFile(C_Manialink_Playsession, True, ["Audio", "TextAnimation"], Settings::Get().Theme));
-Layers::Create("Spotify", Manialink::FromFile(C_Manialink_Spotify, True, ["Audio"], Settings::Get().Theme));
-Layers::Create("Map", Manialink::FromFile(C_Manialink_Map, True, ["Audio", "SlideText"], Settings::Get().Theme));
-Layers::Create("Endscreen", Manialink::FromFile(C_Manialink_Endscreen, True, ["Audio", "SlideText"], Settings::Get().Theme));
-Layers::Create("Outro", Manialink::FromFile(C_Manialink_Outro, True, ["Audio", "Navigation"], Settings::Get().Theme));
-
-Layers::Create("Flash", Manialink::FromFile(C_Manialink_Flash, True, [], Settings::Get().Theme));
+Init();
+yield;
+Ingame_Map::Init();
+yield;
+Ingame_Spotify::Init();
+yield;
+Ingame_Dashboard::Init();
+yield;
+Ingame_Menu::Init();
+yield;
+Ingame_Flash::Init();
+yield;
+Ingame_Outro::Init();
+yield;
+Ingame_Playsession::Init();
+yield;
+Ingame_Stunts::Init();
+yield;
+Ingame_Rating::Init();
+yield;
+Ingame_Vehicle::Init();
+yield;
+Ingame_Endscreen::Init();
+yield;
 
 ReplayBrowser::Init();
+yield;
 Notification::Init();
-Rating::Init();
 ***
 
 ***Start***
 ***
-declare Close = False;
+declare Boolean Close for This = False;
+declare Text PlaysessionSecret for This;
+SkinNotified = False;
 
-if(Server_IsValidationMode) {
-	Layers::Create("OpenMenu", Manialink::FromFile(C_Manialink_OpenMenu, True, ["Audio"], Settings::Get().Theme));
-}
-else {
-	Layers::SetType("Menu", CUILayer::EUILayerType::InGameMenu);
-	Layers::SetType("Vehicle", CUILayer::EUILayerType::InGameMenu);
-	Layers::SendEvent("Menu", "Open");
-}
+Ingame_Menu::Start();
+Ingame_Playsession::Start();
+Ingame_Map::Start();
+Ingame_Rating::Start();
+Ingame_Outro::Start();
+Ingame_Vehicle::Start();
 
-Layers::Show("Menu", True);
-Layers::Show("Vehicle", True);
-Layers::SendEvent("Menu", "Navigation", "True");
+declare Boolean IsPauseMenu for Layers::Page("Menu");
+declare Boolean IsBlurred for Layers::Page("Menu");
 
-declare Integer VehicleIndex for Layers::Get("Vehicle").LocalPage;
-declare Integer MapVehicleIndex for Layers::Get("Vehicle").LocalPage;
-MapVehicleIndex = MapVehicle;
-VehicleIndex = MapVehicleIndex;
-declare OldVehicleIndex = VehicleIndex;
+Ingame_Menu::CheckMode();
 
-declare Integer VehicleCount for Layers::Get("Vehicle").LocalPage;
-VehicleCount = Server_Vehicles.count;
-
-declare SAuthToken INGAME_TOKEN for LocalUser;
-
-declare Service_Status::SPublicMap PublicMap;
-declare ReqMap = Http::SyncGET("""{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}""");
-declare JsonSuccess = PublicMap.fromjson(ReqMap.Result);
-
-UpdatePublicMap(PublicMap);
-
-declare netread Integer Server_VehicleLock for UI;
-declare netread Integer Server_CurrentVehicle for UI;
-declare Integer OldVehicle;
-
-declare metadata ModifierBase::SChMap OriginalMap for Map;
-Layers::SendEvent("Menu", "MapName", OriginalMap.Name);
-Layers::SendEvent("Menu", "Challenge", TextLib::ToUpperCase(TextLib::Replace(Map.MapStyle, "+", " + ")));
-Layers::SendEvent("Map", "MapName", OriginalMap.Name);
-Layers::SendEvent("Map", "Challenge", TextLib::ToUpperCase(TextLib::Replace(Map.MapStyle, "+", " + ")));
-
-//sleep(3000);
-//log(Http::SyncGET("""{{{Backend::GetHost()}}}/ingame/playsession?login={{{Playsession.Login}}}&token={{{Playsession.Token}}}&mapuid={{{Playsession.MapUid}}}&car=StadiumCar&secret={{{Playsession.Secret}}}&action=succmydic""").Result);
-
-declare netwrite Integer Client_VehicleIndex for UI;
-Client_VehicleIndex = VehicleIndex;
-
-declare Integer VehicleLock for Layers::Get("Vehicle").LocalPage;
-
-declare Boolean IsPauseMenu for Layers::Get("Menu").LocalPage;
-declare Boolean IsBlurred for Layers::Get("Menu").LocalPage;
+Notification::Start(<157.5,40.>);
 
 declare netread Boolean Server_EndRace for UI;
 declare RaceEnded = Server_EndRace;
 
 declare netread Boolean Server_Outro for UI;
-declare IsOutro = Server_Outro;
 
 declare netread Stunt::SStunt Server_Stunt for UI;
 declare LastStunt = Server_Stunt;
 
-declare PlaysessionSecret = Random::String(32);
-if(PublicMap.Public && !Server_IsValidationMode) AsyncPlaysession(PlaysessionSecret, "Playing");
+declare Integer VehicleIndex for Layers::Page("Vehicle");
+declare Integer OldVehicleIndex for This;
+OldVehicleIndex = VehicleIndex;
 
-if(Server_IsValidationMode) Layers::SendEvent("Playsession", "DisablePublish");
-
-Notification::Start(<157.5,40.>);
-Rating::Start();
-
-SkinNotified = False;
-
-UpdateRating(PublicMap);
+declare OldVehicle = -1;
 ***
 
 ***Loop***
@@ -303,6 +189,8 @@ foreach(Event, PendingEvents) {
 		case CManiaAppPlaygroundEvent::EType::LayerCustomEvent: {
 			switch(Event.CustomEventType) {
 				case "Start": {
+					declare netread Boolean Server_IsValidationMode for UI;
+
 					declare Force = (Event.CustomEventData[0] == "True");
 					SendCustomEvent("Start", [Force^""]);
 					
@@ -323,98 +211,13 @@ foreach(Event, PendingEvents) {
 				}
 			}
 			switch(Event.CustomEventLayer) {
-				case Layers::Get("Menu"): {
-					switch(Event.CustomEventType) {
-						case "Open": {
-							if(!Server_EndRace && !Server_Outro) {
-								HideIngame();
-								if(Server_IsValidationMode)
-									Layers::Hide("OpenMenu");
-								Layers::Hide("Flash");
-
-								Layers::SendEvent("Menu", "Navigation", "True");
-							}
-						}
-						case "Close": {
-							if(!Server_EndRace && !Server_Outro) {
-								ShowIngame();
-								if(Server_IsValidationMode)
-									Layers::Show("OpenMenu", True);
-								Layers::Show("Flash", True);
-							}
-						}
-						case "Exit": {
-							Close = True;
-						}
-					}
-				}
-				case Layers::Get("Map"): {
-					switch(Event.CustomEventType) {
-						case "RateCombination": {
-							if(PublicMap.Public)
-								Rating::Show();
-						}
-					}
-				}
-				case Layers::Get("OpenMenu"): {
-					switch(Event.CustomEventType) {
-						case "Menu": {
-							SendCustomEvent("Menu", []);
-
-							Layers::Show("Menu", True);
-							Layers::Show("Vehicle", True);
-
-							HideIngame();
-
-							Layers::Hide("OpenMenu");
-
-							Layers::Hide("Flash");
-						}
-					}
-				}
-				case Layers::Get("Endscreen"): {
-					switch(Event.CustomEventType) {
-						case "Continue": {
-							SendCustomEvent("Continue", []);
-							Layers::Show("Outro");
-
-							if(PublicMap.Public)
-								Rating::ShowInOutro();
-						}
-					}
-				}
-				case Layers::Get("Outro"): {
-					switch(Event.CustomEventType) {
-						case "Continue": {
-							SendCustomEvent("Continue", []);
-							Layers::Hide("Outro");
-							Layers::Hide("Rating");
-
-							ApplyRating();
-						}
-						case "Exit": {
-							Close = True;
-
-							ApplyRating();
-						}
-						case "SaveReplay": {
-							Layers::Show("Replays", True);
-							Layers::Show("ReplayInfo", True);
-							Layers::SendEvent("ReplayInfo", "Mode", "Save");
-							Layers::SendEvent("ReplayInfo", "SetReplay", """{{{TextLib::StripFormatting(OriginalMap.Name)}}}_{{{Map.MapStyle}}}_{{{Server_Vehicles[Server_CurrentVehicle].Name}}}_({{{TimeToFileNameSupportedText(Server_EndRaceInfo.Time)}}})""");
-							Layers::Hide("Outro");
-							Layers::Hide("Rating");
-						}
-					}
-				}
 				case Layers::Get("ReplayInfo"): {
 					switch(Event.CustomEventType) {
 						case "Back": {
 							Layers::Hide("Replays", True);
 							Layers::Hide("ReplayInfo", True);
 							Layers::Show("Outro", True);
-							if(PublicMap.Public)
-								Rating::ShowInOutro();
+							Ingame_Rating::ShowInOutro();
 						}
 						case "Save": {
 							declare FilePath = Event.CustomEventData[0];
@@ -422,40 +225,7 @@ foreach(Event, PendingEvents) {
 							Layers::Hide("Replays", True);
 							Layers::Hide("ReplayInfo", True);
 							Layers::Show("Outro", True);
-							if(PublicMap.Public)
-								Rating::ShowInOutro();
-						}
-					}
-				}
-				case Layers::Get("Playsession"): {
-					switch(Event.CustomEventType) {
-						case "PublishMap": {
-							declare Service_Map::SPublishParams Params;
-							Params.Login = LocalUser.Login;
-							Params.Token = INGAME_TOKEN.Value;
-							Params.MapUid = Map.MapInfo.MapUid;
-							Params.MapName = Map.MapName;
-							Params.MapAuthor = Map.AuthorNickName;
-							Params.OriginalMapUid = OriginalMap.MapUid;
-							Params.OriginalMapName = OriginalMap.Name;
-							Params.OriginalMapAuthor = OriginalMap.AuthorNickName;
-							Params.OriginalGame = "";
-							Params.TitleId = LoadedTitle.TitleId;
-							Params.Modifiers = [];
-
-							declare Success = Service_Map::AsyncPublish("PUBLISH", LocalUser, Params);
-						}
-					}
-				}
-				case Layers::Get("Rating"): {
-					switch(Event.CustomEventType) {
-						case "Apply": {
-							ApplyRating();
-
-							Layers::Hide("Rating");
-						}
-						case "Exit": {
-							Layers::Hide("Rating");
+							Ingame_Rating::ShowInOutro();
 						}
 					}
 				}
@@ -465,21 +235,56 @@ foreach(Event, PendingEvents) {
 
 	ReplayBrowser::Event(Event);
 	Notification::Event(Event);
-	Rating::Event(Event);
+
+	Ingame_Flash::Event(Event);
+	Ingame_Vehicle::Event(Event);
+	Ingame_Rating::Event(Event);
+	Ingame_Map::Event(Event);
+	Ingame_Spotify::Event(Event);
+	Ingame_Dashboard::Event(Event);
+	Ingame_Endscreen::Event(Event);
+	Ingame_Menu::Event(Event);
+	Ingame_Outro::Event(Event);
+	Ingame_Playsession::Event(Event);
 }
 
-if(Server_CurrentVehicle >= 0) {
+declare Text[] Exchange for This;
+
+for(I,0,Exchange.count-1) {
+	if(Exchange.existskey(I)) {
+		switch(Exchange[I]) {
+			case "Rating_Show": {
+				Ingame_Rating::Show();
+			}
+			case "Rating_ShowInOutro": {
+				Ingame_Rating::ShowInOutro();
+			}
+			case "Rating_ApplyRating": {
+				Ingame_Rating::ApplyRating();
+			}
+			case "ShowIngame": {
+				ShowIngame();
+			}
+			case "HideIngame": {
+				HideIngame();
+			}
+		}
+		declare Removed = Exchange.removekey(I);
+	}
+}
+
+if(Server_CurrentVehicle >= 0) { // If vehicle is selected
 	Layers::SendEvent("Menu", "Car", Server_Vehicles[Server_CurrentVehicle].Name);
 	Layers::SendEvent("Map", "Car", Server_Vehicles[Server_CurrentVehicle].Name);
 	Map.MapName = """({{{OriginalMap.CollectionName}}}) {{{OriginalMap.Name}}}.{{{TextLib::Replace(Map.MapStyle, "+", "")}}} [{{{Server_Vehicles[Server_CurrentVehicle].Name}}}]""";
 }
-else {
+else { // If vehicle is not selected
 	Map.MapName = """({{{OriginalMap.CollectionName}}}) {{{OriginalMap.Name}}}.{{{TextLib::Replace(Map.MapStyle, "+", "")}}}""";
 	Layers::SendEvent("Menu", "Car", "");
 	Layers::SendEvent("Map", "Car", "");
 }
 
-if(VehicleIndex != OldVehicleIndex) {
+if(VehicleIndex != OldVehicleIndex) { // If vehicle was changed
 	Client_VehicleIndex = VehicleIndex;
 	SendCustomEvent("VehicleIndexChanged", [VehicleIndex^""]);
 	OldVehicleIndex = VehicleIndex;
@@ -487,14 +292,13 @@ if(VehicleIndex != OldVehicleIndex) {
 	if(Server_VehicleLock == -1) IsBlurred = False;
 }
 
-if(Server_CurrentVehicle != OldVehicle) {
+if(Server_CurrentVehicle != OldVehicle) { // If server vehicle was changed
 	declare Text CHALLENGE_TOKEN for LocalUser;
-	if(Server_CurrentVehicle >= 0 && PublicMap.Public)
-		declare Success = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&car={{{Server_Vehicles[Server_CurrentVehicle].Name}}}""", CHALLENGE_TOKEN);
+	declare Success = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&car={{{Server_Vehicles[Server_CurrentVehicle].Name}}}""", CHALLENGE_TOKEN);
 	OldVehicle = Server_CurrentVehicle;
 }
 
-if(Server_Stunt.Timestamp != LastStunt.Timestamp) {
+if(Server_Stunt.Timestamp != LastStunt.Timestamp) { // If new stunt happened
 	declare Stunt::SStunt Stunt;
 	Stunt = Server_Stunt;
 	Stunt.Figure = Dictionary::Get(Stunt.Figure);
@@ -513,65 +317,9 @@ if(!Server_IsValidationMode) { // In validation mode, Menu and Vehicle layers ar
 	}
 }
 
-if(Server_EndRace != RaceEnded) {
-	if(Server_EndRace) {
-		HideIngame();
-
-		if(Server_IsValidationMode)
-			Layers::Hide("OpenMenu");
-
-		Music_Endscreen.Play();
-
-		declare Integer Time for Layers::Get("Endscreen").LocalPage;
-		Time = Server_EndRaceInfo.Time;
-
-		declare Text Map_Name for Layers::Get("Endscreen").LocalPage;
-		Map_Name = OriginalMap.Name;
-
-		declare Text Map_Env for Layers::Get("Endscreen").LocalPage;
-		Map_Env = OriginalMap.CollectionName;
-
-		declare Text Car for Layers::Get("Endscreen").LocalPage;
-		Car = Server_Vehicles[Server_CurrentVehicle].Name;
-
-		declare Text[] Challenges for Layers::Get("Endscreen").LocalPage;
-		Challenges = TextLib::Split("+", Map.MapStyle);
-
-		declare DiscordRequest = Discord::AsyncWidget("Discord", "311139012553211914");
-
-		Layers::SendEvent("Endscreen", "Update");
-		Layers::Show("Endscreen", True);
-	}
-	else {
-		Layers::Hide("Endscreen");
-		Layers::Hide("Flash");
-		Music_Endscreen.Stop();
-	}
-	RaceEnded = Server_EndRace;
-}
-
-if(Server_Outro != IsOutro) {
-	if(Server_Outro) {
-		Layers::SendEvent("Outro", "Navigation", "True");
-	}
-	else {
-		Layers::SendEvent("Outro", "Navigation", "False");
-		ShowIngame();
-		if(Server_IsValidationMode)
-			Layers::Show("OpenMenu", True);
-		Layers::Show("Flash");
-		Layers::Hide("Endscreen");
-		Layers::Hide("Outro");
-		Layers::Hide("Rating");
-	}
-	IsOutro = Server_Outro;
-}
-
-VehicleLock = Server_VehicleLock;
-
 if(Close) {
 	if(!Server_IsValidationMode) {
-		declare Success = AsyncPlaysession(PlaysessionSecret, "Close");
+		declare Success = Ingame_Playsession::AsyncPlaysession(PlaysessionSecret, "Close");
 		wait(Service_Status::AsyncIsCompleted("PLAYSESSION"));
 	}
 	Playground.QuitServer(True);
@@ -579,79 +327,18 @@ if(Close) {
 	Close = False;
 }
 
-if(Discord::AsyncIsCompleted("Discord")) {
-	if(Discord::AsyncIsSuccessful("Discord")) {
-		Layers::SendEvent("Endscreen", "Discord", Discord::GetAsyncWidgetResult("Discord").tojson());
-	}
-	Discord::AsyncDestroy("Discord");
-}
+CheckStatus();
 
-if(!Time::Stamp_CreateOnce("STATUS", 10*1000)) {
-	if(Time::Stamp_Reached("STATUS")) {
-		declare Success = Service_Status::AsyncCheckStatus("STATUS", LocalUser);
-	}
-}
+Ingame_Endscreen::Loop();
+Ingame_Outro::Loop();
+Ingame_Vehicle::Loop();
 
-if(Service_Status::AsyncIsCompleted("STATUS")) {
-	if(Service_Status::AsyncIsSuccessful("STATUS")) {
-		declare Status = Service_Status::GetAsyncCheckStatusResult("STATUS", LocalUser);
-
-		declare ContainsThisMap = False;
-		foreach(Playsession, Status.Titles[LoadedTitle.TitleId].Playsessions) {
-			if(Playsession.Map.Uid == Map.MapInfo.MapUid) {
-				ContainsThisMap = True;
-				Layers::SendEvent("Playsession", "Count", Playsession.Users.count^"");
-				Layers::SendEvent("Playsession", "Users", Playsession.Users.tojson());
-				
-				if(!Server_IsValidationMode)
-					declare Success = AsyncPlaysession(PlaysessionSecret, "Playing");
-			}
-		}
-
-		if(!ContainsThisMap) {
-			declare Service_Status::SPublicMap DeletedMap;
-			PublicMap = DeletedMap;
-			UpdatePublicMap(DeletedMap);
-		}
-	}
-	Service_Status::AsyncDestroy("STATUS");
-}
-
-if(Service_Map::AsyncIsCompleted("PUBLISH")) {
-	if(Service_Map::AsyncIsSuccessful("PUBLISH")) {
-		PublicMap = Service_Map::GetAsyncPublishResult("PUBLISH");
-		UpdatePublicMap(PublicMap);
-		UpdateRating(PublicMap);
-		PlaysessionSecret = Random::String(32);
-		AsyncPlaysession(PlaysessionSecret, "Playing");
-	}
-	Service_Map::AsyncDestroy("PUBLISH");
-}
-
-if(Http::IsCompleted("PLAYSESSION")) {
-	if(Http::IsSuccessful("PLAYSESSION")) {
-		log(Http::GetResult("PLAYSESSION"));
-	}
-	Http::Destroy("PLAYSESSION");
-}
-
-if(Http::IsCompleted("RATE")) {
-	if(Http::IsSuccessful("RATE")) {
-		log(Http::GetResult("RATE"));
-	}
-	Http::Destroy("RATE");
-}
-
-if(Http::IsCompleted("MAP")) {
-	if(Http::IsSuccessful("MAP")) {
-		declare JsonSuccess = PublicMap.fromjson(Http::GetResult("MAP"));
-		UpdateRating(PublicMap);
-	}
-	Http::Destroy("MAP");
-}
+Ingame_Rating::Async();
+Ingame_Playsession::Async();
+Ingame_Endscreen::Async();
+Ingame_Outro::Async();
 
 ReplayBrowser::Async();
-Rating::Async();
 ***
 
 Void Main() {

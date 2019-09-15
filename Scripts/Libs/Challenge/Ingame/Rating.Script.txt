@@ -4,6 +4,10 @@
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 
+#Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
+
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
+
 #Struct SRateParams {
 	Text UserToken;
 	Text MapUid;
@@ -44,6 +48,41 @@ Text[] GetQualityNames() {
 	];
 }
 
+Void ApplyRating() {
+	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+	declare netread Integer Server_CurrentVehicle for UI;
+
+	declare Real DifficultyValue for Layers::Page("Rating");
+	declare Real QualityValue for Layers::Page("Rating");
+	declare Text CHALLENGE_TOKEN for LocalUser;
+
+	declare SRateParams Params;
+	Params.UserToken = CHALLENGE_TOKEN;
+	Params.MapUid = Map.MapInfo.MapUid;
+	Params.Car = Server_Vehicles[Server_CurrentVehicle].Name;
+	Params.Difficulty = DifficultyValue;
+	Params.Quality = QualityValue;
+
+	declare Success = Http::AsyncPOST("RATE", Service_Status::LastStatus(LocalUser).Global.Service^"/ingame/rate.php", Params.tojson());
+}
+
+Void UpdateRating(Service_Status::SPublicMap _PublicMap) {
+	declare Real DifficultyValue for Layers::Page("Rating");
+	declare Real AverageDifficultyValue for Layers::Page("Rating");
+	declare Integer AverageDifficultyCount for Layers::Page("Rating");
+	declare Real QualityValue for Layers::Page("Rating");
+	declare Real AverageQualityValue for Layers::Page("Rating");
+	declare Integer AverageQualityCount for Layers::Page("Rating");
+
+	DifficultyValue = _PublicMap.Rating.Difficulty.User;
+	QualityValue = _PublicMap.Rating.Quality.User;
+
+	AverageDifficultyValue = _PublicMap.Rating.Difficulty.AverageWithoutYou;
+	AverageDifficultyCount = _PublicMap.Rating.Difficulty.Count;
+	AverageQualityValue = _PublicMap.Rating.Quality.AverageWithoutYou;
+	AverageQualityCount = _PublicMap.Rating.Quality.Count;
+}
+
 Void Init() {
 	Layers::Create("Rating", Manialink::FromFile(C_Manialink, True, ["Audio"], Settings::Get().Theme));
 
@@ -77,19 +116,47 @@ Void Show() {
 }
 
 Void Start() {
-	
+	declare Service_Status::SPublicMap PublicMap for This;
+	UpdateRating(PublicMap);
 }
 
 Void Event(CManiaAppEvent _Event) {
-	declare Event <=> _Event;
+	switch(_Event.Type) {
+		case CManiaAppPlaygroundEvent::EType::LayerCustomEvent: {
+			switch(_Event.CustomEventLayer) {
+				case Layers::Get("Rating"): {
+					switch(_Event.CustomEventType) {
+						case "Apply": {
+							ApplyRating();
 
-	if(Event.Type == CManiaAppEvent::EType::LayerCustomEvent) {
-		
+							Layers::Hide("Rating");
+						}
+						case "Exit": {
+							Layers::Hide("Rating");
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
 Void Async() {
-	
+	if(Http::IsCompleted("RATE")) {
+		if(Http::IsSuccessful("RATE")) {
+			log(Http::GetResult("RATE")); // TODO: give response that the request was successful
+		}
+		Http::Destroy("RATE");
+	}
+
+	if(Http::IsCompleted("MAP")) {
+		if(Http::IsSuccessful("MAP")) {
+			declare Service_Status::SPublicMap PublicMap for This;
+			declare JsonSuccess = PublicMap.fromjson(Http::GetResult("MAP"));
+			UpdateRating(PublicMap);
+		}
+		Http::Destroy("MAP");
+	}
 }
 
 Void Loop() {

@@ -3,8 +3,7 @@
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
 #Struct SPublishParams {
-	Text Login;
-	Text Token;
+	Text UserToken;
 	Text MapUid;
 	Text MapName;
 	Text MapAuthor;

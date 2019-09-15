@@ -1,0 +1,38 @@
+
+#Include "TextLib" as TextLib
+
+#Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+
+#Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
+
+#Const C_Manialink "Media/Manialinks/Base/Ingame/Map"
+
+Void Init() {
+	Layers::Create("Map", Manialink::FromFile(C_Manialink, True, ["Audio", "SlideText"], Settings::Get().Theme));
+}
+
+Void Start() {
+	declare metadata ModifierBase::SChMap OriginalMap for Map;
+	Layers::SendEvent("Map", "MapName", OriginalMap.Name);
+	Layers::SendEvent("Map", "Challenge", TextLib::ToUpperCase(TextLib::Replace(Map.MapStyle, "+", " + ")));
+}
+
+Void Event(CManiaAppEvent _Event) {
+	declare Text[] Exchange for This;
+
+	switch(_Event.Type) {
+		case CManiaAppPlaygroundEvent::EType::LayerCustomEvent: {
+			switch(_Event.CustomEventLayer) {
+				case Layers::Get("Map"): {
+					switch(_Event.CustomEventType) {
+						case "RateCombination": {
+							Exchange.add("Rating_Show");
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,90 @@
+#Include "TextLib" as TextLib
+
+#Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
+#Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
+#Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+
+#Const C_Manialink "Media/Manialinks/Base/Ingame/Vehicle"
+
+declare Integer MapVehicle;
+
+Void Init() {
+	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+	declare netread Vehicle::SVehicle Server_MapVehicle for UI;
+
+	MapVehicle = -1;
+	for(I,0,Server_Vehicles.count-1) {
+		declare Vehicle = Server_Vehicles[I];
+		if(Vehicle.File == Server_MapVehicle.File) {
+			MapVehicle = I;
+		}
+	}
+
+	declare VehicleML = "";
+	for(I, 0, Server_Vehicles.count-1) {
+		declare Vehicle = Server_Vehicles[I];
+		VehicleML ^= """<frame pos="0 {{{-I*20+MapVehicle*20}}}" data-id="{{{I}}}">
+		<frame z-index="-1">
+			<quad z-index="0" size="80 19" valign="center" halign="center" style="Bgs1" substyle="BgCardList" opacity="1"/>
+			<quad z-index="1" size="80 19" valign="center" halign="center" style="Bgs1" substyle="BgGradV" opacity="1"/>
+		</frame>
+		<quad z-index="0" size="80 19" id="QUAD_VEHICLE" valign="center" halign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5"/>
+		<label pos="0 -0.5" z-index="1" size="70 10" text="{{{Vehicle.Name}}}" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" opacity="1"/>
+		<label pos="37.5 -8" z-index="1" size="75 5" text="{{{Dictionary::Get("ORIGINAL")}}}" halign="right" valign="bottom" textfont="Oswald" textsize="2" textcolor="FF0" id="LABEL_ORIGINAL" hidden="1"/>
+	</frame>""";
+	}
+
+	declare VehicleManialink = Manialink::FromFile(C_Manialink, True, ["Audio"], Settings::Get().Theme);
+	VehicleManialink = TextLib::Replace(VehicleManialink, """<frame id="FRAME_INNER_VEHICLES"/>""",
+	"""<quad z-index="-1" pos="0 {{{-Server_Vehicles.count*20/2+MapVehicle*20}}}" size="220 {{{(Server_Vehicles.count)*20+160}}}" halign="center" valign="center" style="Bgs1InRace" substyle="BgEmpty" scriptevents="1"/>
+	<frame id="FRAME_INNER_VEHICLES">{{{VehicleML}}}</frame>""");
+
+	Layers::Create("Vehicle", VehicleManialink);
+}
+
+Void Start() {
+	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+
+	declare Integer VehicleIndex for Layers::Page("Vehicle");
+	declare Integer MapVehicleIndex for Layers::Page("Vehicle");
+	VehicleIndex = MapVehicleIndex;
+	MapVehicleIndex = MapVehicle;
+
+	declare OldVehicleIndex = VehicleIndex;
+
+	declare Integer VehicleCount for Layers::Page("Vehicle");
+	VehicleCount = Server_Vehicles.count;
+
+	declare netwrite Integer Client_VehicleIndex for UI;
+	Client_VehicleIndex = VehicleIndex;
+
+	Layers::Show("Vehicle", True);
+}
+
+Void Event(CManiaAppEvent _Event) {
+	switch(_Event.Type) {
+		case CManiaAppPlaygroundEvent::EType::LayerCustomEvent: {
+			
+		}
+	}
+}
+
+Void Loop() {
+	declare netread Integer Server_VehicleLock for UI;
+	declare Integer VehicleLock for Layers::Page("Vehicle");
+	VehicleLock = Server_VehicleLock;
+
+	declare netwrite Integer Client_VehicleIndex for UI;
+
+	declare Integer VehicleIndex for Layers::Page("Vehicle");
+	declare Integer OldVehicleIndex for This;
+
+	if(VehicleIndex != OldVehicleIndex) {
+		log("K?");
+		Client_VehicleIndex = VehicleIndex;
+		SendCustomEvent("VehicleIndexChanged", [VehicleIndex^""]);
+		OldVehicleIndex = VehicleIndex;
+	}
+}

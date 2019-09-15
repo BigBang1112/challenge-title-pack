@@ -80,13 +80,13 @@ SkinManialink = TextLib::Replace(SkinManialink, """<frame id="FRAME_INNER_VEHICL
 <frame id="FRAME_INNER_VEHICLES">{{{VehicleML}}}</frame>""");
 Layers::Create("SkinBrowser", SkinManialink, True, True);
 
-declare Integer VehicleIndex for Layers::Get("SkinBrowser").LocalPage;
-declare Integer MapVehicleIndex for Layers::Get("SkinBrowser").LocalPage;
+declare Integer VehicleIndex for Layers::Page("SkinBrowser");
+declare Integer MapVehicleIndex for Layers::Page("SkinBrowser");
 MapVehicleIndex = MapVehicle;
 VehicleIndex = MapVehicleIndex;
 declare OldVehicleIndex = VehicleIndex;
 
-declare Integer VehicleCount for Layers::Get("SkinBrowser").LocalPage;
+declare Integer VehicleCount for Layers::Page("SkinBrowser");
 VehicleCount = Server_Vehicles.count;
 
 declare netwrite Integer Client_VehicleIndex for UI;
@@ -98,14 +98,9 @@ Notification::Start(<150.,40.>);
 
 ***Loop***
 ***
+
 foreach(Event, PendingEvents) {
 	Notification::Event(Event);
-}
-
-if(VehicleIndex != OldVehicleIndex) {
-	Client_VehicleIndex = VehicleIndex;
-	SendCustomEvent("VehicleIndexChanged", [VehicleIndex^""]);
-	OldVehicleIndex = VehicleIndex;
 }
 
 if(!Time::Stamp_CreateOnce("STATUS", 10*1000)) {

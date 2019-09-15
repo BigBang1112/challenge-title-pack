@@ -217,6 +217,15 @@ foreach(Event,PendingEvents) {
 	}
 }
 
+Frame_Vehicles = (Page.GetFirstChild("FRAME_VEHICLES") as CMlFrame);
+if(VehicleCount > 0) {
+	Frame_Vehicles.ScrollActive = True;
+	Frame_Vehicles.ScrollMax = <0.,(VehicleCount-MapVehicleIndex-1)*20.>;
+	Frame_Vehicles.ScrollMin = <0.,-MapVehicleIndex*20.>;
+	Frame_Vehicles.ScrollGridSnap = True;
+	Frame_Vehicles.ScrollGrid = <0.,20.>;
+}
+
 if(VehicleLock == -1) {
 	Label_Lock.Hide();
 }

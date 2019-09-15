@@ -1,0 +1,17 @@
+#Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+
+#Const C_Manialink "Media/Manialinks/Base/Ingame/Spotify"
+
+Void Init() {
+	Layers::Create("Spotify", Manialink::FromFile(C_Manialink, True, ["Audio"], Settings::Get().Theme));
+}
+
+Void Event(CManiaAppEvent _Event) {
+	switch(_Event.Type) {
+		case CManiaAppPlaygroundEvent::EType::LayerCustomEvent: {
+			
+		}
+	}
+}

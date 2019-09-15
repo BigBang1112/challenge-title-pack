@@ -7,6 +7,8 @@ CTmMlPlayer GetOwner() {
 ***Start***
 ***
 declare CollectedCheckpoints = 0;
+
+(Page.GetFirstChild("QUAD_FLASH") as CMlQuad).Blend = CMlQuad::EBlendMode::Add;
 ***
 
 ***Loop***

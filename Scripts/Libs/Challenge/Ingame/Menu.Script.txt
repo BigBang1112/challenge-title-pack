@@ -1,0 +1,97 @@
+#Include "TextLib" as TextLib
+
+#Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+
+#Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
+
+#Const C_Manialink "Media/Manialinks/Base/Ingame/Menu"
+#Const C_Manialink_OpenMenu "Media/Manialinks/Base/Ingame/OpenMenu"
+
+Void Init() {
+	Layers::Create("Menu", Manialink::FromFile(C_Manialink, True, ["Audio", "SlideText", "Navigation"], Settings::Get().Theme));
+}
+
+Void Start() {
+	Layers::Show("Menu", True);
+	Layers::SendEvent("Menu", "Navigation", "True");
+
+	declare metadata ModifierBase::SChMap OriginalMap for Map;
+	Layers::SendEvent("Menu", "MapName", OriginalMap.Name);
+	Layers::SendEvent("Menu", "Challenge", TextLib::ToUpperCase(TextLib::Replace(Map.MapStyle, "+", " + ")));
+}
+
+Void CheckMode() {
+	declare netread Boolean Server_IsValidationMode for UI;
+	
+	if(Server_IsValidationMode) {
+		Layers::Create("OpenMenu", Manialink::FromFile(C_Manialink_OpenMenu, True, ["Audio"], Settings::Get().Theme));
+	}
+	else {
+		Layers::SetType("Menu", CUILayer::EUILayerType::InGameMenu);
+		Layers::SetType("Vehicle", CUILayer::EUILayerType::InGameMenu);
+		Layers::SendEvent("Menu", "Open");
+	}
+}
+
+Void Event(CManiaAppEvent _Event) {
+	declare Text[] Exchange for This;
+
+	switch(_Event.Type) {
+		case CManiaAppPlaygroundEvent::EType::LayerCustomEvent: {
+			switch(_Event.CustomEventLayer) {
+				case Layers::Get("Menu"): {
+					switch(_Event.CustomEventType) {
+						case "Open": {
+							declare netread Boolean Server_IsValidationMode for UI;
+							declare netread Boolean Server_EndRace for UI;
+							declare netread Boolean Server_Outro for UI;
+
+							if(!Server_EndRace && !Server_Outro) {
+								Exchange.add("HideIngame");
+								if(Server_IsValidationMode)
+									Layers::Hide("OpenMenu");
+								Layers::Hide("Flash");
+
+								Layers::SendEvent("Menu", "Navigation", "True");
+							}
+						}
+						case "Close": {
+							declare netread Boolean Server_IsValidationMode for UI;
+							declare netread Boolean Server_EndRace for UI;
+							declare netread Boolean Server_Outro for UI;
+
+							if(!Server_EndRace && !Server_Outro) {
+								Exchange.add("ShowIngame");
+								if(Server_IsValidationMode)
+									Layers::Show("OpenMenu", True);
+								Layers::Show("Flash", True);
+							}
+						}
+						case "Exit": {
+							declare Boolean Close for This;
+							Close = True;
+						}
+					}
+				}
+				case Layers::Get("OpenMenu"): {
+					switch(_Event.CustomEventType) {
+						case "Menu": {
+							SendCustomEvent("Menu", []);
+
+							Layers::Show("Menu", True);
+							Layers::Show("Vehicle", True);
+
+							Exchange.add("HideIngame");
+
+							Layers::Hide("OpenMenu");
+
+							Layers::Hide("Flash");
+						}
+					}
+				}
+			}
+		}
+	}
+}

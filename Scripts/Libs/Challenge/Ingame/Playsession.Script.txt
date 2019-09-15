@@ -1,0 +1,122 @@
+#Include "TextLib" as TextLib
+
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
+#Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+#Include "Libs/BigBang1112/Random.Script.txt" as Random
+
+#Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
+#Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
+
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
+#Include "Libs/Challenge/Service/Map.Script.txt" as Service_Map
+
+#Const C_Manialink "Media/Manialinks/Base/Ingame/Playsession"
+
+#Struct SPlaysession {
+	Text UserToken;
+	Text MapUid;
+	Text Car;
+	Text Secret;
+	Text Action;
+	Text TitleId;
+}
+
+Void UpdatePublicMap(Service_Status::SPublicMap _PublicMap) {
+	if(_PublicMap.Public) {
+		Layers::SendEvent("Playsession", "Public", _PublicMap.tojson());
+	}
+	else {
+		Layers::SendEvent("Playsession", "Private");
+	}
+}
+
+Boolean AsyncPlaysession(Text _Secret, Text _Action) {
+	declare Text CHALLENGE_TOKEN for LocalUser;
+	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+	declare netread Integer Server_CurrentVehicle for UI;
+
+	declare SPlaysession Playsession;
+	Playsession.UserToken = CHALLENGE_TOKEN;
+	Playsession.MapUid = Map.MapInfo.MapUid;
+	if(Server_CurrentVehicle == -1)
+		Playsession.Car = "";
+	else
+		Playsession.Car = Server_Vehicles[Server_CurrentVehicle].Name;
+	Playsession.Secret = _Secret;
+	Playsession.Action = _Action;
+	Playsession.TitleId = LoadedTitle.TitleId;
+
+	return Http::AsyncPOST("PLAYSESSION", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/ingame/playsession.php""", Playsession.tojson());
+}
+
+Void Init() {
+	Layers::Create("Playsession", Manialink::FromFile(C_Manialink, True, ["Audio", "TextAnimation"], Settings::Get().Theme));
+}
+
+Void Start() {
+	declare netread Boolean Server_IsValidationMode for UI;
+
+	declare Service_Status::SPublicMap PublicMap for This;
+	declare ReqMap = Http::SyncGET("""{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}""");
+	declare JsonSuccess = PublicMap.fromjson(ReqMap.Result);
+	UpdatePublicMap(PublicMap);
+
+	declare Text PlaysessionSecret for This;
+	PlaysessionSecret = Random::String(32);
+	if(PublicMap.Public && !Server_IsValidationMode) AsyncPlaysession(PlaysessionSecret, "Playing");
+
+	if(Server_IsValidationMode) Layers::SendEvent("Playsession", "DisablePublish");
+}
+
+Void Event(CManiaAppEvent _Event) {
+	switch(_Event.Type) {
+		case CManiaAppPlaygroundEvent::EType::LayerCustomEvent: {
+			switch(_Event.CustomEventLayer) {
+				case Layers::Get("Playsession"): {
+					switch(_Event.CustomEventType) {
+						case "PublishMap": {
+							declare metadata ModifierBase::SChMap OriginalMap for Map;
+							declare Text CHALLENGE_TOKEN for LocalUser;
+
+							declare Service_Map::SPublishParams Params;
+							Params.UserToken = CHALLENGE_TOKEN;
+							Params.MapUid = Map.MapInfo.MapUid;
+							Params.MapName = Map.MapName;
+							Params.MapAuthor = Map.AuthorNickName;
+							Params.OriginalMapUid = OriginalMap.MapUid;
+							Params.OriginalMapName = OriginalMap.Name;
+							Params.OriginalMapAuthor = OriginalMap.AuthorNickName;
+							Params.OriginalGame = "";
+							Params.TitleId = LoadedTitle.TitleId;
+							Params.Modifiers = [];
+
+							declare Success = Service_Map::AsyncPublish("PUBLISH", LocalUser, Params);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+Void Async() {
+	if(Service_Map::AsyncIsCompleted("PUBLISH")) {
+		if(Service_Map::AsyncIsSuccessful("PUBLISH")) {
+			declare Text PlaysessionSecret for This;
+
+			UpdatePublicMap(Service_Map::GetAsyncPublishResult("PUBLISH"));
+			PlaysessionSecret = Random::String(32);
+			AsyncPlaysession(PlaysessionSecret, "Playing");
+		}
+		Service_Map::AsyncDestroy("PUBLISH");
+	}
+
+	if(Http::IsCompleted("PLAYSESSION")) {
+		if(Http::IsSuccessful("PLAYSESSION")) {
+			log(Http::GetResult("PLAYSESSION"));
+		}
+		Http::Destroy("PLAYSESSION");
+	}
+}

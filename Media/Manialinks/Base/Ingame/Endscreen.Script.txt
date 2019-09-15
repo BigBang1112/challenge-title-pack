@@ -124,6 +124,10 @@ foreach(Event,PendingEvents) {
 if(Now - Start > 200) EnableMenuNavigationInputs = True;
 else EnableMenuNavigationInputs = False;
 
+if(Now - Start > 400) {
+	(Page.GetFirstChild("QUAD_FLASH") as CMlQuad).Opacity = 0.;
+}
+
 SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_MAPNAME") as CMlFrame), (Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel), (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel), 15, .015);
 SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_ENV") as CMlFrame), (Page.GetFirstChild("LABEL_ENV") as CMlLabel), (Page.GetFirstChild("LABEL_ENV_2") as CMlLabel), 15, .015);
 SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_CAR") as CMlFrame), (Page.GetFirstChild("LABEL_CAR") as CMlLabel), (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel), 15, .015);
