@@ -206,6 +206,9 @@ Frame_List.ScrollActive = True;
 Frame_List.ScrollGrid = <10.,10.>;
 
 declare CMlLabel MoveLabel;
+
+declare HoldScrollbar = False;
+declare HoldScrollbarPos = 0.;
 ***
 
 ***Loop***
@@ -218,6 +221,16 @@ foreach(Event,PendingEvents) {
 					PlayAudio(Sound_ClickSoft);
 
 					Select(TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("element")));
+				}
+				case "QUAD_SCROLLBAR": {
+					HoldScrollbar = True;
+					HoldScrollbarPos = MouseY-Quad_Scrollbar.RelativePosition_V3.Y;
+				}
+				case "QUAD_SCROLLBAR_BACKGROUND": {
+					Quad_Scrollbar.RelativePosition_V3.Y = -(Window_Size.Y-20)/2.+5+MouseY+Quad_Scrollbar.Size.Y/2;
+					
+					HoldScrollbar = True;
+					HoldScrollbarPos = MouseY-Quad_Scrollbar.RelativePosition_V3.Y;
 				}
 			}
 		}
@@ -391,17 +404,30 @@ if(MoveLabel != Null) {
 			MoveLabel.RelativePosition_V3.X -= Period*.01;
 }
 
-if(Frame_List.ScrollOffset != PreviousScroll) {
+if(HoldScrollbar && MouseLeftButton) {
+	Quad_Scrollbar.RelativePosition_V3.Y = MathLib::Clamp(MouseY-HoldScrollbarPos,Quad_Scrollbar.Size.Y-Window_Size.Y+20.,0.);
+	Frame_List.ScrollOffset.Y = (MouseY-HoldScrollbarPos)/(Quad_Scrollbar.Size.Y-Window_Size.Y+20.)*Frame_List.ScrollMax.Y;
+
 	Page.GetFirstChild("FRAME_LIST_INNER").RelativePosition_V3 = -Frame_List.ScrollOffset;
 	UpdateElements();
-
-	declare ScrollRatio = 0.;
-	if(Frame_List.ScrollMax.Y != 0)
-		ScrollRatio = Frame_List.ScrollOffset.Y / Frame_List.ScrollMax.Y;
-	Quad_Scrollbar.RelativePosition_V3.Y = -ScrollRatio*(Window_Size.Y-20-Quad_Scrollbar.Size.Y);
-
-	PreviousScroll = Frame_List.ScrollOffset;
 }
+else {
+	if(Frame_List.ScrollOffset != PreviousScroll) {
+		Page.GetFirstChild("FRAME_LIST_INNER").RelativePosition_V3 = -Frame_List.ScrollOffset;
+		UpdateElements();
+
+		declare ScrollRatio = 0.;
+		if(Frame_List.ScrollMax.Y != 0)
+			ScrollRatio = MathLib::NearestInteger(Frame_List.ScrollOffset.Y/10)*10 / Frame_List.ScrollMax.Y;
+		Quad_Scrollbar.RelativePosition_V3.Y = -ScrollRatio*(Window_Size.Y-20-Quad_Scrollbar.Size.Y);
+
+		PreviousScroll = Frame_List.ScrollOffset;
+	}
+
+	HoldScrollbar = False;
+}
+
+
 
 //Quad_Scrollbar.RelativePosition_V3.Y = -5.-ScrollRatio*(150.0-Page.GetFirstChild("QUAD_CAMPAIGN_SCROLL").Size.Y);
 

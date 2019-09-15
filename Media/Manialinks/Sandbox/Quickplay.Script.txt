@@ -633,6 +633,9 @@ Page.GetClassChildren("LOADING", Page.MainFrame, True);
 
 declare Start = Now;
 declare End = -1;
+
+declare HoldScrollbar = False;
+declare HoldScrollbarPos = 0.;
 ***
 
 ***Loop***
@@ -944,6 +947,19 @@ foreach(Event,PendingEvents) {
 						else AnimMgr.Add(Page.GetFirstChild("FRAME_FILTER_MX"), "<frame clipsizen=\"100 50\" hidden=\"0\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
 					}
 				}
+
+				case "QUAD_MAPLIST_BAR": {
+					Page.GetFirstChild("QUAD_MAPLIST_BAR").RelativePosition_V3.Y = -10.+MouseY+Page.GetFirstChild("QUAD_MAPLIST_BAR").Size.Y/2;
+					
+					HoldScrollbar = True;
+					HoldScrollbarPos = MouseY-Page.GetFirstChild("QUAD_MAPLIST_BAR").RelativePosition_V3.Y;
+				}
+				case "QUAD_MAPLIST_BAR_BACKGROUND": {
+					Page.GetFirstChild("QUAD_MAPLIST_BAR").RelativePosition_V3.Y = -10.+MouseY+Page.GetFirstChild("QUAD_MAPLIST_BAR").Size.Y/2;
+					
+					HoldScrollbar = True;
+					HoldScrollbarPos = MouseY-Page.GetFirstChild("QUAD_MAPLIST_BAR").RelativePosition_V3.Y;
+				}
 			}
 		}
 		
@@ -1076,6 +1092,29 @@ else if(Now - End > 500) {
 	End = -1;
 }
 
+declare Frame_MapList = (Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame);
+declare Quad_Bar = Page.GetFirstChild("QUAD_MAPLIST_BAR");
+
+if(HoldScrollbar && MouseLeftButton) {
+	Quad_Bar.RelativePosition_V3.Y = MathLib::Clamp(MouseY-HoldScrollbarPos,-80.+Quad_Bar.Size.Y,0.)-20;
+	Frame_MapList.ScrollOffset.Y = (MouseY-HoldScrollbarPos)/(Quad_Bar.Size.Y-80.)*Frame_MapList.ScrollMax.Y;
+}
+else {
+	if(Frame_MapList.ScrollMax.Y > 0) {
+		declare ScrollRatio = 0.;
+		if(Frame_MapList.ScrollMax.Y != 0)
+			ScrollRatio = Frame_MapList.ScrollOffset.Y / Frame_MapList.ScrollMax.Y;
+		Quad_Bar.Size.Y = 80/(Frame_MapList.ScrollMax.Y+80)*80;
+		Quad_Bar.RelativePosition_V3.Y = -ScrollRatio*(80-Quad_Bar.Size.Y)-20;
+		Quad_Bar.Show();
+	}
+	else {
+		Quad_Bar.Hide();
+	}
+
+	HoldScrollbar = False;
+}
+
 if(OldMapScrollPos != (Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollOffset.Y) {
 	declare Index = 0.0;
 	
@@ -1091,21 +1130,6 @@ if(OldMapScrollPos != (Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollOf
 	//
 
 	OldMapScrollPos = (Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollOffset.Y;
-}
-
-declare Frame_MapList = (Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame);
-declare Quad_Bar = Page.GetFirstChild("QUAD_MAPLIST_BAR");
-
-if(Frame_MapList.ScrollMax.Y > 0) {
-	declare ScrollRatio = 0.;
-	if(Frame_MapList.ScrollMax.Y != 0)
-		ScrollRatio = Frame_MapList.ScrollOffset.Y / Frame_MapList.ScrollMax.Y;
-	Quad_Bar.Size.Y = 80/(Frame_MapList.ScrollMax.Y+80)*80;
-	Quad_Bar.RelativePosition_V3.Y = -ScrollRatio*(80-Quad_Bar.Size.Y)-20;
-	Quad_Bar.Show();
-}
-else {
-	Quad_Bar.Hide();
 }
 
 foreach(Control,Page.GetClassChildren_Result) {
