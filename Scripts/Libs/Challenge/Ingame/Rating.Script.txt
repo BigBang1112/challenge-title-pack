@@ -81,13 +81,15 @@ Void UpdateRating(Service_Status::SPublicMap _PublicMap) {
 	declare Real AverageQualityValue for Layers::Page("Rating");
 	declare Integer AverageQualityCount for Layers::Page("Rating");
 
-	DifficultyValue = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.User;
-	QualityValue = _PublicMap.Vehicles[VehicleName].Rating.Quality.User;
+	if(_PublicMap.Vehicles.existskey(VehicleName)) {
+		DifficultyValue = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.User;
+		QualityValue = _PublicMap.Vehicles[VehicleName].Rating.Quality.User;
 
-	AverageDifficultyValue = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.AverageWithoutYou;
-	AverageDifficultyCount = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.Count;
-	AverageQualityValue = _PublicMap.Vehicles[VehicleName].Rating.Quality.AverageWithoutYou;
-	AverageQualityCount = _PublicMap.Vehicles[VehicleName].Rating.Quality.Count;
+		AverageDifficultyValue = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.AverageWithoutYou;
+		AverageDifficultyCount = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.Count;
+		AverageQualityValue = _PublicMap.Vehicles[VehicleName].Rating.Quality.AverageWithoutYou;
+		AverageQualityCount = _PublicMap.Vehicles[VehicleName].Rating.Quality.Count;
+	}
 }
 
 Void Init() {
@@ -163,9 +165,13 @@ Void Async() {
 			declare Text[] VehicleNames;
 			foreach(Vehicle, Server_Vehicles) VehicleNames.add(Vehicle.Name);
 
-			declare Service_Status::SPublicMap PublicMap for This;
-			declare Text CHALLENGE_TOKEN for LocalUser;
-			declare Success = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&vehicle={{{TextLib::Join(",",VehicleNames)}}}""", CHALLENGE_TOKEN);
+			declare netread Boolean Server_IsValidationMode for UI;
+
+			if(!Server_IsValidationMode) {
+				declare Service_Status::SPublicMap PublicMap for This;
+				declare Text CHALLENGE_TOKEN for LocalUser;
+				declare Success = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&vehicle={{{TextLib::Join(",",VehicleNames)}}}""", CHALLENGE_TOKEN);
+			}
 		}
 		Http::Destroy("RATE");
 	}
