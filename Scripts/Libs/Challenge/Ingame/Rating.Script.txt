@@ -90,6 +90,15 @@ Void UpdateRating(Service_Status::SPublicMap _PublicMap) {
 		AverageQualityValue = _PublicMap.Vehicles[VehicleName].Rating.Quality.AverageWithoutYou;
 		AverageQualityCount = _PublicMap.Vehicles[VehicleName].Rating.Quality.Count;
 	}
+	else {
+		DifficultyValue = -2.;
+		QualityValue = -2.;
+
+		AverageDifficultyValue = 0.;
+		AverageDifficultyCount = 0;
+		AverageQualityValue = 0.;
+		AverageQualityCount = 0;
+	}
 }
 
 Void Init() {

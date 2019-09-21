@@ -8,11 +8,26 @@ Void UpdateRating(CMlControl _Hold) {
 		if(_Hold.Parent.ControlId == "FRAME_DIFFICULTY_INNER") {
 			declare Difficulty = "";
 			if(Difficulties.count > 0) {
-				if(DifficultyValue == -1) {
+				if(DifficultyValue == -2) {
+					Difficulty = "{{{{DIFFICULTY_RATING_IS_NOT_AVAILABLE}}}}";
+
+					(Page.GetFirstChild("LABEL_BUTTON_APPLY") as CMlLabel).TextColor = <.5,.5,.5>;
+					(Page.GetFirstChild("QUAD_BUTTON_APPLY") as CMlQuad).ModulateColor = <.2, .3, .4>;
+					Page.GetFirstChild("QUAD_BUTTON_APPLY_DISABLED").Show();
+				}
+				else if(DifficultyValue == -1) {
 					Difficulty = "{{{{CLICK_TO_RATE}}}}";
+
+					(Page.GetFirstChild("LABEL_BUTTON_APPLY") as CMlLabel).TextColor = <1.,1.,1.>;
+					(Page.GetFirstChild("QUAD_BUTTON_APPLY") as CMlQuad).ModulateColor = <.0, .2, .4>;
+					Page.GetFirstChild("QUAD_BUTTON_APPLY_DISABLED").Hide();
 				}
 				else {
 					Difficulty = Difficulties[MathLib::FloorInteger(DifficultyValue*(Difficulties.count-1))];
+
+					(Page.GetFirstChild("LABEL_BUTTON_APPLY") as CMlLabel).TextColor = <1.,1.,1.>;
+					(Page.GetFirstChild("QUAD_BUTTON_APPLY") as CMlQuad).ModulateColor = <.0, .2, .4>;
+					Page.GetFirstChild("QUAD_BUTTON_APPLY_DISABLED").Hide();
 				}
 			}
 			((Page.GetFirstChild("FRAME_DIFFICULTY_INNER") as CMlFrame).GetFirstChild("LABEL_RATENAME") as CMlLabel).SetText(Difficulty);
@@ -20,7 +35,10 @@ Void UpdateRating(CMlControl _Hold) {
 		if(_Hold.Parent.ControlId == "FRAME_QUALITY_INNER") {
 			declare Quality = "";
 			if(Qualities.count > 0) {
-				if(QualityValue == -1) {
+				if(QualityValue == -2) {
+					Quality = "{{{{QUALITY_RATING_IS_NOT_AVAILABLE}}}}";
+				}
+				else if(QualityValue == -1) {
 					Quality = "{{{{CLICK_TO_RATE}}}}";
 				}
 				else {
@@ -62,9 +80,12 @@ foreach(Event,PendingEvents) {
 					Hold = Event.Control.Parent;
 				}
 				case "QUAD_BOX": {
-					declare Frame_Draggable = (Event.Control.Parent.GetFirstChild("FRAME_DRAGGABLE") as CMlFrame);
-					Frame_Draggable.Show();
-					Hold = Frame_Draggable;
+					if((Event.Control.Parent.ControlId == "FRAME_DIFFICULTY_INNER" && DifficultyValue != -2)
+					|| (Event.Control.Parent.ControlId == "FRAME_QUALITY_INNER" && QualityValue != -2)) {
+						declare Frame_Draggable = (Event.Control.Parent.GetFirstChild("FRAME_DRAGGABLE") as CMlFrame);
+						Frame_Draggable.Show();
+						Hold = Frame_Draggable;
+					}
 				}
 				case "QUAD_BUTTON_APPLY": {
 					SendCustomEvent("Apply", []);
@@ -94,7 +115,7 @@ foreach(Event,PendingEvents) {
 					declare Frame_Draggable_Difficulty = ((Page.GetFirstChild("FRAME_DIFFICULTY_INNER") as CMlFrame).GetFirstChild("FRAME_DRAGGABLE") as CMlFrame);
 					declare Frame_Draggable_Quality = ((Page.GetFirstChild("FRAME_QUALITY_INNER") as CMlFrame).GetFirstChild("FRAME_DRAGGABLE") as CMlFrame);
 
-					if(DifficultyValue == -1) {
+					if(DifficultyValue == -1 || DifficultyValue == -2) {
 						Frame_Draggable_Difficulty.Hide();
 					}
 					else {
@@ -102,7 +123,7 @@ foreach(Event,PendingEvents) {
 						Frame_Draggable_Difficulty.Show();
 					}
 
-					if(QualityValue == -1) {
+					if(QualityValue == -1 || QualityValue == -2) {
 						Frame_Draggable_Quality.Hide();
 					}
 					else {
@@ -121,6 +142,8 @@ foreach(Event,PendingEvents) {
 if(MouseLeftButton && Hold != Null) {
 	Hold.RelativePosition_V3.X = MathLib::Clamp(MouseX-Page.GetFirstChild("FRAME_RATING").RelativePosition_V3.X,-45.,45.);
 
+	((Hold as CMlFrame).GetFirstChild("QUAD_DRAGGABLE") as CMlQuad).StyleSelected = True;
+
 	if(Hold.Parent.ControlId == "FRAME_DIFFICULTY_INNER")
 		DifficultyValue = (Hold.RelativePosition_V3.X+45)/90.;
 	if(Hold.Parent.ControlId == "FRAME_QUALITY_INNER")
@@ -136,6 +159,9 @@ else {
 		if(Hold.Parent.ControlId == "FRAME_QUALITY_INNER") {
 			QualityValue = (Hold.RelativePosition_V3.X+45)/90.;
 		}
+
+		((Hold as CMlFrame).GetFirstChild("QUAD_DRAGGABLE") as CMlQuad).StyleSelected = False;
+
 		Hold = Null;
 	}
 }

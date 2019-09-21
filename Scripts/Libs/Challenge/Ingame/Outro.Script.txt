@@ -9,6 +9,7 @@
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
 #Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
 #Const C_Manialink "Media/Manialinks/Base/Ingame/Outro"
 
@@ -36,15 +37,21 @@ Void Event(CManiaAppEvent _Event) {
 							Layers::Hide("Outro");
 							Layers::Hide("Rating");
 
-							declare Text[] Exchange for This;
-							Exchange.add("Rating_ApplyRating");
+							declare Service_Status::SPublicMap PublicMap for This;
+							if(PublicMap.Public) {
+								declare Text[] Exchange for This;
+								Exchange.add("Rating_ApplyRating");
+							}
 						}
 						case "Exit": {
 							declare Boolean Close for This;
 							Close = True;
 
-							declare Text[] Exchange for This;
-							Exchange.add("Rating_ApplyRating");
+							declare Service_Status::SPublicMap PublicMap for This;
+							if(PublicMap.Public) {
+								declare Text[] Exchange for This;
+								Exchange.add("Rating_ApplyRating");
+							}
 						}
 						case "SaveReplay": {
 							declare metadata ModifierBase::SChMap OriginalMap for Map;

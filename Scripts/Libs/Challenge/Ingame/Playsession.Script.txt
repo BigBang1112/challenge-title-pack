@@ -63,9 +63,11 @@ Void Start() {
 	foreach(Vehicle, Server_Vehicles) VehicleNames.add(Vehicle.Name);
 
 	declare Service_Status::SPublicMap PublicMap for This;
-	declare Text CHALLENGE_TOKEN for LocalUser;
-	declare ReqMap = Http::SyncPOST("""{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&vehicle={{{TextLib::Join(",",VehicleNames)}}}""", CHALLENGE_TOKEN);
-	declare JsonSuccess = PublicMap.fromjson(ReqMap.Result);
+	if(!Server_IsValidationMode) {
+		declare Text CHALLENGE_TOKEN for LocalUser;
+		declare ReqMap = Http::SyncPOST("""{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&vehicle={{{TextLib::Join(",",VehicleNames)}}}""", CHALLENGE_TOKEN);
+		declare JsonSuccess = PublicMap.fromjson(ReqMap.Result);
+	}
 	UpdatePublicMap(PublicMap);
 
 	declare Text PlaysessionSecret for This;
