@@ -111,8 +111,8 @@ Void Init() {
 	declare Real AverageQualityValue for Layers::Page("Rating");
 	declare Integer AverageQualityCount for Layers::Page("Rating");
 
-	DifficultyValue = -1.;
-	QualityValue = -1.;
+	DifficultyValue = -2.;
+	QualityValue = -2.;
 
 	declare Text[] Difficulties for Layers::Page("Rating");
 	declare Text[] Qualities for Layers::Page("Rating");
@@ -190,6 +190,8 @@ Void Async() {
 			declare Service_Status::SPublicMap PublicMap for This;
 			declare JsonSuccess = PublicMap.fromjson(Http::GetResult("MAP"));
 			UpdateRating(PublicMap);
+
+			Layers::SendEvent("Rating", "Update");
 		}
 		Http::Destroy("MAP");
 	}

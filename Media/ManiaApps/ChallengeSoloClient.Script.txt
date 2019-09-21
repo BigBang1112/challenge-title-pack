@@ -89,6 +89,13 @@ Void CheckStatus() {
 			if(!ContainsThisMap) {
 				declare Service_Status::SPublicMap DeletedMap;
 				Ingame_Playsession::UpdatePublicMap(DeletedMap);
+
+				declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+				declare Text[] VehicleNames;
+				foreach(Vehicle, Server_Vehicles) VehicleNames.add(Vehicle.Name);
+
+				declare Text CHALLENGE_TOKEN for LocalUser;
+				declare SuccessMap = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&vehicle={{{TextLib::Join(",",VehicleNames)}}}""", CHALLENGE_TOKEN);
 			}
 		}
 		Service_Status::AsyncDestroy("STATUS");

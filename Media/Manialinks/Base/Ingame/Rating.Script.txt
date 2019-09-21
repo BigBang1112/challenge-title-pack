@@ -50,6 +50,39 @@ Void UpdateRating(CMlControl _Hold) {
 	}
 }
 
+declare Real LastDifficultyValue;
+declare Real LastQualityValue;
+
+Void Update() {
+	declare Real DifficultyValue for Page;
+	declare Real QualityValue for Page;
+
+	LastDifficultyValue = DifficultyValue;
+	LastQualityValue = QualityValue;
+	
+	declare Frame_Draggable_Difficulty = ((Page.GetFirstChild("FRAME_DIFFICULTY_INNER") as CMlFrame).GetFirstChild("FRAME_DRAGGABLE") as CMlFrame);
+	declare Frame_Draggable_Quality = ((Page.GetFirstChild("FRAME_QUALITY_INNER") as CMlFrame).GetFirstChild("FRAME_DRAGGABLE") as CMlFrame);
+
+	if(DifficultyValue == -1 || DifficultyValue == -2) {
+		Frame_Draggable_Difficulty.Hide();
+	}
+	else {
+		Frame_Draggable_Difficulty.RelativePosition_V3.X = DifficultyValue*90-45;
+		Frame_Draggable_Difficulty.Show();
+	}
+
+	if(QualityValue == -1 || QualityValue == -2) {
+		Frame_Draggable_Quality.Hide();
+	}
+	else {
+		Frame_Draggable_Quality.RelativePosition_V3.X = QualityValue*90-45;
+		Frame_Draggable_Quality.Show();
+	}
+
+	UpdateRating(Frame_Draggable_Difficulty);
+	UpdateRating(Frame_Draggable_Quality);
+}
+
 ***Start***
 ***
 declare CMlControl Hold;
@@ -61,8 +94,8 @@ declare Real QualityValue for Page;
 declare Real AverageQualityValue for Page;
 declare Integer AverageQualityCount for Page;
 
-declare LastDifficultyValue = -1.;
-declare LastQualityValue = -1.;
+LastDifficultyValue = -2.;
+LastQualityValue = -2.;
 
 declare Text[] Difficulties for Page;
 declare Text[] Qualities for Page;
@@ -109,30 +142,10 @@ foreach(Event,PendingEvents) {
 					Page.GetFirstChild("FRAME_CENTERED").Visible = Condition;
 				}
 				case "Show": {
-					LastDifficultyValue = DifficultyValue;
-					LastQualityValue = QualityValue;
-					
-					declare Frame_Draggable_Difficulty = ((Page.GetFirstChild("FRAME_DIFFICULTY_INNER") as CMlFrame).GetFirstChild("FRAME_DRAGGABLE") as CMlFrame);
-					declare Frame_Draggable_Quality = ((Page.GetFirstChild("FRAME_QUALITY_INNER") as CMlFrame).GetFirstChild("FRAME_DRAGGABLE") as CMlFrame);
-
-					if(DifficultyValue == -1 || DifficultyValue == -2) {
-						Frame_Draggable_Difficulty.Hide();
-					}
-					else {
-						Frame_Draggable_Difficulty.RelativePosition_V3.X = DifficultyValue*90-45;
-						Frame_Draggable_Difficulty.Show();
-					}
-
-					if(QualityValue == -1 || QualityValue == -2) {
-						Frame_Draggable_Quality.Hide();
-					}
-					else {
-						Frame_Draggable_Quality.RelativePosition_V3.X = QualityValue*90-45;
-						Frame_Draggable_Quality.Show();
-					}
-
-					UpdateRating(Frame_Draggable_Difficulty);
-					UpdateRating(Frame_Draggable_Quality);
+					Update();
+				}
+				case "Update": {
+					Update();
 				}
 			}
 		}

@@ -116,6 +116,13 @@ Void Async() {
 			UpdatePublicMap(Service_Map::GetAsyncPublishResult("PUBLISH"));
 			PlaysessionSecret = Random::String(32);
 			AsyncPlaysession(PlaysessionSecret, "Playing");
+
+			declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+			declare Text[] VehicleNames;
+			foreach(Vehicle, Server_Vehicles) VehicleNames.add(Vehicle.Name);
+
+			declare Text CHALLENGE_TOKEN for LocalUser;
+			declare SuccessMap = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&vehicle={{{TextLib::Join(",",VehicleNames)}}}""", CHALLENGE_TOKEN);
 		}
 		Service_Map::AsyncDestroy("PUBLISH");
 	}
