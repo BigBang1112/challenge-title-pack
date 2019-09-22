@@ -77,7 +77,10 @@ foreach(Event,RaceEvents) {
 
 			}
 			else {
-				PlayAudio(Sound_TimeChange);
+				//PlayAudio(Sound_TimeChange);
+				for(I,0,8) {
+					Audio.PlaySoundEvent(CAudioManager::ELibSound::Countdown, 1, .5, I*100);
+				}
 
 				if(Event.Player.Score != Null)
 				if(Event.Player.Score.BestRace.Checkpoints.count == 0) {
@@ -130,17 +133,22 @@ foreach(Event,RaceEvents) {
 			}
 		}
 		case CTmRaceClientEvent::EType::Respawn: {
-			PlayAudio(Sound_TimeReset);
+			if(Event.Player.CurRace.Time == -1) { // If fully respawned to start
+				//PlayAudio(Sound_TimeReset);
+				for(I,0,8) {
+					Audio.PlaySoundEvent(CAudioManager::ELibSound::ScoreIncrease, 0, .5, I*80);
+				}
 
-			SlowSetText(Label_CP_Start,"-:--.---",500);
-			Label_CP_Start.Show();
+				SlowSetText(Label_CP_Start,"-:--.---",500);
+				Label_CP_Start.Show();
 
-			Label_CP_Blue.Hide();
-			Label_CP_Red.Hide();
-			Label_CP_Purple.Hide();
-			Quad_CP_Blue.Hide();
-			Quad_CP_Red.Hide();
-			Quad_CP_Purple.Hide();
+				Label_CP_Blue.Hide();
+				Label_CP_Red.Hide();
+				Label_CP_Purple.Hide();
+				Quad_CP_Blue.Hide();
+				Quad_CP_Red.Hide();
+				Quad_CP_Purple.Hide();
+			}
 		}
 	}
 }
