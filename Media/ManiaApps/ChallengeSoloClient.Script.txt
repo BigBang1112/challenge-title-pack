@@ -31,6 +31,8 @@
 #Include "Libs/Challenge/Ingame/Flash.Script.txt" as Ingame_Flash
 #Include "Libs/Challenge/Ingame/Outro.Script.txt" as Ingame_Outro
 #Include "Libs/Challenge/Ingame/Stunts.Script.txt" as Ingame_Stunts
+#Include "Libs/Challenge/Ingame/Checkpoint.Script.txt" as Ingame_Checkpoint
+#Include "Libs/Challenge/Ingame/Ghosts.Script.txt" as Ingame_Ghosts
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
 #Include "Libs/Challenge/Ingame/Gamemodes/Stunt.Script.txt" as Stunt
@@ -124,34 +126,55 @@ declare netread Boolean Server_IsValidationMode for UI;
 
 declare metadata ModifierBase::SChMap OriginalMap for Map;
 
+Layers::Create("Loading", Manialink::FromFile("Media/Manialinks/Base/Ingame/Loading", True, ["Audio", "TextAnimation"], Settings::Get().Theme), True, True);
+
 Init();
 yield;
 Ingame_Map::Init();
+Layers::SendEvent("Loading", "Progress", 1/13.);
 yield;
 Ingame_Spotify::Init();
+Layers::SendEvent("Loading", "Progress", 2/13.);
 yield;
 Ingame_Dashboard::Init();
+Layers::SendEvent("Loading", "Progress", 3/13.);
 yield;
 Ingame_Menu::Init();
+Layers::SendEvent("Loading", "Progress", 4/13.);
 yield;
 Ingame_Flash::Init();
+Layers::SendEvent("Loading", "Progress", 5/13.);
 yield;
 Ingame_Outro::Init();
+Layers::SendEvent("Loading", "Progress", 6/13.);
 yield;
 Ingame_Playsession::Init();
+Layers::SendEvent("Loading", "Progress", 7/13.);
 yield;
 Ingame_Stunts::Init();
+Layers::SendEvent("Loading", "Progress", 8/13.);
 yield;
 Ingame_Rating::Init();
+Layers::SendEvent("Loading", "Progress", 9/13.);
 yield;
 Ingame_Vehicle::Init();
+Layers::SendEvent("Loading", "Progress", 10/13.);
 yield;
 Ingame_Endscreen::Init();
+Layers::SendEvent("Loading", "Progress", 11/13.);
+yield;
+Ingame_Ghosts::Init();
+Layers::SendEvent("Loading", "Progress", 12/13.);
+yield;
+Ingame_Checkpoint::Init();
+Layers::SendEvent("Loading", "Progress", 1.);
 yield;
 
 ReplayBrowser::Init();
 yield;
 Notification::Init();
+
+Layers::Hide("Loading");
 ***
 
 ***Start***

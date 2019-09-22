@@ -1,0 +1,10 @@
+<frame>
+	<frame pos="120 -72.5">
+		<frame>
+			<quad z-index="0" size="60 15" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="60 15" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+		</frame>
+		<label pos="26 1" z-index="1" size="50 12" text="$o$i$nLOADING" valign="center2" textsize="6" textfont="RajdhaniMono" id="LABEL_TIMEPENALTY" halign="right"/>
+		<gauge pos="-27.5 -0.5" z-index="1" size="55 7" drawbg="0" ratio=".0" id="GAUGE_PROGRESS"/>
+	</frame>
+</frame>

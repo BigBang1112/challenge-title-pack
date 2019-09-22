@@ -1,0 +1,14 @@
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::PluginCustomEvent: {
+			switch(Event.CustomEventType) {
+				case "Progress": {
+					(Page.GetFirstChild("GAUGE_PROGRESS") as CMlGauge).SetRatio(TextLib::ToReal(Event.CustomEventData[0]));
+				}
+			}
+		}
+	}
+}
+***
