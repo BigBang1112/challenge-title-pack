@@ -33,6 +33,7 @@
 #Include "Libs/Challenge/Ingame/Stunts.Script.txt" as Ingame_Stunts
 #Include "Libs/Challenge/Ingame/Checkpoint.Script.txt" as Ingame_Checkpoint
 #Include "Libs/Challenge/Ingame/Ghosts.Script.txt" as Ingame_Ghosts
+#Include "Libs/Challenge/Ingame/Leaderboard.Script.txt" as Ingame_Leaderboard
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
 #Include "Libs/Challenge/Ingame/Gamemodes/Stunt.Script.txt" as Stunt
@@ -46,6 +47,9 @@ Void ShowIngame() {
 	Layers::Show("Stunts", True);
 	Layers::Show("Playsession", True);
 	Layers::Show("Map", True);
+	Layers::Show("Checkpoint", True);
+	//Layers::Show("Ghosts", True);
+	//Layers::Show("Leaderboard", True);
 
 	if(!SkinNotified) {
 		declare persistent Text[Text] P_Skin for LocalUser;
@@ -60,6 +64,9 @@ Void HideIngame() {
 	Layers::Hide("Stunts");
 	Layers::Hide("Playsession");
 	Layers::Hide("Map");
+	Layers::Hide("Checkpoint");
+	Layers::Hide("Ghosts");
+	Layers::Hide("Leaderboard");
 }
 
 Void CheckStatus() {
@@ -131,44 +138,46 @@ Layers::Create("Loading", Manialink::FromFile("Media/Manialinks/Base/Ingame/Load
 Init();
 yield;
 Ingame_Map::Init();
-Layers::SendEvent("Loading", "Progress", 1/13.);
+Layers::SendEvent("Loading", "Progress", 1/14.);
 yield;
 Ingame_Spotify::Init();
-Layers::SendEvent("Loading", "Progress", 2/13.);
+Layers::SendEvent("Loading", "Progress", 2/14.);
 yield;
 Ingame_Dashboard::Init();
-Layers::SendEvent("Loading", "Progress", 3/13.);
+Layers::SendEvent("Loading", "Progress", 3/14.);
 yield;
 Ingame_Menu::Init();
-Layers::SendEvent("Loading", "Progress", 4/13.);
+Layers::SendEvent("Loading", "Progress", 4/14.);
 yield;
 Ingame_Flash::Init();
-Layers::SendEvent("Loading", "Progress", 5/13.);
+Layers::SendEvent("Loading", "Progress", 5/14.);
 yield;
 Ingame_Outro::Init();
-Layers::SendEvent("Loading", "Progress", 6/13.);
+Layers::SendEvent("Loading", "Progress", 6/14.);
 yield;
 Ingame_Playsession::Init();
-Layers::SendEvent("Loading", "Progress", 7/13.);
+Layers::SendEvent("Loading", "Progress", 7/14.);
 yield;
 Ingame_Stunts::Init();
-Layers::SendEvent("Loading", "Progress", 8/13.);
+Layers::SendEvent("Loading", "Progress", 8/14.);
 yield;
 Ingame_Rating::Init();
-Layers::SendEvent("Loading", "Progress", 9/13.);
+Layers::SendEvent("Loading", "Progress", 9/14.);
 yield;
 Ingame_Vehicle::Init();
-Layers::SendEvent("Loading", "Progress", 10/13.);
+Layers::SendEvent("Loading", "Progress", 10/14.);
 yield;
 Ingame_Endscreen::Init();
-Layers::SendEvent("Loading", "Progress", 11/13.);
+Layers::SendEvent("Loading", "Progress", 11/14.);
 yield;
 Ingame_Ghosts::Init();
-Layers::SendEvent("Loading", "Progress", 12/13.);
+Layers::SendEvent("Loading", "Progress", 12/14.);
 yield;
 Ingame_Checkpoint::Init();
-Layers::SendEvent("Loading", "Progress", 1.);
+Layers::SendEvent("Loading", "Progress", 13/14.);
 yield;
+Ingame_Leaderboard::Init();
+Layers::SendEvent("Loading", "Progress", 1.);
 
 ReplayBrowser::Init();
 yield;
@@ -234,6 +243,8 @@ foreach(Event, PendingEvents) {
 						Layers::Hide("Vehicle");
 					}
 					Layers::Show("Flash");
+
+					Audio.PlaySoundEvent(CAudioManager::ELibSound::Start, 0, 1.);
 				}
 				case "Navigation": {
 					declare Pass = Event.CustomEventData[0];

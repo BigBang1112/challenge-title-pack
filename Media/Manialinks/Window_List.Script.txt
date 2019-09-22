@@ -157,10 +157,10 @@ Void Select(Integer _Id) {
 			for(I,0,Window_Elements.count-1) Window_Elements[I].Selected = False;
 			Window_Elements[_Id].Selected = True;
 		}
-
-		UpdateElements();
-		SendCustomEvent("Select", [_Id^""]);
 	}
+
+	UpdateElements();
+	SendCustomEvent("Select", [_Id^""]);
 }
 
 Void Next() {

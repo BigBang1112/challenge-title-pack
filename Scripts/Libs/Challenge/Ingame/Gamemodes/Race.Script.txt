@@ -9,12 +9,28 @@
 	Integer Time;
 }
 
+#Struct SFinish_Server {
+	Integer Timestamp;
+	CGhost Ghost;
+	CGhost NicerGhost;
+}
+
+#Struct SPerformance_Server {
+	Vehicle::SRealVehicle Vehicle;
+	Integer BestFinishIndex;
+	SFinish_Server[] Finishes;
+}
+
 #Struct SFinish {
 	Integer Timestamp;
 	Integer Time;
-	CTmPlayer Player;
-	CGhost Ghost;
-	CGhost NicerGhost;
+	Integer[] Checkpoints;
+}
+
+#Struct SPerformance {
+	Text Vehicle;
+	Integer BestFinishIndex;
+	SFinish[] Finishes;
 }
 
 declare Vehicle::SVehicle[] Vehicles;
@@ -94,7 +110,7 @@ Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
 		declare netwrite Boolean Server_NoGravity for UI;
 		Server_NoGravity = False;
 		
-		UI.UISequence = CUIConfig::EUISequence::Playing;
+		UI.UISequence = CUIConfig::EUISequence::None;
 	}
 					
 	declare Vehicle::SVehicle MapVehicle;
@@ -109,13 +125,9 @@ Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
 	
 	foreach(Player, _Mode.AllPlayers) {
 		declare UI <=> _Mode.UIManager.GetUI(Player);
+		
 		declare netwrite Vehicle::SVehicle Server_MapVehicle for UI;
 		Server_MapVehicle = MapVehicle;
-		
-		Player.RaceStartTime = -1;
-		Player.IsSpawned = True;
-		//Player.GravityCoef = 0.;
-		Player.Score.Clear();
 	}
 	
 	_Mode.CutOffTimeLimit = -1;
@@ -142,13 +154,50 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 				if(Server_CurrentVehicle < 0) return;
 				log(RealVehicles[Server_CurrentVehicle]);
 				
-				declare SFinish[] Finishes for _Event.Player.Score;
+				declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
+				
+				// Serverside-only performance saving
+				
+				declare SPerformance_Server[Text] Performances_Server for _Event.Player.Score;
+				
+				declare SFinish_Server Finish_Server;
+				Finish_Server.Timestamp = Now;
+				Finish_Server.Ghost = ScoreMgr.Playground_GetPlayerGhost(_Event.Player);
+				
+				declare SPerformance_Server Performance_Server;
+				Performance_Server.BestFinishIndex = -1;
+				if(Performances_Server.existskey(VehicleName)) Performance_Server = Performances_Server[VehicleName];
+				Performance_Server.Finishes.add(Finish_Server);
+				
+				Performance_Server.Vehicle = RealVehicles[Server_CurrentVehicle];
+				if(Performance_Server.BestFinishIndex == -1 || Performance_Server.Finishes[Performance_Server.BestFinishIndex].Ghost.Result.Time > Finish_Server.Ghost.Result.Time)
+					Performance_Server.BestFinishIndex = Performance_Server.Finishes.count-1;
+				
+				Performances_Server[VehicleName] = Performance_Server;
+				
+				// Shared performance saving
 				
 				declare SFinish Finish;
-				Finish.Timestamp = Now;
-				Finish.Time = _Event.RaceTime;
-				Finish.Ghost = ScoreMgr.Playground_GetPlayerGhost(_Event.Player);
-				Finishes.add(Finish);
+				Finish.Timestamp = Finish_Server.Timestamp;
+				Finish.Time = Finish_Server.Ghost.Result.Time;
+				foreach(Checkpoint, Finish_Server.Ghost.Result.Checkpoints)
+					Finish.Checkpoints.add(Checkpoint);
+				
+				declare netwrite SPerformance[Text] Performances for _Event.Player.Score;
+				declare SPerformance Performance;
+				Performance.Vehicle = VehicleName;
+				Performance.BestFinishIndex = Performance_Server.BestFinishIndex;
+				foreach(Finish_Ser,Performance_Server.Finishes) {
+					declare SFinish Finish;
+					Finish.Timestamp = Finish_Ser.Timestamp;
+					Finish.Time = Finish_Ser.Ghost.Result.Time;
+					foreach(Checkpoint, Finish_Ser.Ghost.Result.Checkpoints)
+						Finish.Checkpoints.add(Checkpoint);
+					Performance.Finishes.add(Finish);
+				}
+				Performances[VehicleName] = Performance;
+				
+				declare Task = ScoreMgr.Map_SetNewRecord(NullId, Map.MapInfo.MapUid, VehicleName, Finish_Server.Ghost);
 				
 				Server_EndRace = True;
 				Server_EndRaceInfo.Time = _Event.RaceTime;
@@ -224,12 +273,13 @@ Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
 						case "Replay": {
 							declare FilePath = _Event.CustomEventData[0];
 							
-							declare SFinish[] Finishes for Player.Score;
+							declare SPerformance_Server[Text] Performances_Server for Player.Score;
+							declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
 							
-							if(Finishes[Finishes.count-1].NicerGhost == Null)
-								Task::Async_DataFileMgr("SAVEREPLAY", DataFileMgr.Replay_Save(FilePath, Map, Finishes[Finishes.count-1].Ghost));
+							if(Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].NicerGhost == Null)
+								Task::Async_DataFileMgr("SAVEREPLAY", DataFileMgr.Replay_Save(FilePath, Map, Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].Ghost));
 							else
-								Task::Async_DataFileMgr("SAVEREPLAY", DataFileMgr.Replay_Save(FilePath, Map, Finishes[Finishes.count-1].NicerGhost));
+								Task::Async_DataFileMgr("SAVEREPLAY", DataFileMgr.Replay_Save(FilePath, Map, Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].NicerGhost));
 							//Needs some kind of response from the "server" ("server" cuz DataFileMgr is solo mode only anyway)
 						}
 					}
@@ -241,6 +291,7 @@ Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
 
 Void Loop(CTmMode _Mode) {	
 	foreach(Player,RespawnList) {
+		_Mode.SpawnPlayer(Player, 0, -1);
 		Player.RaceStartTime = -1;
 	}
 	RespawnList.clear();
@@ -274,19 +325,31 @@ Void Loop(CTmMode _Mode) {
 			}
 				
 			if(Player.ForceModelId != OldModelId) {
-				_Mode.SpawnPlayer(Player, 0, Now+10000);
+				_Mode.SpawnPlayer(Player, 0, -1);
 				RespawnList.add(Player);
-					
+				
 				OldModelId = Player.ForceModelId;
 			}
 		}
 		
-		declare SFinish[] Finishes for Player.Score;
-		if(Finishes.count > 0) {
-			if(Finishes[Finishes.count-1].NicerGhost == Null && Now - Finishes[Finishes.count-1].Timestamp >= 3000) {
-				Finishes[Finishes.count-1].NicerGhost = ScoreMgr.Playground_GetPlayerGhost(Player);
+		declare SPerformance_Server[Text] Performances_Server for Player.Score;
+		declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
+		
+		if(Performances_Server.existskey(VehicleName))
+		if(Performances_Server[VehicleName].Finishes.count > 0) {
+			if(Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].NicerGhost == Null && _Mode.Now - Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].Timestamp >= 3000) {
+				Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].NicerGhost = ScoreMgr.Playground_GetPlayerGhost(Player);
 			}
 		}
+		
+		/*declare Integer FixUnchangedTimestamp for Player;
+		log("Ya:"^FixUnchangedTimestamp);
+		if(FixUnchangedTimestamp != -1 && FixUnchangedTimestamp + 500 < _Mode.Now) {
+			_Mode.SpawnPlayer(Player, 0, _Mode.Now+10000);
+			Player.RaceStartTime = -1;
+			log(_Mode.Now);
+			FixUnchangedTimestamp = -1;
+		}*/
 	}
 	
 	foreach(Player, _Mode.PlayersWaiting) {

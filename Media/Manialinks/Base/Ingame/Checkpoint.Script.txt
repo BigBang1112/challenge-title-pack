@@ -1,0 +1,108 @@
+#Struct SSkin {
+	Text File;
+	Text Icon;
+}
+
+#Struct SVehicle {
+	Text Name;
+	Text Image;
+	Text File;
+	SSkin[] Skins;
+}
+
+#Struct SFinish {
+	Integer Timestamp;
+	Integer Time;
+	Integer[] Checkpoints;
+}
+
+#Struct SPerformance {
+	Text Vehicle;
+	Integer BestFinishIndex;
+	SFinish[] Finishes;
+}
+
+Text TimeToTextWithMilli(Integer _Time) {
+	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
+}
+
+CTmMlPlayer GetOwner() {
+	wait(GUIPlayer != Null || InputPlayer != Null);
+	if(GUIPlayer != Null) return GUIPlayer;
+	return InputPlayer;
+}
+
+***Start***
+***
+declare Frame_Checkpoint = (Page.GetFirstChild("FRAME_CHECKPOINT") as CMlFrame);
+declare Label_Checkpoint_Time = (Page.GetFirstChild("LABEL_CHECKPOINT_TIME") as CMlLabel);
+declare Frame_Differences = (Page.GetFirstChild("FRAME_DIFFERENCES") as CMlFrame);
+
+declare CheckpointShowTime = -1;
+
+declare netread SVehicle[] Server_Vehicles for UI;
+declare netread Integer Server_CurrentVehicle for UI;
+
+declare netread SPerformance[Text] Performances for GetOwner().Score; // works
+***
+
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseClick: {
+			
+		}
+	}
+}
+
+foreach(Event,RaceEvents) {
+	switch(Event.Type) {
+		case CTmRaceClientEvent::EType::WayPoint: {
+			if(Event.IsEndRace) {
+
+			}
+			else if(Event.IsEndLap) {
+
+			}
+			else {
+				Label_Checkpoint_Time.SetText(TimeToTextWithMilli(Event.RaceTime));
+
+				Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 1, 1.);
+				Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 0, .8, 100);
+				Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 0, .8, 200);
+				Frame_Checkpoint.Show();
+				CheckpointShowTime = Now;
+
+				declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
+				if(Performances.existskey(VehicleName)) {
+					declare Performance = Performances[VehicleName];
+					declare BestFinish = Performance.Finishes[Performance.BestFinishIndex];
+					declare ThisCheckpoint = BestFinish.Checkpoints[Event.CheckpointInRace];
+
+					declare Frame_Time = ((Frame_Differences.Controls[0] as CMlFrame).GetFirstChild("FRAME_TIME") as CMlFrame);
+					declare Label_Time = (Frame_Time.GetFirstChild("LABEL_TIME") as CMlLabel);
+
+					declare Difference = Event.RaceTime - ThisCheckpoint; // Time difference
+
+					if(Difference > 0)
+						Label_Time.SetText("+"^TimeToTextWithMilli(Difference));
+					else if(Difference == 0)
+						Label_Time.SetText(TimeToTextWithMilli(Difference));
+					else
+						Label_Time.SetText(TimeToTextWithMilli(Difference));
+
+					Frame_Differences.Show();
+				}
+				else {
+					Frame_Differences.Hide();
+				}
+			}
+		}
+	}
+}
+
+if(CheckpointShowTime == -1 || Now - CheckpointShowTime > 3000) {
+	Frame_Checkpoint.Hide();
+}
+***
