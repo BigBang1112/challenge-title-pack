@@ -3,9 +3,13 @@
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 #Include "Libs/BigBang1112/Time.Script.txt" as Time
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
+#Include "Libs/BigBang1112/Map.Script.txt" as Map
 
-Void SetLoading(Text _Environment, Text _MapUid) {
+Void SetLoading(Text _Environment, Map::SMapInfo _MapInfo) {
 	declare Opacities = Time::GetTimeOpacities();
+	
+	declare AuthorText = Dictionary::Get("by");
+	if(_MapInfo.MapType == "TrackMania\\Challenge") AuthorText = Dictionary::Get("modified_by");
 
 	declare LoadingManialink = """<frame z-index="0">
 	<quad pos="0 0" z-index="-6" size="320 180" bgcolor="000D" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Sunrise.jpg" opacity="{{{Opacities[0]*.9}}}" id="QUAD_SUNRISE"/>
@@ -22,8 +26,15 @@ Void SetLoading(Text _Environment, Text _MapUid) {
 	</frame>
 	<frame>
 		<quad pos="-80 0" z-index="-1" size="55 55" halign="center" valign="center" style="Bgs1" substyle="BgButtonGlow" opacity=".5"/>
-		<quad pos="-80 0" z-index="0" size="50 50" bgcolor="000" halign="center" valign="center" image="file://Thumbnails/MapUid/{{{_MapUid}}}"/>
+		<quad pos="-80 0" z-index="0" size="50 50" bgcolor="000" halign="center" valign="center" image="file://Thumbnails/MapUid/{{{_MapInfo.MapUid}}}"/>
 		<quad pos="-80 0" z-index="1" size="51 51" halign="center" valign="center" style="Bgs1" substyle="BgColorContour"/>
+		<label pos="-50 20" z-index="0" size="60 5" text="{{{Dictionary::Get("HEADING_OVER_TO")}}}..." textemboss="1" textfont="BiryaniDemiBold" textsize="2"/>
+		<frame pos="-50 15" clip="True" clipsizen="60 6" clipposn="30 -3">
+			<label z-index="0" size="200 6" text="{{{_MapInfo.Name}}}" textemboss="1" textfont="Oswald" textsize="5"/>
+		</frame>
+		<frame pos="-50 8" clip="True" clipsizen="60 6" clipposn="30 -3">
+			<label z-index="0" size="60 6" text="{{{AuthorText}}} {{{_MapInfo.AuthorNickName}}}" textemboss="1" textfont="Oswald" textsize="2"/>
+		</frame>
 	</frame>
 </frame>""";
 
@@ -33,4 +44,8 @@ Void SetLoading(Text _Environment, Text _MapUid) {
 	else {
 		Layers::Create("Loading", Manialink::Construct(LoadingManialink, "", True, [], Settings::Get().Theme), True, False, CUILayer::EUILayerType::LoadingScreen);
 	}
+}
+
+Void SetLoading(Text _Environment, CMapInfo _MapInfo) {
+	SetLoading(_Environment, Map::ToSMapInfo(_MapInfo));
 }

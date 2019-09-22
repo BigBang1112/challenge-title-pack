@@ -50,7 +50,7 @@ Void Event(CManiaAppEvent _Event) {
 			}
 			case "Play": {
 				if(TitleControl.IsReady) {
-					Loading::SetLoading(ReplayBrowser::GetSelectedMap().CollectionName, ReplayBrowser::GetSelectedMap().MapUid);
+					Loading::SetLoading(ReplayBrowser::GetSelectedMap().CollectionName, ReplayBrowser::GetSelectedMap());
 					TitleControl.PlayMap(ReplayBrowser::GetSelectedMap().FileName, "", "");
 				}
 			}

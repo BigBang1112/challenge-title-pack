@@ -61,7 +61,7 @@ Void Async() {
 				if(MapInfo.MapUid == SelectedPlaysession.Map.Uid)
 					PlayableMap <=> MapInfo;
 			if(PlayableMap != Null) {
-				Loading::SetLoading(PlayableMap.CollectionName, PlayableMap.MapUid);
+				Loading::SetLoading(PlayableMap.CollectionName, PlayableMap);
 				TitleControl.PlayMap(PlayableMap.FileName,"","");
 			}
 			Task::Destroy_DataFileMgr("PLAYSESSION_MAP");
