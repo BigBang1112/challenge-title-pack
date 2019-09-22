@@ -92,8 +92,6 @@ SetStatusMessage("{{{{CONSIDERING_MULTILAP_TRACK}}}}...");
 declare IsOneLapWithFinish = Multilaps.count == 1 && FinishLines.count > 0 && MapInfo.TMObjective_NbLaps == 1;
 declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
 
-if(IsMultilap) Problem_MultilapTrack(Multilaps[0]);
-
 SetStatusStage("{{{{MODIFYING}}}}...");
 SetStatusProgress(.5);
 
@@ -115,6 +113,23 @@ if(IsOneLapWithFinish) {
 				}
 			}
 		}
+	}
+	else Problem();
+}
+else if(IsMultilap) {
+	declare Multilap = Multilaps[0];
+	if(Multilap.IsItem) Problem_ItemMultilap(Multilap.Item);
+	else if(Multilap.IsBlock) {
+		declare Removed = RemoveSpecificBlock(Multilap.Block);
+		if(Removed) {
+			declare BlockName = Multilap.Block.Name;
+			if(BlockName == "RoadRaceMultilap") BlockName = "RoadRaceMultilapMirror"; // Fix for specific Canyon multilap block
+			else if(BlockName == "RoadRaceMultilapMirror") BlockName = "RoadRaceMultilap";
+
+			declare Block = PlaceBlock(BlockName, Multilap.Block.Coord, OppositeDirection(Multilap.Block.Direction));
+			if(!Block.Placed) Problem();
+		}
+		else Problem();
 	}
 	else Problem();
 }
