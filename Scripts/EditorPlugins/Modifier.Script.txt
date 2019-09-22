@@ -123,21 +123,12 @@ Void Finish() {
 	Layers::Hide("ModifierMetadata");
 	
 	sleep(500);
-	
-	Layers::SendEvent("ModifierProblems", "Title", Dictionary::Get("PROBLEMS"));
-	Layers::SendEvent("ModifierProblems", "Position", "120 10");
-	Layers::SendEvent("ModifierProblems", "Size", "60 60");
-	Layers::SendEvent("ModifierProblems", "Animation_Out", "200 10");
-	
-	Layers::SendEvent("ModifierSolutions", "Title", Dictionary::Get("POSSIBLE_SOLUTIONS"));
-	Layers::SendEvent("ModifierSolutions", "Title_Align", "left");
-	Layers::SendEvent("ModifierSolutions", "Position", "-100 10");
-	Layers::SendEvent("ModifierSolutions", "Size", "100 60");
-	Layers::SendEvent("ModifierSolutions", "Animation_Out", "-210 10");
 
 	declare metadata ModifierBase::SChMap OriginalMap for Map;
 	declare metadata ModifierBase::SChProblem[] Problems for Map;
 	declare metadata Integer CurrentScript for Map;
+
+	Layers::Show("ModifierResult", True);
 
 	if(Terminate) Layers::SendEvent("ModifierResult", "Unsolvable");
 	else {
@@ -158,6 +149,9 @@ Void Finish() {
 			
 			Layers::Show("ModifierProblems", True);
 		}
+		else {
+			Layers::SendEvent("ModifierResult", "Solved");
+		}
 	}
 	
 	if(CurrentShadowsQuality == ::ShadowsQuality::NotComputed) Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("NOT_COMPUTED"), ""^IsUltraShadowsQualityAvailable]);
@@ -166,8 +160,7 @@ Void Finish() {
 	else if(CurrentShadowsQuality == ::ShadowsQuality::Default) Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("DEFAULT"), ""^IsUltraShadowsQualityAvailable]);
 	else if(CurrentShadowsQuality == ::ShadowsQuality::High) Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("HIGH"), ""^IsUltraShadowsQualityAvailable]);
 	else if(CurrentShadowsQuality == ::ShadowsQuality::Ultra) Layers::SendEvent("ModifierResult", "Shadows", [Dictionary::Get("ULTRA"), ""^IsUltraShadowsQualityAvailable]);
-	
-	Layers::Show("ModifierResult", True);
+
 	
 	declare Solver = False;
 	declare Continue = False;
@@ -191,6 +184,7 @@ Void Finish() {
 						Validate();
 					}
 					case "Button_Solve": {
+						if(Problems.count == 0) continue;
 						Solver = True;
 						Layers::SendEvent("ModifierProblems", "Select", "0");
 						declare Problem = Problems[0];
@@ -689,8 +683,17 @@ main() {
 	Layers::Create("ModifierCrash",Manialink::FromFile(C_Manialink_ModifierCrash, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
 	Layers::Create("ModifierResult",Manialink::FromFile(C_Manialink_ModifierResult, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
 	Layers::Create("ModifierProblems",Manialink::FromFile("Media/Manialinks/Window_List", True, ["Audio"], Settings::Get().Theme));
+	Layers::SendEvent("ModifierProblems", "Title", Dictionary::Get("PROBLEMS"));
+	Layers::SendEvent("ModifierProblems", "Position", "120 10");
+	Layers::SendEvent("ModifierProblems", "Size", "60 60");
+	Layers::SendEvent("ModifierProblems", "Animation_Out", "200 10");
 	Layers::Create("ModifierSolver",Manialink::FromFile(C_Manialink_ModifierSolver, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
 	Layers::Create("ModifierSolutions",Manialink::FromFile("Media/Manialinks/Window_List", True, ["Audio"], Settings::Get().Theme));
+	Layers::SendEvent("ModifierSolutions", "Title", Dictionary::Get("POSSIBLE_SOLUTIONS"));
+	Layers::SendEvent("ModifierSolutions", "Title_Align", "left");
+	Layers::SendEvent("ModifierSolutions", "Position", "-100 10");
+	Layers::SendEvent("ModifierSolutions", "Size", "100 60");
+	Layers::SendEvent("ModifierSolutions", "Animation_Out", "-210 10");
 
 	Layers::SetAnimationInOut("ModifierScript",CUILayer::EUILayerAnimation::DownSlow);
 	Layers::SetAnimationInOut("ModifierStatus",CUILayer::EUILayerAnimation::DownSlow);

@@ -490,7 +490,6 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 		case "Ch_RemoveItem": {
 			declare ModifierBase::SChItem Item;
 			declare JsonSuccess = Item.fromjson(_Data[0]);
-			log(Item);
 			declare CAnchorData Anch;
 			foreach(Anchor, AnchorData) {
 				if(Anchor.Item != Null) {
@@ -588,7 +587,6 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			declare ModifierBase::SChWaypoint[] Waypoints;
 
 			foreach(Block, GetBlocks()) {
-				if(Block.Macroblock != Null) log(Block ^ " " ^ Block.Macroblock);
 				if(Block.Waypoint == "Finish") {
 					declare ModifierBase::SChWaypoint Waypoint;
 					Waypoint.Type = "Finish";
