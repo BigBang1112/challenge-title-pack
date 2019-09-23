@@ -1,3 +1,15 @@
+#Struct SFinish {
+	Integer Timestamp;
+	Integer Time;
+	Integer[] Checkpoints;
+}
+
+#Struct SPerformance {
+	Text Vehicle;
+	Integer BestFinishIndex;
+	SFinish[] Finishes;
+}
+
 #Struct SChannel {
 	Integer Position;
 	Text Id;
@@ -32,6 +44,12 @@ Text TimeToTextWithMilli(Integer _Time) {
 	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
 }
 
+CTmMlPlayer GetOwner() {
+	wait(GUIPlayer != Null || InputPlayer != Null);
+	if(GUIPlayer != Null) return GUIPlayer;
+	return InputPlayer;
+}
+
 ***Start***
 ***
 declare Start = Now;
@@ -43,6 +61,8 @@ declare Widget_CurrentMember = 0;
 
 declare Frame_Discord = (Page.GetFirstChild("FRAME_DISCORD") as CMlFrame);
 declare Frame_Discord_Users = [(Frame_Discord.GetFirstChild("FRAME_USER#1") as CMlFrame),(Frame_Discord.GetFirstChild("FRAME_USER#2") as CMlFrame)];
+
+declare netread SPerformance[Text] Performances for GetOwner().Score;
 ***
 
 ***Loop***
@@ -97,8 +117,21 @@ foreach(Event,PendingEvents) {
 					declare Text Map_Env for Page;
 					declare Text Car for Page;
 					declare Text[] Challenges for Page;
+					
+					declare Performance = Performances[Car];
+					declare BestFinish = Performance.Finishes[Performances[Car].BestFinishIndex];
+					declare ThisFinish = Performance.Finishes[Performance.Finishes.count-1];
+					(Page.GetFirstChild("LABEL_TIME") as CMlLabel).SetText(TimeToTextWithMilli(ThisFinish.Time));
 
-					(Page.GetFirstChild("LABEL_TIME") as CMlLabel).SetText(TimeToTextWithMilli(Time));
+					if(ThisFinish.Time < BestFinish.Time) {
+						(Page.GetFirstChild("LABEL_SHOWCASE") as CMlLabel).SetText("{{{{YOU_HAVE_IMPROVED}}}}");
+					}
+					else if(ThisFinish.Time == BestFinish.Time) {
+						(Page.GetFirstChild("LABEL_SHOWCASE") as CMlLabel).SetText("{{{{YOU_HAVE_EQUALED}}}}");
+					}
+					else {
+						(Page.GetFirstChild("LABEL_SHOWCASE") as CMlLabel).SetText("{{{{MAYBE_NEXT_TIME}}}}");
+					}
 
 					SlideText_Set((Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel), (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel), Map_Name, 15);
 					SlideText_Set((Page.GetFirstChild("LABEL_ENV") as CMlLabel), (Page.GetFirstChild("LABEL_ENV_2") as CMlLabel), TextLib::ToUpperCase(Map_Env), 15);
@@ -113,7 +146,7 @@ foreach(Event,PendingEvents) {
 		}
 		case CMlScriptEvent::Type::MenuNavigation: {
 			switch(Event.MenuNavAction) {
-				case CMlEvent::EMenuNavAction::Select: {
+				case CMlScriptEvent::EMenuNavAction::Select: {
 					SendCustomEvent("Continue", []);
 				}
 			}
