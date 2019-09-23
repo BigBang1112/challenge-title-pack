@@ -83,11 +83,11 @@ Void InitPerformances(CScore _Score) {
 	declare SPerformance_Server[Text] Performances_Server for _Score;
 	
 	foreach(Vehicle, RealVehicles) {
-		declare SPerformance_Server Performance;
-		Performance.Vehicle = Vehicle;
+		declare SPerformance_Server Performance_Server;
+		Performance_Server.Vehicle = Vehicle;
 		
 		declare Record = ScoreMgr.Map_GetRecord(NullId, Map.MapInfo.MapUid, Vehicle.Name);
-		if(Record == -1) Performance.BestFinishIndex = -1;
+		if(Record == -1) Performance_Server.BestFinishIndex = -1;
 		else {
 			declare Task_Ghost = ScoreMgr.Map_GetRecordGhost(NullId, Map.MapInfo.MapUid, Vehicle.Name);
 			wait(!Task_Ghost.IsProcessing);
@@ -96,11 +96,25 @@ Void InitPerformances(CScore _Score) {
 				declare SFinish_Server Finish;
 				Finish.Timestamp = -1;
 				Finish.Ghost = Task_Ghost.Ghost;
-				Performance.Finishes.add(Finish);
+				Performance_Server.Finishes.add(Finish);
 			}
 		}
 		
-		Performances_Server[Vehicle.Name] = Performance;
+		Performances_Server[Vehicle.Name] = Performance_Server;
+		
+		declare netwrite SPerformance[Text] Performances for _Score;
+		declare SPerformance Performance;
+		Performance.Vehicle = Performance_Server.Vehicle.Name;
+		Performance.BestFinishIndex = Performance_Server.BestFinishIndex;
+		foreach(Finish_Ser,Performance_Server.Finishes) {
+			declare SFinish Finish;
+			Finish.Timestamp = Finish_Ser.Timestamp;
+			Finish.Time = Finish_Ser.Ghost.Result.Time;
+			foreach(Checkpoint, Finish_Ser.Ghost.Result.Checkpoints)
+				Finish.Checkpoints.add(Checkpoint);
+			Performance.Finishes.add(Finish);
+		}
+		Performances[Vehicle.Name] = Performance;
 	}
 }
 
