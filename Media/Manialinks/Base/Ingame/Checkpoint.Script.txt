@@ -75,24 +75,35 @@ foreach(Event,RaceEvents) {
 				CheckpointShowTime = Now;
 
 				declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
+				
 				if(Performances.existskey(VehicleName)) {
 					declare Performance = Performances[VehicleName];
-					declare BestFinish = Performance.Finishes[Performance.BestFinishIndex];
-					declare ThisCheckpoint = BestFinish.Checkpoints[Event.CheckpointInRace];
 
-					declare Frame_Time = ((Frame_Differences.Controls[0] as CMlFrame).GetFirstChild("FRAME_TIME") as CMlFrame);
-					declare Label_Time = (Frame_Time.GetFirstChild("LABEL_TIME") as CMlLabel);
+					if(Performance.BestFinishIndex != -1) {
+						declare BestFinish = Performance.Finishes[Performance.BestFinishIndex];
+						declare ThisCheckpoint = BestFinish.Checkpoints[Event.CheckpointInRace];
 
-					declare Difference = Event.RaceTime - ThisCheckpoint; // Time difference
+						declare Frame_Time = ((Frame_Differences.Controls[0] as CMlFrame).GetFirstChild("FRAME_TIME") as CMlFrame);
+						declare Label_Time = (Frame_Time.GetFirstChild("LABEL_TIME") as CMlLabel);
+						declare Quad_Color = ((Frame_Time.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).GetFirstChild("QUAD_COLOR") as CMlQuad);
 
-					if(Difference > 0)
-						Label_Time.SetText("+"^TimeToTextWithMilli(Difference));
-					else if(Difference == 0)
-						Label_Time.SetText(TimeToTextWithMilli(Difference));
-					else
-						Label_Time.SetText(TimeToTextWithMilli(Difference));
+						declare Difference = Event.RaceTime - ThisCheckpoint; // Time difference
 
-					Frame_Differences.Show();
+						if(Difference > 0) {
+							Label_Time.SetText("+"^TimeToTextWithMilli(Difference));
+							Quad_Color.ModulateColor = <1.,.1,0.>;
+						}
+						else if(Difference == 0) {
+							Label_Time.SetText(TimeToTextWithMilli(Difference));
+							Quad_Color.ModulateColor = <1.,.0,1.>;
+						}
+						else {
+							Label_Time.SetText(TimeToTextWithMilli(Difference));
+							Quad_Color.ModulateColor = <0.,.1,1.>;
+						}
+
+						Frame_Differences.Show();
+					}
 				}
 				else {
 					Frame_Differences.Hide();
