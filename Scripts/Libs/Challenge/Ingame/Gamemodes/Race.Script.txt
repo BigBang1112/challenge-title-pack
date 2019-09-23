@@ -98,6 +98,8 @@ Void InitPerformances(CScore _Score) {
 					Finish.Timestamp = -1;
 					Finish.Ghost = Task_Ghost.Ghost;
 					Performance_Server.Finishes.add(Finish);
+					
+					Performance_Server.BestFinishIndex = 0;
 				}
 			}
 		}
