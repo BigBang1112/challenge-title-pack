@@ -26,15 +26,15 @@
 				<label z-index="0" size="200 7" text="REVERSE + REVERSE + REVERSE" textfont="Oswald" textsize="4" textcolor="EEE" id="LABEL_CHALLENGE" halign="right"/>
 				<label z-index="0" size="200 7" text="REVERSE + REVERSE + REVERSE" textfont="Oswald" textsize="4" textcolor="EEE" id="LABEL_CHALLENGE_2" halign="right"/>
 			</frame>
-			<label pos="0 -40" z-index="0" size="130 15" text="YOU HAVE IMPROVED" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" textprefix="$i$o" hidden="0"/>
+			<label pos="0 -40" z-index="0" size="130 15" text="{{{{YOU_HAVE_IMPROVED}}}}" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" textprefix="$i$o" id="LABEL_SHOWCASE"/>
 			<label pos="0 -40" z-index="0" size="130 15" text="102 201 SP" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" textprefix="$i$o" hidden="1"/>
-			<label pos="1 -63" z-index="0" size="65 15" text="SCREENSHOT AND SHARE" valign="center" textfont="Oswald" textsize="5" halign="right"/>
-			<label pos="1 -68" z-index="0" size="65 15" text="YOUR EFFORT IN OUR FRIENDLY LITTLE PLACE" valign="center" textfont="Oswald" textsize="1" halign="right"/>
+			<label pos="1 -63" z-index="0" size="65 15" text="{{{{SCREENSHOT_AND_SHARE}}}}" valign="center" textfont="Oswald" textsize="5" halign="right"/>
+			<label pos="1 -68" z-index="0" size="65 15" text="{{{{DISCORD_YOUR_EFFORT}}}}" valign="center" textfont="Oswald" textsize="1" halign="right"/>
 			<frame pos="35 -65" z-index="1" id="FRAME_DISCORD">
 				<quad z-index="0" size="60 15" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="ABD" id="QUAD_BUTTON_DISCORD" valign="center" pos="0 0"/>
 				<quad z-index="1" size="11 11" bgcolor="FFFA" halign="center" valign="center" pos="-22.5 -0.5" image="file://Media/Images/Discord.png"/>
-				<frame pos="-15 0" z-index="1" clip="True" clipsizen="42.5 11" clipposn="21.25 0" id="FRAME_DISCORD">
-					<quad size="42.5 11" bgcolor="0004" valign="center" z-index="-1"/>
+				<quad pos="-15 0" size="42.5 11" bgcolor="0004" valign="center" z-index="2"/>
+				<frame pos="-15 0" z-index="3" clip="True" clipsizen="42.5 11" clipposn="21.25 0" id="FRAME_DISCORD">
 					<label pos="3 -0.3" z-index="0" size="37.5 5" text="..." valign="center2" textfont="Oswald" id="LABEL_NAME"/>
 					<label pos="21 -0.3" z-index="0" size="37.5 5" text="$888• $fff0 members online" valign="center2" textfont="Oswald" halign="center" textsize="2.5" id="LABEL_MEMBERCOUNT" opacity="0"/>
 					<frame pos="6 0" id="FRAME_USER#1" hidden="1">
@@ -51,10 +51,256 @@
 		<frame pos="-105 65">
 			<quad z-index="-2" size="65 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="-1" size="65 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
+			<label pos="0 -10.5" z-index="0" size="50 5" text="$o{{{{SHORTEST_DISTANCE}}}}" halign="center" textfont="Oswald" valign="bottom"/>
+			<frame pos="-30 -60">
+				<frame pos="4 35">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$ff001)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 30">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$DDD02)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 25">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$A6203)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 20">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA04)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 15">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA05)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 10">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA06)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 5">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA07)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 0">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA08)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -5">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA09)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -10">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA10)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -15">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA11)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -20">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA12)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -25">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA13)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -30">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA14)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -35">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA15)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -40">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA16)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -45">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA17)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -50">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA18)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -55">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA19)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -60">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA20)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+			</frame>
 		</frame>
 		<frame pos="105 65">
 			<quad z-index="-2" size="65 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="-1" size="65 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
+			<label pos="0 -10.5" z-index="0" size="50 5" text="$o{{{{SHORTEST_DISTANCE}}}}" halign="center" textfont="Oswald" valign="bottom"/>
+			<frame pos="-30 -60">
+				<frame pos="4 35">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$ff001)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 30">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$DDD02)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 25">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$A6203)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 20">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA04)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 15">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA05)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 10">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA06)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 5">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA07)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 0">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA08)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -5">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA09)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -10">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA10)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -15">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA11)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -20">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA12)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -25">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA13)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -30">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA14)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -35">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA15)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -40">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA16)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -45">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA17)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -50">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA18)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -55">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA19)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+				<frame pos="4 -60">
+					<label pos="0 0" z-index="0" size="27.5 5" text="$AAA20)$fff 0:05.000" textsize="3" textfont="RajdhaniMono"/>
+					<frame pos="51 -1.9" clip="True" clipsizen="25 5" clipposn="-10 0">
+						<label z-index="0" size="100 5" text="$o$i$nBIGBANG1112" textsize="2" textfont="Oswald" valign="center" halign="right" pos="0 0"/>
+					</frame>
+				</frame>
+			</frame>
 		</frame>
 		<frame pos="0 -55">
 			<quad z-index="-2" size="140 20" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCard" modulatecolor="036" scriptevents="1" id="QUAD_BUTTON_CONTINUE" styleselected="1"/>
