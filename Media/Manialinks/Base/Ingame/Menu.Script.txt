@@ -1,3 +1,21 @@
+#Struct SFinish {
+	Integer Timestamp;
+	Integer Time;
+	Integer[] Checkpoints;
+}
+
+#Struct SPerformance {
+	Text Vehicle;
+	Integer BestFinishIndex;
+	SFinish[] Finishes;
+}
+
+CTmMlPlayer GetOwner() {
+	wait(GUIPlayer != Null || InputPlayer != Null);
+	if(GUIPlayer != Null) return GUIPlayer;
+	return InputPlayer;
+}
+
 Text TimeToTextWithMilli(Integer _Time) {
 	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
 }
@@ -110,14 +128,18 @@ foreach(Event,PendingEvents) {
 				case "Car": {
 					declare Car = Event.CustomEventData[0];
 					SlideText_Set(Label_Car, Label_Car2, Car, LabelDistance);
-				}
-				case "Record": {
-					declare Record = TextLib::ToInteger(Event.CustomEventData[0]);
-					if(Record == -1) {
+
+					if(Car == "") {
 						Label_PB_Time.SetText("-:--.---");
 					}
 					else {
-						Label_PB_Time.SetText(TimeToTextWithMilli(Record));
+						declare netread SPerformance[Text] Performances for GetOwner().Score;
+						declare Performance = Performances[Car];
+						if(Performance.BestFinishIndex == -1) Label_PB_Time.SetText("-:--.---");
+						else {
+							declare BestFinish = Performance.Finishes[Performance.BestFinishIndex];
+							Label_PB_Time.SetText(TimeToTextWithMilli(BestFinish.Time));
+						}
 					}
 				}
 				case "Open": {

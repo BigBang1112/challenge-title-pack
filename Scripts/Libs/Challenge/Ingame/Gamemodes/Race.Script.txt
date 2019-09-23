@@ -85,18 +85,20 @@ Void InitPerformances(CScore _Score) {
 	foreach(Vehicle, RealVehicles) {
 		declare SPerformance_Server Performance_Server;
 		Performance_Server.Vehicle = Vehicle;
+		Performance_Server.BestFinishIndex = -1;
 		
-		declare Record = ScoreMgr.Map_GetRecord(NullId, Map.MapInfo.MapUid, Vehicle.Name);
-		if(Record == -1) Performance_Server.BestFinishIndex = -1;
-		else {
-			declare Task_Ghost = ScoreMgr.Map_GetRecordGhost(NullId, Map.MapInfo.MapUid, Vehicle.Name);
-			wait(!Task_Ghost.IsProcessing);
-			
-			if(Task_Ghost.HasSucceeded) {
-				declare SFinish_Server Finish;
-				Finish.Timestamp = -1;
-				Finish.Ghost = Task_Ghost.Ghost;
-				Performance_Server.Finishes.add(Finish);
+		if(Map.MapInfo.MapUid != "") {
+			declare Record = ScoreMgr.Map_GetRecord(NullId, Map.MapInfo.MapUid, Vehicle.Name);
+			if(Record != -1) {
+				declare Task_Ghost = ScoreMgr.Map_GetRecordGhost(NullId, Map.MapInfo.MapUid, Vehicle.Name);
+				wait(!Task_Ghost.IsProcessing);
+				
+				if(Task_Ghost.HasSucceeded) {
+					declare SFinish_Server Finish;
+					Finish.Timestamp = -1;
+					Finish.Ghost = Task_Ghost.Ghost;
+					Performance_Server.Finishes.add(Finish);
+				}
 			}
 		}
 		
@@ -192,7 +194,7 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 		
 	switch(_Event.Type) {
 		case CTmModeEvent::EType::StartLine: {	
-			if(RealVehicles.existskey(Client_VehicleIndex))								
+			if(RealVehicles.existskey(Client_VehicleIndex))
 				Server_VehicleLock = Client_VehicleIndex;
 		}
 		case CTmModeEvent::EType::WayPoint: {
@@ -243,7 +245,8 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 				}
 				Performances[VehicleName] = Performance;
 				
-				declare Task = ScoreMgr.Map_SetNewRecord(NullId, Map.MapInfo.MapUid, VehicleName, Finish_Server.Ghost);
+				if(Map.MapInfo.MapUid != "")
+					declare Task = ScoreMgr.Map_SetNewRecord(NullId, Map.MapInfo.MapUid, VehicleName, Finish_Server.Ghost);
 				
 				Server_EndRace = True;
 			}
