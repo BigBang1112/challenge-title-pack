@@ -72,6 +72,40 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 	else _Player.GravityCoef = 1.;
 	_Mode.SpawnPlayer(_Player, 0, -1);
 	UI.UISequence = CUIConfig::EUISequence::Playing;
+	
+	_Mode.RaceGhost_RemoveAll();
+	
+	declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
+	
+	declare SPerformance_Server[Text] Performances_Server for _Player.Score;
+	declare Performance = Performances_Server[VehicleName];
+	if(Performance.BestFinishIndex != -1)
+		declare Ghost = _Mode.RaceGhost_Add(Performance.Finishes[Performance.BestFinishIndex].Ghost, True);
+}
+
+Void InitPerformances(CScore _Score) {
+	declare SPerformance_Server[Text] Performances_Server for _Score;
+	
+	foreach(Vehicle, RealVehicles) {
+		declare SPerformance_Server Performance;
+		Performance.Vehicle = Vehicle;
+		
+		declare Record = ScoreMgr.Map_GetRecord(NullId, Map.MapInfo.MapUid, Vehicle.Name);
+		if(Record == -1) Performance.BestFinishIndex = -1;
+		else {
+			declare Task_Ghost = ScoreMgr.Map_GetRecordGhost(NullId, Map.MapInfo.MapUid, Vehicle.Name);
+			wait(!Task_Ghost.IsProcessing);
+			
+			if(Task_Ghost.HasSucceeded) {
+				declare SFinish_Server Finish;
+				Finish.Timestamp = -1;
+				Finish.Ghost = Task_Ghost.Ghost;
+				Performance.Finishes.add(Finish);
+			}
+		}
+		
+		Performances_Server[Vehicle.Name] = Performance;
+	}
 }
 
 Void Init(CTmMode _Mode) {
@@ -111,6 +145,8 @@ Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
 		Server_NoGravity = False;
 		
 		UI.UISequence = CUIConfig::EUISequence::None;
+		
+		InitPerformances(Player.Score);
 	}
 					
 	declare Vehicle::SVehicle MapVehicle;
@@ -146,8 +182,9 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 	declare netread Integer Client_VehicleIndex for UI;
 		
 	switch(_Event.Type) {
-		case CTmModeEvent::EType::StartLine: {									
-			Server_VehicleLock = Client_VehicleIndex;
+		case CTmModeEvent::EType::StartLine: {	
+			if(RealVehicles.existskey(Client_VehicleIndex))								
+				Server_VehicleLock = Client_VehicleIndex;
 		}
 		case CTmModeEvent::EType::WayPoint: {
 			if(_Event.IsEndRace) { // Finish
