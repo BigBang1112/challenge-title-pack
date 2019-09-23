@@ -126,7 +126,7 @@ foreach(Event,PendingEvents) {
 					if(Performance.Finishes.count == 1) {
 						(Page.GetFirstChild("LABEL_SHOWCASE") as CMlLabel).SetText("{{{{YOU_HAVE_FINISHED}}}}");
 					}
-					else if(ThisFinish.Time < BestFinish.Time) {
+					else if(Performance.BestFinishIndex == Performance.Finishes.count - 1) {
 						(Page.GetFirstChild("LABEL_SHOWCASE") as CMlLabel).SetText("{{{{YOU_HAVE_IMPROVED}}}}");
 					}
 					else if(ThisFinish.Time == BestFinish.Time) {
