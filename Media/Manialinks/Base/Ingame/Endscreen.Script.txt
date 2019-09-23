@@ -112,7 +112,6 @@ foreach(Event,PendingEvents) {
 					Start = Now;
 				}
 				case "Update": {
-					declare Integer Time for Page;
 					declare Text Map_Name for Page;
 					declare Text Map_Env for Page;
 					declare Text Car for Page;

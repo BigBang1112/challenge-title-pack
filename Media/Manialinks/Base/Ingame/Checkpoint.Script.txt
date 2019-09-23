@@ -43,7 +43,7 @@ declare CheckpointShowTime = -1;
 declare netread SVehicle[] Server_Vehicles for UI;
 declare netread Integer Server_CurrentVehicle for UI;
 
-declare netread SPerformance[Text] Performances for GetOwner().Score; // works
+declare netread SPerformance[Text] Performances for GetOwner().Score;
 ***
 
 ***Loop***

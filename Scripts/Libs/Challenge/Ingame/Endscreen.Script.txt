@@ -55,7 +55,6 @@ Void Loop() {
 	if(Server_EndRace != RaceEnded) {
 		if(Server_EndRace) {
 			declare netread Boolean Server_IsValidationMode for UI;
-			declare netread Race::SEndRaceInfo Server_EndRaceInfo for UI;
 			declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
 			declare netread Integer Server_CurrentVehicle for UI;
 
@@ -68,9 +67,6 @@ Void Loop() {
 				Layers::Hide("OpenMenu");
 
 			Music_Endscreen.Play();
-
-			declare Integer Time for Layers::Page("Endscreen");
-			Time = Server_EndRaceInfo.Time;
 
 			declare Text Map_Name for Layers::Page("Endscreen");
 			Map_Name = OriginalMap.Name;

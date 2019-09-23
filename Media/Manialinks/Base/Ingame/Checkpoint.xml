@@ -13,7 +13,7 @@
 					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
 					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
 				</frame>
-				<label pos="0 -0.2" z-index="0" size="25 6" text="PERSONAL BEST" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
+				<label pos="0 -0.2" z-index="0" size="25 6" text="{{{{PERSONAL_BEST}}}}" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
 			</frame>
 			<frame pos="15 0" id="FRAME_TIME">
 				<frame z-index="-1">

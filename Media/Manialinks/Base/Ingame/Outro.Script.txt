@@ -1,3 +1,45 @@
+#Struct SFinish {
+	Integer Timestamp;
+	Integer Time;
+	Integer[] Checkpoints;
+}
+
+#Struct SPerformance {
+	Text Vehicle;
+	Integer BestFinishIndex;
+	SFinish[] Finishes;
+}
+
+#Struct SSkin {
+	Text File;
+	Text Icon;
+}
+
+#Struct SVehicle {
+	Text Name;
+	Text Image;
+	Text File;
+	SSkin[] Skins;
+}
+
+CTmMlPlayer GetOwner() {
+	wait(GUIPlayer != Null || InputPlayer != Null);
+	if(GUIPlayer != Null) return GUIPlayer;
+	return InputPlayer;
+}
+
+Void SaveReplay() {
+	declare netread SVehicle[] Server_Vehicles for UI;
+	declare netread Integer Server_CurrentVehicle for UI;
+	declare netread SPerformance[Text] Performances for GetOwner().Score;
+
+	declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
+	declare Performance = Performances[VehicleName];
+	declare ThisFinish = Performance.Finishes[Performance.Finishes.count-1];
+
+	SendCustomEvent("SaveReplay", [ThisFinish.Time^""]);
+}
+
 ***Start***
 ***
 EnableMenuNavigationInputs = True;
@@ -40,7 +82,8 @@ foreach(Event,PendingEvents) {
 				}
 				case "QUAD_BUTTON_SAVEREPLAY": {
 					PlayAudio(Sound_Click);
-					SendCustomEvent("SaveReplay", []);
+
+					SaveReplay();
 				}
 			}
 		}
@@ -63,7 +106,7 @@ foreach(Event,PendingEvents) {
 					if(SelectedNav != Null) {
 						if(SelectedNav.ControlId == "QUAD_BUTTON_CONTINUE") SendCustomEvent("Continue", []);
 						else if(SelectedNav.ControlId == "QUAD_BUTTON_EXIT") SendCustomEvent("Exit", []);
-						else if(SelectedNav.ControlId == "QUAD_BUTTON_SAVEREPLAY") SendCustomEvent("SaveReplay", []);
+						else if(SelectedNav.ControlId == "QUAD_BUTTON_SAVEREPLAY") SaveReplay();
 					}
 				}
 				case CMlScriptEvent::EMenuNavAction::Up: {

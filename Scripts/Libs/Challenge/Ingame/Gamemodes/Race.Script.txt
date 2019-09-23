@@ -5,10 +5,6 @@
 
 #Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
 
-#Struct SEndRaceInfo {
-	Integer Time;
-}
-
 #Struct SFinish_Server {
 	Integer Timestamp;
 	CGhost Ghost;
@@ -176,7 +172,6 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 	declare netwrite Integer Server_CurrentVehicle for UI;
 	declare netwrite Boolean Server_Playing for UI;
 	declare netwrite Boolean Server_EndRace for UI;
-	declare netwrite SEndRaceInfo Server_EndRaceInfo for UI;
 	declare netwrite Boolean Server_Outro for UI;
 		
 	declare netread Integer Client_VehicleIndex for UI;
@@ -237,7 +232,6 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 				declare Task = ScoreMgr.Map_SetNewRecord(NullId, Map.MapInfo.MapUid, VehicleName, Finish_Server.Ghost);
 				
 				Server_EndRace = True;
-				Server_EndRaceInfo.Time = _Event.RaceTime;
 			}
 			else if(_Event.IsEndLap) { // Lap
 				
@@ -250,7 +244,7 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 			if(Server_EndRace)
 				_Mode.Discard(_Event);
 			else {
-				Server_EndRaceInfo.Time = -1;
+				
 			}
 		}
 		case CTmModeEvent::EType::OnPlayerAdded: {

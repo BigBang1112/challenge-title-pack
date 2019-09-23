@@ -57,12 +57,13 @@ Void Event(CManiaAppEvent _Event) {
 							declare metadata ModifierBase::SChMap OriginalMap for Map;
 							declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
 							declare netread Integer Server_CurrentVehicle for UI;
-							declare netread Race::SEndRaceInfo Server_EndRaceInfo for UI;
+
+							declare Time = TextLib::ToInteger(_Event.CustomEventData[0]);
 
 							Layers::Show("Replays", True);
 							Layers::Show("ReplayInfo", True);
 							Layers::SendEvent("ReplayInfo", "Mode", "Save");
-							Layers::SendEvent("ReplayInfo", "SetReplay", """{{{TextLib::StripFormatting(OriginalMap.Name)}}}_{{{Map.MapStyle}}}_{{{Server_Vehicles[Server_CurrentVehicle].Name}}}_({{{Time::TimeToFileNameSupportedText(Server_EndRaceInfo.Time)}}})""");
+							Layers::SendEvent("ReplayInfo", "SetReplay", """{{{TextLib::StripFormatting(OriginalMap.Name)}}}_{{{Map.MapStyle}}}_{{{Server_Vehicles[Server_CurrentVehicle].Name}}}_({{{Time::TimeToFileNameSupportedText(Time)}}})""");
 							Layers::Hide("Outro");
 							Layers::Hide("Rating");
 						}
