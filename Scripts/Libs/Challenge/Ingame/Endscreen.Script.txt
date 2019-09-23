@@ -60,6 +60,9 @@ Void Loop() {
 
 			declare metadata ModifierBase::SChMap OriginalMap for Map;
 
+			declare Record = ScoreMgr.Map_GetRecord(NullId, Map.MapInfo.MapUid, Server_Vehicles[Server_CurrentVehicle].Name);
+			Layers::SendEvent("Menu", "Record", Record^"");
+
 			declare Text[] Exchange for This;
 			Exchange.add("HideIngame");
 

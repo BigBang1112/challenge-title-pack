@@ -1,3 +1,7 @@
+Text TimeToTextWithMilli(Integer _Time) {
+	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
+}
+
 Void Button_Continue() {
 	SendCustomEvent("Start", ["False"]);
 	CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
@@ -26,6 +30,9 @@ declare Frame_Label_Car = (Page.GetFirstChild("FRAME_LABEL_CAR") as CMlFrame);
 declare Label_Car = (Page.GetFirstChild("LABEL_CAR") as CMlLabel);
 declare Label_Car2 = (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel);
 
+declare Label_PB_Nickname = (Page.GetFirstChild("LABEL_PB_NICKNAME") as CMlLabel);
+declare Label_PB_Time = (Page.GetFirstChild("LABEL_PB_TIME") as CMlLabel);
+
 declare LabelDistance = 15;
 
 declare Boolean IsPauseMenu for Page;
@@ -52,6 +59,8 @@ Button_Start.Up = Quad_Button_Continue;
 NavControls[Quad_Button_Start] = Button_Start;
 
 Select(FirstNav);
+
+Label_PB_Nickname.SetText(LocalUser.Name);
 ***
 
 ***Loop***
@@ -101,6 +110,15 @@ foreach(Event,PendingEvents) {
 				case "Car": {
 					declare Car = Event.CustomEventData[0];
 					SlideText_Set(Label_Car, Label_Car2, Car, LabelDistance);
+				}
+				case "Record": {
+					declare Record = TextLib::ToInteger(Event.CustomEventData[0]);
+					if(Record == -1) {
+						Label_PB_Time.SetText("-:--.---");
+					}
+					else {
+						Label_PB_Time.SetText(TimeToTextWithMilli(Record));
+					}
 				}
 				case "Open": {
 					ShowInGameMenu();

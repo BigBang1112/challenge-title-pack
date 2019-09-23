@@ -314,17 +314,6 @@ for(I,0,Exchange.count-1) {
 	}
 }
 
-if(Server_CurrentVehicle >= 0) { // If vehicle is selected
-	Layers::SendEvent("Menu", "Car", Server_Vehicles[Server_CurrentVehicle].Name);
-	Layers::SendEvent("Map", "Car", Server_Vehicles[Server_CurrentVehicle].Name);
-	Map.MapName = """({{{OriginalMap.CollectionName}}}) {{{OriginalMap.Name}}}.{{{TextLib::Replace(Map.MapStyle, "+", "")}}} [{{{Server_Vehicles[Server_CurrentVehicle].Name}}}]""";
-}
-else { // If vehicle is not selected
-	Map.MapName = """({{{OriginalMap.CollectionName}}}) {{{OriginalMap.Name}}}.{{{TextLib::Replace(Map.MapStyle, "+", "")}}}""";
-	Layers::SendEvent("Menu", "Car", "");
-	Layers::SendEvent("Map", "Car", "");
-}
-
 if(VehicleIndex != OldVehicleIndex) { // If vehicle was changed
 	Client_VehicleIndex = VehicleIndex;
 	SendCustomEvent("VehicleIndexChanged", [VehicleIndex^""]);
@@ -334,6 +323,22 @@ if(VehicleIndex != OldVehicleIndex) { // If vehicle was changed
 }
 
 if(Server_CurrentVehicle != OldVehicle) { // If server vehicle was changed
+	if(Server_CurrentVehicle >= 0) { // If vehicle is selected
+		Layers::SendEvent("Menu", "Car", Server_Vehicles[Server_CurrentVehicle].Name);
+		Layers::SendEvent("Map", "Car", Server_Vehicles[Server_CurrentVehicle].Name);
+		Map.MapName = """({{{OriginalMap.CollectionName}}}) {{{OriginalMap.Name}}}.{{{TextLib::Replace(Map.MapStyle, "+", "")}}} [{{{Server_Vehicles[Server_CurrentVehicle].Name}}}]""";
+	
+		declare Record = ScoreMgr.Map_GetRecord(NullId, Map.MapInfo.MapUid, Server_Vehicles[Server_CurrentVehicle].Name);
+		Layers::SendEvent("Menu", "Record", Record^"");
+	}
+	else { // If vehicle is not selected
+		Map.MapName = """({{{OriginalMap.CollectionName}}}) {{{OriginalMap.Name}}}.{{{TextLib::Replace(Map.MapStyle, "+", "")}}}""";
+		Layers::SendEvent("Menu", "Car", "");
+		Layers::SendEvent("Map", "Car", "");
+		
+		Layers::SendEvent("Menu", "Record", "-1");
+	}
+
 	OldVehicle = Server_CurrentVehicle;
 }
 

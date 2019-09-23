@@ -26,8 +26,18 @@
 		<label pos="-35 -5.25" z-index="1" size="70 10" text=" {{{{CONTINUE}}}}" valign="center2" textfont="RajdhaniMono" id="LABEL_BUTTON_CONTINUE" textcolor="EEE"/>
 		<quad z-index="0" size="80 9.5" bgcolor="FFFA" style="Bgs1InRace" substyle="BgGradV" halign="center" pos="0 -0.25"/>
 	</frame>
+	<frame pos="-110 17.5" z-index="1">
+		<quad size="80 77.5" halign="center" style="Bgs1" substyle="BgGradV" z-index="-1"/>
+		<label pos="-36 -3" z-index="0" size="40 5" text="[unknown]" textsize="4" textfont="Oswald" id="LABEL_PB_NICKNAME"/>
+		<label pos="35 -3.2" z-index="0" size="27.5 5" text="-:--.---" textsize="4.3" textfont="RajdhaniMono" halign="right" id="LABEL_PB_TIME"/>
+	</frame>
 	<frame pos="-110 -70" class="BUTTON">
 		<quad z-index="0" size="72.5 15" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="060" id="QUAD_BUTTON_START" class="opacity" pos="0 0" valign="center"/>
 		<label z-index="1" size="72.5 15" text="{{{{START}}}}" valign="center2" textfont="RajdhaniMono" halign="center" pos="0 -0.8" textsize="5"/>
+	</frame>
+	<frame pos="55 -65" hidden="1">
+		<quad z-index="-1" size="30 30" halign="center" valign="center" image="file://Media/Images/CircleBlack.png" opacity=".5"/>
+		<quad z-index="0" size="30 30" image="file://Media/Images/MoonBlack.png" halign="center" valign="center" opacity=".5"/>
+		<quad z-index="0" size="60 60" halign="center" valign="center" style="Bgs1" substyle="Glow" hidden="1"/>
 	</frame>
 </frame>
