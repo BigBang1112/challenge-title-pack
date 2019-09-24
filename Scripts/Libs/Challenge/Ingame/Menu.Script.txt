@@ -65,7 +65,9 @@ Void Event(CManiaAppEvent _Event) {
 								Layers::SendEvent("Menu", "Navigation", "True");
 							}
 
-							Task::Async_DataFileMgr("LOCAL_GHOSTS", DataFileMgr.Replay_GetGameList("", True));
+							declare Integer CurrentSection for Layers::Page("Menu");
+							if(CurrentSection == 0)
+								Task::Async_DataFileMgr("LOCAL_GHOSTS", DataFileMgr.Replay_GetGameList("", True));
 						}
 						case "Close": {
 							declare netread Boolean Server_IsValidationMode for UI;

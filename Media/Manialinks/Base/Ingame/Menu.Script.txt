@@ -149,7 +149,7 @@ declare Zones = TextLib::Split("|", LocalUser.ZonePath);
 declare GhostSections = ["{{{{LOCAL_GHOSTS}}}}"];
 foreach(Zone, Zones)
 	GhostSections.add(Zone);
-declare CurrentSection = 0;
+declare Integer CurrentSection for Page;
 ***
 
 ***Loop***
