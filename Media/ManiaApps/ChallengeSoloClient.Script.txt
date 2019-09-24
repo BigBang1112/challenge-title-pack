@@ -114,11 +114,6 @@ Void CheckStatus() {
 Void Init() {
 	Dictionary::SetTranslationFolder("Media/Translations");
 	Dictionary::SetTranslationLanguage(Settings::Get().Language);
-
-	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
-	declare netread Vehicle::SVehicle Server_MapVehicle for UI;
-
-	wait(Server_Vehicles.count > 0 && Server_MapVehicle.File != "");
 }
 
 ***Init***
@@ -133,9 +128,9 @@ declare netread Boolean Server_IsValidationMode for UI;
 
 declare metadata ModifierBase::SChMap OriginalMap for Map;
 
-Layers::Create("Loading", Manialink::FromFile("Media/Manialinks/Base/Ingame/Loading", True, ["Audio", "TextAnimation"], Settings::Get().Theme), True, True);
-
 Init();
+Layers::Create("Loading", Manialink::FromFile("Media/Manialinks/Base/Ingame/Loading", True, ["Audio", "TextAnimation"], Settings::Get().Theme), True, True);
+wait(Server_Vehicles.count > 0 && Server_MapVehicle.File != "");
 yield;
 Ingame_Map::Init();
 Layers::SendEvent("Loading", "Progress", 1/14.);
