@@ -10,6 +10,13 @@
 	SFinish[] Finishes;
 }
 
+#Struct SGhostInfo {
+	Text Nickname;
+	Integer Time;
+	Integer[] Checkpoints;
+	Text File;
+}
+
 CTmMlPlayer GetOwner() {
 	wait(GUIPlayer != Null || InputPlayer != Null);
 	if(GUIPlayer != Null) return GUIPlayer;
@@ -34,6 +41,51 @@ Void Button_Start() {
 	CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
 }
 
+Void UpdateLoadedGhosts() {
+	declare SGhostInfo[] LoadedGhosts for Page;
+	declare netwrite Text[] SelectedGhostFiles for UI;
+	declare netwrite Text[] SelectedGhostUrls for UI;
+
+	declare Frame_Outer_Ghosts = (Page.GetFirstChild("FRAME_OUTER_GHOSTS") as CMlFrame);
+	declare Frame_Ghosts = (Page.GetFirstChild("FRAME_GHOSTS") as CMlFrame);
+	declare Quad_Scrollbar = (Page.GetFirstChild("QUAD_SCROLLBAR") as CMlQuad);
+	if(LoadedGhosts.count > 7) {
+		Frame_Outer_Ghosts.ScrollMax.Y = LoadedGhosts.count*8.-7*8;
+
+		declare VisibleRatio = 7./LoadedGhosts.count;
+		Quad_Scrollbar.Size.Y = 56*VisibleRatio;
+
+		Quad_Scrollbar.Show();
+	}
+	else {
+		Frame_Outer_Ghosts.ScrollMax.Y = 0.;
+		Quad_Scrollbar.Hide();
+	}
+
+	declare Offset = MathLib::NearestInteger(Frame_Outer_Ghosts.ScrollOffset.Y/10);
+	for(I,0,Frame_Ghosts.Controls.count-1) {
+		declare Frame = (Frame_Ghosts.Controls[I] as CMlFrame);
+		if(LoadedGhosts.existskey(I+Offset)) {
+			declare Ghost = LoadedGhosts[I+Offset];
+			Frame.DataAttributeSet("file", Ghost.File);
+			(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText(Ghost.Nickname);
+			if(Ghost.Time == -1)
+				(Frame.GetFirstChild("LABEL_TIME") as CMlLabel).SetText("-:--.---");
+			else
+				(Frame.GetFirstChild("LABEL_TIME") as CMlLabel).SetText(TimeToTextWithMilli(Ghost.Time));
+
+			declare Quad_Ghost = (Frame.GetFirstChild("QUAD_GHOST") as CMlQuad);
+
+			Quad_Ghost.StyleSelected = SelectedGhostFiles.exists(Ghost.File);
+			
+			Frame.Show();
+		}
+		else {
+			Frame.Hide();
+		}
+	}
+}
+
 ***Start***
 ***
 declare Frame_Label_MapName = (Page.GetFirstChild("FRAME_LABEL_MAPNAME") as CMlFrame);
@@ -51,6 +103,10 @@ declare Label_Car2 = (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel);
 declare Label_PB_Nickname = (Page.GetFirstChild("LABEL_PB_NICKNAME") as CMlLabel);
 declare Label_PB_Time = (Page.GetFirstChild("LABEL_PB_TIME") as CMlLabel);
 
+declare Frame_Outer_Ghosts = (Page.GetFirstChild("FRAME_OUTER_GHOSTS") as CMlFrame);
+declare Frame_Ghosts = (Page.GetFirstChild("FRAME_GHOSTS") as CMlFrame);
+declare Quad_Scrollbar = (Page.GetFirstChild("QUAD_SCROLLBAR") as CMlQuad);
+
 declare LabelDistance = 15;
 
 declare Boolean IsPauseMenu for Page;
@@ -60,6 +116,8 @@ declare Boolean IsBlurred for Page;
 declare Quad_Button_Start = (Page.GetFirstChild("QUAD_BUTTON_START") as CMlQuad);
 declare Quad_Button_Exit = (Page.GetFirstChild("QUAD_BUTTON_EXIT") as CMlQuad);
 declare Quad_Button_Continue = (Page.GetFirstChild("QUAD_BUTTON_CONTINUE") as CMlQuad);
+
+declare Label_GhostSection = (Page.GetFirstChild("LABEL_GHOSTSECTION") as CMlLabel);
 
 FirstNav = Quad_Button_Continue;
 
@@ -79,6 +137,19 @@ NavControls[Quad_Button_Start] = Button_Start;
 Select(FirstNav);
 
 Label_PB_Nickname.SetText(LocalUser.Name);
+
+Frame_Outer_Ghosts.ScrollActive = True;
+Frame_Outer_Ghosts.ScrollGrid = <8.,8.>;
+
+declare HoldScrollbar = False;
+declare Vec2 PreviousScroll;
+declare HoldScrollbarPos = 0.;
+
+declare Zones = TextLib::Split("|", LocalUser.ZonePath);
+declare GhostSections = ["{{{{LOCAL_GHOSTS}}}}"];
+foreach(Zone, Zones)
+	GhostSections.add(Zone);
+declare CurrentSection = 0;
 ***
 
 ***Loop***
@@ -112,6 +183,68 @@ foreach(Event,PendingEvents) {
 				case "QUAD_BUTTON_CONTINUE": {
 					Button_Continue();
 					PlayAudio(Sound_ClickSoft);
+				}
+				case "QUAD_SCROLLBAR": {
+					HoldScrollbar = True;
+					HoldScrollbarPos = MouseY-Quad_Scrollbar.RelativePosition_V3.Y;
+				}
+				case "QUAD_SCROLLBAR_BACKGROUND": {
+					Quad_Scrollbar.RelativePosition_V3.Y = MouseY+Quad_Scrollbar.Size.Y/2;
+					
+					HoldScrollbar = True;
+					HoldScrollbarPos = MouseY-Quad_Scrollbar.RelativePosition_V3.Y;
+				}
+				case "QUAD_GHOSTSECTION_NEXT": {
+					if(CurrentSection != -1) {
+						if(CurrentSection+1 >= GhostSections.count) CurrentSection = 0;
+						else CurrentSection += 1;
+					}
+
+					if(CurrentSection == 0) {
+						SendCustomEvent("FetchLocalGhosts", []);
+					}
+					else {
+						declare ConnectZones = GhostSections;
+						declare Removed = ConnectZones.removekey(0);
+						declare Zone = ConnectZones[0];
+						for(I,1,CurrentSection-1)
+							Zone ^= "|"^ConnectZones[I];
+						SendCustomEvent("FetchRecords", [Zone]);
+					}
+				}
+				case "QUAD_GHOSTSECTION_PREVIOUS": {
+					if(CurrentSection != -1) {
+						if(CurrentSection-1 < 0) CurrentSection = GhostSections.count-1;
+						else CurrentSection -= 1;
+					}
+					
+					if(CurrentSection == 0) {
+						SendCustomEvent("FetchLocalGhosts", []);
+					}
+					else {
+						declare ConnectZones = GhostSections;
+						declare Removed = ConnectZones.removekey(0);
+						declare Zone = ConnectZones[0];
+						for(I,1,CurrentSection-1)
+							Zone ^= "|"^ConnectZones[I];
+						SendCustomEvent("FetchRecords", [Zone]);
+					}
+				}
+				case "QUAD_GHOST": {
+					declare Selector = (Event.Control.Parent as CMlFrame);
+					declare File = Selector.DataAttributeGet("file");
+
+					declare netwrite Text[] SelectedGhostFiles for UI;
+					declare netwrite Text[] SelectedGhostUrls for UI;
+
+					if(File != "") {
+						if(SelectedGhostFiles.exists(File))
+							SelectedGhostFiles.remove(File);
+						else
+							SelectedGhostFiles.add(File);
+					}
+
+					UpdateLoadedGhosts();
 				}
 			}
 		}
@@ -153,6 +286,9 @@ foreach(Event,PendingEvents) {
 					CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Quit);
 					declare ValidationMode = Event.CustomEventData[0] == "True";
 					Playground.QuitServer(!ValidationMode);
+				}
+				case "UpdateLoadedGhosts": {
+					UpdateLoadedGhosts();
 				}
 			}
 		}
@@ -231,6 +367,31 @@ if(IsMenuOpen != IsMenuNavigationForeground) {
 		SendCustomEvent("Start", ["False"]);
 	}
 }
+
+if(HoldScrollbar && MouseLeftButton) {
+	Quad_Scrollbar.RelativePosition_V3.Y = MathLib::Clamp(MouseY-HoldScrollbarPos,Quad_Scrollbar.Size.Y-56.,0.);
+	Frame_Outer_Ghosts.ScrollOffset.Y = (MouseY-HoldScrollbarPos)/(Quad_Scrollbar.Size.Y-56.)*Frame_Outer_Ghosts.ScrollMax.Y;
+
+	Frame_Ghosts.RelativePosition_V3 = -Frame_Outer_Ghosts.ScrollOffset;
+	UpdateLoadedGhosts();
+}
+else {
+	if(Frame_Outer_Ghosts.ScrollOffset != PreviousScroll) {
+		Frame_Ghosts.RelativePosition_V3 = -Frame_Outer_Ghosts.ScrollOffset;
+		UpdateLoadedGhosts();
+
+		declare ScrollRatio = 0.;
+		if(Frame_Outer_Ghosts.ScrollMax.Y != 0)
+			ScrollRatio = MathLib::NearestInteger(Frame_Outer_Ghosts.ScrollOffset.Y/10)*10 / Frame_Outer_Ghosts.ScrollMax.Y;
+		Quad_Scrollbar.RelativePosition_V3.Y = -ScrollRatio*(56-Quad_Scrollbar.Size.Y);
+
+		PreviousScroll = Frame_Outer_Ghosts.ScrollOffset;
+	}
+
+	HoldScrollbar = False;
+}
+
+Label_GhostSection.Value = GhostSections[CurrentSection];
 
 if(IsBlurred) Page.GetFirstChild("QUAD_BACKGROUND").Show();
 else Page.GetFirstChild("QUAD_BACKGROUND").Hide();

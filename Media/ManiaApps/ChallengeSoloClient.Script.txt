@@ -372,6 +372,7 @@ Ingame_Endscreen::Loop();
 Ingame_Outro::Loop();
 Ingame_Vehicle::Loop();
 
+Ingame_Menu::Async();
 Ingame_Rating::Async();
 Ingame_Playsession::Async();
 Ingame_Endscreen::Async();

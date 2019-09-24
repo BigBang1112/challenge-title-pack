@@ -3,8 +3,16 @@
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+#Include "Libs/BigBang1112/Task.Script.txt" as Task
 
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
+
+#Struct SGhostInfo {
+	Text Nickname;
+	Integer Time;
+	Integer[] Checkpoints;
+	Text File;
+}
 
 #Const C_Manialink "Media/Manialinks/Base/Ingame/Menu"
 #Const C_Manialink_OpenMenu "Media/Manialinks/Base/Ingame/OpenMenu"
@@ -56,6 +64,8 @@ Void Event(CManiaAppEvent _Event) {
 
 								Layers::SendEvent("Menu", "Navigation", "True");
 							}
+
+							Task::Async_DataFileMgr("LOCAL_GHOSTS", DataFileMgr.Replay_GetGameList("", True));
 						}
 						case "Close": {
 							declare netread Boolean Server_IsValidationMode for UI;
@@ -72,6 +82,16 @@ Void Event(CManiaAppEvent _Event) {
 						case "Exit": {
 							declare Boolean Close for This;
 							Close = True;
+						}
+						case "FetchRecords": {
+							declare Zone = _Event.CustomEventData[0];
+							log(Zone);
+							declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");
+							LoadedGhosts.clear();
+							Layers::SendEvent("Menu", "UpdateLoadedGhosts");
+						}
+						case "FetchLocalGhosts": {
+							Task::Async_DataFileMgr("LOCAL_GHOSTS", DataFileMgr.Replay_GetGameList("", True));
 						}
 					}
 				}
@@ -91,6 +111,79 @@ Void Event(CManiaAppEvent _Event) {
 						}
 					}
 				}
+			}
+		}
+	}
+}
+
+declare CTaskResult_GhostList[] LoadedGhosts_Task;
+declare Text[Ident] LoadedGhosts_Task_Files;
+
+Void Async() {
+	if(Task::IsCompleted("LOCAL_GHOSTS")) {
+		if(Task::IsSuccessful("LOCAL_GHOSTS")) {
+			declare ReplayList = (Task::Get("LOCAL_GHOSTS") as CTaskResult_ReplayList);
+
+			declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");
+
+			foreach(Replay, ReplayList.ReplayInfos) {
+				if(Replay.MapUid == Map.MapInfo.MapUid) {
+					declare Continue = False;
+					foreach(Ghost, LoadedGhosts)
+						if(Replay.FileName == Ghost.File) Continue = True;
+					if(Continue) continue;
+
+					declare Task = DataFileMgr.Replay_Load(Replay.FileName);
+					LoadedGhosts_Task_Files[Task.Id] = Replay.FileName;
+					LoadedGhosts_Task.add(Task);
+				}
+			}
+
+			Task::Destroy_DataFileMgr("LOCAL_GHOSTS");
+		}
+	}
+
+	declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");
+	for(I, 0, LoadedGhosts_Task.count-1) {
+		if(LoadedGhosts_Task.existskey(I)) {
+			declare GhostTask = LoadedGhosts_Task[I];
+			if(!GhostTask.IsProcessing) {
+				if(GhostTask.HasSucceeded && GhostTask.Ghosts.count > 0) {
+					declare Ghost = GhostTask.Ghosts[0];
+					declare SGhostInfo Info;
+					Info.Nickname = Ghost.Nickname;
+					Info.Time = Ghost.Result.Time;
+					Info.File = LoadedGhosts_Task_Files[GhostTask.Id];
+					foreach(Checkpoint, Ghost.Result.Checkpoints)
+						Info.Checkpoints.add(Checkpoint);
+					LoadedGhosts.add(Info);
+
+					declare SGhostInfo[] Final;
+					declare Integer[] Sort;
+					foreach(Ghost,LoadedGhosts) {
+						if(Ghost.Time == -1)
+							Final.add(Ghost);
+						else
+							Sort.add(Ghost.Time);
+					}
+					Sort = Sort.sort();
+					for(I,0,Sort.count-1) {
+						foreach(Ghost,LoadedGhosts) {
+							if(Ghost.Time == Sort[Sort.count-1-I]) Final.addfirst(Ghost);
+						}
+					}
+					LoadedGhosts = Final;
+
+					Layers::SendEvent("Menu", "UpdateLoadedGhosts");
+				}
+				else if(GhostTask.HasFailed) {
+
+				}
+
+				declare Removed = LoadedGhosts_Task.removekey(I);
+				declare Removed2 = LoadedGhosts_Task_Files.removekey(GhostTask.Id);
+
+				DataFileMgr.TaskResult_Release(GhostTask.Id);
 			}
 		}
 	}
