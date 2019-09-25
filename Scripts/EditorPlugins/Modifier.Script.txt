@@ -1,8 +1,8 @@
 #RequireContext CMapEditorPlugin
 
 #Include "TextLib" as TextLib
+#Include "MathLib" as MathLib
 #Include "AnimLib" as AnimLib
-#Include "MapUnits" as MapUnits
 
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/File.Script.txt" as File
@@ -500,18 +500,6 @@ Void Finish() {
 						}
 						
 						Layers::SendEvent("ModifierSolutions", "Elements", SolutionElements.tojson());
-						
-						/*if(Problem.Waypoints.count > 0) {
-							declare Waypoint = Problem.Waypoints[0];
-							if(Waypoint.IsBlock)
-								CamPosition = <Waypoint.Block.Coord.X*BlockSize*1.,(Waypoint.Block.Coord.Y-HeightOffset)*32./4.,Waypoint.Block.Coord.Z*BlockSize*1.>+<BlockSize/2.,0.,BlockSize/2.>;
-							else if(Waypoint.IsItem)
-								CamPosition = Waypoint.Item.Position+<16.,0.,16.>;
-						}
-						else if(Problem.Items.count > 0) {
-							declare Item = Problem.Items[0];
-							CamPosition = Item.Position+<16.,0.,16.>;
-						}*/
 					}
 					else {
 						Solver = False;
@@ -708,6 +696,9 @@ main() {
 	else {
 		declare Map::SMapInfo OriginalMapInfo for LocalUser;
 		declare JsonSuccess = OriginalMap.fromjson(OriginalMapInfo.tojson());
+		
+		declare metadata Integer StuntTimeLimit for Map;
+		StuntTimeLimit = MathLib::NearestInteger(OriginalMap.TMObjective_BronzeTime*2.);
 		
 		Map.MapName = """Waiting to modify... ({{{OriginalMap.Name}}})""";
 		Map.Comments = OriginalMap.Comments;

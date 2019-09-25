@@ -22,6 +22,8 @@ declare Label_TimePenalty = (Page.GetFirstChild("LABEL_TIMEPENALTY") as CMlLabel
 declare TotalPoints = 0;
 
 declare CTmMlPlayer::ERaceState PreviousRaceState;
+
+declare metadata Integer StuntTimeLimit for Map;
 ***
 
 ***Loop***
@@ -59,13 +61,21 @@ foreach(Event,PendingEvents) {
 	}
 }
 
-declare TimePenalty = MathLib::Max(0.,(GameTime-GetOwner().RaceStartTime)/1000.);
-declare TimePenaltyPoints = -MathLib::FloorInteger(TimePenalty);
-Label_TimePenalty.SetText(TextLib::FormatReal(TimePenalty, 3, False, False)^"s $f00("^TimePenaltyPoints^")");
+if(StuntTimeLimit == 0) {
+	Label_TimePenalty.SetText("-:--.--");
+}
+else if(GetOwner().RaceStartTime == 0) {
+	Label_TimePenalty.SetText(TextLib::TimeToText(StuntTimeLimit, True));
+}
+else {
+	declare Time = MathLib::Clamp(StuntTimeLimit-(GameTime-GetOwner().RaceStartTime),0,StuntTimeLimit);
+	Label_TimePenalty.SetText(TextLib::TimeToText(Time, True));
+}
 
 foreach(Event,RaceEvents) {
 	switch(Event.Type) {
 		case CTmRaceClientEvent::EType::Respawn: {
+			
 		}
 	}
 }

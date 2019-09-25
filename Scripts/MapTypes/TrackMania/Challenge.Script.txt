@@ -119,6 +119,9 @@ main() {
 								}
 							
 								Validations[Validated_Car] = Validated_Time;
+								
+								declare metadata Integer StuntTimeLimit for Map;
+								StuntTimeLimit = MathLib::NearestInteger(Validated_Time*1.5);
 							}
 							
 							Validated = False;
