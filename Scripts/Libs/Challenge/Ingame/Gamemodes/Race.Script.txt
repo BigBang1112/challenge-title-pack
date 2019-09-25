@@ -376,6 +376,7 @@ Void Loop(CTmMode _Mode) {
 		declare netwrite Boolean Server_Playing for UI;
 		declare netwrite Integer Server_VehicleLock for UI;
 		declare netwrite Integer Server_CurrentVehicle for UI;
+		declare netwrite Boolean Server_Outro for UI;
 		
 		declare netread Integer Client_VehicleIndex for UI;
 		
@@ -404,6 +405,28 @@ Void Loop(CTmMode _Mode) {
 				
 				OldModelId = Player.ForceModelId;
 			}
+		}
+		
+		declare Boolean OldOutro for Player;
+		if(Server_Outro != OldOutro) {
+			declare Ident OutroGhost for Player;
+			if(Server_Outro) {
+				declare SPerformance_Server[Text] Performances_Server for Player.Score;
+				declare Finishes = Performances_Server[RealVehicles[Server_CurrentVehicle].Name].Finishes;
+				_Mode.RaceGhost_RemoveAll();
+				OutroGhost = _Mode.RaceGhost_AddWithOffset(Finishes[Finishes.count-1].Ghost, -2500);
+				UI.SpectatorForcedTarget = OutroGhost;
+				UI.SpectatorForceCameraType = 1;
+				
+				_Mode.UnspawnPlayer(Player);
+			}
+			else {
+				UI.SpectatorForcedTarget = NullId;
+				UI.SpectatorForceCameraType = 0;
+				if(OutroGhost != NullId)
+					_Mode.RaceGhost_RemoveAll();
+			}
+			OldOutro = Server_Outro;
 		}
 		
 		declare SPerformance_Server[Text] Performances_Server for Player.Score;
