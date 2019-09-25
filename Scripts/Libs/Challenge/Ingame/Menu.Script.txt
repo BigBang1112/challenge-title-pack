@@ -1,4 +1,5 @@
 #Include "TextLib" as TextLib
+#Include "MathLib" as MathLib
 
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
@@ -6,12 +7,19 @@
 #Include "Libs/BigBang1112/Task.Script.txt" as Task
 
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
+#Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
 
 #Struct SGhostInfo {
 	Text Nickname;
 	Integer Time;
 	Integer[] Checkpoints;
 	Text File;
+	Boolean IsMedal;
+	Boolean IsAuthorMedal;
+	Boolean IsGoldMedal;
+	Boolean IsSilverMedal;
+	Boolean IsBronzeMedal;
+	Text Vehicle;
 }
 
 #Const C_Manialink "Media/Manialinks/Base/Ingame/Menu"
@@ -28,6 +36,10 @@ Void Start() {
 	declare metadata ModifierBase::SChMap OriginalMap for Map;
 	Layers::SendEvent("Menu", "MapName", OriginalMap.Name);
 	Layers::SendEvent("Menu", "Challenge", TextLib::ToUpperCase(TextLib::Replace(Map.MapStyle, "+", " + ")));
+
+	declare metadata Integer[Text] Validations for Map;
+	declare Integer[Text] OldValidations for Map;
+	OldValidations = Validations;
 }
 
 Void CheckMode() {
@@ -41,6 +53,90 @@ Void CheckMode() {
 		Layers::SetType("Vehicle", CUILayer::EUILayerType::InGameMenu);
 		Layers::SendEvent("Menu", "Open");
 	}
+}
+
+SGhostInfo[] SortGhosts(SGhostInfo[] _Ghosts) {
+	declare SGhostInfo[] Final;
+	declare Integer[] Sort;
+	foreach(Ghost,_Ghosts) {
+		if(Ghost.Time == -1)
+			Final.add(Ghost);
+		else
+			Sort.add(Ghost.Time);
+	}
+	Sort = Sort.sort();
+	for(I,0,Sort.count-1) {
+		foreach(Ghost,_Ghosts) {
+			if(Ghost.Time == Sort[Sort.count-1-I]) Final.addfirst(Ghost);
+		}
+	}
+	return Final;
+}
+
+Void UpdateMedals() {
+	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+	declare netread Integer Server_CurrentVehicle for UI;
+	declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
+	declare metadata Integer[Text] Validations for Map;
+
+	declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");
+
+	for(I,0,LoadedGhosts.count-1)
+	for(J,0,LoadedGhosts.count-1) {
+		if(LoadedGhosts.existskey(J) && LoadedGhosts[J].IsMedal) {
+			declare Removed = LoadedGhosts.removekey(J);
+			continue;
+		}
+	}
+
+	if(Validations.existskey(VehicleName)) {
+		declare SGhostInfo Ghost;
+		Ghost.Nickname = LocalUser.Name;
+		Ghost.Time = Validations[VehicleName];
+		Ghost.IsMedal = True;
+		Ghost.IsAuthorMedal = True;
+		Ghost.Vehicle = VehicleName;
+		LoadedGhosts.add(Ghost);
+
+		Ghost.Time = MathLib::NearestInteger(Validations[VehicleName]*1.1);
+		Ghost.IsAuthorMedal = False;
+		Ghost.IsGoldMedal = True;
+		LoadedGhosts.add(Ghost);
+
+		Ghost.Time = MathLib::NearestInteger(Validations[VehicleName]*1.2);
+		Ghost.IsGoldMedal = False;
+		Ghost.IsSilverMedal = True;
+		LoadedGhosts.add(Ghost);
+
+		Ghost.Time = MathLib::NearestInteger(Validations[VehicleName]*1.5);
+		Ghost.IsSilverMedal = False;
+		Ghost.IsBronzeMedal = True;
+		LoadedGhosts.add(Ghost);
+	}
+
+	LoadedGhosts = SortGhosts(LoadedGhosts);
+	Layers::SendEvent("Menu", "UpdateLoadedGhosts");
+}
+
+Boolean ValidationChanged() {
+	declare metadata Integer[Text] Validations for Map;
+	declare Integer[Text] OldValidations for Map;
+
+	if(Validations.count != OldValidations.count) {
+		OldValidations = Validations;
+		return True;
+	}
+	else {
+		for(I,0,Validations.count-1) {
+			foreach(Car => Validation,Validations)
+			if(Validation != OldValidations[Car]) {
+				OldValidations = Validations;
+				return True;
+			}
+		}
+	}
+
+	return False;
 }
 
 Void Event(CManiaAppEvent _Event) {
@@ -68,6 +164,8 @@ Void Event(CManiaAppEvent _Event) {
 							declare Integer CurrentSection for Layers::Page("Menu");
 							if(CurrentSection == 0)
 								Task::Async_DataFileMgr("LOCAL_GHOSTS", DataFileMgr.Replay_GetGameList("", True));
+
+							UpdateMedals();
 						}
 						case "Close": {
 							declare netread Boolean Server_IsValidationMode for UI;
@@ -94,6 +192,9 @@ Void Event(CManiaAppEvent _Event) {
 						}
 						case "FetchLocalGhosts": {
 							Task::Async_DataFileMgr("LOCAL_GHOSTS", DataFileMgr.Replay_GetGameList("", True));
+						}
+						case "UpdateMedals": {
+							UpdateMedals();
 						}
 					}
 				}
@@ -160,21 +261,7 @@ Void Async() {
 						Info.Checkpoints.add(Checkpoint);
 					LoadedGhosts.add(Info);
 
-					declare SGhostInfo[] Final;
-					declare Integer[] Sort;
-					foreach(Ghost,LoadedGhosts) {
-						if(Ghost.Time == -1)
-							Final.add(Ghost);
-						else
-							Sort.add(Ghost.Time);
-					}
-					Sort = Sort.sort();
-					for(I,0,Sort.count-1) {
-						foreach(Ghost,LoadedGhosts) {
-							if(Ghost.Time == Sort[Sort.count-1-I]) Final.addfirst(Ghost);
-						}
-					}
-					LoadedGhosts = Final;
+					LoadedGhosts = SortGhosts(LoadedGhosts);
 
 					Layers::SendEvent("Menu", "UpdateLoadedGhosts");
 				}
@@ -188,5 +275,9 @@ Void Async() {
 				DataFileMgr.TaskResult_Release(GhostTask.Id);
 			}
 		}
+	}
+
+	if(ValidationChanged()) {
+		UpdateMedals();
 	}
 }

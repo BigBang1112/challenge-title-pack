@@ -109,7 +109,8 @@ main() {
 						Race::Loop(Mode);
 						
 						if(Validated) {
-							if(Validated_Time < Validations[Validated_Car]) {
+							if(!Validations.existskey(Validated_Car)) Validations[Validated_Car] = -1;
+							if(Validations[Validated_Car] == -1 || Validated_Time < Validations[Validated_Car]) {
 								if(Validated_Car == Validated_MapCar) {
 									Map.TMObjective_AuthorTime = Validated_Time;
 									Map.TMObjective_BronzeTime = MathLib::NearestInteger(Validated_Time*1.5);
@@ -122,8 +123,6 @@ main() {
 							
 							Validated = False;
 						}
-						
-						log(Validations);
 					
 						if(ValidationEndRequested) {
 							RequestLeavePlayground();

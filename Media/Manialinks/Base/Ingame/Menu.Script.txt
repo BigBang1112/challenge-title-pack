@@ -15,6 +15,12 @@
 	Integer Time;
 	Integer[] Checkpoints;
 	Text File;
+	Boolean IsMedal;
+	Boolean IsAuthorMedal;
+	Boolean IsGoldMedal;
+	Boolean IsSilverMedal;
+	Boolean IsBronzeMedal;
+	Text Vehicle;
 }
 
 CTmMlPlayer GetOwner() {
@@ -68,7 +74,18 @@ Void UpdateLoadedGhosts() {
 		if(LoadedGhosts.existskey(I+Offset)) {
 			declare Ghost = LoadedGhosts[I+Offset];
 			Frame.DataAttributeSet("file", Ghost.File);
-			(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText(Ghost.Nickname);
+
+			if(Ghost.IsAuthorMedal)
+				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$0f0●$z AUTHOR MEDAL");
+			else if(Ghost.IsGoldMedal)
+				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$fc0●$z GOLD MEDAL");
+			else if(Ghost.IsSilverMedal)
+				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$aaa●$z SILVER MEDAL");
+			else if(Ghost.IsBronzeMedal)
+				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$730●$z BRONZE MEDAL");
+			else
+				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText(Ghost.Nickname);
+
 			if(Ghost.Time == -1)
 				(Frame.GetFirstChild("LABEL_TIME") as CMlLabel).SetText("-:--.---");
 			else
@@ -146,7 +163,7 @@ declare Vec2 PreviousScroll;
 declare HoldScrollbarPos = 0.;
 
 declare Zones = TextLib::Split("|", LocalUser.ZonePath);
-declare GhostSections = ["{{{{LOCAL_GHOSTS}}}}"];
+declare GhostSections = ["{{{{LOCAL}}}}"];
 foreach(Zone, Zones)
 	GhostSections.add(Zone);
 declare Integer CurrentSection for Page;
@@ -202,6 +219,7 @@ foreach(Event,PendingEvents) {
 
 					if(CurrentSection == 0) {
 						SendCustomEvent("FetchLocalGhosts", []);
+						SendCustomEvent("UpdateMedals", []);
 					}
 					else {
 						declare ConnectZones = GhostSections;
@@ -220,6 +238,7 @@ foreach(Event,PendingEvents) {
 					
 					if(CurrentSection == 0) {
 						SendCustomEvent("FetchLocalGhosts", []);
+						SendCustomEvent("UpdateMedals", []);
 					}
 					else {
 						declare ConnectZones = GhostSections;
@@ -274,6 +293,9 @@ foreach(Event,PendingEvents) {
 							Label_PB_Time.SetText(TimeToTextWithMilli(BestFinish.Time));
 						}
 					}
+
+					if(CurrentSection == 0)
+						SendCustomEvent("UpdateMedals", []);
 				}
 				case "Open": {
 					ShowInGameMenu();
