@@ -303,6 +303,19 @@ foreach(Event,PendingEvents) {
 				}
 			}
 		}
+		case CMlScriptEvent::Type::MenuNavigation: {
+			switch(Event.MenuNavAction) {
+				case CMlScriptEvent::EMenuNavAction::Cancel: {
+					SendCustomEvent("Back", []);
+				}
+				case CMlScriptEvent::EMenuNavAction::Select: {
+					if(Mode == "View")
+						SendCustomEvent("Open", []);
+					else if(Mode == "Save")
+						SendCustomEvent("Save", [CurrentFolder^(Page.GetFirstChild("ENTRY_REPLAYFILE") as CMlEntry).Value]);
+				}
+			}
+		}
 	}
 }
 
