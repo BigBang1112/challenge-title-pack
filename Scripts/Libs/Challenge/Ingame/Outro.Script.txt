@@ -42,6 +42,8 @@ Void Event(CManiaAppEvent _Event) {
 								declare Text[] Exchange for This;
 								Exchange.add("Rating_ApplyRating");
 							}
+
+							Layers::SendEvent("Notification", "Position", ["157.5 40"]);
 						}
 						case "Exit": {
 							declare Boolean Close for This;

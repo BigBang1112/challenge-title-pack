@@ -32,6 +32,7 @@ Void Event(CManiaAppEvent _Event) {
 							SendCustomEvent("Continue", []);
 							Layers::Show("Outro");
 							Exchange.add("Rating_ShowInOutro");
+							Layers::SendEvent("Notification", "Position", ["155 22.5"]);
 						}
 					}
 				}
