@@ -1,6 +1,7 @@
 #RequireContext CTmMapType
 
 #Include "TextLib" as TextLib
+#Include "MathLib" as MathLib
 
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/File.Script.txt" as File
@@ -72,6 +73,13 @@ main() {
 	Mode.UIManager.UIAll.ScoreTableOnlyManialink = True;
 	Mode.UIManager.UIAll.OverlayHideCheckPointTime = True;
 	
+	declare Boolean Validated for This;
+	declare Integer Validated_Time for This;
+	declare Text Validated_Car for This;
+	declare Text Validated_MapCar for This;
+	
+	declare metadata Integer[Text] Validations for Map;
+	
 	while(True) {
 		foreach(Event,PendingEvents) {
 			switch(Event.Type) {
@@ -99,6 +107,23 @@ main() {
 						}
 					
 						Race::Loop(Mode);
+						
+						if(Validated) {
+							if(Validated_Time < Validations[Validated_Car]) {
+								if(Validated_Car == Validated_MapCar) {
+									Map.TMObjective_AuthorTime = Validated_Time;
+									Map.TMObjective_BronzeTime = MathLib::NearestInteger(Validated_Time*1.5);
+									Map.TMObjective_SilverTime = MathLib::NearestInteger(Validated_Time*1.2);
+									Map.TMObjective_GoldTime = MathLib::NearestInteger(Validated_Time*1.1);
+								}
+							
+								Validations[Validated_Car] = Validated_Time;
+							}
+							
+							Validated = False;
+						}
+						
+						log(Validations);
 					
 						if(ValidationEndRequested) {
 							RequestLeavePlayground();

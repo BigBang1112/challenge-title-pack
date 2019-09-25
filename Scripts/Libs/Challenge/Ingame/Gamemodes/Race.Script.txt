@@ -204,6 +204,7 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 	declare netwrite Boolean Server_Playing for UI;
 	declare netwrite Boolean Server_EndRace for UI;
 	declare netwrite Boolean Server_Outro for UI;
+	declare netwrite Boolean Server_IsValidationMode for UI;
 		
 	declare netread Integer Client_VehicleIndex for UI;
 		
@@ -215,7 +216,6 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 		case CTmModeEvent::EType::WayPoint: {
 			if(_Event.IsEndRace) { // Finish
 				if(Server_CurrentVehicle < 0) return;
-				log(RealVehicles[Server_CurrentVehicle]);
 				
 				declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
 				
@@ -260,7 +260,18 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 				}
 				Performances[VehicleName] = Performance;
 				
-				if(Map.MapInfo.MapUid != "")
+				if(Server_IsValidationMode) {
+					declare Boolean Validated for This;
+					declare Integer Validated_Time for This;
+					declare Text Validated_Car for This;
+					declare Text Validated_MapCar for This;
+					
+					Validated = True;
+					Validated_Time = Finish.Time;
+					Validated_Car = VehicleName;
+					Validated_MapCar = RealMapVehicle.Name;
+				}
+				else
 					declare Task = ScoreMgr.Map_SetNewRecord(NullId, Map.MapInfo.MapUid, VehicleName, Finish_Server.Ghost);
 				
 				Server_EndRace = True;
