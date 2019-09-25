@@ -129,7 +129,7 @@ Void Async() {
 			declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");
 
 			foreach(Replay, ReplayList.ReplayInfos) {
-				if(Replay.MapUid == Map.MapInfo.MapUid) {
+				if(Map.MapInfo.MapUid != "" && Replay.MapUid == Map.MapInfo.MapUid) {
 					declare Continue = False;
 					foreach(Ghost, LoadedGhosts)
 						if(Replay.FileName == Ghost.File) Continue = True;
