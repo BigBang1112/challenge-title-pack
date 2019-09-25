@@ -415,7 +415,7 @@ Void Loop(CTmMode _Mode) {
 			if(Finishes[Finishes.count-1].NicerGhost == Null && Finishes[Finishes.count-1].Timestamp != -1 && _Mode.Now - Finishes[Finishes.count-1].Timestamp >= 1000) {
 				if(Player.IsSpawned) {
 					declare Ghost = ScoreMgr.Playground_GetPlayerGhost(Player);
-					if(Ghost.Result != Null && Ghost.Result.Time != -1)
+					if(Ghost != Null && Ghost.Result != Null && Ghost.Result.Time != -1)
 						Performances_Server[VehicleName].Finishes[Finishes.count-1].NicerGhost = Ghost;
 				}
 			}
