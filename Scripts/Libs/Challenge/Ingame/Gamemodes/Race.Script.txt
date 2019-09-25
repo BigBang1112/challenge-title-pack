@@ -411,8 +411,13 @@ Void Loop(CTmMode _Mode) {
 		
 		if(Performances_Server.existskey(VehicleName))
 		if(Performances_Server[VehicleName].Finishes.count > 0) {
-			if(Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].NicerGhost == Null && _Mode.Now - Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].Timestamp >= 3000) {
-				Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].NicerGhost = ScoreMgr.Playground_GetPlayerGhost(Player);
+			declare Finishes = Performances_Server[VehicleName].Finishes;
+			if(Finishes[Finishes.count-1].NicerGhost == Null && _Mode.Now - Finishes[Finishes.count-1].Timestamp >= 1000) {
+				if(Player.IsSpawned) {
+					declare Ghost = ScoreMgr.Playground_GetPlayerGhost(Player);
+					if(Ghost.Result != Null && Ghost.Result.Time != -1)
+						Performances_Server[VehicleName].Finishes[Finishes.count-1].NicerGhost = Ghost;
+				}
 			}
 		}
 		
