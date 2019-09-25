@@ -76,13 +76,13 @@ Void UpdateLoadedGhosts() {
 			Frame.DataAttributeSet("file", Ghost.File);
 
 			if(Ghost.IsAuthorMedal)
-				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$0f0●$z AUTHOR MEDAL");
+				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$0f0●$z {{{{AUTHOR_MEDAL}}}}");
 			else if(Ghost.IsGoldMedal)
-				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$fc0●$z GOLD MEDAL");
+				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$fc0●$z {{{{GOLD_MEDAL}}}}");
 			else if(Ghost.IsSilverMedal)
-				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$aaa●$z SILVER MEDAL");
+				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$aaa●$z {{{{SILVER_MEDAL}}}}");
 			else if(Ghost.IsBronzeMedal)
-				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$730●$z BRONZE MEDAL");
+				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$730●$z {{{{BRONZE_MEDAL}}}}");
 			else
 				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText(Ghost.Nickname);
 
