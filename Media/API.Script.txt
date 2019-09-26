@@ -351,22 +351,6 @@ SChBlock[] GetMultilapBlocks() {
 	return Blocks;   
 }
 
-SChBlock[] GetBlocksByBlockName(Text _BlockName) {
-	declare Params = [_BlockName];
-	declare Response = Request("Ch_GetBlocksByBlockName", Params);
-	declare SChBlock[] Blocks;
-	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
-	return Blocks;  
-}
-
-SChBlock[] MultipleBlocks(Int3 _Coord) {
-	declare Params = [""^_Coord];
-	declare Response = Request("Ch_MultipleBlocks", Params);
-	declare SChBlock[] Blocks;
-	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
-	return Blocks;
-}
-
 SChItem[] GetStartLineItems() {
 	declare Response = Request("Ch_GetStartLineItems", []);
 	declare SChItem[] Items;
@@ -393,6 +377,22 @@ SChItem[] GetMultilapItems() {
 	declare SChItem[] Items;
 	declare JsonSuccess = Items.fromjson(Response.Values[0]);
 	return Items;
+}
+
+SChBlock[] GetBlocksByBlockName(Text _BlockName) {
+	declare Params = [_BlockName];
+	declare Response = Request("Ch_GetBlocksByBlockName", Params);
+	declare SChBlock[] Blocks;
+	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
+	return Blocks;  
+}
+
+SChBlock[] MultipleBlocks(Int3 _Coord) {
+	declare Params = [""^_Coord];
+	declare Response = Request("Ch_MultipleBlocks", Params);
+	declare SChBlock[] Blocks;
+	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
+	return Blocks;
 }
 
 Void UpdateAnchor(SChAnchor _Anchor) {
@@ -518,18 +518,6 @@ Void Focus(Vec3 _Position) {
 /* Modifier technical control */
 //
 
-Void StartMultiSolution() {
-
-}
-
-Void EndMultiSolution() {
-	
-}
-
-Void Solution() {
-	declare Response = Request("Ch_Solution", []);
-}
-
 Void Complete() { // Shouldn't be normally called
 	declare Response = Request("Ch_Complete", []);
 }
@@ -544,13 +532,17 @@ Void Problem(SChProblem _Problem) {
 	if(_Problem.Solutions.count == 0) {
 		SetStatusColor(<1.,0.,0.>);
 		SetStatusProgress(1.);
-		//SetStatusStage("{{{{FATAL_PROBLEM}}}}");
-		SetStatusMessage("{{{{FATAL_PROBLEM}}}}: " ^ _Problem.ShortDescription); // Should be solved somewhen
+		if(_Problem.ShortDescription == "")
+			SetStatusStage("{{{{FATAL_PROBLEM}}}}");
+		else
+			SetStatusMessage("{{{{FATAL_PROBLEM}}}}: " ^ _Problem.ShortDescription); // Should be solved somewhen
 	}
 	else {
 		SetStatusColor(<1.,.5,0.>);
-		//SetStatusStage("{{{{PROBLEM}}}}");
-		SetStatusMessage("{{{{PROBLEM}}}}: " ^ _Problem.ShortDescription); // Should be solved somewhen
+		if(_Problem.ShortDescription == "")
+			SetStatusStage("{{{{PROBLEM}}}}");
+		else
+			 SetStatusMessage("{{{{PROBLEM}}}}: " ^ _Problem.ShortDescription); // Should be solved somewhen
 	}
 	
 	sleep(1500);
@@ -578,10 +570,6 @@ SChSolution Solution(Text _Value, Text _AdditionalInfo, Boolean _IsInteractive) 
 
 Void Note(SChNote _Note) {
 	
-}
-
-Void Incompatible(Text _Reason) {
-	declare Response = Request("Ch_Incompatible", [_Reason]);
 }
 
 Void Chill() {

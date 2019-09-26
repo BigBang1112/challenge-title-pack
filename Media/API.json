@@ -1,335 +1,608 @@
 {
 	"Structs": {
-		"SChMetadata": [
-			{
-				"Type": "Text",
-				"Name": "Name"
-			},
-			{
-				"Type": "Text",
-				"Name": "AuthorLogin"
-			},
-			{
-				"Type": "Text",
-				"Name": "Description"
-			}
-		],
-		"SChBlock": [
-			{
-				"Type": "Integer",
-				"Name": "BlockScriptId"
-			},
-			{
-				"Type": "Text",
-				"Name": "Name"
-			},
-			{
-				"Type": "Int3",
-				"Name": "Coord"
-			},
-			{
-				"Type": "Text",
-				"Name": "Direction"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "IsRoad"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "IsTerrain"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "IsPodium"
-			},
-			{
-				"Type": "Text",
-				"Name": "Waypoint"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "NoRespawn"
-			}
-		],
-		"SChMacroblock": [
-			{
-				"Type": "Boolean",
-				"Name": "IsGround"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "HasStart"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "HasFinish"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "HasCheckpoint"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "HasMultilap"
-			},
-			{
-				"Type": "Text",
-				"Name": "Name"
-			}
-		],
-		"SChItem": [
-			{
-				"Type": "Vec3",
-				"Name": "Position"
-			}
-		],
-		"SChAnchor": [
-			{
-				"Type": "Ident",
-				"Name": "Id"
-			},
-			{
-				"Type": "Text",
-				"Name": "DefaultTag"
-			},
-			{
-				"Type": "Integer",
-				"Name": "DefaultOrder"
-			},
-			{
-				"Type": "Text",
-				"Name": "Tag"
-			},
-			{
-				"Type": "Integer",
-				"Name": "Order"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "IsBlock"
-			},
-			{
-				"Type": "SChBlock",
-				"Name": "Block"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "IsItem"
-			},
-			{
-				"Type": "SChItem",
-				"Name": "Item"
-			}
-		],
-		"SChAnchorBlock": [
-			{
-				"Type": "Ident",
-				"Name": "Id"
-			},
-			{
-				"Type": "Text",
-				"Name": "DefaultTag"
-			},
-			{
-				"Type": "Integer",
-				"Name": "DefaultOrder"
-			},
-			{
-				"Type": "Text",
-				"Name": "Tag"
-			},
-			{
-				"Type": "Integer",
-				"Name": "Order"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "IsBlock"
-			},
-			{
-				"Type": "SChBlock",
-				"Name": "Block"
-			}
-		],
-		"SChAnchorItem": [
-			{
-				"Type": "Ident",
-				"Name": "Id"
-			},
-			{
-				"Type": "Text",
-				"Name": "DefaultTag"
-			},
-			{
-				"Type": "Integer",
-				"Name": "DefaultOrder"
-			},
-			{
-				"Type": "Text",
-				"Name": "Tag"
-			},
-			{
-				"Type": "Integer",
-				"Name": "Order"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "IsBlock"
-			},
-			{
-				"Type": "SChItem",
-				"Name": "Item"
-			}
-		],
-		"SReplacementResult": [
-			{
-				"Type": "Boolean",
-				"Name": "Removed"
-			},
-			{
-				"Type": "Boolean",
-				"Name": "Placed"
-			}
-		],
-		"SChProblem": [
-			{
-				"Type": "SChBlock",
-				"Name": "Block"
-			}
-		],
-		"SChNote": [
-			{
-				"Type": "SChBlock",
-				"Name": "Block"
-			}
-		]
+		"SChMetadata": {
+			"Explanation": "Script metadata used to identify a script.",
+			"Supported": true,
+			"Members": [
+				{
+					"Type": "Text",
+					"Name": "Name",
+ 					"Explanation": "Unique name of the script. If the same name exists in the database, script will be rejected from publishing."
+				},
+				{
+					"Type": "Text",
+					"Name": "AuthorLogin",
+ 					"Explanation": "Login of the author. Publishing checks this value with your Maniaplanet identity so using other logins will reject the script from publishing."
+				},
+				{
+					"Type": "Text",
+					"Name": "Description",
+ 					"Explanation": "Description for the script."
+				},
+				{
+					"Type": "Text",
+					"Name": "CompatibleCollections",
+ 					"Explanation": "Compatible environments seperated by comma. Modifier will reject the script if it's used on a map with incompatible environment."
+				}
+			]
+		},
+		"SChBlock": {
+			"Explanation": "Block placed on a map.",
+			"Supported": true,
+			"Members": [
+				{
+					"Type": "Integer",
+					"Name": "Id",
+ 					"Explanation": "Unique identification number of the block."
+				},
+				{
+					"Type": "Text",
+					"Name": "Name",
+ 					"Explanation": "Name of the block."
+				},
+				{
+					"Type": "Int3",
+					"Name": "Coord",
+ 					"Explanation": "Coordination of the block."
+				},
+				{
+					"Type": "Text",
+					"Name": "Direction",
+ 					"Explanation": "Name of the direction for the block."
+				},
+				{
+					"Type": "Boolean",
+					"Name": "IsRoad",
+ 					"Explanation": "If the block is road type."
+				},
+				{
+					"Type": "Boolean",
+					"Name": "IsTerrain",
+ 					"Explanation": "If the block is terrain."
+				},
+				{
+					"Type": "Boolean",
+					"Name": "IsPodium",
+ 					"Explanation": "If the block is podium."
+				},
+				{
+					"Type": "SChAnchor",
+					"Array": true,
+					"Name": "Anchors",
+ 					"Explanation": "Anchors used for this block."
+				},
+				{
+					"Type": "Boolean",
+					"Name": "NoRespawn",
+ 					"Explanation": "If the block allows respawn."
+				},
+				{
+					"Type": "Boolean",
+					"Name": "IsSpecial",
+ 					"Explanation": "If the block is special (is constructed with multiple subblocks)."
+				},
+				{
+					"Type": "Text",
+					"Name": "Waypoint",
+ 					"Explanation": "Name of the waypoint. Empty text if the block isnt waypoint."
+				}
+			]
+		},
+		"SChMacroblock": {
+			"Explanation": "Macroblock placed on a map (basically fixed set of blocks).",
+			"Supported": true,
+			"Members": [
+				{
+					"Type": "Boolean",
+					"Name": "IsGround",
+ 					"Explanation": "If the macroblock is forced to be placed on the ground."
+				},
+				{
+					"Type": "Boolean",
+					"Name": "HasStart",
+ 					"Explanation": "If the macroblock has a start waypoint."
+				},
+				{
+					"Type": "Boolean",
+					"Name": "HasFinish",
+ 					"Explanation": "If the macroblock has a finish waypoint."
+				},
+				{
+					"Type": "Boolean",
+					"Name": "HasCheckpoint",
+ 					"Explanation": "If the macroblock has a checkpoint waypoint."
+				},
+				{
+					"Type": "Boolean",
+					"Name": "HasMultilap",
+ 					"Explanation": "If the macroblock has a multilap waypoint."
+				},
+				{
+					"Type": "Text",
+					"Name": "Name",
+ 					"Explanation": "Name of the macroblock."
+				}
+			]
+		},
+		"SChItem": {
+			"Explanation": "Item placed on a map. Currently, can't handle more than a position.",
+			"Supported": true,
+			"Members": [
+				{
+					"Type": "Vec3",
+					"Name": "Position",
+ 					"Explanation": "Position of the item on a map."
+				}
+			]
+		},
+		"SChWaypoint": {
+			"Explanation": "Block or item with a trigger.",
+			"Supported": true,
+			"Members": [
+				{ "Type": "Text", "Name": "Type", "Explanation": "Type of the waypoint."},
+				{ "Type": "Boolean", "Name": "IsBlock", "Explanation": "If the waypoint is block."},
+				{ "Type": "SChBlock", "Name": "Block", "Explanation": "Block information. It is recommended to check IsBlock first."},
+				{ "Type": "Boolean", "Name": "IsItem", "Explanation": "If the waypoint is item."},
+				{ "Type": "SChItem", "Name": "Item", "Explanation": "Item information. It is recommended to check IsItem first."}
+			]
+		},
+		"SChApproxBlock": {
+			"Explanation": "An imaginary block that is located absolutely to some location.",
+			"Supported": true,
+			"Members": [
+				{ "Type": "Text", "Name": "Name", "Explanation": "Name of the block."},
+				{ "Type": "Text", "Name": "Coord", "Explanation": "Coordination of the block."},
+				{ "Type": "Text", "Name": "Direction", "Explanation": "Name of the direction for the block."}
+			]
+		},
+		"SChRelationBlock": {
+			"Explanation": "An imaginary block that is located relatively to some location.",
+			"Supported": true,
+			"Members": [
+				{ "Type": "Text", "Name": "Name", "Explanation": "Name of the block."},
+				{ "Type": "Text", "Name": "Coord", "Explanation": "Coordination of the block."},
+				{ "Type": "Integer", "Name": "Direction", "Explanation": "Direction offset for the block (clockwise)."}
+			]
+		},
+		"SChAnchor": {
+			"Explanation": "Block or item that is able to contain additional data (currently only compatible with waypoints).",
+			"Supported": true,
+			"Members": [
+				{
+					"Type": "Text",
+					"Name": "Id",
+ 					"Explanation": "Unique identification number of the anchor."
+				},
+				{
+					"Type": "Text",
+					"Name": "DefaultTag",
+ 					"Explanation": "Tag defined by the map."
+				},
+				{
+					"Type": "Integer",
+					"Name": "DefaultOrder",
+ 					"Explanation": "Order defined by the map."
+				},
+				{
+					"Type": "Text",
+					"Name": "Tag",
+ 					"Explanation": "Overriden tag by a script or other source."
+				},
+				{
+					"Type": "Integer",
+					"Name": "Order",
+ 					"Explanation": "Overriden order by a script or other source."
+				}
+			]
+		},
+		"SReplacementResult": {
+			"Explanation": "Result of ReplaceBlock containing successful removal and placement.",
+			"Supported": false,
+			"Members": [
+				{
+					"Type": "Boolean",
+					"Name": "Removed",
+ 					"Explanation": "If the old block was successfully removed."
+				},
+				{
+					"Type": "Boolean",
+					"Name": "Placed",
+ 					"Explanation": "If the new block was successfully placed."
+				}
+			]
+		},
+		"SPlaceBlockResult": {
+			"Explanation": "Result of PlaceBlock containing successful placement and the block feedback.",
+			"Supported": true,
+			"Members": [
+				{
+					"Type": "Boolean",
+					"Name": "Placed",
+ 					"Explanation": "If the block was successfully placed."
+				},
+				{
+					"Type": "SChBlock",
+					"Name": "Block",
+ 					"Explanation": "Information about the actual placed block. It is recommended to check Placed first."
+				}
+			]
+		},
+		"SChSolution": {
+			"Explanation": "Informative structure that Solver uses to define solutions for problems.",
+			"Supported": true,
+			"Members": [
+				{
+					"Type": "Text",
+					"Name": "Value",
+ 					"Explanation": "Brief description of the solution."
+				},
+				{
+					"Type": "Text",
+					"Name": "AdditionalInfo",
+ 					"Explanation": "Additional information of the solution."
+				},
+				{
+					"Type": "Boolean",
+					"Name": "IsInteractive",
+ 					"Explanation": "If the solution is clickable."
+				}
+			]
+		},
+		"SChProblem": {
+			"Explanation": "Informative structure that Solver uses to define problems.",
+			"Supported": true,
+			"Members": [
+				{
+					"Type": "Text",
+					"Name": "Name",
+ 					"Explanation": "Identification name of the problem. Usual format is PROBLEM_[UPPERCASE_PROBLEM_NAME]"
+				},
+				{
+					"Type": "Int3",
+					"Array": true,
+					"Name": "Coords",
+ 					"Explanation": "Coordinations that Solver will use to navigate you throughout the problem."
+				},
+				{
+					"Type": "SChWaypoint",
+					"Array": true,
+					"Name": "Waypoints",
+ 					"Explanation": "Waypoints that Solver will use to navigate your throughout the problem."
+				},
+				{
+					"Type": "SChBlock",
+					"Array": true,
+					"Name": "Blocks",
+ 					"Explanation": "Blocks that Solver will use to navigate your throughout the problem."
+				},
+				{
+					"Type": "SChItem",
+					"Array": true,
+					"Name": "Items",
+ 					"Explanation": "Items that Solver will use to navigate your throughout the problem."
+				},
+				{
+					"Type": "SChApproxBlock",
+					"Array": true,
+					"Name": "ApproxBlocks",
+ 					"Explanation": "Approximate blocks that Solver will use to navigate your throughout the problem."
+				},
+				{
+					"Type": "Text",
+					"Name": "ShortDescription",
+ 					"Explanation": "Short description of the problem displayed on the right side."
+				},
+				{
+					"Type": "Text",
+					"Name": "LongDescription",
+ 					"Explanation": "Long description of the problem displayed in Solver user interface."
+				},
+				{
+					"Type": "SChSolution",
+					"Array": true,
+					"Name": "Solutions",
+ 					"Explanation": "Solutions that Solver will use to navigate your throughout the problem."
+				}
+			]
+		},
+		"SChNote": {
+			"Explanation": "Informative structure that tells Modifier to display additional minor information in the user interface.",
+			"Supported": false,
+			"Members": [
+				{
+					"Type": "Text",
+					"Name": "Name",
+ 					"Explanation": "Identification name of the problem. Usual format is PROBLEM_[UPPERCASE_PROBLEM_NAME]"
+				},
+				{
+					"Type": "Text",
+					"Name": "Value",
+ 					"Explanation": "Note information."
+				},
+				{
+					"Type": "Int3",
+					"Array": true,
+					"Name": "Coords",
+ 					"Explanation": "Coordinations that Solver will use to navigate you throughout the problem."
+				},
+				{
+					"Type": "SChWaypoint",
+					"Array": true,
+					"Name": "Waypoints",
+ 					"Explanation": "Waypoints that Solver will use to navigate your throughout the problem."
+				},
+				{
+					"Type": "SChBlock",
+					"Array": true,
+					"Name": "Blocks",
+ 					"Explanation": "Blocks that Solver will use to navigate your throughout the problem."
+				},
+				{
+					"Type": "SChItem",
+					"Array": true,
+					"Name": "Items",
+ 					"Explanation": "Items that Solver will use to navigate your throughout the problem."
+				},
+				{
+					"Type": "SChApproxBlock",
+					"Array": true,
+					"Name": "ApproxBlocks",
+ 					"Explanation": "Approximate blocks that Solver will use to navigate your throughout the problem."
+				},
+				{
+					"Type": "Text",
+					"Name": "ShortDescription",
+ 					"Explanation": "Short description of the problem displayed on the right side."
+				},
+				{
+					"Type": "Text",
+					"Name": "LongDescription",
+ 					"Explanation": "Long description of the problem displayed in Solver user interface."
+				}
+			]
+		},
+		"SChMap": {
+			"Explanation": "Detailed information about a map.",
+			"Supported": true,
+			"Members": [
+				{ "Type": "Text", "Name": "MapUid", "Explanation": "" },
+				{ "Type": "Text", "Name": "Comments", "Explanation": "" },
+				{ "Type": "Integer", "Name": "CopperPrice", "Explanation": "" },
+				{ "Type": "Text", "Name": "CollectionName", "Explanation": "" },
+				{ "Type": "Text", "Name": "AuthorLogin", "Explanation": "" },
+				{ "Type": "Text", "Name": "AuthorNickName", "Explanation": "" },
+				{ "Type": "Text", "Name": "AuthorZonePath", "Explanation": "" },
+				{ "Type": "Text", "Name": "AuthorZoneFlagUrl", "Explanation": "" },
+				{ "Type": "Text", "Name": "MapType", "Explanation": "" },
+				{ "Type": "Text", "Name": "MapStyle", "Explanation": "" },
+				{ "Type": "Boolean", "Name": "Unlocked", "Explanation": "" },
+				{ "Type": "Boolean", "Name": "IsPlayable", "Explanation": "" },
+				{ "Type": "Boolean", "Name": "CreatedWithSimpleEditor", "Explanation": "" },
+				{ "Type": "Boolean", "Name": "CreatedWithPartyEditor", "Explanation": "" },
+				{ "Type": "Integer", "Name": "TMObjective_AuthorTime", "Explanation": "" },
+				{ "Type": "Integer", "Name": "TMObjective_GoldTime", "Explanation": "" },
+				{ "Type": "Integer", "Name": "TMObjective_SilverTime", "Explanation": "" },
+				{ "Type": "Integer", "Name": "TMObjective_BronzeTime", "Explanation": "" },
+				{ "Type": "Integer", "Name": "TMObjective_NbLaps", "Explanation": "" },
+				{ "Type": "Boolean", "Name": "TMObjective_IsLapRace", "Explanation": "" },
+				{ "Type": "Text", "Name": "Name", "Explanation": "" },
+				{ "Type": "Text", "Name": "Path", "Explanation": "" },
+				{ "Type": "Text", "Name": "FileName", "Explanation": "" }
+			]
+		},
+		"Boolean": {
+			"Explanation": "Standard ManiaScript structure that defines condition."
+		},
+		"Integer": {
+			"Explanation": "Standard ManiaScript structure that defines 32bit number with no decimal point."
+		},
+		"Real": {
+			"Explanation": "Standard ManiaScript structure that defines floating number with decimal point."
+		},
+		"Text": {
+			"Explanation": "Standard ManiaScript structure that defines text as a string of characters."
+		},
+		"Vec2": {
+			"Explanation": "Standard ManiaScript structure that two dimensional vector."
+		},
+		"Vec3": {
+			"Explanation": "Standard ManiaScript structure that three dimensional vector."
+		},
+		"Int3": {
+			"Explanation": "Standard ManiaScript structure that three dimensional integer."
+		}
 	},
 	"Globals": [
 		{
 			"Type": "SChMetadata",
-			"Name": "Script"
+			"Name": "Script",
+ 			"Explanation": ""
 		},
 		{
-			"Type": "SChProblem[]",
-			"Name": "Problems"
+			"Type": "SChProblem",
+			"Array": true,
+			"Name": "Problems",
+ 			"Explanation": ""
 		},
 		{
-			"Type": "Text[][][Text]",
-			"Name": "Relation_StartFinish"
+			"Type": "Integer",
+			"Name": "RandomProgression",
+ 			"Explanation": ""
 		},
 		{
-			"Type": "Text[][][Text]",
-			"Name": "Relation_StartMultilap"
+			"Type": "SChProblem",
+			"Name": "Solver_Problem",
+ 			"Explanation": ""
 		},
 		{
-			"Type": "Text[][][Text]",
-			"Name": "Relation_FinishCheckpoint"
+			"Type": "Integer",
+			"Name": "Solver_ProblemId",
+ 			"Explanation": ""
 		},
 		{
-			"Type": "Text[][][Text]",
-			"Name": "Relation_CheckpointRoad"
+			"Type": "Integer",
+			"Name": "Solver_Solution",
+ 			"Explanation": ""
+		},
+		{
+			"Type": "Integer",
+			"Name": "Solver_Point",
+ 			"Explanation": ""
+		},
+		{
+			"Type": "Boolean",
+			"Name": "Solver_Success",
+ 			"Explanation": ""
 		}
 	],
 	"Functions": {
+		"Request": [
+			{
+				"Return": "SResponse",
+				"Array": false,
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": [
+					[
+						{
+							"Type": "Text",
+							"Name": "_Command",
+ 							"Explanation": ""
+						},
+						{
+							"Type": "Text",
+							"Array": true,
+							"Name": "_Arguments",
+ 							"Explanation": ""
+						}
+					]
+				]
+			}
+		],
 		"ComputeShadows": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"RemoveAllBlocks": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"RemoveAllTerrain": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"RemoveAllOffZone": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"RemoveAllObjects": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"RemoveAll": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"RemoveAllBlocksAndTerrain": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"PreloadAllBlocks": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"PreloadAllItems": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"CanPlaceBlock": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Boolean",
-							"Name": "_OnGround"
+							"Name": "_OnGround",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Integer",
-							"Name": "_VariantIndex"
+							"Name": "_VariantIndex",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -338,29 +611,36 @@
 		"CanPlaceBlock_NoDestruction": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Boolean",
-							"Name": "_OnGround"
+							"Name": "_OnGround",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Integer",
-							"Name": "_VariantIndex"
+							"Name": "_VariantIndex",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -369,21 +649,26 @@
 		"PlaceBlock": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -392,21 +677,26 @@
 		"PlaceBlock_NoDestruction": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -415,21 +705,26 @@
 		"CanPlaceRoadBlocks": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_StartCoord"
+							"Name": "_StartCoord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_EndCoord"
+							"Name": "_EndCoord",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -438,21 +733,26 @@
 		"PlaceRoadBlocks": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_StartCoord"
+							"Name": "_StartCoord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_EndCoord"
+							"Name": "_EndCoord",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -461,21 +761,26 @@
 		"CanPlaceTerrainBlocks": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_StartCoord"
+							"Name": "_StartCoord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_EndCoord"
+							"Name": "_EndCoord",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -484,21 +789,26 @@
 		"PlaceTerrainBlocks": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_StartCoord"
+							"Name": "_StartCoord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_EndCoord"
+							"Name": "_EndCoord",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -507,21 +817,26 @@
 		"PlaceTerrainBlocks_NoDestruction": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_StartCoord"
+							"Name": "_StartCoord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_EndCoord"
+							"Name": "_EndCoord",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -530,21 +845,26 @@
 		"CanPlaceMacroblock": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_MacroblockName"
+							"Name": "_MacroblockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -553,21 +873,26 @@
 		"PlaceMacroblock": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_MacroblockName"
+							"Name": "_MacroblockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -576,21 +901,26 @@
 		"CanPlaceMacroblock_NoDestruction": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_MacroblockName"
+							"Name": "_MacroblockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -599,21 +929,26 @@
 		"PlaceMacroblock_NoDestruction": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_MacroblockName"
+							"Name": "_MacroblockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -622,21 +957,26 @@
 		"CanPlaceMacroblock_NoTerrain": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_MacroblockName"
+							"Name": "_MacroblockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -645,21 +985,26 @@
 		"PlaceMacroblock_NoTerrain": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_MacroblockName"
+							"Name": "_MacroblockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -668,21 +1013,26 @@
 		"RemoveMacroblock": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_MacroblockName"
+							"Name": "_MacroblockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -691,21 +1041,26 @@
 		"RemoveMacroblock_NoTerrain": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_MacroblockName"
+							"Name": "_MacroblockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -714,13 +1069,16 @@
 		"GetBlock": [
 			{
 				"Return": "SChBlock",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -729,26 +1087,32 @@
 		"RemoveBlock": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						}
 					]
 				]
 			},
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "SChBlock",
-							"Name": "_Block"
+							"Name": "_Block",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -757,17 +1121,21 @@
 		"RemoveTerrainBlocks": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Int3",
-							"Name": "_StartCoord"
+							"Name": "_StartCoord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_EndCoord"
+							"Name": "_EndCoord",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -776,25 +1144,31 @@
 		"GetBlockGroundHeight": [
 			{
 				"Return": "Integer",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Integer",
-							"Name": "_CoordX"
+							"Name": "_CoordX",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Integer",
-							"Name": "_CoordZ"
+							"Name": "_CoordZ",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -803,17 +1177,21 @@
 		"GetGroundHeight": [
 			{
 				"Return": "Integer",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Integer",
-							"Name": "_CoordX"
+							"Name": "_CoordX",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Integer",
-							"Name": "_CoordZ"
+							"Name": "_CoordZ",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -822,77 +1200,86 @@
 		"GetStartLineBlock": [
 			{
 				"Return": "SChBlock",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetBlocks": [
 			{
 				"Return": "SChBlock",
-				"ReturnsArray": true,
+				"Array": true,
 				"Kind": "Regular",
-				"Parameters": []
-			}
-		],
-		"GetAnchorData": [
-			{
-				"Return": "SChAnchor",
-				"ReturnsArray": true,
-				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetMapInfo": [
 			{
 				"Return": "SChMap",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetOriginalMapInfo": [
 			{
 				"Return": "SChMap",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"Underground": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"Aboveground": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"PlaceGhostBlock": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Regular",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_Direction"
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -901,31 +1288,38 @@
 		"ReplaceBlock": [
 			{
 				"Return": "SReplacementResult",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "SChBlock",
-							"Name": "_CoordX"
+							"Name": "_Block",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_ReplacementBlockName"
+							"Name": "_ReplacementBlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Boolean",
-							"Name": "_OppositeDirection"
+							"Name": "_OppositeDirection",
+ 							"Explanation": ""
 						}
 					],
 					[
 						{
 							"Type": "SChBlock",
-							"Name": "_CoordX"
+							"Name": "_Block",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_ReplacementBlockName"
+							"Name": "_ReplacementBlockName",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -934,17 +1328,21 @@
 		"ReplaceAllBlocks": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Text",
-							"Name": "_ReplacementBlockName"
+							"Name": "_ReplacementBlockName",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -953,17 +1351,21 @@
 		"SwapBlock": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "SChBlock",
-							"Name": "_Block1"
+							"Name": "_Block1",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "SChBlock",
-							"Name": "_Block2"
+							"Name": "_Block2",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -971,110 +1373,137 @@
 		],
 		"GetStartLines": [
 			{
-				"Return": "SChAnchor",
-				"ReturnsArray": true,
+				"Return": "SChWaypoint",
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetFinishLines": [
 			{
-				"Return": "SChAnchor",
-				"ReturnsArray": true,
+				"Return": "SChWaypoint",
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetCheckpoints": [
 			{
-				"Return": "SChAnchor",
-				"ReturnsArray": true,
+				"Return": "SChWaypoint",
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetMultilaps": [
 			{
-				"Return": "SChAnchor",
-				"ReturnsArray": true,
+				"Return": "SChWaypoint",
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetStartLineBlocks": [
 			{
-				"Return": "SChAnchorBlock",
-				"ReturnsArray": true,
+				"Return": "SChBlock",
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetFinishLineBlocks": [
 			{
-				"Return": "SChAnchorBlock",
-				"ReturnsArray": true,
+				"Return": "SChBlock",
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetCheckpointBlocks": [
 			{
-				"Return": "SChAnchorBlock",
-				"ReturnsArray": true,
+				"Return": "SChBlock",
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetMultilapBlocks": [
 			{
-				"Return": "SChAnchorBlock",
-				"ReturnsArray": true,
+				"Return": "SChBlock",
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetStartLineItems": [
 			{
-				"Return": "SChAnchorItem",
-				"ReturnsArray": true,
+				"Return": "SChItem",
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetFinishLineItems": [
 			{
-				"Return": "SChAnchorItem",
-				"ReturnsArray": true,
+				"Return": "SChItem",
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetCheckpointItems": [
 			{
-				"Return": "SChAnchorItem",
-				"ReturnsArray": true,
+				"Return": "SChItem",
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetMultilapItems": [
 			{
-				"Return": "SChAnchorItem",
-				"ReturnsArray": true,
+				"Return": "SChItem",
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"GetBlocksByBlockName": [
 			{
 				"Return": "SChBlock",
-				"ReturnsArray": true,
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_BlockName"
+							"Name": "_BlockName",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -1083,58 +1512,89 @@
 		"MultipleBlocks": [
 			{
 				"Return": "SChBlock",
-				"ReturnsArray": true,
+				"Array": true,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Int3",
-							"Name": "_Coord"
+							"Name": "_Coord",
+ 							"Explanation": ""
 						}
 					]
 				]
 			}
 		],
-		"RemoveAnchor": [
+		"UpdateAnchor": [
 			{
-				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Return": "Void",
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "SChAnchor",
-							"Name": "_Anchor"
+							"Name": "_Anchor",
+ 							"Explanation": ""
 						}
 					]
 				]
 			}
 		],
-		"RemoveAnchorItem": [
+		"LinkCheckpoints": [
 			{
-				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Return": "Void",
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
-							"Type": "SChAnchorItem",
-							"Name": "_AnchorItem"
+							"Type": "SChAnchor",
+							"Array": true,
+							"Name": "_Checkpoints",
+ 							"Explanation": ""
 						}
 					]
 				]
 			}
 		],
-		"RemoveAnchorBlock": [
+		"IsSpecialBlock": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
-							"Type": "SChAnchorBlock",
-							"Name": "_AnchorBlock"
+							"Type": "Text",
+							"Name": "_BlockName",
+ 							"Explanation": ""
+						}
+					]
+				]
+			}
+		],
+		"RemoveSpecificBlock": [
+			{
+				"Return": "Boolean",
+				"Array": false,
+				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": [
+					[
+						{
+							"Type": "SChBlock",
+							"Name": "_Block",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -1143,75 +1603,92 @@
 		"Random": [
 			{
 				"Return": "Integer",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Integer",
-							"Name": "_Min"
+							"Name": "_Min",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Integer",
-							"Name": "_Max"
+							"Name": "_Max",
+ 							"Explanation": ""
 						}
 					],
 					[
 						{
 							"Type": "Integer",
-							"Name": "_Max"
+							"Name": "_Max",
+ 							"Explanation": ""
 						}
 					]
 				]
 			},
 			{
 				"Return": "Real",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Real",
-							"Name": "_Min"
+							"Name": "_Min",
+ 							"Explanation": ""
 						},
 						{
 							"Type": "Real",
-							"Name": "_Max"
+							"Name": "_Max",
+ 							"Explanation": ""
 						}
 					],
 					[
 						{
 							"Type": "Real",
-							"Name": "_Max"
+							"Name": "_Max",
+ 							"Explanation": ""
 						}
 					]
 				]
 			},
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"Percentage": [
 			{
 				"Return": "Real",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"Chance": [
 			{
 				"Return": "Boolean",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Real",
-							"Name": "_Percentage"
+							"Name": "_Percentage",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -1220,13 +1697,94 @@
 		"Message": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_Message"
+							"Name": "_Message",
+ 							"Explanation": ""
+						}
+					]
+				]
+			}
+		],
+		"OppositeDirection": [
+			{
+				"Return": "Text",
+				"Array": false,
+				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": [
+					[
+						{
+							"Type": "Text",
+							"Name": "_Direction",
+ 							"Explanation": ""
+						}
+					]
+				]
+			}
+		],
+		"ClockwiseDirection": [
+			{
+				"Return": "Text",
+				"Array": false,
+				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": [
+					[
+						{
+							"Type": "Text",
+							"Name": "_Direction",
+ 							"Explanation": ""
+						},
+						{
+							"Type": "Integer",
+							"Name": "_Amount",
+ 							"Explanation": ""
+						}
+					],
+					[
+						{
+							"Type": "Text",
+							"Name": "_Direction",
+ 							"Explanation": ""
+						}
+					]
+				]
+			}
+		],
+		"CounterClockwiseDirection": [
+			{
+				"Return": "Text",
+				"Array": false,
+				"Kind": "Extensive",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": [
+					[
+						{
+							"Type": "Text",
+							"Name": "_Direction",
+ 							"Explanation": ""
+						},
+						{
+							"Type": "Integer",
+							"Name": "_Amount",
+ 							"Explanation": ""
+						}
+					],
+					[
+						{
+							"Type": "Text",
+							"Name": "_Direction",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -1236,13 +1794,16 @@
 		"SetStatusProgress": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Appearance",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Real",
-							"Name": "_Progress"
+							"Name": "_Progress",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -1251,13 +1812,34 @@
 		"SetStatusMessage": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Appearance",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
-							"Name": "_Message"
+							"Name": "_Message",
+ 							"Explanation": ""
+						}
+					]
+				]
+			}
+		],
+		"SetStatusStage": [
+			{
+				"Return": "Void",
+				"Array": false,
+				"Kind": "Appearance",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": [
+					[
+						{
+							"Type": "Text",
+							"Name": "_Stage",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -1266,13 +1848,16 @@
 		"SetStatusColor": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Appearance",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Vec3",
-							"Name": "_Color"
+							"Name": "_Color",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -1281,65 +1866,32 @@
 		"Focus": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Appearance",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "SChBlock",
-							"Name": "_Block"
+							"Name": "_Block",
+ 							"Explanation": ""
 						}
 					]
 				]
 			},
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Appearance",
-				"Parameters": [
-					[
-						{
-							"Type": "SChAnchor",
-							"Name": "_Anchor"
-						}
-					]
-				]
-			},
-			{
-				"Return": "Void",
-				"ReturnsArray": false,
-				"Kind": "Appearance",
-				"Parameters": [
-					[
-						{
-							"Type": "SChAnchorBlock",
-							"Name": "_Anchor"
-						}
-					]
-				]
-			},
-			{
-				"Return": "Void",
-				"ReturnsArray": false,
-				"Kind": "Appearance",
-				"Parameters": [
-					[
-						{
-							"Type": "SChAnchorItem",
-							"Name": "_Anchor"
-						}
-					]
-				]
-			},
-			{
-				"Return": "Void",
-				"ReturnsArray": false,
-				"Kind": "Appearance",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Vec3",
-							"Name": "_Position"
+							"Name": "_Position",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -1349,21 +1901,36 @@
 		"Complete": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": []
+			}
+		],
+		"Solve": [
+			{
+				"Return": "Void",
+				"Array": false,
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		],
 		"Problem": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "SChProblem",
-							"Name": "_Problem"
+							"Name": "_Problem",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -1372,13 +1939,44 @@
 		"Note": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "SChNote",
-							"Name": "_Note"
+							"Name": "_Note",
+ 							"Explanation": ""
+						}
+					]
+				]
+			}
+		],
+		"Solution": [
+			{
+				"Return": "SChSolution",
+				"Array": false,
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": [
+					[
+						{
+							"Type": "Text",
+							"Name": "_Value",
+ 							"Explanation": ""
+						},
+						{
+							"Type": "Text",
+							"Name": "_AdditionalInfo",
+ 							"Explanation": ""
+						},
+						{
+							"Type": "Boolean",
+							"Name": "_IsInteractive",
+ 							"Explanation": ""
 						}
 					]
 				]
@@ -1387,8 +1985,124 @@
 		"Chill": [
 			{
 				"Return": "Void",
-				"ReturnsArray": false,
+				"Array": false,
 				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": []
+			}
+		],
+		"ShowEditor": [
+			{
+				"Return": "Void",
+				"Array": false,
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": []
+			}
+		],
+		"HideEditor": [
+			{
+				"Return": "Void",
+				"Array": false,
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": []
+			}
+		],
+		"Event_MapModified": [
+			{
+				"Return": "Text",
+				"Array": false,
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": []
+			}
+		],
+		"SetCursorBlock": [
+			{
+				"Return": "Boolean",
+				"Array": false,
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": [
+					[
+						{
+							"Type": "Text",
+							"Name": "_BlockName",
+ 							"Explanation": ""
+						}
+					]
+				]
+			}
+		],
+		"GetRelation_StartFinish": [
+			{
+				"Return": "SChRelationBlock[][]",
+				"Array": true,
+				"ArrayType": "Text",
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": []
+			}
+		],
+		"GetRelation_StartMultilap": [
+			{
+				"Return": "SChRelationBlock[][]",
+				"Array": true,
+				"ArrayType": "Text",
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": []
+			}
+		],
+		"GetRelation_FinishCheckpoint": [
+			{
+				"Return": "SChRelationBlock[][]",
+				"Array": true,
+				"ArrayType": "Text",
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": []
+			}
+		],
+		"GetRelation_MultilapStartTwoway": [
+			{
+				"Return": "SChRelationBlock[][]",
+				"Array": true,
+				"ArrayType": "Text",
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": []
+			}
+		],
+		"GetRelation_StartTwowayFinishTwoway": [
+			{
+				"Return": "SChRelationBlock[][]",
+				"Array": true,
+				"ArrayType": "Text",
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
+				"Parameters": []
+			}
+		],
+		"GetRelation_CheckpointRoad": [
+			{
+				"Return": "SChRelationBlock[][]",
+				"Array": true,
+				"ArrayType": "Text",
+				"Kind": "Technical",
+				"Explanation": "",
+				"Supported": true,
 				"Parameters": []
 			}
 		]

@@ -27,7 +27,7 @@
 	Boolean IsRoad; 
 	Boolean IsTerrain;
 	Boolean IsPodium;
-	SChAnchor[] Anchors;  
+	SChAnchor[] Anchors; 
 	Boolean NoRespawn;
 	Boolean IsSpecial;
 	Text Waypoint;
@@ -97,10 +97,14 @@
 
 #Struct SChNote {
 	Text Name;
-	Int3 Coord;
+	Text Value;
+	Int3[] Coords;
 	SChWaypoint[] Waypoints;
 	SChBlock[] Blocks;
 	SChItem[] Items;
+	SChApproxBlock[] ApproxBlocks;
+	Text ShortDescription;
+	Text LongDescription;
 }
 
 #Struct SChMap {

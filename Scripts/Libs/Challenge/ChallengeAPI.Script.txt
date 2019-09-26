@@ -3,19 +3,22 @@
 #Struct SAPIVariable {
 	Text Type;
 	Text Name;
-	Boolean IsArray;
+	Boolean Array;
 }
 
 #Struct SAPIParameter {
 	Text Type;
 	Text Name;
-	Boolean IsArray;
+	Boolean Array;
 }
 
 #Struct SAPIFunction {
 	Text Return;
-	Boolean ReturnsArray;
+	Boolean Array;
+	Text ArrayType;
 	Text Kind;
+	Boolean Supported;
+	Text Explanation;
 	SAPIParameter[][] Parameters;
 }
 
