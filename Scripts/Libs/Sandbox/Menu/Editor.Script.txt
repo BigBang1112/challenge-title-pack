@@ -7,11 +7,122 @@
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
+#Include "Libs/Challenge/ChallengeAPI.Script.txt" as ChallengeAPI
 
 #Const C_Manialink "Media/Manialinks/Sandbox/Editor"
 
 Void Init() {
-	Layers::Create("Editor", Manialink::FromFile(C_Manialink, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+	declare API = ChallengeAPI::FromFile("Media/API.json");
+	declare Text ChallengeAPI_ML;
+	
+	// Structures
+	
+	ChallengeAPI_ML ^= """<frame pos="0 -15" id="FRAME_STRUCTURES">
+		<label z-index="0" size="220 5" text="$oSTRUCTURES" textsize="4" textfont="OswaldMono"/>
+		<frame pos="0 -7.5" id="FRAME_INNER_STRUCTURES">""";
+	
+	declare StructPos = 0;
+	foreach(Name => Struct,API.Structs) {
+		ChallengeAPI_ML ^= """<frame pos="0 {{{-StructPos}}}">
+			<label z-index="0" size="220 5" text="$8f8{{{Name}}}" textsize="3" textfont="OswaldMono" style="TextCardMedium" scriptevents="1"/>
+		</frame>""";
+		StructPos += 5;
+	}
+		
+	ChallengeAPI_ML ^= """	</frame>
+</frame>""";
+
+	// Globals
+	
+	declare GlobalsSpace = 25;
+
+	ChallengeAPI_ML ^= """<frame pos="0 {{{-GlobalsSpace-StructPos}}}" id="FRAME_GLOBALS">
+		<label z-index="0" size="220 5" text="$oGLOBALS" textsize="4" textfont="OswaldMono"/>
+		<frame pos="0 -7.5" id="FRAME_INNER_GLOBALS">""";
+	
+	declare GlobalPos = 0;
+	foreach(Global, API.Globals) {
+		ChallengeAPI_ML ^= """<frame pos="0 {{{-GlobalPos}}}">
+			<label z-index="0" size="220 5" text="$8f8{{{Global.Type}}}" textsize="3" textfont="OswaldMono" style="TextCardMedium" scriptevents="1"/>""";
+			
+		if(Global.Array) {
+			ChallengeAPI_ML ^= """<label z-index="0" pos="25" size="220 5" text="[" textsize="3" textfont="OswaldMono" style="TextCardMedium"/>""";
+			if(Global.ArrayType != "")
+				ChallengeAPI_ML ^= """<label z-index="0" pos="26" size="220 5" text="$8f8{{{Global.ArrayType}}}" textsize="3" textfont="OswaldMono" style="TextCardMedium" scriptevents="1"/>""";
+			ChallengeAPI_ML ^= """<label z-index="0" pos="34" size="220 5" text="]" textsize="3" textfont="OswaldMono" style="TextCardMedium"/>""";
+		}
+		
+		ChallengeAPI_ML ^= """<label z-index="0" pos="40" size="220 5" text=" {{{Global.Name}}}" textsize="3" textfont="OswaldMono" style="TextCardMedium" scriptevents="1"/>
+		</frame>""";
+		GlobalPos += 5;
+	}
+		
+	ChallengeAPI_ML ^= """	</frame>
+</frame>""";
+
+	// Functions
+	
+	declare FunctionsSpace = 10;
+	
+	ChallengeAPI_ML ^= """<frame pos="0 {{{-GlobalsSpace-FunctionsSpace-StructPos-GlobalPos}}}" id="FRAME_FUNCTIONS">
+		<label z-index="0" size="220 5" text="$oFUNCTIONS" textsize="4" textfont="OswaldMono"/>
+		<frame pos="0 -7.5" id="FRAME_INNER_FUNCTIONS">""";
+	
+	declare FunctionPos = 0;
+	foreach(Name => Functions, API.Functions) {
+		foreach(Function, Functions) {
+				ChallengeAPI_ML ^= """<frame pos="0 {{{-FunctionPos}}}">
+					<label z-index="0" size="220 5" text="$8f8{{{Function.Return}}}" textsize="3" textfont="OswaldMono" style="TextCardMedium" scriptevents="1"/>""";
+					
+				if(Function.Array) {
+					ChallengeAPI_ML ^= """<label z-index="0" pos="25" size="220 5" text="[" textsize="3" textfont="OswaldMono" style="TextCardMedium"/>""";
+					if(Function.ArrayType != "")
+						ChallengeAPI_ML ^= """<label z-index="0" pos="26" size="220 5" text="$8f8{{{Function.ArrayType}}}" textsize="3" textfont="OswaldMono" style="TextCardMedium" scriptevents="1"/>""";
+					ChallengeAPI_ML ^= """<label z-index="0" pos="34" size="220 5" text="]" textsize="3" textfont="OswaldMono" style="TextCardMedium"/>""";
+				}
+					
+				ChallengeAPI_ML ^= """<label z-index="0" pos="40" size="220 5" text=" {{{Name}}}" textsize="3" textfont="OswaldMono" style="TextCardMedium" scriptevents="1"/>
+					<label z-index="0" pos="90" size="220 5" text="(" textsize="3" textfont="OswaldMono" style="TextCardMedium"/>""";
+					
+				declare Shift = 0;
+				if(Function.Parameters.count > 0) {
+					foreach(Parameter, Function.Parameters[0]) {
+						if(Shift > 0) {
+							ChallengeAPI_ML ^= """<label z-index="0" pos="{{{91+Shift*20-1}}}" size="220 5" text=", " textsize="3" textfont="OswaldMono" style="TextCardMedium"/>""";
+						}
+						
+						ChallengeAPI_ML ^= """<label z-index="0" pos="{{{91+Shift*20}}}" size="220 5" text="$8f8{{{Parameter.Type}}}" textsize="3" textfont="OswaldMono" style="TextCardMedium" scriptevents="1"/>""";
+						
+						if(Parameter.Array) {
+							ChallengeAPI_ML ^= """<label z-index="0" pos="{{{91+Shift*20+25}}}" size="220 5" text="[" textsize="3" textfont="OswaldMono" style="TextCardMedium"/>""";
+							if(Function.ArrayType != "")
+								ChallengeAPI_ML ^= """<label z-index="0" pos="{{{91+Shift*20+26}}}" size="220 5" text="$8f8{{{Parameter.ArrayType}}}" textsize="3" textfont="OswaldMono" style="TextCardMedium" scriptevents="1"/>""";
+							ChallengeAPI_ML ^= """<label z-index="0" pos="{{{91+Shift*20+34}}}" size="220 5" text="]" textsize="3" textfont="OswaldMono" style="TextCardMedium"/>""";
+						}
+						
+						ChallengeAPI_ML ^= """<label z-index="0" pos="{{{91+Shift*20+10}}}" size="220 5" text=" {{{Parameter.Name}}}" textsize="3" textfont="OswaldMono" style="TextCardMedium"/>""";
+						
+						Shift += 1;
+					}
+				}
+				
+				ChallengeAPI_ML ^= """<label z-index="0" pos="180" size="220 5" text=")" textsize="3" textfont="OswaldMono" style="TextCardMedium"/>
+				</frame>""";
+				FunctionPos += 5;
+		}
+	}
+		
+	ChallengeAPI_ML ^= """	</frame>
+</frame>""";
+
+	declare TotalHeight = StructPos+GlobalPos+FunctionPos+GlobalsSpace+FunctionsSpace;
+	log("HIejhiej: "^TotalHeight);
+	
+	ChallengeAPI_ML ^= """<quad pos="0 -15" z-index="-1" size="130 {{{TotalHeight}}}" scriptevents="1" id="QUAD_CHALLENGE_API_SCROLL_AREA"/>""";
+
+	declare EditorManialink = Manialink::FromFile(C_Manialink, True, ["TextAnimation", "Audio"], Settings::Get().Theme);
+	EditorManialink = TextLib::Replace(EditorManialink, """<frame id="FRAME_CHALLENGE_API"/>""", ChallengeAPI_ML);
+	Layers::Create("Editor", EditorManialink);
 }
 
 Void Start() {

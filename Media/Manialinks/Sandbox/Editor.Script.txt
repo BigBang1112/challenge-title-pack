@@ -8,6 +8,30 @@ declare Start = Now;
 declare End = -1;
 
 declare Text CHALLENGE_CODE for LocalUser;
+
+foreach(Control_Global,(Page.GetFirstChild("FRAME_INNER_GLOBALS") as CMlFrame).Controls) {
+	declare Frame_Global = (Control_Global as CMlFrame);
+	declare Offset = 0.;
+	foreach(Control, Frame_Global.Controls) {
+		declare Label = (Control as CMlLabel);
+		Label.RelativePosition_V3.X = Offset;
+		Label.Size.X = Label.ComputeWidth(Label.Value);
+		Offset += Label.Size.X;
+	}
+}
+
+foreach(Control_Global,(Page.GetFirstChild("FRAME_INNER_FUNCTIONS") as CMlFrame).Controls) {
+	declare Frame_Global = (Control_Global as CMlFrame);
+	declare Offset = 0.;
+	foreach(Control, Frame_Global.Controls) {
+		declare Label = (Control as CMlLabel);
+		Label.RelativePosition_V3.X = Offset;
+		Label.Size.X = Label.ComputeWidth(Label.Value);
+		Offset += Label.Size.X;
+	}
+}
+
+(Page.GetFirstChild("FRAME_OUTER_CHALLENGE_API") as CMlFrame).ScrollMax.Y = Page.GetFirstChild("QUAD_CHALLENGE_API_SCROLL_AREA").Size.Y-110;
 ***
 
 ***Loop***

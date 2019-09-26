@@ -1,15 +1,19 @@
 #Include "Libs/BigBang1112/File.Script.txt" as File
 
-#Struct SAPIVariable {
+#Struct SAPIMember {
 	Text Type;
 	Text Name;
 	Boolean Array;
+	Text ArrayType;
+	Text Explanation;
 }
 
 #Struct SAPIParameter {
 	Text Type;
 	Text Name;
 	Boolean Array;
+	Text ArrayType;
+	Text Explanation;
 }
 
 #Struct SAPIFunction {
@@ -22,9 +26,15 @@
 	SAPIParameter[][] Parameters;
 }
 
+#Struct SAPIStruct {
+	SAPIMember[] Members;
+	Text Explanation;
+	Boolean Supported;
+}
+
 #Struct SAPI {
-	SAPIVariable[][Text] Structs;
-	SAPIVariable[] Globals;
+	SAPIStruct[Text] Structs;
+	SAPIMember[] Globals;
 	SAPIFunction[][Text] Functions;
 }
 
