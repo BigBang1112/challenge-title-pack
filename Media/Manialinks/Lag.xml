@@ -1,0 +1,14 @@
+<frame>
+	<label pos="0 70" z-index="0" size="200 10" text="WELCOME TO LAG CREATOR" halign="center" valign="center" textfont="Gotham/Gotham-Bold" textsize="8"/>
+	<label pos="-137 51" z-index="0" size="20 5" text="LAG" halign="center" valign="center"/>
+	<label pos="-3 46" z-index="0" size="20 5" text="LAG" halign="center" valign="center"/>
+	<label pos="-32 16" z-index="0" size="20 5" text="LAG" halign="center" valign="center"/>
+	<label pos="-82 22" z-index="0" size="20 5" text="LAG" halign="center" valign="center"/>
+	<label pos="-128 12" z-index="0" size="20 5" text="LAG" halign="center" valign="center"/>
+	<label pos="-65 45" z-index="0" size="20 5" text="LAG" halign="center" valign="center"/>
+	<label pos="57 37" z-index="0" size="20 5" text="LAG" halign="center" valign="center"/>
+	<label pos="108 47" z-index="0" size="20 5" text="LAG" halign="center" valign="center"/>
+	<label pos="93 23" z-index="0" size="20 5" text="LAG" halign="center" valign="center"/>
+	<label pos="117 -3" z-index="0" size="20 5" text="LAG" halign="center" valign="center"/>
+	<label pos="32 8" z-index="0" size="20 5" text="LAG" halign="center" valign="center"/>
+</frame>

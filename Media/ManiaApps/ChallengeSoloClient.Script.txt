@@ -311,7 +311,14 @@ for(I,0,Exchange.count-1) {
 
 if(VehicleIndex != OldVehicleIndex) { // If vehicle was changed
 	Client_VehicleIndex = VehicleIndex;
+	
 	SendCustomEvent("VehicleIndexChanged", [VehicleIndex^""]);
+
+	for(I,0,50) { // Lag creator for car switch to function better on higher end PCs
+		Layers::Create("Lag", Manialink::FromFile("Media/Manialinks/Lag", True));
+		Layers::Destroy("Lag");
+	}
+
 	OldVehicleIndex = VehicleIndex;
 
 	if(Server_VehicleLock == -1) IsBlurred = False;
