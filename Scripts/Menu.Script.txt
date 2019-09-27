@@ -9,6 +9,7 @@
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 #Include "Libs/BigBang1112/Time.Script.txt" as Time
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 
 #Include "Libs/Sandbox/Menu/Quickplay.Script.txt" as Menu_Quickplay
 #Include "Libs/Sandbox/Menu/Main.Script.txt" as Menu_Main
@@ -32,9 +33,7 @@ main() {
 	while(True) { // Restart mechanism
 		Settings::Restart(False);
 		
-		Layers::Create("Background", "file://Media/Manialinks/Background.xml", True, False);
-		
-		//Auth::AuthorizeInManialink("b1a3d10ba7", "basic maps", "http://localhost/challenge/auth");
+		//Layers::Create("Background", "file://Media/Manialinks/Background.xml", True, False);
 		
 		Dictionary::SetTranslationFolder("Media/Translations");
 		Dictionary::SetTranslationLanguage(Settings::Get().Language);
@@ -45,21 +44,33 @@ main() {
 			Status = Service_Status::CheckStatus(LocalUser);
 		}
 		
+		Layers::Create("Preload", Manialink::FromFile("Media/Manialinks/Preload", False, [], Settings::Get().Theme), True);
+		
 		Menu_Main::Init();
+		Layers::SendEvent("Preload", "Progress", 1/8.);
 		yield;
 		Menu_Quickplay::Init();
+		Layers::SendEvent("Preload", "Progress", 2/8.);
 		yield;
 		Menu_Top::Init();
+		Layers::SendEvent("Preload", "Progress", 3/8.);
 		yield;
 		Menu_Editor::Init();
+		Layers::SendEvent("Preload", "Progress", 4/8.);
 		yield;
 		Menu_Playsessions::Init();
+		Layers::SendEvent("Preload", "Progress", 5/8.);
 		yield;
 		Menu_News::Init();
+		Layers::SendEvent("Preload", "Progress", 6/8.);
 		yield;
 		Menu_Replays::Init();
+		Layers::SendEvent("Preload", "Progress", 7/8.);
 		yield;
 		Notification::Init();
+		Layers::SendEvent("Preload", "Progress", 8/8.);
+		sleep(200);
+		Layers::Destroy("Preload");
 		
 		Notification::Start(<150.,55.>);
 		Auth::Start();
@@ -104,8 +115,6 @@ main() {
 		if(S_Devmode) {
 			Devmode::Start();
 		}
-		
-		//EnableMenuNavigationInputs = True;
 	
 		while(!Settings::IsRestarting()) {
 			foreach(Event,PendingEvents) {
