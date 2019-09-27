@@ -31,7 +31,12 @@ foreach(Control_Global,(Page.GetFirstChild("FRAME_INNER_FUNCTIONS") as CMlFrame)
 	}
 }
 
-(Page.GetFirstChild("FRAME_OUTER_CHALLENGE_API") as CMlFrame).ScrollMax.Y = Page.GetFirstChild("QUAD_CHALLENGE_API_SCROLL_AREA").Size.Y-110;
+declare Frame_Outer_Challenge_API = (Page.GetFirstChild("FRAME_OUTER_CHALLENGE_API") as CMlFrame);
+declare Quad_Challenge_API_Scroll_Area = (Page.GetFirstChild("QUAD_CHALLENGE_API_SCROLL_AREA") as CMlQuad);
+Frame_Outer_Challenge_API.ScrollMax.Y = Quad_Challenge_API_Scroll_Area.Size.Y-110;
+
+declare Quad_Scrollbar = (Page.GetFirstChild("QUAD_SCROLLBAR") as CMlQuad);
+declare PreviousScroll = Frame_Outer_Challenge_API.ScrollOffset;
 ***
 
 ***Loop***
@@ -47,6 +52,17 @@ foreach(Event,PendingEvents) {
 		}
 		if(Event.ControlId == "QUAD_BUTTON_SCRIPT") {
 			PlayAudio(Sound_Click);
+			Page.GetFirstChild("FRAME_SCRIPTING").Show();
+			Page.GetFirstChild("FRAME_DOC").Hide();
+			(Page.GetFirstChild("QUAD_BUTTON_DOC") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
+			(Page.GetFirstChild("QUAD_BUTTON_SCRIPT") as CMlQuad).ModulateColor = <0.0,0.2,0.4>;
+		}
+		if(Event.ControlId == "QUAD_BUTTON_DOC") {
+			PlayAudio(Sound_Click);
+			Page.GetFirstChild("FRAME_SCRIPTING").Hide();
+			Page.GetFirstChild("FRAME_DOC").Show();
+			(Page.GetFirstChild("QUAD_BUTTON_DOC") as CMlQuad).ModulateColor = <0.0,0.2,0.4>;
+			(Page.GetFirstChild("QUAD_BUTTON_SCRIPT") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
 		}
 		if(Event.ControlId == "QUAD_BUTTON_PUBLISH") {
 			PlayAudio(Sound_Click);
@@ -170,10 +186,12 @@ foreach(Control,Loadings) {
 if(End == -1) {
 	if(Now - Start <= 1000) {
 		(Page.GetFirstChild("FRAME_SCRIPTING") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseOutQuad(Now - Start - 400, 0.0, 280.0, 500);
+		(Page.GetFirstChild("FRAME_DOC") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseOutQuad(Now - Start - 400, 0.0, 280.0, 500);
 		(Page.GetFirstChild("FRAME_INNER_PANEL") as CMlFrame).ClipWindowRelativePosition.Y = AnimLib::EaseOutQuad(Now - Start, 90.0, -160.0, 500);
 	}
 	else {
 		(Page.GetFirstChild("FRAME_SCRIPTING") as CMlFrame).ClipWindowSize.Y = 280.0;
+		(Page.GetFirstChild("FRAME_DOC") as CMlFrame).ClipWindowSize.Y = 280.0;
 		(Page.GetFirstChild("FRAME_INNER_PANEL") as CMlFrame).ClipWindowRelativePosition.Y = -70.0;
 
 		Page.GetFirstChild("FRAME_BUTTON_SCRIPT").RelativePosition_V3 = <-55.,70.>;
@@ -203,10 +221,29 @@ if(End == -1) {
 }
 else {
 	(Page.GetFirstChild("FRAME_SCRIPTING") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseOutQuad(Now - End, 280.0, -280.0, 400);
+	(Page.GetFirstChild("FRAME_DOC") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseOutQuad(Now - End, 280.0, -280.0, 400);
 	(Page.GetFirstChild("FRAME_INNER_PANEL") as CMlFrame).ClipWindowRelativePosition.Y = AnimLib::EaseOutQuad(Now - End, -70.0, -160.0, 500);
 	if(Now - End > 1000) {
 		SendCustomEvent("Hide_Response", []);
 		End = -1;
+	}
+}
+
+if(Frame_Outer_Challenge_API.ScrollMax.Y == 0) {
+
+}
+else {
+	declare VisibleRatio = Frame_Outer_Challenge_API.ClipWindowSize.Y / Frame_Outer_Challenge_API.ScrollMax.Y;
+	Quad_Scrollbar.Size.Y = 110*VisibleRatio;
+
+	if(Frame_Outer_Challenge_API.ScrollOffset != PreviousScroll) {
+		declare VisibleRatio = 0.;
+		if(Frame_Outer_Challenge_API.ScrollMax.Y != 0) {
+			declare ScrollRatio = Frame_Outer_Challenge_API.ScrollOffset.Y / Frame_Outer_Challenge_API.ScrollMax.Y;
+			Quad_Scrollbar.RelativePosition_V3.Y = -ScrollRatio*(Frame_Outer_Challenge_API.ClipWindowSize.Y-Quad_Scrollbar.Size.Y);
+		}
+
+		PreviousScroll = Frame_Outer_Challenge_API.ScrollOffset;
 	}
 }
 ***

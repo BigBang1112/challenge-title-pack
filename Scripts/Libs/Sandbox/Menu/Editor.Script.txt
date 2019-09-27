@@ -116,7 +116,6 @@ Void Init() {
 </frame>""";
 
 	declare TotalHeight = StructPos+GlobalPos+FunctionPos+GlobalsSpace+FunctionsSpace;
-	log("HIejhiej: "^TotalHeight);
 	
 	ChallengeAPI_ML ^= """<quad pos="0 -15" z-index="-1" size="130 {{{TotalHeight}}}" scriptevents="1" id="QUAD_CHALLENGE_API_SCROLL_AREA"/>""";
 

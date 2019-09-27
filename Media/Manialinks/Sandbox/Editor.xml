@@ -26,16 +26,20 @@
 			<label pos="0 -0.5" z-index="1" size="20 15" text="{{{{TEST}}}}" textfont="RajdhaniMono" halign="center" valign="center2" textsize="6" id="LABEL_BUTTON_TEST"/>
 			<quad z-index="1" size="10 10" bgcolor="FFFA" halign="center" valign="center" style="BgRaceScore2" substyle="SandTimer" class="LOADING" id="QUAD_LOADING_TEST" hidden="1"/>
 		</frame>
-		<frame pos="-70 60" id="FRAME_SCRIPTING" clip="True" clipposn="100 1" clipsizen="230 280" hidden="1">
+		<frame pos="-70 60" id="FRAME_SCRIPTING" clip="True" clipposn="100 1" clipsizen="230 280">
 			<textedit z-index="0" size="217.5 130" default="" showlinenumbers="1" textformat="Script" id="Script" data-codetype="MAINCODE"/>
 			<label pos="-10 -135" z-index="0" size="227.5 5" text="{{{{SCRIPT_NOTE}}}}" valign="center2" textsize="1.5" textfont="BiryaniDemiBold"/>
 		</frame>
-		<frame id="FRAME_DOC">
+		<frame id="FRAME_DOC" clip="True" clipposn="30 60" clipsizen="230 280" hidden="1">
 			<quad pos="32.5 -8" z-index="0" size="229.5 137" bgcolor="0004" halign="center" valign="center"/>
 			<frame pos="-75 55" z-index="1">
 				<label z-index="0" size="220 10" text="$oCHALLENGE API" textsize="8" textfont="OswaldMono"/>
-				<frame clip="True" clipsizen="130 110" clipposn="65 -70" scroll="True" scrollmax="0 1000" scrollgrid="0 10" id="FRAME_OUTER_CHALLENGE_API">
+				<frame clip="True" clipsizen="130 110" clipposn="65 -70" scroll="True" scrollgrid="0 10" id="FRAME_OUTER_CHALLENGE_API">
 					<frame id="FRAME_CHALLENGE_API"/>
+				</frame>
+				<frame pos="130 -15">
+					<quad z-index="0" size="2 110" style="Bgs1" substyle="BgCardList" opacity=".5" scriptevents="1" id="QUAD_SCROLLBAR_BACKGROUND"/>
+					<quad z-index="1" size="1 20" style="Bgs1" substyle="BgWindow4" opacity="1" halign="center" pos="1 0" id="QUAD_SCROLLBAR" scriptevents="1"/>
 				</frame>
 				<frame pos="140">
 					<label z-index="0" size="220 10" text="$oGETTING STARTED" textsize="8" textfont="OswaldMono"/>
