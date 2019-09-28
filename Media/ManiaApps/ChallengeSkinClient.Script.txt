@@ -90,7 +90,6 @@ declare Integer VehicleCount for Layers::Page("SkinBrowser");
 VehicleCount = Server_Vehicles.count;
 
 declare netwrite Integer Client_VehicleIndex for UI;
-Client_VehicleIndex = VehicleIndex;
 
 Notification::Init();
 Notification::Start(<150.,40.>);
@@ -98,6 +97,7 @@ Notification::Start(<150.,40.>);
 
 ***Loop***
 ***
+Client_VehicleIndex = VehicleIndex;
 
 foreach(Event, PendingEvents) {
 	Notification::Event(Event);

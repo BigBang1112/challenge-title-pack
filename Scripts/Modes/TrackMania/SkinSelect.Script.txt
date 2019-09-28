@@ -123,7 +123,7 @@ while(True) {
 	
 	if(P_Skin.existskey(VehicleName)) {
 		if(Vehicles.existskey(Client_VehicleIndex)) {
-			if(RealVehicles[Client_VehicleIndex].Id.existskey(P_Skin[VehicleName]))
+			if(RealVehicles[Client_VehicleIndex].Id.existskey(P_Skin[VehicleName])) // If exact skin doesnt exist
 				Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id[P_Skin[VehicleName]];
 			else Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id[""];
 		} else Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id[""];

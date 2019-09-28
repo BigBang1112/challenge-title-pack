@@ -82,7 +82,6 @@ Void Loop() {
 	declare Integer OldVehicleIndex for This;
 
 	if(VehicleIndex != OldVehicleIndex) {
-		log("K?");
 		Client_VehicleIndex = VehicleIndex;
 		SendCustomEvent("VehicleIndexChanged", [VehicleIndex^""]);
 		OldVehicleIndex = VehicleIndex;
