@@ -106,6 +106,14 @@ Void StartMap(Text _MapLocation, Map::SMapInfo _MapInfo, SScriptInfo[] _Scripts)
 		Dialog_Message("Please select at least one script.");
 		return;
 	}
+	if(LocalUser.Login != "bigbang1112" &&
+	  (_MapInfo.AuthorLogin == "Nadeo"
+	|| _MapInfo.AuthorLogin == "NadeoLive"
+	|| _MapInfo.AuthorLogin == "NadeoLab"
+	|| _MapInfo.AuthorLogin == "NadeoLabs")) {
+		Dialog_Message("This map is a Nadeo map. They are reserved for Challenge Maker tool.\nYou can find the tool in the title pack store.");
+		return;
+	}
 	if(!CheckMapOnline(_MapInfo.MapUid)) {
 		Dialog_Message("This map is currently disabled: Strategy reasons");
 		return;
