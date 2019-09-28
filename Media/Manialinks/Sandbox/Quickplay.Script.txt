@@ -734,10 +734,10 @@ foreach(Event,PendingEvents) {
 					if(MapLocation == "Local") {
 						declare Folder = Event.Control.Parent.DataAttributeGet("folder");
 						if(Folder == "") {
-							declare Index = TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("index"));
-							//log(VisibleMapInfos[Index].Name);
+							declare MapInfo = SelectedMapInfo;
 							declare JsonSuccess = SelectedMapInfo.fromjson(Event.Control.Parent.DataAttributeGet("mapinfo"));
-							
+							if(MapInfo.MapUid == SelectedMapInfo.MapUid)
+								SendCustomEvent("Button_Start", [MapLocation, SelectedMapInfo.tojson(), SelectedScripts.tojson()]);
 						}
 						else if (Folder == "...") {
 							declare Folders = TextLib::Split("\\",CurrentFolder);
@@ -757,7 +757,6 @@ foreach(Event,PendingEvents) {
 						UpdateLocalMapsFolder(MathLib::NearestInteger((Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollOffset.Y/10.0));
 					}
 					if(MapLocation == "ManiaExchange") {
-						declare Index = TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("index"));
 						declare JsonSuccess = SelectedMXTrackInfo.fromjson(Event.Control.Parent.DataAttributeGet("mapinfo"));
 
 						UpdateManiaExchange(MathLib::NearestInteger((Page.GetFirstChild("FRAME_MAPLIST") as CMlFrame).ScrollOffset.Y/10.0));
