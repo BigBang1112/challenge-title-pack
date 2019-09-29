@@ -61,7 +61,8 @@
 	SRecord Record;
 	Integer LastRecord;
 	Integer ActivityPoints;
-	Integer SkillpointsPoints;
+	Integer Skillpoints;
+	Real WRPB;
 	Text Gamemode;
 	SRanking[Text] Rankings;
 	SLeaderboard[Text] Leaderboards;
@@ -208,8 +209,14 @@ foreach(Event,PendingEvents) {
 						Showcases.add("{{{{YOU_HAVE_EQUALED_WORLD_RECORD}}}}");
 					}
 					else if(Result_Time.LastRecord == -1 || Result_Time.Record.Time < Result_Time.LastRecord) {
-						if(Result_Time.Rankings["World"].Rank == 1) { // World record related
+						if(Result_Time.Rankings["World"].Rank == 1)
 							Showcases.add("{{{{NEW_WORLD_RECORD}}}}");
+
+						Showcases.add("{{{{SKILLPOINTS}}}}: "^Result_Time.Skillpoints);
+						Showcases.add("{{{{ACTIVITY POINTS}}}}: "^Result_Time.ActivityPoints);
+						Showcases.add("WR/PB: "^TextLib::FormatReal(Result_Time.WRPB*100, 2, False, False)^"%");
+
+						if(Result_Time.Rankings["World"].Rank == 1) { // World record related
 							Showcases.add("{{{{WORLD}}}}: "^Result_Time.Rankings["World"].Rank^"/"^Result_Time.Rankings["World"].Count);
 						}
 						else {
@@ -233,7 +240,7 @@ foreach(Event,PendingEvents) {
 						declare Text[] Ranks;
 
 						declare BestRecord = RecordSet.LastRecord;
-						if(RecordSet.Record.Time < RecordSet.LastRecord) BestRecord = RecordSet.Record.Time;
+						if(RecordSet.LastRecord == -1 || RecordSet.Record.Time < RecordSet.LastRecord) BestRecord = RecordSet.Record.Time;
 
 						foreach(Zone => Ranking, RecordSet.Rankings) {
 							declare Zones = TextLib::Split("|", Zone);

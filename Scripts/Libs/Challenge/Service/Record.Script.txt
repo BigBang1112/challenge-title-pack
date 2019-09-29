@@ -23,7 +23,8 @@
 	SRecord Record;
 	Integer LastRecord;
 	Integer ActivityPoints;
-	Integer SkillpointsPoints;
+	Integer Skillpoints;
+	Real WRPB;
 	Text Gamemode;
 	SRanking[Text] Rankings;
 	SLeaderboard[Text] Leaderboards;
