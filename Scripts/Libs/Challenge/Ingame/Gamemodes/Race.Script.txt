@@ -29,6 +29,11 @@
 	SFinish[] Finishes;
 }
 
+#Struct SEndRaceInfo {
+	Text Vehicle;
+	SFinish Finish;
+}
+
 declare Vehicle::SVehicle[] Vehicles;
 declare Vehicle::SRealVehicle[] RealVehicles;
 declare Vehicle::SRealVehicle RealMapVehicle;
@@ -271,8 +276,13 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 					Validated_Car = VehicleName;
 					Validated_MapCar = RealMapVehicle.Name;
 				}
-				else
+				else {
 					declare Task = ScoreMgr.Map_SetNewRecord(NullId, Map.MapInfo.MapUid, VehicleName, Finish_Server.Ghost);
+					
+					declare netwrite SEndRaceInfo Server_EndRaceInfo for UI;
+					Server_EndRaceInfo.Vehicle = VehicleName;
+					Server_EndRaceInfo.Finish = Finish;
+				}
 				
 				Server_EndRace = True;
 			}

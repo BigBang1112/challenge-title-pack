@@ -40,6 +40,31 @@
 	Text Message;
 }
 
+#Struct SRanking {
+	Integer Rank;
+	Integer Count;
+}
+
+#Struct SRecord {
+	Text Login;
+	Text Nickname;
+	Integer Time;
+	Integer[] Checkpoints;
+}
+
+#Struct SLeaderboard {
+	SRecord[] Records;
+}
+
+#Struct SRecordResult {
+	SRecord Record;
+	Integer LastRecord;
+	Integer ActivityPoints;
+	Integer SkillpointsPoints;
+	SRanking[Text] Rankings;
+	SLeaderboard[Text] Leaderboards;
+}
+
 Text TimeToTextWithMilli(Integer _Time) {
 	return TextLib::TimeToText(_Time, True)^TextLib::SubText(""^_Time, TextLib::Length(""^_Time)-1, 1);
 }
@@ -62,7 +87,13 @@ declare Widget_CurrentMember = 0;
 declare Frame_Discord = (Page.GetFirstChild("FRAME_DISCORD") as CMlFrame);
 declare Frame_Discord_Users = [(Frame_Discord.GetFirstChild("FRAME_USER#1") as CMlFrame),(Frame_Discord.GetFirstChild("FRAME_USER#2") as CMlFrame)];
 
+declare Label_Showcase = (Page.GetFirstChild("LABEL_SHOWCASE") as CMlLabel);
+
 declare netread SPerformance[Text] Performances for GetOwner().Score;
+
+declare RefreshTime = -1;
+declare Text[] Showcases;
+declare Integer CurrentShowcase;
 ***
 
 ***Loop***
@@ -122,27 +153,54 @@ foreach(Event,PendingEvents) {
 					declare ThisFinish = Performance.Finishes[Performance.Finishes.count-1];
 					(Page.GetFirstChild("LABEL_TIME") as CMlLabel).SetText(TimeToTextWithMilli(ThisFinish.Time));
 
+					Label_Showcase.RelativeScale = 0.;		
+
+					Showcases.clear();
+					CurrentShowcase = 0;	
+
 					if(Performance.Finishes.count == 1) {
-						(Page.GetFirstChild("LABEL_SHOWCASE") as CMlLabel).SetText("{{{{YOU_HAVE_FINISHED}}}}");
+						Showcases.add("{{{{YOU_HAVE_FINISHED}}}}");
 					}
 					else if(Performance.BestFinishIndex == Performance.Finishes.count - 1) {
-						(Page.GetFirstChild("LABEL_SHOWCASE") as CMlLabel).SetText("{{{{YOU_HAVE_IMPROVED}}}}");
+						Showcases.add("{{{{YOU_HAVE_IMPROVED}}}}");
 					}
 					else if(ThisFinish.Time == BestFinish.Time) {
-						(Page.GetFirstChild("LABEL_SHOWCASE") as CMlLabel).SetText("{{{{YOU_HAVE_EQUALED}}}}");
+						Showcases.add("{{{{YOU_HAVE_EQUALED}}}}");
 					}
 					else {
-						(Page.GetFirstChild("LABEL_SHOWCASE") as CMlLabel).SetText("{{{{MAYBE_NEXT_TIME}}}}");
+						Showcases.add("{{{{MAYBE_NEXT_TIME}}}}");
 					}
+
+					Label_Showcase.SetText(Showcases[CurrentShowcase]);
 
 					SlideText_Set((Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel), (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel), Map_Name, 15);
 					SlideText_Set((Page.GetFirstChild("LABEL_ENV") as CMlLabel), (Page.GetFirstChild("LABEL_ENV_2") as CMlLabel), TextLib::ToUpperCase(Map_Env), 15);
 					SlideText_Set((Page.GetFirstChild("LABEL_CAR") as CMlLabel), (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel), Car, 15);
 					SlideText_Set((Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel), (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel), TextLib::ToUpperCase(TextLib::Join(" + ", Challenges)), 15);
+
+					RefreshTime = Now;
 				}
 				case "Discord": {
 					declare JsonSuccess = Widget.fromjson(Event.CustomEventData[0]);
 					Widget_Time = Now;
+				}
+				case "Record": {
+					declare SRecordResult RecordResult for Page;
+
+					log(RecordResult.LastRecord);
+
+					if(RecordResult.Rankings["World"].Count == 1 && RecordResult.LastRecord == -1)
+						Showcases.add("{{{{NEW_VALIDATION}}}}");
+					if(RecordResult.LastRecord == -1 || RecordResult.Record.Time < RecordResult.LastRecord) {
+						if(RecordResult.Rankings["World"].Rank == 1) { // World record related
+							Showcases.add("{{{{NEW_WORLD_RECORD}}}}");
+						}
+						Showcases.add("{{{{WORLD}}}}: "^RecordResult.Rankings["World"].Rank^"/"^RecordResult.Rankings["World"].Count);
+					}
+					else if(RecordResult.Record.Time == RecordResult.LastRecord) {
+						Showcases.add("{{{{YOU_HAVE_EQUALED_WORLD_RECORD}}}}");
+					}
+					
 				}
 			}
 		}
@@ -161,6 +219,26 @@ else EnableMenuNavigationInputs = False;
 
 if(Now - Start > 400) {
 	(Page.GetFirstChild("QUAD_FLASH") as CMlQuad).Opacity = 0.;
+}
+
+if(RefreshTime != -1) {
+	declare Time = Now - RefreshTime;
+	if(Time < 3000) {
+		Label_Showcase.RelativeScale = AnimLib::EaseOutQuad(Time, 0., 1., 500) - AnimLib::EaseInOutQuad(Time-2500, 0., 1., 500);
+	}
+	else {
+		if(CurrentShowcase == Showcases.count-1) {
+			CurrentShowcase = 0;
+			RefreshTime = -1;
+			Label_Showcase.RelativeScale = 0.;
+		}
+		else {
+			CurrentShowcase += 1;
+			
+			Label_Showcase.SetText(Showcases[CurrentShowcase]);
+			RefreshTime = Now;
+		}
+	}
 }
 
 SlideText_Loop((Page.GetFirstChild("FRAME_LABEL_MAPNAME") as CMlFrame), (Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel), (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel), 15, .015);

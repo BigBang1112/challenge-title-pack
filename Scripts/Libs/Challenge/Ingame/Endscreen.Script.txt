@@ -4,10 +4,14 @@
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/Discord.Script.txt" as Discord
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
 
 #Include "Libs/Challenge/Ingame/Gamemodes/Race.Script.txt" as Race
 #Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
+
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
+#Include "Libs/Challenge/Service/Record.Script.txt" as Service_Record
 
 #Const C_Manialink "Media/Manialinks/Base/Ingame/Endscreen"
 
@@ -48,6 +52,23 @@ Void Async() {
 		}
 		Discord::AsyncDestroy("Discord");
 	}
+
+	if(Http::IsCompleted("RECORD")) {
+		if(Http::IsSuccessful("RECORD")) {
+			declare Service_Record::SRecordResult RecordResult for Layers::Page("Endscreen");
+			declare Success = RecordResult.fromjson(Http::GetResult("RECORD"));
+			Layers::SendEvent("Endscreen", "Record");
+			Http::Destroy("RECORD");
+		}
+		else {
+			declare StatusCode = Http::GetStatusCode("RECORD");
+			
+			Http::Destroy("RECORD");
+
+			declare Service_Record::SRecordParams RecordParams for This;
+			//declare Success = Service_Record::AsyncRecord("RECORD", LocalUser, RecordParams);
+		}
+	}
 }
 
 Void Loop() {
@@ -85,6 +106,24 @@ Void Loop() {
 			Challenges = TextLib::Split("+", Map.MapStyle);
 
 			declare DiscordRequest = Discord::AsyncWidget("Discord", "311139012553211914");
+
+			declare netread Race::SEndRaceInfo Server_EndRaceInfo for UI;
+
+			if(Server_IsValidationMode) {
+
+			}
+			else {
+				declare Text CHALLENGE_TOKEN for LocalUser;
+
+				declare Service_Record::SRecordParams RecordParams for This;
+				RecordParams.UserToken = CHALLENGE_TOKEN;
+				RecordParams.Vehicle = Server_EndRaceInfo.Vehicle;
+				RecordParams.MapUid = Map.MapInfo.MapUid;
+				RecordParams.Time = Server_EndRaceInfo.Finish.Time;
+				RecordParams.Checkpoints = Server_EndRaceInfo.Finish.Checkpoints;
+
+				declare Success = Service_Record::AsyncRecord("RECORD", LocalUser, RecordParams);
+			}
 
 			Layers::SendEvent("Endscreen", "Update");
 			Layers::Show("Endscreen", True);
