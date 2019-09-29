@@ -27,7 +27,48 @@
 				<label z-index="0" size="200 7" text="REVERSE + REVERSE + REVERSE" textfont="Oswald" textsize="4" textcolor="EEE" id="LABEL_CHALLENGE_2" halign="right"/>
 			</frame>
 			<label pos="0 -40" z-index="0" size="130 15" text="" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" textprefix="$i$o" id="LABEL_SHOWCASE"/>
-			<label pos="0 -40" z-index="0" size="130 15" text="102 201 SP" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" textprefix="$i$o" hidden="1"/>
+			<frame id="FRAME_RESULTS" pos="0 -29" hidden="0">
+				<frame id="FRAME_FASTEST_TIME">
+					<label pos="60 0" z-index="0" size="14 5" text="-:--.---" halign="right" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="DDD" id="LABEL_TIME"/>
+					<label pos="45 0" z-index="0" size="45 5" text="{{{{FASTEST_TIME}}}}:" halign="right" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888"/>
+					<frame pos="-60 0" clip="True" clipposn="30 0" clipsizen="60 5">
+						<label z-index="0" size="600 5" text="{{{{WORLD}}}}: 1/1    {{{{WORLD}}}}: 1/1" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888" id="LABEL_RANK"/>
+						<label z-index="0" size="600 5" text="{{{{WORLD}}}}: 1/1    {{{{WORLD}}}}: 1/1" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888" id="LABEL_RANK_2"/>
+					</frame>
+				</frame>
+				<frame pos="0 -5" id="FRAME_SHORTEST_DISTANCE">
+					<label pos="60 0" z-index="0" size="14 5" text="-" halign="right" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="DDD" id="LABEL_TIME"/>
+					<label pos="45 0" z-index="0" size="45 5" text="{{{{SHORTEST_DISTANCE}}}}:" halign="right" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888"/>
+					<frame pos="-60 0" clip="True" clipposn="30 0" clipsizen="60 5">
+						<label z-index="0" size="600 5" text="{{{{WORLD}}}}: 1/1    {{{{WORLD}}}}: 1/1" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888" id="LABEL_RANK"/>
+						<label z-index="0" size="600 5" text="{{{{WORLD}}}}: 1/1    {{{{WORLD}}}}: 1/1" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888" id="LABEL_RANK_2"/>
+					</frame>
+				</frame>
+				<frame pos="0 -10" id="FRAME_MOST_ACROBATIC">
+					<label pos="60 0" z-index="0" size="14 5" text="-" halign="right" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="DDD" id="LABEL_TIME"/>
+					<label pos="45 0" z-index="0" size="45 5" text="{{{{MOST_ACROBATIC}}}}:" halign="right" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888"/>
+					<frame pos="-60 0" clip="True" clipposn="30 0" clipsizen="60 5">
+						<label z-index="0" size="600 5" text="{{{{WORLD}}}}: 1/1    {{{{WORLD}}}}: 1/1" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888" id="LABEL_RANK"/>
+						<label z-index="0" size="600 5" text="{{{{WORLD}}}}: 1/1    {{{{WORLD}}}}: 1/1" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888" id="LABEL_RANK_2"/>
+					</frame>
+				</frame>
+				<frame pos="0 -15" id="FRAME_FIRST_LAP">
+					<label pos="60 0" z-index="0" size="14 5" text="-:--.---" halign="right" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="DDD" id="LABEL_TIME"/>
+					<label pos="45 0" z-index="0" size="45 5" text="{{{{FIRST_LAP}}}}:" halign="right" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888"/>
+					<frame pos="-60 0" clip="True" clipposn="30 0" clipsizen="60 5">
+						<label z-index="0" size="600 5" text="{{{{WORLD}}}}: 1/1    {{{{WORLD}}}}: 1/1" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888" id="LABEL_RANK"/>
+						<label z-index="0" size="600 5" text="{{{{WORLD}}}}: 1/1    {{{{WORLD}}}}: 1/1" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888" id="LABEL_RANK_2"/>
+					</frame>
+				</frame>
+				<frame pos="0 -20" id="FRAME_BEST_LAP">
+					<label pos="60 0" z-index="0" size="14 5" text="-:--.---" halign="right" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="DDD" id="LABEL_TIME"/>
+					<label pos="45 0" z-index="0" size="45 5" text="{{{{BEST_LAP}}}}:" halign="right" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888"/>
+					<frame pos="-60 0" clip="True" clipposn="30 0" clipsizen="60 5">
+						<label z-index="0" size="600 5" text="{{{{WORLD}}}}: 1/1    {{{{WORLD}}}}: 1/1" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888" id="LABEL_RANK"/>
+						<label z-index="0" size="600 5" text="{{{{WORLD}}}}: 1/1    {{{{WORLD}}}}: 1/1" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="888" id="LABEL_RANK_2"/>
+					</frame>
+				</frame>
+			</frame>
 			<label pos="1 -63" z-index="0" size="65 15" text="{{{{SCREENSHOT_AND_SHARE}}}}" valign="center" textfont="Oswald" textsize="5" halign="right"/>
 			<label pos="1 -68" z-index="0" size="65 15" text="{{{{DISCORD_YOUR_EFFORT}}}}" valign="center" textfont="Oswald" textsize="1" halign="right"/>
 			<frame pos="35 -65" z-index="1" id="FRAME_DISCORD">

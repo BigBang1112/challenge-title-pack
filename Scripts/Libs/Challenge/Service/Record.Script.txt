@@ -24,6 +24,7 @@
 	Integer LastRecord;
 	Integer ActivityPoints;
 	Integer SkillpointsPoints;
+	Text Gamemode;
 	SRanking[Text] Rankings;
 	SLeaderboard[Text] Leaderboards;
 }

@@ -55,7 +55,7 @@ Void Async() {
 
 	if(Http::IsCompleted("RECORD")) {
 		if(Http::IsSuccessful("RECORD")) {
-			declare Service_Record::SRecordResult RecordResult for Layers::Page("Endscreen");
+			declare Service_Record::SRecordResult[Text] RecordResult for Layers::Page("Endscreen");
 			declare Success = RecordResult.fromjson(Http::GetResult("RECORD"));
 			Layers::SendEvent("Endscreen", "Record");
 			Http::Destroy("RECORD");
