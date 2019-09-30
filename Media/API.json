@@ -410,49 +410,53 @@
 		},
 		"Int3": {
 			"Explanation": "Standard ManiaScript structure that three dimensional integer."
+		},
+		"Void": {
+			"Explanation": "Nothingness."
 		}
 	},
 	"Globals": [
 		{
 			"Type": "SChMetadata",
 			"Name": "Script",
- 			"Explanation": ""
+ 			"Explanation": "Global defining ManiaScript information."
 		},
 		{
 			"Type": "SChProblem",
 			"Array": true,
 			"Name": "Problems",
- 			"Explanation": ""
+ 			"Explanation": "List of problems that the Modifier has found. You shouldn't modify this variable yourself unless you want to create some kind of effect (for example adding a problem without pausing the modification)."
 		},
 		{
 			"Type": "Integer",
 			"Name": "RandomProgression",
- 			"Explanation": ""
+ 			"Explanation": "How many times the random function was called. This variable is used internally to modify randomizer seed."
 		},
 		{
 			"Type": "SChProblem",
 			"Name": "Solver_Problem",
- 			"Explanation": ""
+ 			"Explanation": "Usable only in Solver. The problem user has selected."
 		},
 		{
 			"Type": "Integer",
 			"Name": "Solver_ProblemId",
+			"Supported": false,
  			"Explanation": ""
 		},
 		{
 			"Type": "Integer",
 			"Name": "Solver_Solution",
- 			"Explanation": ""
+ 			"Explanation": "Usable only in Solver. The solution ID user has selected."
 		},
 		{
 			"Type": "Integer",
 			"Name": "Solver_Point",
- 			"Explanation": ""
+ 			"Explanation": "Usable only in Solver. Index of the pointed object by the user. Used often together with Solver_Problem."
 		},
 		{
 			"Type": "Boolean",
 			"Name": "Solver_Success",
- 			"Explanation": ""
+ 			"Explanation": "Usable only in Solver. Lets Solver know that the solution has executed successfully."
 		}
 	],
 	"Functions": {
@@ -461,20 +465,20 @@
 				"Return": "SResponse",
 				"Array": false,
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Requests Modifier to do an action. Base of all of the Challenge API functions.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_Command",
- 							"Explanation": ""
+ 							"Explanation": "Command to call."
 						},
 						{
 							"Type": "Text",
 							"Array": true,
 							"Name": "_Arguments",
- 							"Explanation": ""
+ 							"Explanation": "Text arguments to pass for this command."
 						}
 					]
 				]
@@ -485,7 +489,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Computes Very Fast shadows.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -495,7 +499,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Removes all blocks from the map.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -505,7 +509,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Removes entire terrain from the map.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -515,7 +519,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Removes all offzone on the map.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -525,7 +529,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Removes all objects from the map.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -535,7 +539,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Removes everything from the map.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -545,7 +549,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Removes all blocks and terrain from the map.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -555,7 +559,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Preloads all blocks for possibly smoother modification. This function is actually called in the internal code when Modifier starts.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -565,7 +569,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Preloads all items for possibly smoother modification.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -575,24 +579,24 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "If it's possible to place a block on this position.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_BlockName",
- 							"Explanation": ""
+ 							"Explanation": "Name of the block."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the block."
 						},
 						{
 							"Type": "Text",
 							"Name": "_Direction",
- 							"Explanation": ""
+ 							"Explanation": "Direction of the block."
 						},
 						{
 							"Type": "Boolean",
@@ -648,27 +652,27 @@
 		],
 		"PlaceBlock": [
 			{
-				"Return": "Boolean",
+				"Return": "SPlaceBlockResult",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Places a block in a solid format (the block will block other blocks from placing). Returns if the placement was successful and the placed block parameters.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_BlockName",
- 							"Explanation": ""
+ 							"Explanation": "Name of the block."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the block."
 						},
 						{
 							"Type": "Text",
 							"Name": "_Direction",
- 							"Explanation": ""
+ 							"Explanation": "Direction of the block."
 						}
 					]
 				]
@@ -707,24 +711,24 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "If you can place a road type with the provided parameters.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_BlockName",
- 							"Explanation": ""
+ 							"Explanation": "Name of the block."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_StartCoord",
- 							"Explanation": ""
+ 							"Explanation": "Start coordination of the path."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_EndCoord",
- 							"Explanation": ""
+ 							"Explanation": "End coordination of the path."
 						}
 					]
 				]
@@ -735,24 +739,24 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Places road path in a solid format (the placed road will block other blocks from placing).",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_BlockName",
- 							"Explanation": ""
+ 							"Explanation": "Name of the block."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_StartCoord",
- 							"Explanation": ""
+ 							"Explanation": "Start coordination of the path."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_EndCoord",
- 							"Explanation": ""
+ 							"Explanation": "End coordination of the path."
 						}
 					]
 				]
@@ -763,24 +767,24 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Places terrain in a proper format by provided parameters.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_BlockName",
- 							"Explanation": ""
+ 							"Explanation": "Name of the terrain block."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_StartCoord",
- 							"Explanation": ""
+ 							"Explanation": "Start coordination of the terrain."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_EndCoord",
- 							"Explanation": ""
+ 							"Explanation": "End coordination of the terrain."
 						}
 					]
 				]
@@ -791,24 +795,24 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Places terrain.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_BlockName",
- 							"Explanation": ""
+ 							"Explanation": "Name of the terrain block."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_StartCoord",
- 							"Explanation": ""
+ 							"Explanation": "Start coordination of the terrain."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_EndCoord",
- 							"Explanation": ""
+ 							"Explanation": "End coordination of the terrain."
 						}
 					]
 				]
@@ -847,24 +851,24 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Checks if you can place a macroblock under the provided parameters.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_MacroblockName",
- 							"Explanation": ""
+ 							"Explanation": "Name (or file name) of the macroblock."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the macroblock."
 						},
 						{
 							"Type": "Text",
 							"Name": "_Direction",
- 							"Explanation": ""
+ 							"Explanation": "Direction of the macroblock."
 						}
 					]
 				]
@@ -875,24 +879,24 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Places a macroblock on the map.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_MacroblockName",
- 							"Explanation": ""
+ 							"Explanation": "Name (or file name) of the macroblock"
 						},
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the macroblock."
 						},
 						{
 							"Type": "Text",
 							"Name": "_Direction",
- 							"Explanation": ""
+ 							"Explanation": "Direction of the macroblock."
 						}
 					]
 				]
@@ -910,17 +914,17 @@
 						{
 							"Type": "Text",
 							"Name": "_MacroblockName",
- 							"Explanation": ""
+ 							"Explanation": "Name (or file name) of the macroblock."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the macroblock."
 						},
 						{
 							"Type": "Text",
 							"Name": "_Direction",
- 							"Explanation": ""
+ 							"Explanation": "Direction of the macroblock."
 						}
 					]
 				]
@@ -938,17 +942,17 @@
 						{
 							"Type": "Text",
 							"Name": "_MacroblockName",
- 							"Explanation": ""
+ 							"Explanation": "Name (or file name) of the macroblock."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the macroblock."
 						},
 						{
 							"Type": "Text",
 							"Name": "_Direction",
- 							"Explanation": ""
+ 							"Explanation": "Direction of the macroblock."
 						}
 					]
 				]
@@ -966,17 +970,17 @@
 						{
 							"Type": "Text",
 							"Name": "_MacroblockName",
- 							"Explanation": ""
+ 							"Explanation": "Name (or file name) of the macroblock."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the macroblock."
 						},
 						{
 							"Type": "Text",
 							"Name": "_Direction",
- 							"Explanation": ""
+ 							"Explanation": "Direction of the macroblock."
 						}
 					]
 				]
@@ -994,17 +998,17 @@
 						{
 							"Type": "Text",
 							"Name": "_MacroblockName",
- 							"Explanation": ""
+ 							"Explanation": "Name (or file name) of the macroblock."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the macroblock."
 						},
 						{
 							"Type": "Text",
 							"Name": "_Direction",
- 							"Explanation": ""
+ 							"Explanation": "Direction of the macroblock."
 						}
 					]
 				]
@@ -1015,24 +1019,24 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Removes macroblock from the map if it is identified.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_MacroblockName",
- 							"Explanation": ""
+ 							"Explanation": "Name (or file name) of the macroblock."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the macroblock."
 						},
 						{
 							"Type": "Text",
 							"Name": "_Direction",
- 							"Explanation": ""
+ 							"Explanation": "Direction of the macroblock."
 						}
 					]
 				]
@@ -1050,17 +1054,17 @@
 						{
 							"Type": "Text",
 							"Name": "_MacroblockName",
- 							"Explanation": ""
+ 							"Explanation": "Name (or file name) of the macroblock."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the macroblock."
 						},
 						{
 							"Type": "Text",
 							"Name": "_Direction",
- 							"Explanation": ""
+ 							"Explanation": "Direction of the macroblock."
 						}
 					]
 				]
@@ -1071,14 +1075,14 @@
 				"Return": "SChBlock",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Detects a block on the specified coordination.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the block."
 						}
 					]
 				]
@@ -1089,30 +1093,14 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Removes a block on the specified coordination. However, it does remove only regular blocks, it does not remove ghosts blocks. This function doesn't contain any block name and speciality checks, therefore function RemoveSpecificBlock() is more recommended.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
-						}
-					]
-				]
-			},
-			{
-				"Return": "Boolean",
-				"Array": false,
-				"Kind": "Extensive",
-				"Explanation": "",
-				"Supported": true,
-				"Parameters": [
-					[
-						{
-							"Type": "SChBlock",
-							"Name": "_Block",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the block."
 						}
 					]
 				]
@@ -1123,19 +1111,19 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Removes terrain in specific area.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Int3",
 							"Name": "_StartCoord",
- 							"Explanation": ""
+ 							"Explanation": "Start coordination of the area."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_EndCoord",
- 							"Explanation": ""
+ 							"Explanation": "End coordination of the area."
 						}
 					]
 				]
@@ -1146,29 +1134,29 @@
 				"Return": "Integer",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Gets block ground height from X and Z coordinates.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_BlockName",
- 							"Explanation": ""
+ 							"Explanation": "Name of the block."
 						},
 						{
 							"Type": "Integer",
 							"Name": "_CoordX",
- 							"Explanation": ""
+ 							"Explanation": "X coordination of the block."
 						},
 						{
 							"Type": "Integer",
 							"Name": "_CoordZ",
- 							"Explanation": ""
+ 							"Explanation": "Z coordination of the block."
 						},
 						{
 							"Type": "Text",
 							"Name": "_Direction",
- 							"Explanation": ""
+ 							"Explanation": "Direction of the block."
 						}
 					]
 				]
@@ -1179,19 +1167,19 @@
 				"Return": "Integer",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Gets ground height from X and Z coordinates.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Integer",
 							"Name": "_CoordX",
- 							"Explanation": ""
+ 							"Explanation": "X coordination on the map."
 						},
 						{
 							"Type": "Integer",
 							"Name": "_CoordZ",
- 							"Explanation": ""
+ 							"Explanation": "Z coordination on the map."
 						}
 					]
 				]
@@ -1202,7 +1190,7 @@
 				"Return": "SChBlock",
 				"Array": false,
 				"Kind": "Regular",
-				"Explanation": "",
+				"Explanation": "Gets start line or multilap if it's a block.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1212,8 +1200,8 @@
 				"Return": "SChBlock",
 				"Array": true,
 				"Kind": "Regular",
-				"Explanation": "",
-				"Supported": true,
+				"Explanation": "Gets all blocks available on the map, including terrain blocks. This function is not supported and can crash the game on big maps. Using filter alternatives is better instead, such as GetFilteredBlocks().",
+				"Supported": false,
 				"Parameters": []
 			}
 		],
@@ -1222,7 +1210,7 @@
 				"Return": "SChMap",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets the map info as of calling the command - usually MapUid is empty and the map name is Unnamed. Use GetOriginalMapInfo() to get the true information about a modified map.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1232,7 +1220,7 @@
 				"Return": "SChMap",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets a map info of the original map that is being modified. Returns static information unlike GetMapInfo() - use that one for current map information.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1242,7 +1230,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Set the view mode to underground for better underground modification view.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1252,7 +1240,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Set the view mode to a regular view.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1261,25 +1249,25 @@
 			{
 				"Return": "Boolean",
 				"Array": false,
-				"Kind": "Regular",
-				"Explanation": "",
+				"Kind": "Extensive",
+				"Explanation": "Places a block as a ghost block. This function is currently only supported for Canyon, Stadium, Valley and Lagoon waypoints.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_BlockName",
- 							"Explanation": ""
+ 							"Explanation": "Name of the block."
 						},
 						{
 							"Type": "Int3",
 							"Name": "_Coord",
- 							"Explanation": ""
+ 							"Explanation": "Coordination of the block."
 						},
 						{
 							"Type": "Text",
 							"Name": "_Direction",
- 							"Explanation": ""
+ 							"Explanation": "Direction of the block."
 						}
 					]
 				]
@@ -1290,36 +1278,36 @@
 				"Return": "SReplacementResult",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Replaces a block with another block.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "SChBlock",
 							"Name": "_Block",
- 							"Explanation": ""
+ 							"Explanation": "Block to replace."
 						},
 						{
 							"Type": "Text",
 							"Name": "_ReplacementBlockName",
- 							"Explanation": ""
+ 							"Explanation": "Block name as replacement (to be replaced with)."
 						},
 						{
 							"Type": "Boolean",
 							"Name": "_OppositeDirection",
- 							"Explanation": ""
+ 							"Explanation": "If the block should be placed in an opposite direction."
 						}
 					],
 					[
 						{
 							"Type": "SChBlock",
 							"Name": "_Block",
- 							"Explanation": ""
+ 							"Explanation": "Block to replace."
 						},
 						{
 							"Type": "Text",
 							"Name": "_ReplacementBlockName",
- 							"Explanation": ""
+ 							"Explanation": "Block name as replacement (to be replaced with)."
 						}
 					]
 				]
@@ -1330,19 +1318,19 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Replace all blocks with specified name with a different block.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_BlockName",
- 							"Explanation": ""
+ 							"Explanation": "Name of the block."
 						},
 						{
 							"Type": "Text",
 							"Name": "_ReplacementBlockName",
- 							"Explanation": ""
+ 							"Explanation": "Block name as replacement (to be replaced with)."
 						}
 					]
 				]
@@ -1353,19 +1341,19 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Swaps a block with another block.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "SChBlock",
 							"Name": "_Block1",
- 							"Explanation": ""
+ 							"Explanation": "Block 1 to swap with Block 2."
 						},
 						{
 							"Type": "SChBlock",
 							"Name": "_Block2",
- 							"Explanation": ""
+ 							"Explanation": "Block 2 to swap with Block 1."
 						}
 					]
 				]
@@ -1376,7 +1364,7 @@
 				"Return": "SChWaypoint",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets all start lines the map has (can be blocks or items). Can return empty array if map is multilap. As of current Trackmania rules, the function shouldn't return more than one placeable.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1386,7 +1374,7 @@
 				"Return": "SChWaypoint",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets all finish lines the map has (can be blocks or items). Can return empty array if map is multilap without finishes.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1396,7 +1384,7 @@
 				"Return": "SChWaypoint",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets all checkpoints the map has (can be blocks or items).",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1406,7 +1394,7 @@
 				"Return": "SChWaypoint",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets all multilaps the map has (can be blocks or items). As of current Trackmania rules, the function shouldn't return more than one placeable.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1416,7 +1404,7 @@
 				"Return": "SChBlock",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets all start line blocks the map has. As of current Trackmania rules, the function shouldn't return more than one block.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1426,7 +1414,7 @@
 				"Return": "SChBlock",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets all finish line blocks the map has.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1436,7 +1424,7 @@
 				"Return": "SChBlock",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets all checkpoint blocks the map has.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1446,7 +1434,7 @@
 				"Return": "SChBlock",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets all multilap blocks the map has. As of current Trackmania rules, the function shouldn't return more than one block.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1456,7 +1444,7 @@
 				"Return": "SChItem",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets all start line items the map has. As of current Trackmania rules, the function shouldn't return more than one item.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1466,7 +1454,7 @@
 				"Return": "SChItem",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets all finish line items the map has.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1476,7 +1464,7 @@
 				"Return": "SChItem",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets all checkpoint items the map has.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1486,7 +1474,7 @@
 				"Return": "SChItem",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gets all multilap items the map has. As of current Trackmania rules, the function shouldn't return more than one item.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1514,7 +1502,7 @@
 				"Return": "SChBlock",
 				"Array": true,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Checks how many blocks are located at one coordinate. Usable for checking ghost blocks.",
 				"Supported": true,
 				"Parameters": [
 					[
@@ -1532,14 +1520,14 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Updates/saves the SChAnchor information to the real anchor on the map.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "SChAnchor",
 							"Name": "_Anchor",
- 							"Explanation": ""
+ 							"Explanation": "Anchor with information to save."
 						}
 					]
 				]
@@ -1550,7 +1538,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Links the chosen checkpoints together (so when you pass one, you pass all of them).",
 				"Supported": true,
 				"Parameters": [
 					[
@@ -1558,7 +1546,7 @@
 							"Type": "SChAnchor",
 							"Array": true,
 							"Name": "_Checkpoints",
- 							"Explanation": ""
+ 							"Explanation": "Checkpoint anchor array to link."
 						}
 					]
 				]
@@ -1569,14 +1557,14 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Checks if the block name is recognized as special (constructed from multiple subblocks).",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_BlockName",
- 							"Explanation": ""
+ 							"Explanation": "Name of the block"
 						}
 					]
 				]
@@ -1587,7 +1575,7 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Removes block from more precise information. Contains block name and special block checks. Prefer using this function over RemoveBlock() for map safety.",
 				"Supported": true,
 				"Parameters": [
 					[
@@ -1605,26 +1593,26 @@
 				"Return": "Integer",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Random Integer generator giving random but same results depending on the original map copper size.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Integer",
 							"Name": "_Min",
- 							"Explanation": ""
+ 							"Explanation": "Minimum number."
 						},
 						{
 							"Type": "Integer",
 							"Name": "_Max",
- 							"Explanation": ""
+ 							"Explanation": "Maximum number."
 						}
 					],
 					[
 						{
 							"Type": "Integer",
 							"Name": "_Max",
- 							"Explanation": ""
+ 							"Explanation": "Maximum number."
 						}
 					]
 				]
@@ -1633,26 +1621,26 @@
 				"Return": "Real",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Random Real generator giving random but same results depending on the original map copper size.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Real",
 							"Name": "_Min",
- 							"Explanation": ""
+ 							"Explanation": "Minimum number."
 						},
 						{
 							"Type": "Real",
 							"Name": "_Max",
- 							"Explanation": ""
+ 							"Explanation": "Maximum number."
 						}
 					],
 					[
 						{
 							"Type": "Real",
 							"Name": "_Max",
- 							"Explanation": ""
+ 							"Explanation": "Maximum number."
 						}
 					]
 				]
@@ -1661,7 +1649,7 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Random Boolean generator giving random but same results depending on the original map copper size.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1671,7 +1659,7 @@
 				"Return": "Real",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Random percentage number generator giving random but same results depending on the original map copper size.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1681,14 +1669,14 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Returns True if the chance result was under the chosen percentage, otherwise False. Gives same results depending on the original map copper size.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Real",
 							"Name": "_Percentage",
- 							"Explanation": ""
+ 							"Explanation": "Luck percentage."
 						}
 					]
 				]
@@ -1699,7 +1687,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Sends a message that doesn't block the code to the user interface.",
 				"Supported": true,
 				"Parameters": [
 					[
@@ -1717,7 +1705,7 @@
 				"Return": "Text",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gives opposite direction of the provided direction. Unknown direction returns North.",
 				"Supported": true,
 				"Parameters": [
 					[
@@ -1735,7 +1723,7 @@
 				"Return": "Text",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gives next direction clockwise of the provided direction. Unknown direction returns North.",
 				"Supported": true,
 				"Parameters": [
 					[
@@ -1747,7 +1735,7 @@
 						{
 							"Type": "Integer",
 							"Name": "_Amount",
- 							"Explanation": ""
+ 							"Explanation": "Amount of times to change the direction."
 						}
 					],
 					[
@@ -1765,7 +1753,7 @@
 				"Return": "Text",
 				"Array": false,
 				"Kind": "Extensive",
-				"Explanation": "",
+				"Explanation": "Gives next direction counter clockwise of the provided direction. Unknown direction returns North.",
 				"Supported": true,
 				"Parameters": [
 					[
@@ -1796,14 +1784,14 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Appearance",
-				"Explanation": "",
+				"Explanation": "Sets Modifier Status progress bar.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Real",
 							"Name": "_Progress",
- 							"Explanation": ""
+ 							"Explanation": "Amount of progress in percentage."
 						}
 					]
 				]
@@ -1814,14 +1802,14 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Appearance",
-				"Explanation": "",
+				"Explanation": "Sets Modifier Status main message.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_Message",
- 							"Explanation": ""
+ 							"Explanation": "Message to display."
 						}
 					]
 				]
@@ -1832,14 +1820,14 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Appearance",
-				"Explanation": "",
+				"Explanation": "Sets Modifier Status stage (analyzing, modifying...).",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_Stage",
- 							"Explanation": ""
+ 							"Explanation": "Stage to display."
 						}
 					]
 				]
@@ -1850,14 +1838,14 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Appearance",
-				"Explanation": "",
+				"Explanation": "Sets Modifier Status progress bar color.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Vec3",
 							"Name": "_Color",
- 							"Explanation": ""
+ 							"Explanation": "Color of the progress bar."
 						}
 					]
 				]
@@ -1903,7 +1891,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "This function shouldn't be normally called in modifier script.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1914,7 +1902,7 @@
 				"Array": false,
 				"Kind": "Technical",
 				"Explanation": "",
-				"Supported": true,
+				"Supported": false,
 				"Parameters": []
 			}
 		],
@@ -1923,7 +1911,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Creates a notified problem (Modifier Status will provide information to user interface)",
 				"Supported": true,
 				"Parameters": [
 					[
@@ -1942,7 +1930,7 @@
 				"Array": false,
 				"Kind": "Technical",
 				"Explanation": "",
-				"Supported": true,
+				"Supported": false,
 				"Parameters": [
 					[
 						{
