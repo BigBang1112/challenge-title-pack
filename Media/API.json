@@ -1947,24 +1947,24 @@
 				"Return": "SChSolution",
 				"Array": false,
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Function used for one-line definition of solution.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_Value",
- 							"Explanation": ""
+ 							"Explanation": "Brief solution explanation."
 						},
 						{
 							"Type": "Text",
 							"Name": "_AdditionalInfo",
- 							"Explanation": ""
+ 							"Explanation": "More useful info about the solution."
 						},
 						{
 							"Type": "Boolean",
 							"Name": "_IsInteractive",
- 							"Explanation": ""
+ 							"Explanation": "If you can click and perform the automated solution."
 						}
 					]
 				]
@@ -1975,7 +1975,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Gives the Modifier a little break. Waits 10-50ms depending on your PC.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1985,7 +1985,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Shows map editor user interface. Not safe and should be used wisely.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -1995,7 +1995,7 @@
 				"Return": "Void",
 				"Array": false,
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Hides map editor user interface.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -2005,7 +2005,7 @@
 				"Return": "Text",
 				"Array": false,
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Returns block name once if the map was modified, otherwise empty string. Call this function in a loop for effectiveness.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -2015,14 +2015,14 @@
 				"Return": "Boolean",
 				"Array": false,
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Sets cursor block to the defined block name.",
 				"Supported": true,
 				"Parameters": [
 					[
 						{
 							"Type": "Text",
 							"Name": "_BlockName",
- 							"Explanation": ""
+ 							"Explanation": "Name of the block."
 						}
 					]
 				]
@@ -2034,7 +2034,7 @@
 				"Array": true,
 				"ArrayType": "Text",
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Gets relation set for the starts and finishes.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -2045,7 +2045,7 @@
 				"Array": true,
 				"ArrayType": "Text",
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Gets relation set for the starts and multilaps.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -2056,7 +2056,7 @@
 				"Array": true,
 				"ArrayType": "Text",
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Gets relation set for the finishes and checkpoints.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -2067,7 +2067,7 @@
 				"Array": true,
 				"ArrayType": "Text",
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Gets relation set for the multilaps and start-twoways.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -2078,7 +2078,7 @@
 				"Array": true,
 				"ArrayType": "Text",
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Gets relation set for the start-twoways and finish-twoways.",
 				"Supported": true,
 				"Parameters": []
 			}
@@ -2089,7 +2089,7 @@
 				"Array": true,
 				"ArrayType": "Text",
 				"Kind": "Technical",
-				"Explanation": "",
+				"Explanation": "Gets relation set for the checkpoints and roads.",
 				"Supported": true,
 				"Parameters": []
 			}
