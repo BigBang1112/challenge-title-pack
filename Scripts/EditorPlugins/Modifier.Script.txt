@@ -403,8 +403,13 @@ Void Finish() {
 					LayerCustomEvent(LayerAPI, "Solver", [SelectedProblem^"", Problem.tojson(), SelectedSolution^"", SelectedPoint^""]);
 					
 					declare Text[Integer] LastBlocks;
-					foreach(Block,Blocks)
-						LastBlocks[Block.BlockScriptId] = Block.BlockModel.Name;
+					for(I,0,Blocks.count-1) {
+						if(Blocks.existskey(I)) {
+							declare Block <=> Blocks[I];
+							if(Block != Null && Block.BlockModel != Null)
+								LastBlocks[Block.BlockScriptId] = Block.BlockModel.Name;
+						}
+					}
 						
 					declare Text BlockModified;
 					
