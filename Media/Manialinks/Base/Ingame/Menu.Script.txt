@@ -175,15 +175,17 @@ declare CMlControl Selector;
 ***
 declare File = Selector.DataAttributeGet("file");
 
-declare Folders = TextLib::Split("\\",File);
-declare Name = Folders[Folders.count-1];
+if(File != "") {
+	declare Folders = TextLib::Split("\\",File);
+	declare Name = Folders[Folders.count-1];
 
-declare Frame_Tooltip = (Page.GetFirstChild("FRAME_TOOLTIP") as CMlFrame);
-declare Label_Text = (Frame_Tooltip.GetFirstChild("LABEL_TEXT") as CMlLabel);
-declare Quad_Tooltip = (Frame_Tooltip.GetFirstChild("QUAD_TOOLTIP") as CMlQuad);
-Label_Text.Size.X = Label_Text.ComputeWidth(Name);
-Quad_Tooltip.Size.X = Label_Text.ComputeWidth(Name)+4;
-Label_Text.SetText(Name);
+	declare Frame_Tooltip = (Page.GetFirstChild("FRAME_TOOLTIP") as CMlFrame);
+	declare Label_Text = (Frame_Tooltip.GetFirstChild("LABEL_TEXT") as CMlLabel);
+	declare Quad_Tooltip = (Frame_Tooltip.GetFirstChild("QUAD_TOOLTIP") as CMlQuad);
+	Label_Text.Size.X = Label_Text.ComputeWidth(Name);
+	Quad_Tooltip.Size.X = Label_Text.ComputeWidth(Name)+4;
+	Label_Text.SetText(Name);
+}
 ***
 
 ***Loop***
@@ -206,7 +208,8 @@ foreach(Event,PendingEvents) {
 					Selector = (Event.Control.Parent as CMlFrame);
 					+++UpdateTooltip+++
 
-					Page.GetFirstChild("FRAME_TOOLTIP").Show();
+					if(File != "")
+						Page.GetFirstChild("FRAME_TOOLTIP").Show();
 				}
 			}
 		}
