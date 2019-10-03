@@ -109,10 +109,12 @@ Void Loop() {
 
 			declare netread Race::SEndRaceInfo Server_EndRaceInfo for UI;
 
+			declare Service_Status::SPublicMap PublicMap for This;
+
 			if(Server_IsValidationMode) {
 
 			}
-			else {
+			else if(PublicMap.Public) {
 				declare Text CHALLENGE_TOKEN for LocalUser;
 
 				declare Service_Record::SRecordParams RecordParams for This;
