@@ -167,6 +167,23 @@ declare GhostSections = ["{{{{LOCAL}}}}"];
 foreach(Zone, Zones)
 	GhostSections.add(Zone);
 declare Integer CurrentSection for Page;
+
+declare CMlControl Selector;
+***
+
+***UpdateTooltip***
+***
+declare File = Selector.DataAttributeGet("file");
+
+declare Folders = TextLib::Split("\\",File);
+declare Name = Folders[Folders.count-1];
+
+declare Frame_Tooltip = (Page.GetFirstChild("FRAME_TOOLTIP") as CMlFrame);
+declare Label_Text = (Frame_Tooltip.GetFirstChild("LABEL_TEXT") as CMlLabel);
+declare Quad_Tooltip = (Frame_Tooltip.GetFirstChild("QUAD_TOOLTIP") as CMlQuad);
+Label_Text.Size.X = Label_Text.ComputeWidth(Name);
+Quad_Tooltip.Size.X = Label_Text.ComputeWidth(Name)+4;
+Label_Text.SetText(Name);
 ***
 
 ***Loop***
@@ -184,6 +201,19 @@ foreach(Event,PendingEvents) {
 				}
 				case "QUAD_BUTTON_CONTINUE": {
 					PlayAudio(Sound_Hover);
+				}
+				case "QUAD_GHOST": {
+					Selector = (Event.Control.Parent as CMlFrame);
+					+++UpdateTooltip+++
+
+					Page.GetFirstChild("FRAME_TOOLTIP").Show();
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MouseOut: {
+			switch(Event.ControlId) {
+				case "QUAD_GHOST": {
+					Page.GetFirstChild("FRAME_TOOLTIP").Hide();
 				}
 			}
 		}
@@ -390,6 +420,10 @@ if(IsMenuOpen != IsMenuNavigationForeground) {
 	}
 }
 
+if(Frame_Outer_Ghosts.ScrollOffset != PreviousScroll) {
+	+++UpdateTooltip+++
+}
+
 if(HoldScrollbar && MouseLeftButton) {
 	Quad_Scrollbar.RelativePosition_V3.Y = MathLib::Clamp(MouseY-HoldScrollbarPos,Quad_Scrollbar.Size.Y-56.,0.);
 	Frame_Outer_Ghosts.ScrollOffset.Y = (MouseY-HoldScrollbarPos)/(Quad_Scrollbar.Size.Y-56.)*Frame_Outer_Ghosts.ScrollMax.Y;
@@ -408,10 +442,14 @@ else {
 		Quad_Scrollbar.RelativePosition_V3.Y = -ScrollRatio*(56-Quad_Scrollbar.Size.Y);
 
 		PreviousScroll = Frame_Outer_Ghosts.ScrollOffset;
+
+		
 	}
 
 	HoldScrollbar = False;
 }
+
+if(Page.GetFirstChild("FRAME_TOOLTIP").Visible) Page.GetFirstChild("FRAME_TOOLTIP").RelativePosition_V3 = <MouseX, MouseY>;
 
 Label_GhostSection.Value = GhostSections[CurrentSection];
 
