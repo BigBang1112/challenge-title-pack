@@ -74,6 +74,13 @@ declare Real CamDistance;
 declare Real LastCamDistance;
 declare Real DelayedCamDistance;
 
+Void SaveFast() {
+	if(S_FastMode_MapSave != "") {
+		SaveMap(S_FastMode_MapSave);
+		wait(MapFileName == S_FastMode_MapSave);
+	}
+}
+
 Text GetScriptFromIndex(Integer _Index) {
 	declare metadata SScriptInfo[] Scripts for Map;
 	if(!Scripts.existskey(_Index)) return "";
@@ -765,7 +772,13 @@ main() {
 			declare Script = Scripts[I];
 			
 			if(Continue && I >= CurrentScript) {
-				if(Problems.count > 0) Finish();
+				if(Problems.count > 0) {
+					if(S_FastMode) {
+						SaveFast();
+						QuickQuit();
+					}
+					else Finish();
+				}
 				else {
 					CurrentScript += 1;
 					if(!S_FastMode) {
@@ -820,11 +833,13 @@ main() {
 	Map.MapName = OriginalMap.Name ^ "$z - " ^ TextLib::Replace(Map.MapStyle, "+", " + ");
 	
 	if(S_FastMode) {
-	
+		SaveFast();
 	}
 	else
 		Finish();
 	
 	Layers::DestroyAll();
 	UILayerDestroyAll();
+	
+	if(S_FastMode) QuickQuit();
 }
