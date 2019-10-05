@@ -18,6 +18,8 @@
 
 #Setting S_Build False
 #Setting S_TestMode False
+#Setting S_FastMode False
+#Setting S_FastMode_MapSave ""
 
 #Const C_Manialink_ModifierResult "Media/Manialinks/Base/Modifier/Result"
 #Const C_Manialink_ModifierIntro "Media/Manialinks/Base/Modifier/Intro"
@@ -468,7 +470,7 @@ Void Finish() {
 						
 						foreach(Command,Commands) {						
 							log("[SOLVER] Request: "^Command.Name);
-							declare Success = Processor::Command(LayerAPI, Command.Name, Command.Parameters);
+							declare Success = Processor::Command(LayerAPI, Command.Name, Command.Parameters, S_FastMode);
 						}
 						
 						if(HideEditorInterface) CameraSpin();
@@ -579,10 +581,10 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 					Commands.add(Command);
 				}
 				if(Event.CustomEventType == "ScriptMetadata") {
-					Layers::SendEvent("ModifierMetadata", "Metadata", Dictionary::TranslateAllPhrases(Event.CustomEventData[0]));
+					if(!S_FastMode) Layers::SendEvent("ModifierMetadata", "Metadata", Dictionary::TranslateAllPhrases(Event.CustomEventData[0]));
 				}
 				if(Event.CustomEventType == "Leave") {
-					Layers::Hide("ModifierCrash");
+					if(!S_FastMode) Layers::Hide("ModifierCrash");
 					Terminate = True;
 				}
 			}
@@ -592,7 +594,7 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 			if(Terminate) break;
 		
 			log("[MODIFIER] Request: "^Command.Name);
-			if(!Processor::Command(LayerAPI, Command.Name, Command.Parameters)) TerminateScript();
+			if(!Processor::Command(LayerAPI, Command.Name, Command.Parameters, S_FastMode)) TerminateScript();
 		}
 		
 		UpdateCamera();
@@ -600,10 +602,10 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 		
 		if(!Crashed) {
 			if(!LayerAPI.IsLocalPageScriptRunning && Now - Start > 500) { // Script has crashed
-				Layers::Show("ModifierCrash");
+				if(!S_FastMode) Layers::Show("ModifierCrash");
 				Crashed = True;
 			}
-			else Layers::Hide("ModifierCrash");
+			else if(!S_FastMode) Layers::Hide("ModifierCrash");
 		}
 		
 		yield;
@@ -611,14 +613,16 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 
 	UILayerDestroy(LayerAPI);
 
-	Layers::SendEvent("ModifierStatus", "Stage", Dictionary::Get("DONE"));
-	
-	declare metadata ModifierBase::SChProblem[] Problems for Map;
-	if(Terminate) Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED_UNSUCCESSFULLY"));
-	else if(Problems.count == 0) Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED_SUCCESSFULLY"));
-	else Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED"));
-	
-	Layers::SendEvent("ModifierStatus", "Progress", "1");
+	if(!S_FastMode) {
+		Layers::SendEvent("ModifierStatus", "Stage", Dictionary::Get("DONE"));
+		
+		declare metadata ModifierBase::SChProblem[] Problems for Map;
+		if(Terminate) Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED_UNSUCCESSFULLY"));
+		else if(Problems.count == 0) Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED_SUCCESSFULLY"));
+		else Layers::SendEvent("ModifierStatus", "Message", Dictionary::Get("SCRIPT_FINISHED"));
+		
+		Layers::SendEvent("ModifierStatus", "Progress", "1");
+	}
 
 	return !Terminate;
 }
@@ -665,35 +669,37 @@ main() {
 	CameraToTargetDistance = CamDistance;
 	
 	HideEditorInterface = True;
-	EnableEditorInputsCustomProcessing = True;
+	//EnableEditorInputsCustomProcessing = True;
 	EditMode = CMapEditorPlugin::EditMode::FreeLook;
-
-	Layers::Create("ModifierIntro",Manialink::FromFile(C_Manialink_ModifierIntro, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
-	Layers::Create("ModifierScript",Manialink::FromFile(C_Manialink_ModifierScript, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
-	Layers::Create("ModifierStatus",Manialink::FromFile(C_Manialink_ModifierStatus, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
-	Layers::Create("ModifierMetadata",Manialink::FromFile(C_Manialink_ModifierMetadata, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
-	Layers::Create("ModifierMap",Manialink::FromFile(C_Manialink_ModifierMap, True, ["TextAnimation", "SlideText", "Audio"], Settings::Get().Theme));
-	Layers::Create("ModifierCrash",Manialink::FromFile(C_Manialink_ModifierCrash, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
-	Layers::Create("ModifierResult",Manialink::FromFile(C_Manialink_ModifierResult, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
-	Layers::Create("ModifierProblems",Manialink::FromFile("Media/Manialinks/Window_List", True, ["Audio"], Settings::Get().Theme));
-	Layers::SendEvent("ModifierProblems", "Title", Dictionary::Get("PROBLEMS"));
-	Layers::SendEvent("ModifierProblems", "Position", "120 10");
-	Layers::SendEvent("ModifierProblems", "Size", "60 60");
-	Layers::SendEvent("ModifierProblems", "Animation_Out", "200 10");
-	Layers::Create("ModifierSolver",Manialink::FromFile(C_Manialink_ModifierSolver, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
-	Layers::Create("ModifierSolutions",Manialink::FromFile("Media/Manialinks/Window_List", True, ["Audio"], Settings::Get().Theme));
-	Layers::SendEvent("ModifierSolutions", "Title", Dictionary::Get("POSSIBLE_SOLUTIONS"));
-	Layers::SendEvent("ModifierSolutions", "Title_Align", "left");
-	Layers::SendEvent("ModifierSolutions", "Position", "-100 10");
-	Layers::SendEvent("ModifierSolutions", "Size", "100 60");
-	Layers::SendEvent("ModifierSolutions", "Animation_Out", "-210 10");
-
-	Layers::SetAnimationInOut("ModifierScript",CUILayer::EUILayerAnimation::DownSlow);
-	Layers::SetAnimationInOut("ModifierStatus",CUILayer::EUILayerAnimation::DownSlow);
-	Layers::SetAnimationInOut("ModifierMap",CUILayer::EUILayerAnimation::RightSlow);
-	Layers::SetAnimationInOut("ModifierMetadata",CUILayer::EUILayerAnimation::UpSlow);
-		
-	Layers::SetAnimationInOut("ModifierResult",CUILayer::EUILayerAnimation::DownSlow);
+	
+	if(!S_FastMode) {
+		Layers::Create("ModifierIntro",Manialink::FromFile(C_Manialink_ModifierIntro, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+		Layers::Create("ModifierScript",Manialink::FromFile(C_Manialink_ModifierScript, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+		Layers::Create("ModifierStatus",Manialink::FromFile(C_Manialink_ModifierStatus, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+		Layers::Create("ModifierMetadata",Manialink::FromFile(C_Manialink_ModifierMetadata, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+		Layers::Create("ModifierMap",Manialink::FromFile(C_Manialink_ModifierMap, True, ["TextAnimation", "SlideText", "Audio"], Settings::Get().Theme));
+		Layers::Create("ModifierCrash",Manialink::FromFile(C_Manialink_ModifierCrash, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+		Layers::Create("ModifierResult",Manialink::FromFile(C_Manialink_ModifierResult, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+		Layers::Create("ModifierProblems",Manialink::FromFile("Media/Manialinks/Window_List", True, ["Audio"], Settings::Get().Theme));
+		Layers::SendEvent("ModifierProblems", "Title", Dictionary::Get("PROBLEMS"));
+		Layers::SendEvent("ModifierProblems", "Position", "120 10");
+		Layers::SendEvent("ModifierProblems", "Size", "60 60");
+		Layers::SendEvent("ModifierProblems", "Animation_Out", "200 10");
+		Layers::Create("ModifierSolver",Manialink::FromFile(C_Manialink_ModifierSolver, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+		Layers::Create("ModifierSolutions",Manialink::FromFile("Media/Manialinks/Window_List", True, ["Audio"], Settings::Get().Theme));
+		Layers::SendEvent("ModifierSolutions", "Title", Dictionary::Get("POSSIBLE_SOLUTIONS"));
+		Layers::SendEvent("ModifierSolutions", "Title_Align", "left");
+		Layers::SendEvent("ModifierSolutions", "Position", "-100 10");
+		Layers::SendEvent("ModifierSolutions", "Size", "100 60");
+		Layers::SendEvent("ModifierSolutions", "Animation_Out", "-210 10");
+	
+		Layers::SetAnimationInOut("ModifierScript",CUILayer::EUILayerAnimation::DownSlow);
+		Layers::SetAnimationInOut("ModifierStatus",CUILayer::EUILayerAnimation::DownSlow);
+		Layers::SetAnimationInOut("ModifierMap",CUILayer::EUILayerAnimation::RightSlow);
+		Layers::SetAnimationInOut("ModifierMetadata",CUILayer::EUILayerAnimation::UpSlow);
+			
+		Layers::SetAnimationInOut("ModifierResult",CUILayer::EUILayerAnimation::DownSlow);
+	}
 	
 	if(Problems.count > 0) {
 		
@@ -710,14 +716,16 @@ main() {
 		Map.TMObjective_NbLaps = OriginalMap.TMObjective_NbLaps;
 		Map.TMObjective_IsLapRace = OriginalMap.TMObjective_IsLapRace;
 		
-		LayerCustomEvent(Layers::Get("ModifierIntro"), "Map", [OriginalMap.Name]);
-		Layers::Show("ModifierIntro");
+		if(!S_FastMode) {
+			LayerCustomEvent(Layers::Get("ModifierIntro"), "Map", [OriginalMap.Name]);
+			Layers::Show("ModifierIntro");
+		}
 		
 		CurrentScript = -1;
 	
 		PreloadAllBlocks();
 		
-		declare Continue = False;
+		declare Continue = S_FastMode;
 		while(!Continue) {
 			foreach(Event,PendingEvents) {
 				if(Event.Type == CMapEditorPluginEvent::Type::LayerCustomEvent) {
@@ -736,7 +744,7 @@ main() {
 		
 		Map.MapName = """Modifying... ({{{OriginalMap.Name}}})""";
 		
-		LayerCustomEvent(Layers::Get("ModifierIntro"), "Hide", []);
+		if(!S_FastMode) LayerCustomEvent(Layers::Get("ModifierIntro"), "Hide", []);
 	}
 		
 	if(S_TestMode) {
@@ -760,20 +768,22 @@ main() {
 				if(Problems.count > 0) Finish();
 				else {
 					CurrentScript += 1;
-					Layers::Show("ModifierScript");
-					sleep(100);
-					Layers::Show("ModifierStatus");
-					Layers::SendEvent("ModifierStatus", "Progress", "0");
-					Layers::SendEvent("ModifierScript", "ScriptName", Script.Name);
-					Layers::SendEvent("ModifierStatus", "Status", "...");
-					Layers::SendEvent("ModifierStatus", "Message", "");
-					sleep(100);
-					Layers::Show("ModifierMap");
-					Layers::SendEvent("ModifierMap", "MapName", OriginalMap.Name);
-					Layers::SendEvent("ModifierMap", "Challenge", TextLib::Join(" + ",_Scripts));
-					sleep(100);
-					Layers::Show("ModifierMetadata");
-					sleep(200);
+					if(!S_FastMode) {
+						Layers::Show("ModifierScript");
+						sleep(100);
+						Layers::Show("ModifierStatus");
+						Layers::SendEvent("ModifierStatus", "Progress", "0");
+						Layers::SendEvent("ModifierScript", "ScriptName", Script.Name);
+						Layers::SendEvent("ModifierStatus", "Status", "...");
+						Layers::SendEvent("ModifierStatus", "Message", "");
+						sleep(100);
+						Layers::Show("ModifierMap");
+						Layers::SendEvent("ModifierMap", "MapName", OriginalMap.Name);
+						Layers::SendEvent("ModifierMap", "Challenge", TextLib::Join(" + ",_Scripts));
+						sleep(100);
+						Layers::Show("ModifierMetadata");
+						sleep(200);
+					}
 					
 					ValidateScript();
 					
@@ -794,7 +804,13 @@ main() {
 					//Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
 					Continue = ProcessScript(Script.Name, BuildScript);
 					sleep(500);
-					if(Problems.count > 0) Finish();
+					if(Problems.count > 0) {
+						if(S_FastMode) {
+						
+						}
+						else
+							Finish();
+					}
 				}
 			}
 			if(Abort) return;
@@ -803,7 +819,11 @@ main() {
 	
 	Map.MapName = OriginalMap.Name ^ "$z - " ^ TextLib::Replace(Map.MapStyle, "+", " + ");
 	
-	Finish();
+	if(S_FastMode) {
+	
+	}
+	else
+		Finish();
 	
 	Layers::DestroyAll();
 	UILayerDestroyAll();

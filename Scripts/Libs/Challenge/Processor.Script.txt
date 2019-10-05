@@ -198,7 +198,7 @@ Void Respond(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 declare Real LastProgress;
 declare Integer LastProgressTime;
 
-Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
+Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode) {
 	switch(_Type) {
 		case "Ch_ComputeShadows": {
 			ComputeShadows();
@@ -779,30 +779,32 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data) {
 			Dialog_Message(_Data[0]);
 			Respond(_LayerAPI, _Type, []);
 		}
-		case "Ch_SetStatusProgress": {			
-			declare ProgressTime = Now;
-			declare Progress = TextLib::ToReal(_Data[0]);
-			
-			Layers::SendEvent("ModifierStatus", "Progress", [_Data[0]]);
-			
-			if(Progress == 0 || LastProgressTime == 0 || (Progress-LastProgress) == 0) Layers::SendEvent("ModifierScript", "Time", "-1");
-			else Layers::SendEvent("ModifierScript", "Time", MathLib::NearestInteger((1.-Progress)/(Progress-LastProgress)*(ProgressTime-LastProgressTime))^"");
-			
-			LastProgressTime = ProgressTime;
-			LastProgress = Progress;
+		case "Ch_SetStatusProgress": {
+			if(!_FastMode) {
+				declare ProgressTime = Now;
+				declare Progress = TextLib::ToReal(_Data[0]);
+				
+				Layers::SendEvent("ModifierStatus", "Progress", [_Data[0]]);
+				
+				if(Progress == 0 || LastProgressTime == 0 || (Progress-LastProgress) == 0) Layers::SendEvent("ModifierScript", "Time", "-1");
+				else Layers::SendEvent("ModifierScript", "Time", MathLib::NearestInteger((1.-Progress)/(Progress-LastProgress)*(ProgressTime-LastProgressTime))^"");
+				
+				LastProgressTime = ProgressTime;
+				LastProgress = Progress;
+			}
 			
 			Respond(_LayerAPI, _Type, []);
 		}
 		case "Ch_SetStatusStage": {
-			Layers::SendEvent("ModifierStatus", "Stage", [Dictionary::TranslateAllPhrases(_Data[0])]);
+			if(!_FastMode) Layers::SendEvent("ModifierStatus", "Stage", [Dictionary::TranslateAllPhrases(_Data[0])]);
 			Respond(_LayerAPI, _Type, []);
 		}
 		case "Ch_SetStatusMessage": {
-			Layers::SendEvent("ModifierStatus", "Message", [Dictionary::TranslateAllPhrases(_Data[0])]);
+			if(!_FastMode) Layers::SendEvent("ModifierStatus", "Message", [Dictionary::TranslateAllPhrases(_Data[0])]);
 			Respond(_LayerAPI, _Type, []);
 		}
 		case "Ch_SetStatusColor": {
-			Layers::SendEvent("ModifierStatus", "Color", [_Data[0]]);
+			if(!_FastMode) Layers::SendEvent("ModifierStatus", "Color", [_Data[0]]);
 			Respond(_LayerAPI, _Type, []);
 		}
 		case "Ch_SetCursorBlock": {
