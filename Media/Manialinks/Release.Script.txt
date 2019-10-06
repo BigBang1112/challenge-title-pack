@@ -1,0 +1,23 @@
+***Start***
+***
+declare Text CampaignRelease for Page;
+
+declare Label_Delta = (Page.GetFirstChild("LABEL_DELTA") as CMlLabel);
+declare Label_Date = (Page.GetFirstChild("LABEL_DATE") as CMlLabel);
+***
+
+***Loop***
+***
+if(CampaignRelease == "") {
+	Label_Delta.SetText("COMING SOON");
+	Label_Date.SetText("EXACT DATE TO BE YET ANNOUNCED");
+}
+else {
+	declare Delta = TimeLib::FormatDelta(TimeLib::GetCurrent(), CampaignRelease, TimeLib::EDurationFormats::Full);
+	if(Delta == "")
+		Label_Delta.SetText("LET'S GO");
+	else
+		Label_Delta.SetText(Delta);
+	Label_Date.SetText(TimeLib::FormatDate(CampaignRelease, TimeLib::EDateFormats::Full));
+}
+***

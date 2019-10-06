@@ -1,0 +1,50 @@
+#Include "TimeLib" as TimeLib
+
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
+
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
+
+#Struct SReleaseResult {
+	Boolean Access;
+	Text Timestamp;
+}
+	
+declare SReleaseResult Result;
+
+Void Start() {
+	Layers::Create("Release", Manialink::FromFile("Media/Manialinks/Release", True));
+	
+	declare Text CHALLENGE_TOKEN for LocalUser;
+	
+	declare TextResult = "";
+	while(TextResult == "") {
+		TextResult = Http::SyncPOST_Result("""{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/release.php?{{{LoadedTitle.TitleId}}}""", CHALLENGE_TOKEN);
+		if(TextResult == "") sleep(10000);
+		else {
+			declare JsonSuccess = Result.fromjson(TextResult);
+		}
+	}
+	
+	declare Text CampaignRelease for Layers::Page("Release");
+	CampaignRelease = Result.Timestamp;
+	
+	Layers::Show("Release");
+}
+
+Boolean Loop() {
+	declare Text CampaignRelease for Layers::Page("Release");
+	
+	if(CampaignRelease != "") {
+		declare Delta = TimeLib::GetDelta(CampaignRelease, TimeLib::GetCurrent());
+		if(Delta < 0) {
+			Layers::Hide("Release");
+			return True;
+		}
+	}
+	
+	if(Result.Access) Layers::Hide("Release");
+	
+	return Result.Access;
+}

@@ -20,6 +20,7 @@
 
 #Include "Libs/Challenge/Menu/AuthBeta.Script.txt" as Menu_AuthBeta
 #Include "Libs/Challenge/Menu/Replays.Script.txt" as Menu_Replays
+#Include "Libs/Challenge/Menu/Release.Script.txt" as Menu_Release
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
 #Include "Libs/Challenge/Notification.Script.txt" as Notification
 #Include "Libs/Challenge/NotificationPresets.Script.txt" as NotificationPresets
@@ -75,6 +76,8 @@ main() {
 		Notification::Start(<150.,55.>);
 		Auth::Start();
 		
+		log(Time::ParseDateTime("2019-07-21 22:38:09"));
+		
 		Menu_AuthBeta::Start();
 		while(!Menu_AuthBeta::GetAccess().Pass) {
 			foreach(Event,PendingEvents) {
@@ -88,6 +91,9 @@ main() {
 			yield;
 		}
 		Menu_AuthBeta::End();
+		
+		Menu_Release::Start();
+		wait(Menu_Release::Loop());
 		
 		Status = Service_Status::CheckStatus(LocalUser);
 		while(!(Status.Global.InsiderAccess || Menu_AuthBeta::GetAccess().Organizer || Menu_AuthBeta::GetAccess().Owner)) {

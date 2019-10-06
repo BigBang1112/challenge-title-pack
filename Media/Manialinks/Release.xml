@@ -1,0 +1,4 @@
+<frame>
+	<label pos="0 10" z-index="0" size="300 30" text="COMING SOON" halign="center" valign="center2" textfont="RajdhaniMono" textsize="30" id="LABEL_DELTA" textemboss="1"/>
+	<label pos="0 -10" z-index="0" size="200 15" text="EXACT DATE TO BE YET ANNOUNCED" halign="center" valign="center2" textfont="RajdhaniMono" textsize="12" id="LABEL_DATE" textemboss="1"/>
+</frame>
