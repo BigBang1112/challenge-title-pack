@@ -229,19 +229,27 @@ Void Finish() {
 						declare metadata ModifierBase::SChProblem[] Problems for Map;
 
 						if(Problems.count == 0) {
-							if(CurrentShadowsQuality == ::ShadowsQuality::Default
-							|| CurrentShadowsQuality == ::ShadowsQuality::High
-							|| CurrentShadowsQuality == ::ShadowsQuality::Ultra) {
-								Map.MapName = OriginalMap.Name ^ "$z - " ^ TextLib::Replace(Map.MapStyle, "+", " + ");
-								SaveMap("");
+							if(S_FastMode_MapSave == "") {
+								if(CurrentShadowsQuality == ::ShadowsQuality::Default
+								|| CurrentShadowsQuality == ::ShadowsQuality::High
+								|| CurrentShadowsQuality == ::ShadowsQuality::Ultra) {
+									Map.MapName = OriginalMap.Name ^ "$z - " ^ TextLib::Replace(Map.MapStyle, "+", " + ");
+									SaveMap("");
+								}
+								else {
+									Layers::SendEvent("ModifierResult", "SuggestShadows");
+								}
 							}
 							else {
-								Layers::SendEvent("ModifierResult", "SuggestShadows");
+								SaveMap(S_FastMode_MapSave);
+								DefineProblemResult(Problems);
 							}
 						}
 						else {
-							Map.MapName = OriginalMap.Name ^ "$z - " ^ TextLib::Replace(Map.MapStyle, "+", " + ");
-							SaveMap("");
+							if(S_FastMode_MapSave == "") {
+								Map.MapName = OriginalMap.Name ^ "$z - " ^ TextLib::Replace(Map.MapStyle, "+", " + ");
+								SaveMap("");
+							}
 						}
 					}
 					case "Button_Shadows_VeryFast": {
