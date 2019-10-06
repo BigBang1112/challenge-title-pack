@@ -81,6 +81,21 @@ Void SaveFast() {
 	}
 }
 
+Void DefineProblemResult(ModifierBase::SChProblem[] _Problems) {
+	declare Integer ProblemResult for LocalUser;
+	
+	ProblemResult = 1;
+	if(_Problems.count > 0) {
+		ProblemResult = 2;
+		foreach(Problem,_Problems) {
+			if(Problem.Solutions.count == 0) {
+				ProblemResult = -1;
+				break;
+			}
+		}
+	}
+}
+
 Text GetScriptFromIndex(Integer _Index) {
 	declare metadata SScriptInfo[] Scripts for Map;
 	if(!Scripts.existskey(_Index)) return "";
@@ -775,6 +790,9 @@ main() {
 				if(Problems.count > 0) {
 					if(S_FastMode) {
 						SaveFast();
+						
+						DefineProblemResult(Problems);
+						
 						QuickQuit();
 					}
 					else Finish();
@@ -834,6 +852,7 @@ main() {
 	
 	if(S_FastMode) {
 		SaveFast();
+		DefineProblemResult(Problems);
 	}
 	else
 		Finish();
