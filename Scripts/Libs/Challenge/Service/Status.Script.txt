@@ -41,6 +41,7 @@
 	Boolean HasSandbox;
 	Boolean HasCampaign;
 	Boolean HasMaker;
+	Integer HasEnvimixLicense;
 	Notification::SNotification[] Notifications;
 }
 
@@ -75,6 +76,8 @@
 
 #Struct STitleStatus {
 	SPlaysession[] Playsessions;
+	Text EnvimixReleaseDate;
+	Text UnitedEnvimixReleaseDate;
 }
 
 #Struct SStatus {
@@ -88,7 +91,7 @@
 	Text Token;
 }
 
-#Const C_Host "https://challenge.bigbang1112.eu"
+#Const C_Host "http://server.bigbang1112.eu/challenge"
 
 Void ProcessNotifications(CUser _User, SStatus _Status) {
 	if(_Status.User.count > 0)
@@ -112,6 +115,7 @@ SStatus CheckStatus(CUser _User) {
 	declare Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User).tojson());
 	declare SStatus Status;
 	declare JsonSuccess = Status.fromjson(Request.Result);
+	Http.Destroy(Request);
 	ProcessNotifications(_User, Status);
 	
 	declare SStatus[] States for _User;

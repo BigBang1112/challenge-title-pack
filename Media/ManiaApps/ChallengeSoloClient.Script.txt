@@ -2,6 +2,7 @@
 
 #Include "TextLib" as TextLib
 #Include "MathLib" as MathLib
+#Include "TimeLib" as TimeLib
 
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
@@ -213,6 +214,9 @@ declare Integer VehicleIndex for Layers::Page("Vehicle");
 declare Integer OldVehicleIndex for This;
 OldVehicleIndex = VehicleIndex;
 
+declare TitleStatus = Service_Status::LastStatus(LocalUser).Titles[LoadedTitle.TitleId];
+declare Integer MapVehicleIndex for Layers::Page("Vehicle");
+
 declare OldVehicle = -1;
 ***
 
@@ -224,6 +228,40 @@ foreach(Event, PendingEvents) {
 			switch(Event.CustomEventType) {
 				case "Start": {
 					declare netread Boolean Server_IsValidationMode for UI;
+
+					declare Integer[] EnvimixCarIndexes for Layers::Page("Menu");
+					declare Integer[] UnitedEnvimixCarIndexes for Layers::Page("Menu");
+					declare Integer HasEnvimixLicense for LocalUser;
+
+					if(MapVehicleIndex != VehicleIndex) {
+						if(HasEnvimixLicense == 0) {
+							continue;
+						}
+						else if(HasEnvimixLicense == 1) {
+							declare Compare = 0;
+							if(TitleStatus.EnvimixReleaseDate == "")
+								continue;
+							else {
+								Compare = TimeLib::Compare(TitleStatus.EnvimixReleaseDate, TimeLib::GetCurrent());
+								if(Compare > 0) {
+									if(EnvimixCarIndexes.exists(VehicleIndex)) {
+										continue;
+									}
+								}
+							}
+
+							if(TitleStatus.UnitedEnvimixReleaseDate == "")
+								continue;
+							else {
+								Compare = TimeLib::Compare(TitleStatus.UnitedEnvimixReleaseDate, TimeLib::GetCurrent());
+								if(Compare > 0) {
+									if(UnitedEnvimixCarIndexes.exists(VehicleIndex)) {
+										continue;
+									}
+								}
+							}
+						}
+					}
 
 					declare Force = (Event.CustomEventData[0] == "True");
 					SendCustomEvent("Start", [Force^""]);
@@ -244,6 +282,10 @@ foreach(Event, PendingEvents) {
 				case "Navigation": {
 					declare Pass = Event.CustomEventData[0];
 					Layers::SendEvent(Pass, "Navigation", "True");
+				}
+				case "BuyEnvimixLicense": {
+					declare Text CHALLENGE_TOKEN for LocalUser;
+					declare Success = Http::AsyncPOST("OneTimeCode_EnvimixLicense", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/onetimecode.php""", CHALLENGE_TOKEN);
 				}
 			}
 			switch(Event.CustomEventLayer) {
@@ -310,11 +352,39 @@ for(I,0,Exchange.count-1) {
 }
 
 if(VehicleIndex != OldVehicleIndex) { // If vehicle was changed
+	declare Integer[] EnvimixCarIndexes for Layers::Page("Menu");
+	declare Integer[] UnitedEnvimixCarIndexes for Layers::Page("Menu");
+
+	/*declare Integer HasEnvimixLicense for LocalUser;
+	if(MapVehicleIndex != VehicleIndex) {
+		if(HasEnvimixLicense == 0) {
+			Client_VehicleIndex = -1;
+		}
+		else if(HasEnvimixLicense == 1) {
+			declare Compare = TimeLib::Compare(TitleStatus.EnvimixReleaseDate, TimeLib::GetCurrent());
+			if(Compare > 0) {
+				if(EnvimixCarIndexes.exists(VehicleIndex)) {
+					Client_VehicleIndex = -1;
+				}
+			}
+			else Client_VehicleIndex = VehicleIndex;
+			Compare = TimeLib::Compare(TitleStatus.UnitedEnvimixReleaseDate, TimeLib::GetCurrent());
+			if(Compare > 0) {
+				if(UnitedEnvimixCarIndexes.exists(VehicleIndex)) {
+					Client_VehicleIndex = -1;
+				}
+			}
+			else Client_VehicleIndex = VehicleIndex;
+		}
+	}
+	else Client_VehicleIndex = VehicleIndex;
+
+	log(Client_VehicleIndex);*/
 	Client_VehicleIndex = VehicleIndex;
 	
-	SendCustomEvent("VehicleIndexChanged", [VehicleIndex^""]);
+	SendCustomEvent("VehicleIndexChanged", [Client_VehicleIndex^""]);
 
-	for(I,0,50) { // Lag creator for car switch to function better on higher end PCs
+	for(I,0,30) { // Lag creator for car switch to function better on higher end PCs
 		Layers::Create("Lag", Manialink::FromFile("Media/Manialinks/Lag", True));
 		Layers::Destroy("Lag");
 	}
@@ -381,6 +451,13 @@ Ingame_Endscreen::Async();
 Ingame_Outro::Async();
 
 ReplayBrowser::Async();
+
+if(Http::IsCompleted("OneTimeCode_EnvimixLicense")) {
+	if(Http::IsSuccessful("OneTimeCode_EnvimixLicense")) {
+		OpenLink("envimix:license?"^Http::GetResult("OneTimeCode_EnvimixLicense"), CManiaApp::ELinkType::ManialinkBrowser);
+	}
+	Http::Destroy("OneTimeCode_EnvimixLicense");
+}
 ***
 
 Void Main() {

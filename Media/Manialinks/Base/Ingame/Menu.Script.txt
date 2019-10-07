@@ -168,6 +168,10 @@ foreach(Zone, Zones)
 	GhostSections.add(Zone);
 declare Integer CurrentSection for Page;
 
+declare netwrite Integer Client_VehicleIndex for UI;
+declare netread Boolean Server_Playing for UI;
+declare MenuCar = Client_VehicleIndex; // Var to fix envimix license delete abuse
+
 declare CMlControl Selector;
 ***
 
@@ -416,10 +420,14 @@ if(IsMenuOpen != IsMenuNavigationForeground) {
 	if(IsMenuOpen) {
 		SendCustomEvent("Open", []);
 		Select((Page.GetFirstChild("QUAD_BUTTON_CONTINUE") as CMlQuad));
+
+		if(Server_Playing) MenuCar = Client_VehicleIndex;
 	}
 	else {
 		SendCustomEvent("Close", []);
 		SendCustomEvent("Start", ["False"]);
+
+		if(Server_Playing) Client_VehicleIndex = MenuCar;
 	}
 }
 

@@ -6,6 +6,8 @@
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
+
 #Const C_Manialink "Media/Manialinks/Base/Ingame/Vehicle"
 
 declare Integer MapVehicle;
@@ -22,18 +24,44 @@ Void Init() {
 		}
 	}
 
+	declare Status = Service_Status::LastStatus(LocalUser);
+	declare TitleStatus = Status.Titles[LoadedTitle.TitleId];
+	declare UserStatus = Status.User[0];
+
+	declare Integer HasEnvimixLicense for LocalUser;
+	HasEnvimixLicense = UserStatus.HasEnvimixLicense;
+
+	declare Integer[] EnvimixCarIndexes for Layers::Page("Menu");
+	declare Integer[] UnitedEnvimixCarIndexes for Layers::Page("Menu");
+	
 	declare VehicleML = "";
 	for(I, 0, Server_Vehicles.count-1) {
 		declare Vehicle = Server_Vehicles[I];
-		VehicleML ^= """<frame pos="0 {{{-I*20+MapVehicle*20}}}" data-id="{{{I}}}">
+		VehicleML ^= """<frame pos="0 {{{-I*20+MapVehicle*20}}}" data-id="{{{I}}}" data-envimixdate="{{{TitleStatus.EnvimixReleaseDate}}}" data-unitedenvimixdate="{{{TitleStatus.UnitedEnvimixReleaseDate}}}">
 		<frame z-index="-1">
 			<quad z-index="0" size="80 19" valign="center" halign="center" style="Bgs1" substyle="BgCardList" opacity="1"/>
 			<quad z-index="1" size="80 19" valign="center" halign="center" style="Bgs1" substyle="BgGradV" opacity="1"/>
 		</frame>
 		<quad z-index="0" size="80 19" id="QUAD_VEHICLE" valign="center" halign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5"/>
-		<label pos="0 -0.5" z-index="1" size="70 10" text="{{{Vehicle.Name}}}" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" opacity="1"/>
+		<label pos="0 -0.5" z-index="1" size="70 10" text="{{{Vehicle.Name}}}" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" opacity="0.5" hidden="0" id="LABEL_VEHICLE"/>
 		<label pos="37.5 -8" z-index="1" size="75 5" text="{{{Dictionary::Get("ORIGINAL")}}}" halign="right" valign="bottom" textfont="Oswald" textsize="2" textcolor="FF0" id="LABEL_ORIGINAL" hidden="1"/>
+
+		<label pos="0 -0.3" z-index="2" size="70 20" text="{{{Dictionary::Get("PREORDER_ENVIMIX_LICENSE")}}}" halign="center" valign="center2" textcolor="FF0" textfont="RajdhaniMono" opacity="1" autonewline="1" hidden="1" id="LABEL_PREORDER"/>
+		<label pos="-37.5 8" z-index="1" size="75 5" text="{{{Dictionary::Get("UNLOCKED_IN")}}}" halign="left" valign="top" textfont="Oswald" textsize="1" textcolor="888" id="LABEL_UNLOCK" hidden="1"/>
 	</frame>""";
+
+		if(Vehicle.Name == "CanyonCar"
+		|| Vehicle.Name == "StadiumCar"
+		|| Vehicle.Name == "ValleyCar"
+		|| Vehicle.Name == "LagoonCar")
+			EnvimixCarIndexes.add(I);
+		else if(Vehicle.Name == "DesertCar"
+		|| Vehicle.Name == "RallyCar"
+		|| Vehicle.Name == "SnowCar"
+		|| Vehicle.Name == "IslandCar"
+		|| Vehicle.Name == "BayCar"
+		|| Vehicle.Name == "CoastCar")
+			UnitedEnvimixCarIndexes.add(I);
 	}
 
 	declare VehicleManialink = Manialink::FromFile(C_Manialink, True, ["Audio"], Settings::Get().Theme);

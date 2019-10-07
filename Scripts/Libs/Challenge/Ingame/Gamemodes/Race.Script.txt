@@ -114,7 +114,7 @@ Void InitPerformances(CScore _Score) {
 				if(Task_Ghost.HasSucceeded) {
 					declare SFinish_Server Finish;
 					Finish.Timestamp = -1;
-					Finish.Ghost = Task_Ghost.Ghost;
+					Finish.Ghost <=> Task_Ghost.Ghost;
 					Performance_Server.Finishes.add(Finish);
 					
 					Performance_Server.BestFinishIndex = 0;
@@ -407,6 +407,9 @@ Void Loop(CTmMode _Mode) {
 					Server_CurrentVehicle = Server_VehicleLock;
 
 				SetCarModel(Player, UI);
+			}
+			else {
+				Player.IsSpawned = False;
 			}
 				
 			if(Player.ForceModelId != OldModelId) {

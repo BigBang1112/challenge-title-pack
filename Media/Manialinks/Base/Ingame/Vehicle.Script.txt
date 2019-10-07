@@ -109,6 +109,7 @@ declare Integer VehicleIndex for Page;
 declare Integer VehicleCount for Page;
 declare Integer MapVehicleIndex for Page;
 declare Integer VehicleLock for Page;
+declare Integer HasEnvimixLicense for LocalUser;
 
 declare Boolean IsMenuOpen for Page;
 
@@ -133,8 +134,23 @@ UpdateVehicles();
 ***
 
 Void Start() {
-	SendCustomEvent("Start", ["True"]);
-	CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+	declare Integer HasEnvimixLicense for LocalUser;
+	declare Integer VehicleIndex for Page;
+	declare Integer MapVehicleIndex for Page;
+
+	if(MapVehicleIndex != VehicleIndex) {
+		if(HasEnvimixLicense == 0) {
+			SendCustomEvent("BuyEnvimixLicense", []);
+		}
+		else if(HasEnvimixLicense == 1) {
+			SendCustomEvent("Start", ["True"]);
+			CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+		}
+	}
+	else {
+		SendCustomEvent("Start", ["True"]);
+		CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+	}
 }
 
 ***Loop***
@@ -156,7 +172,10 @@ foreach(Event,PendingEvents) {
 					Frame_Vehicles.Scroll(<0.,(VehicleIndex-PreviousIndex)*1.>);
 
 					if(PreviousIndex - VehicleIndex == 0) {
-						Start();
+						if(Event.Control.Parent.DataAttributeGet("locked") == "False") {
+							Start();
+						}
+						else if(HasEnvimixLicense == 0) SendCustomEvent("BuyEnvimixLicense", []);
 					}
 
 					PlayAudio(Sound_ClickSoft);
@@ -253,6 +272,101 @@ if(IsMenuOpen != IsMenuNavigationForeground) {
 	if(IsMenuOpen) UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll, True);
 	else {
 		
+	}
+}
+
+declare Integer HasEnvimixLicense for LocalUser;
+
+foreach(Control,Frame_Inner_Vehicles.Controls) {
+	declare Veh = (Control as CMlFrame);
+	declare Label_Vehicle = (Veh.GetFirstChild("LABEL_VEHICLE") as CMlLabel);
+	declare Label_Preorder = (Veh.GetFirstChild("LABEL_PREORDER") as CMlLabel);
+	declare Label_Unlock = (Veh.GetFirstChild("LABEL_UNLOCK") as CMlLabel);
+
+	declare EnvimixRelease = "";
+	declare CustomVehicle = False;
+
+	if(Label_Vehicle.Value == "CanyonCar"
+	|| Label_Vehicle.Value == "StadiumCar"
+	|| Label_Vehicle.Value == "ValleyCar"
+	|| Label_Vehicle.Value == "LagoonCar")
+		EnvimixRelease = Veh.DataAttributeGet("envimixdate");
+	else if(Label_Vehicle.Value == "DesertCar"
+	|| Label_Vehicle.Value == "RallyCar"
+	|| Label_Vehicle.Value == "SnowCar"
+	|| Label_Vehicle.Value == "IslandCar"
+	|| Label_Vehicle.Value == "BayCar"
+	|| Label_Vehicle.Value == "CoastCar")
+		EnvimixRelease = Veh.DataAttributeGet("unitedenvimixdate");
+	else
+		CustomVehicle = True;
+
+	if(Veh.DataAttributeGet("id") != MapVehicleIndex^"" && !CustomVehicle) {			
+		if(EnvimixRelease == "") {
+			Label_Unlock.SetText("{{{{UNLOCK_NOT_ANNOUNCED}}}}");
+			Label_Unlock.Show();
+		}
+		else if(EnvimixRelease == "0") {
+			Label_Unlock.Hide();
+		}
+		else {
+			declare Compare = TimeLib::Compare(EnvimixRelease, TimeLib::GetCurrent());
+			if(Compare > 0) {
+				if(HasEnvimixLicense == 1) {
+					Label_Preorder.SetText("{{{{ENVIMIX_LICENSE_PREORDERED}}}}");
+					Label_Preorder.Show();
+				}
+				else if(HasEnvimixLicense == 0) {
+					Label_Preorder.SetText("{{{{PREORDER_ENVIMIX_LICENSE}}}}");
+					Label_Preorder.Show();
+				}
+				else {
+					Label_Preorder.Hide();
+					Label_Unlock.Hide();
+				}
+
+				Label_Vehicle.Hide();
+				Label_Unlock.SetText("{{{{UNLOCKED_IN}}}} " ^ TextLib::ToUpperCase(TimeLib::FormatDelta(EnvimixRelease, TimeLib::GetCurrent(), TimeLib::EDurationFormats::Full)));
+				Label_Unlock.Show();
+
+				Veh.DataAttributeSet("locked", "True");
+			}
+			else {
+				Label_Unlock.Hide();
+				if(HasEnvimixLicense == 1) {
+					Label_Preorder.Hide();
+					Label_Vehicle.Show();
+					if(VehicleIndex^"" == Veh.DataAttributeGet("id") && !IsMenuOpen)
+						if(Veh.DataAttributeGet("locked") == "True")
+							SendCustomEvent("Start", ["True"]);
+					Veh.DataAttributeSet("locked", "False");
+				}
+				else {
+					Label_Preorder.SetText("{{{{BUY_ENVIMIX_LICENSE}}}}");
+					Label_Preorder.Show();
+					Label_Vehicle.Hide();
+				}
+			}
+		}
+
+		/*if(HasEnvimixLicense == 1) {
+			Label_Preorder.Hide();
+			Label_Vehicle.Show();
+		}
+		else if(HasEnvimixLicense == 0) {
+			Label_Preorder.Show();
+			Label_Vehicle.Hide();
+		}
+		else {
+			Label_Vehicle.Hide();
+			Label_Preorder.Hide();
+		}*/
+	}
+	else {
+		Label_Unlock.Hide();
+		Label_Preorder.Hide();
+		Label_Vehicle.Show();
+		Veh.DataAttributeSet("locked", "False");
 	}
 }
 ***
