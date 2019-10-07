@@ -45,38 +45,7 @@ main() {
 			Status = Service_Status::CheckStatus(LocalUser);
 		}
 		
-		Layers::Create("Preload", Manialink::FromFile("Media/Manialinks/Preload", False, [], Settings::Get().Theme), True);
-		
-		Menu_Main::Init();
-		Layers::SendEvent("Preload", "Progress", 1/8.);
-		yield;
-		Menu_Quickplay::Init();
-		Layers::SendEvent("Preload", "Progress", 2/8.);
-		yield;
-		Menu_Top::Init();
-		Layers::SendEvent("Preload", "Progress", 3/8.);
-		yield;
-		Menu_Editor::Init();
-		Layers::SendEvent("Preload", "Progress", 4/8.);
-		yield;
-		Menu_Playsessions::Init();
-		Layers::SendEvent("Preload", "Progress", 5/8.);
-		yield;
-		Menu_News::Init();
-		Layers::SendEvent("Preload", "Progress", 6/8.);
-		yield;
-		Menu_Replays::Init();
-		Layers::SendEvent("Preload", "Progress", 7/8.);
-		yield;
-		Notification::Init();
-		Layers::SendEvent("Preload", "Progress", 8/8.);
-		sleep(200);
-		Layers::Destroy("Preload");
-		
-		Notification::Start(<150.,55.>);
 		Auth::Start();
-		
-		log(Time::ParseDateTime("2019-07-21 22:38:09"));
 		
 		Menu_AuthBeta::Start();
 		while(!Menu_AuthBeta::GetAccess().Pass) {
@@ -102,6 +71,38 @@ main() {
 			Status = Service_Status::CheckStatus(LocalUser);
 		}
 		
+		yield;
+		
+		Layers::Create("Preload", Manialink::FromFile("Media/Manialinks/Preload", False, [], Settings::Get().Theme), True);
+		Menu_Main::Init();
+		Layers::SendEvent("Preload", "Progress", 1/8.);
+		yield;
+		Menu_Quickplay::Init();
+		Layers::SendEvent("Preload", "Progress", 2/8.);
+		yield;
+		Menu_Top::Init();
+		Layers::SendEvent("Preload", "Progress", 3/8.);
+		yield;
+		Menu_Editor::Init();
+		Layers::SendEvent("Preload", "Progress", 4/8.);
+		yield;
+		Menu_Playsessions::Init();
+		Layers::SendEvent("Preload", "Progress", 5/8.);
+		yield;
+		Menu_News::Init();
+		Layers::SendEvent("Preload", "Progress", 6/8.);
+		yield;
+		Menu_Replays::Init();
+		Layers::SendEvent("Preload", "Progress", 7/8.);
+		yield;
+		Notification::Init();
+		Layers::SendEvent("Preload", "Progress", 8/8.);
+		sleep(300);
+		Layers::Destroy("Preload");
+		sleep(200);
+		
+		Notification::Start(<150.,55.>);
+		yield;
 		Menu_Main::Start();
 		yield;
 		Menu_Quickplay::Start();
