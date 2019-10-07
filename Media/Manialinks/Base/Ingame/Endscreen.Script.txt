@@ -105,6 +105,9 @@ declare netread SPerformance[Text] Performances for GetOwner().Score;
 declare RefreshTime = -1;
 declare Text[] Showcases;
 declare Integer CurrentShowcase;
+
+declare RecordSubmitted = False;
+declare RecordFailed = False;
 ***
 
 ***Loop***
@@ -114,12 +117,19 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_CONTINUE": {
-					PlayAudio(Sound_Click);
-					SendCustomEvent("Continue", []);
+					if(RecordSubmitted) {
+						PlayAudio(Sound_Click);
+						SendCustomEvent("Continue", []);
+					}
 				}
 				case "QUAD_BUTTON_DISCORD": {
 					PlayAudio(Sound_Click);
 					OpenLink("https://discord.gg/v6TW88m", ::LinkType::ExternalBrowser);
+				}
+				case "QUAD_BUTTON_FAIL_REFRESH": {
+					PlayAudio(Sound_Click);
+					SendCustomEvent("FailRefresh", []);
+					Page.GetFirstChild("FRAME_FAIL_REFRESH").Hide();
 				}
 			}
 		}
@@ -192,6 +202,8 @@ foreach(Event,PendingEvents) {
 					SlideText_Set((Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel), (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel), TextLib::ToUpperCase(TextLib::Join(" + ", Challenges)), 15);
 
 					RefreshTime = Now;
+					RecordSubmitted = False;
+					RecordFailed = False;
 				}
 				case "Discord": {
 					declare JsonSuccess = Widget.fromjson(Event.CustomEventData[0]);
@@ -286,13 +298,21 @@ foreach(Event,PendingEvents) {
 							Frame_Record.Hide();
 						}
 					}
+
+					RecordSubmitted = True;
+					RecordFailed = False;
+				}
+				case "RecordFail": {
+					RecordFailed = True;
+					RecordSubmitted = False;
 				}
 			}
 		}
 		case CMlScriptEvent::Type::MenuNavigation: {
 			switch(Event.MenuNavAction) {
 				case CMlScriptEvent::EMenuNavAction::Select: {
-					SendCustomEvent("Continue", []);
+					if(RecordSubmitted)
+						SendCustomEvent("Continue", []);
 				}
 			}
 		}
@@ -311,7 +331,11 @@ if(RefreshTime != -1) {
 	if(Time < 3000) {
 		Label_Showcase.RelativeScale = AnimLib::EaseOutQuad(Time, 0., 1., 500) - AnimLib::EaseInOutQuad(Time-2500, 0., 1., 500);
 	}
-	else {
+	else if(RecordFailed) {
+		Page.GetFirstChild("FRAME_FAIL_REFRESH").Show();
+	}
+	else if(RecordSubmitted) {
+		Page.GetFirstChild("FRAME_FAIL_REFRESH").Hide();
 		if(CurrentShowcase == Showcases.count-1) {
 			CurrentShowcase = 0;
 			RefreshTime = -1;

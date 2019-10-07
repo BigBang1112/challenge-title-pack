@@ -305,6 +305,18 @@ foreach(Control,Frame_Inner_Vehicles.Controls) {
 		if(EnvimixRelease == "") {
 			Label_Unlock.SetText("{{{{UNLOCK_NOT_ANNOUNCED}}}}");
 			Label_Unlock.Show();
+
+			if(HasEnvimixLicense == 1) {
+				Label_Preorder.SetText("{{{{ENVIMIX_LICENSE_PREORDERED}}}}");
+				Label_Preorder.Show();
+			}
+			else if(HasEnvimixLicense == 0) {
+				Label_Preorder.SetText("{{{{PREORDER_ENVIMIX_LICENSE}}}}");
+				Label_Preorder.Show();
+			}
+
+			Label_Vehicle.Hide();
+			Veh.DataAttributeSet("locked", "True");
 		}
 		else if(EnvimixRelease == "0") {
 			Label_Unlock.Hide();
