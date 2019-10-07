@@ -699,7 +699,7 @@ main() {
 	CameraToTargetDistance = CamDistance;
 	
 	HideEditorInterface = True;
-	//EnableEditorInputsCustomProcessing = True;
+	EnableEditorInputsCustomProcessing = True;
 	EditMode = CMapEditorPlugin::EditMode::FreeLook;
 	
 	if(!S_FastMode) {

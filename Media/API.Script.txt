@@ -379,9 +379,9 @@ SChItem[] GetMultilapItems() {
 	return Items;
 }
 
-SChBlock[] GetBlocksByBlockName(Text _BlockName) {
+SChBlock[] GetFilteredBlocks(Text _BlockName) {
 	declare Params = [_BlockName];
-	declare Response = Request("Ch_GetBlocksByBlockName", Params);
+	declare Response = Request("Ch_GetFilteredBlocks", Params);
 	declare SChBlock[] Blocks;
 	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
 	return Blocks;  

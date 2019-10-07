@@ -1479,7 +1479,7 @@
 				"Parameters": []
 			}
 		],
-		"GetBlocksByBlockName": [
+		"GetFilteredBlocks": [
 			{
 				"Return": "SChBlock",
 				"Array": true,

@@ -692,7 +692,7 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode)
 					ChBlocks.add(Conversion::ToSChBlock(Block));
 			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
 		}
-		case "Ch_GetBlocksByBlockName": {
+		case "Ch_GetFilteredBlocks": {
 			declare BlockName = _Data[0];
 			declare ModifierBase::SChBlock[] ChBlocks;
 			foreach(Block, Blocks)
