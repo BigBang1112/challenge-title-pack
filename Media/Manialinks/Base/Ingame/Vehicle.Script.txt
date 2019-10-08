@@ -337,6 +337,12 @@ foreach(Control,Frame_Inner_Vehicles.Controls) {
 					Label_Unlock.Hide();
 				}
 
+				declare netwrite Integer Client_VehicleIndex for UI;
+				if(Client_VehicleIndex^"" == Veh.DataAttributeGet("id")) {
+					VehicleIndex = MapVehicleIndex;
+					Client_VehicleIndex = MapVehicleIndex;
+				}
+
 				Label_Vehicle.Hide();
 				Label_Unlock.SetText("{{{{UNLOCKED_IN}}}} " ^ TextLib::ToUpperCase(TimeLib::FormatDelta(EnvimixRelease, TimeLib::GetCurrent(), TimeLib::EDurationFormats::Full)));
 				Label_Unlock.Show();

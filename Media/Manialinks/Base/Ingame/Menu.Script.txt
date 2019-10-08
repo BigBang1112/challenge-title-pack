@@ -420,14 +420,10 @@ if(IsMenuOpen != IsMenuNavigationForeground) {
 	if(IsMenuOpen) {
 		SendCustomEvent("Open", []);
 		Select((Page.GetFirstChild("QUAD_BUTTON_CONTINUE") as CMlQuad));
-
-		if(Server_Playing) MenuCar = Client_VehicleIndex;
 	}
 	else {
 		SendCustomEvent("Close", []);
 		SendCustomEvent("Start", ["False"]);
-
-		if(Server_Playing) Client_VehicleIndex = MenuCar;
 	}
 }
 
