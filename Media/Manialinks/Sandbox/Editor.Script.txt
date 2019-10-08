@@ -1,3 +1,38 @@
+Void UpdateLocalScripto(Integer _SelectedScriptIndex) {
+	declare persistent Text[Text] CHALLENGE_LOCAL_CODES for LocalUser;
+	
+	declare Frame_Scripts = (Page.GetFirstChild("FRAME_SCRIPTS") as CMlFrame);
+
+	Page.GetFirstChild("FRAME_SCRIPT_BAR").RelativePosition_V3.Y = -CHALLENGE_LOCAL_CODES.count*10.;
+
+	declare Counter = 0;
+	foreach(Name => Script, CHALLENGE_LOCAL_CODES) {
+		if(Frame_Scripts.Controls.existskey(Counter)) {
+			declare Frame = (Frame_Scripts.Controls[Counter] as CMlFrame);
+			declare Quad = (Frame.GetFirstChild("QUAD_SCRIPT") as CMlQuad);
+			declare Entry = (Frame.GetFirstChild("ENTRY_SCRIPT") as CMlEntry);
+			Frame.DataAttributeSet("name", Name);
+			Entry.SetText(Name, False);
+			if(_SelectedScriptIndex == Counter) {
+				Quad.StyleSelected = True;
+				(Page.GetFirstChild("Script") as CMlTextEdit).Value = Script;
+			}
+			else Quad.StyleSelected = False;
+			Frame.Show();
+			Counter += 1;
+		}
+	}
+	for(I,Counter,9) {
+		Frame_Scripts.Controls[I].Hide();
+	}
+
+	if(Counter == 0) {
+		(Page.GetFirstChild("Script") as CMlTextEdit).Value = "";
+	}
+
+	(Page.GetFirstChild("LABEL_COUNTER") as CMlLabel).SetText(Counter^"/10");
+}
+
 ***Start***
 ***
 Page.GetClassChildren("LOADING", Page.MainFrame, True);
@@ -8,6 +43,8 @@ declare Start = Now;
 declare End = -1;
 
 declare Text CHALLENGE_CODE for LocalUser;
+
+declare SelectedScriptIndex = 0;
 
 foreach(Control_Global,(Page.GetFirstChild("FRAME_INNER_GLOBALS") as CMlFrame).Controls) {
 	declare Frame_Global = (Control_Global as CMlFrame);
@@ -37,6 +74,11 @@ Frame_Outer_Challenge_API.ScrollMax.Y = Quad_Challenge_API_Scroll_Area.Size.Y-11
 
 declare Quad_Scrollbar = (Page.GetFirstChild("QUAD_SCROLLBAR") as CMlQuad);
 declare PreviousScroll = Frame_Outer_Challenge_API.ScrollOffset;
+
+UpdateLocalScripto(SelectedScriptIndex);
+
+declare persistent Text[Text] CHALLENGE_LOCAL_CODES for LocalUser;
+declare RemoveMode = False;
 ***
 
 ***Loop***
@@ -84,6 +126,60 @@ foreach(Event,PendingEvents) {
 				AnimMgr.Add(QuadBackground, "<quad opacity=\"0\" />", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 			}
 			PlayAudio(Sound_Click);
+		}
+		if(Event.ControlId == "QUAD_ADD") {
+			declare persistent Text[Text] CHALLENGE_LOCAL_CODES for LocalUser;
+			if(CHALLENGE_LOCAL_CODES.count < 10) {
+				declare Add = 1;
+				while(CHALLENGE_LOCAL_CODES.existskey("Script"^CHALLENGE_LOCAL_CODES.count+Add)) Add+=1;
+				CHALLENGE_LOCAL_CODES["Script"^CHALLENGE_LOCAL_CODES.count+Add] = "";
+
+				UpdateLocalScripto(SelectedScriptIndex);
+			}
+			PlayAudio(Sound_Click);
+		}
+		if(Event.ControlId == "QUAD_REMOVE") {
+			PlayAudio(Sound_Click);
+			if(RemoveMode) RemoveMode = False;
+			else RemoveMode = True;
+		}
+		if(Event.ControlId == "QUAD_SCRIPT") {
+			declare persistent Text[Text] CHALLENGE_LOCAL_CODES for LocalUser;
+
+			if(RemoveMode) {
+				if(CHALLENGE_LOCAL_CODES.count > 1)
+					declare Removed = CHALLENGE_LOCAL_CODES.removekey(Event.Control.Parent.DataAttributeGet("name"));
+			}
+			else {
+				CHALLENGE_LOCAL_CODES[Event.Control.Parent.Parent.Controls[SelectedScriptIndex].DataAttributeGet("name")] = (Page.GetFirstChild("Script") as CMlTextEdit).Value;
+
+				(Page.GetFirstChild("Script") as CMlTextEdit).Value = CHALLENGE_LOCAL_CODES[Event.Control.Parent.DataAttributeGet("name")];
+			}
+			
+			SelectedScriptIndex = TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("id"));
+			UpdateLocalScripto(SelectedScriptIndex);
+			PlayAudio(Sound_Click);
+		}
+	}
+	if(Event.Type == CMlScriptEvent::Type::EntrySubmit) {
+		switch(Event.ControlId) {
+			case "ENTRY_SCRIPT": {
+				declare ActuallySelected = TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("id"));
+				declare OldName = Event.Control.Parent.Parent.Controls[ActuallySelected].DataAttributeGet("name");
+				declare Code = CHALLENGE_LOCAL_CODES[OldName];
+				declare NewName = (Event.Control as CMlEntry).Value;
+				if(CHALLENGE_LOCAL_CODES.existskey(NewName) || NewName == "") {
+					(Event.Control as CMlEntry).SetText(OldName, False);
+				}
+				else {
+					declare Removed = CHALLENGE_LOCAL_CODES.removekey(OldName);
+					CHALLENGE_LOCAL_CODES[NewName] = Code;
+					Event.Control.Parent.Parent.Controls[ActuallySelected].DataAttributeSet("name", NewName);
+				}
+				CHALLENGE_LOCAL_CODES.sortkey();
+				SelectedScriptIndex = CHALLENGE_LOCAL_CODES.count-1;
+				UpdateLocalScripto(SelectedScriptIndex);
+			}
 		}
 	}
 	if(Event.Type == CMlScriptEvent::Type::PluginCustomEvent) {
@@ -175,6 +271,10 @@ foreach(Event,PendingEvents) {
 				AnimMgr.Add(Page.GetFirstChild("QUAD_BUTTON_TEST"), "<quad opacity=\"0\" />", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 				AnimMgr.Add(Page.GetFirstChild("LABEL_BUTTON_TEST"), "<label opacity=\"0\" />", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 			}
+			case "UpdateLocalScripto": {
+				declare persistent Text[Text] CHALLENGE_LOCAL_CODES for LocalUser;
+				UpdateLocalScripto(SelectedScriptIndex);
+			}
 		}
 	}
 }
@@ -244,6 +344,20 @@ else {
 		}
 
 		PreviousScroll = Frame_Outer_Challenge_API.ScrollOffset;
+	}
+}
+
+CHALLENGE_LOCAL_CODES[(Page.GetFirstChild("FRAME_SCRIPTS") as CMlFrame).Controls[SelectedScriptIndex].DataAttributeGet("name")] = (Page.GetFirstChild("Script") as CMlTextEdit).Value;
+
+foreach(Control,(Page.GetFirstChild("FRAME_SCRIPTS") as CMlFrame).Controls) {
+	declare Frame = (Control as CMlFrame);
+	declare Quad = (Frame.GetFirstChild("QUAD_SCRIPT") as CMlQuad);
+
+	if(RemoveMode) {
+		Quad.ModulateColor = <.6,.0,.0>;
+	}
+	else {
+		Quad.ModulateColor = <.0,.2,.4>;
 	}
 }
 ***

@@ -62,55 +62,69 @@
 		</frame>
 		
 		<frame pos="-120 70" id="FRAME_INNER_PANEL" clip="True" clipposn="0 7" clipsizen="65 155">
-			<frame pos="0 0" hidden="1">
-				<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036"/>
-				<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
-				<entry pos="-22 0" z-index="1" size="27.5 5" default="TestScript1" valign="center" textsize="2"/>
+			<frame id="FRAME_SCRIPTS">
+				<frame pos="0 0" hidden="0" data-id="0">
+					<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_SCRIPT"/>
+					<label pos="22 -0.4" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
+					<entry pos="-22 0" z-index="1" size="27.5 5" default="Default" textsize="2" textfont="BiryaniDemiBold" valign="center" id="ENTRY_SCRIPT" scriptevents="1"/>
+				</frame>
+				<frame pos="0 -10" hidden="1" data-id="1">
+					<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_SCRIPT"/>
+					<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
+					<entry pos="-22 0" z-index="1" size="27.5 5" default="" textsize="2" textfont="BiryaniDemiBold" valign="center" id="ENTRY_SCRIPT" scriptevents="1"/>
+				</frame>
+				<frame pos="0 -20" hidden="1" data-id="2">
+					<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_SCRIPT"/>
+					<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
+					<entry pos="-22 0" z-index="1" size="27.5 5" default="" textsize="2" textfont="BiryaniDemiBold" valign="center" id="ENTRY_SCRIPT" scriptevents="1"/>
+				</frame>
+				<frame pos="0 -30" hidden="1" data-id="3">
+					<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_SCRIPT"/>
+					<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
+					<entry pos="-22 0" z-index="1" size="27.5 5" default="" textsize="2" textfont="BiryaniDemiBold" valign="center" id="ENTRY_SCRIPT" scriptevents="1"/>
+				</frame>
+				<frame pos="0 -40" hidden="1" data-id="4">
+					<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_SCRIPT"/>
+					<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
+					<entry pos="-22 0" z-index="1" size="27.5 5" default="" textsize="2" textfont="BiryaniDemiBold" valign="center" id="ENTRY_SCRIPT" scriptevents="1"/>
+				</frame>
+				<frame pos="0 -50" hidden="1" data-id="5">
+					<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_SCRIPT"/>
+					<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
+					<entry pos="-22 0" z-index="1" size="27.5 5" default="" textsize="2" textfont="BiryaniDemiBold" valign="center" id="ENTRY_SCRIPT" scriptevents="1"/>
+				</frame>
+				<frame pos="0 -60" hidden="1" data-id="6">
+					<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_SCRIPT"/>
+					<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
+					<entry pos="-22 0" z-index="1" size="27.5 5" default="" textsize="2" textfont="BiryaniDemiBold" valign="center" id="ENTRY_SCRIPT" scriptevents="1"/>
+				</frame>
+				<frame pos="0 -70" hidden="1" data-id="7">
+					<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_SCRIPT"/>
+					<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
+					<entry pos="-22 0" z-index="1" size="27.5 5" default="" textsize="2" textfont="BiryaniDemiBold" valign="center" id="ENTRY_SCRIPT" scriptevents="1"/>
+				</frame>
+				<frame pos="0 -80" hidden="1" data-id="8">
+					<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_SCRIPT"/>
+					<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
+					<entry pos="-22 0" z-index="1" size="27.5 5" default="" textsize="2" textfont="BiryaniDemiBold" valign="center" id="ENTRY_SCRIPT" scriptevents="1"/>
+				</frame>
+				<frame pos="0 -90" hidden="1" data-id="9">
+					<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_SCRIPT"/>
+					<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
+					<entry pos="-22 0" z-index="1" size="27.5 5" default="" textsize="2" textfont="BiryaniDemiBold" valign="center" id="ENTRY_SCRIPT" scriptevents="1"/>
+				</frame>
 			</frame>
-			<frame pos="0 -10" hidden="1">
-				<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036"/>
-				<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
-				<entry pos="-22 0" z-index="1" size="27.5 5" default="TestScript2" valign="center" textsize="2"/>
-			</frame>
-			<frame pos="0 -20" hidden="1">
-				<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036"/>
-				<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
-				<entry pos="-22 0" z-index="1" size="27.5 5" default="TestScript3" valign="center" textsize="2"/>
-			</frame>
-			<frame pos="0 -30" hidden="1">
-				<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036"/>
-				<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
-				<entry pos="-22 0" z-index="1" size="27.5 5" default="TestScript4" valign="center" textsize="2"/>
-			</frame>
-			<frame pos="0 -40" hidden="1">
-				<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036"/>
-				<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
-				<entry pos="-22 0" z-index="1" size="27.5 5" default="TestScript5" valign="center" textsize="2"/>
-			</frame>
-			<frame pos="0 -50" hidden="1">
-				<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036"/>
-				<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
-				<entry pos="-22 0" z-index="1" size="27.5 5" default="TestScript6" valign="center" textsize="2"/>
-			</frame>
-			<frame pos="0 -60" hidden="1">
-				<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036"/>
-				<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
-				<entry pos="-22 0" z-index="1" size="27.5 5" default="TestScript7" valign="center" textsize="2"/>
-			</frame>
-			<frame pos="0 -70" hidden="1">
-				<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036"/>
-				<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
-				<entry pos="-22 0" z-index="1" size="27.5 5" default="TestScript8" valign="center" textsize="2"/>
-			</frame>
-			<frame pos="0 -80" hidden="1">
-				<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036"/>
-				<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
-				<entry pos="-22 0" z-index="1" size="27.5 5" default="TestScript9" valign="center" textsize="2"/>
-			</frame>
-			<frame pos="0 -90" hidden="1">
-				<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036"/>
-				<label pos="22 -0.25" z-index="2" size="15 10" text=".Script.txt" textfont="BiryaniDemiBold" halign="right" valign="center2" textsize="2"/>
-				<entry pos="-22 0" z-index="1" size="27.5 5" default="TestScript10" valign="center" textsize="2"/>
+			<frame pos="0 -10" id="FRAME_SCRIPT_BAR">
+				<quad z-index="0" size="50 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" modulatecolor="222"/>
+				<frame pos="-20" z-index="1">
+					<quad z-index="0" size="8 8" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="A00" id="QUAD_REMOVE"/>
+					<label pos="0 -0.1" z-index="2" size="10 10" text="" textfont="BiryaniDemiBold" valign="center" textsize="2" halign="center"/>
+				</frame>
+				<label pos="0 -0.4" z-index="2" size="25 10" text="1/10" textfont="RajdhaniMono" valign="center2" textsize="3" halign="center" id="LABEL_COUNTER"/>
+				<frame pos="20" z-index="1">
+					<quad z-index="0" size="8 8" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="0A0" id="QUAD_ADD"/>
+					<label pos="0 -0.1" z-index="2" size="10 10" text="" textfont="BiryaniDemiBold" valign="center" textsize="2" halign="center"/>
+				</frame>
 			</frame>
 			
 			<frame pos="0 -140">

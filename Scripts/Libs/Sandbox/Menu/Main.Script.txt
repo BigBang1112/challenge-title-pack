@@ -29,7 +29,7 @@ Void Event(CManiaAppEvent _Event) {
 				Layers::Hide("Playsessions", True);
 				Layers::Hide("News", True);
 				
-				Layers::SendEvent("Editor", "Code_SetText", File::Read("Media/Challenges/Default.Script.txt"));
+				Layers::SendEvent("Editor","UpdateLocalScripto");
 				Layers::SendEvent("Notification", "Position", ["140 45"]);
 			}
 			case "Button_Replays": {

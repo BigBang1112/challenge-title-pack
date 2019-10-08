@@ -125,7 +125,12 @@ Void Init() {
 }
 
 Void Start() {
-
+	declare persistent Text[Text] CHALLENGE_LOCAL_CODES for LocalUser;
+	if(CHALLENGE_LOCAL_CODES.count >= 10 && !CHALLENGE_LOCAL_CODES.existskey("Default")) {
+	
+	}
+	else
+		CHALLENGE_LOCAL_CODES["Default"] = File::Read("Media/Challenges/Default.Script.txt");
 }
 
 declare Boolean StartTest;
