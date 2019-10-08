@@ -12,6 +12,7 @@
 	Text OriginalMapAuthor;
 	Text OriginalGame;
 	Text TitleId;
+	Text Environment;
 	Text[] Modifiers;
 }
 

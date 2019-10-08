@@ -66,7 +66,10 @@ Void Start() {
 	if(!Server_IsValidationMode) {
 		declare Text CHALLENGE_TOKEN for LocalUser;
 		declare ReqMap = Http::SyncPOST("""{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&vehicle={{{TextLib::Join(",",VehicleNames)}}}""", CHALLENGE_TOKEN);
-		declare JsonSuccess = PublicMap.fromjson(ReqMap.Result);
+		if(Http::IsSuccessfulStatusCode(ReqMap.StatusCode)) {
+			declare JsonSuccess = PublicMap.fromjson(ReqMap.Result);
+		}
+		Http.Destroy(ReqMap);
 	}
 	UpdatePublicMap(PublicMap);
 
@@ -97,7 +100,8 @@ Void Event(CManiaAppEvent _Event) {
 							Params.OriginalMapAuthor = OriginalMap.AuthorNickName;
 							Params.OriginalGame = "";
 							Params.TitleId = LoadedTitle.TitleId;
-							Params.Modifiers = [];
+							Params.Environment = Map.MapInfo.CollectionName;
+							Params.Modifiers = TextLib::Split("+",Map.MapInfo.MapStyle);
 
 							declare Success = Service_Map::AsyncPublish("PUBLISH", LocalUser, Params);
 						}
@@ -112,7 +116,6 @@ Void Async() {
 	if(Service_Map::AsyncIsCompleted("PUBLISH")) {
 		if(Service_Map::AsyncIsSuccessful("PUBLISH")) {
 			declare Text PlaysessionSecret for This;
-
 			UpdatePublicMap(Service_Map::GetAsyncPublishResult("PUBLISH"));
 			PlaysessionSecret = Random::String(32);
 			AsyncPlaysession(PlaysessionSecret, "Playing");
@@ -123,6 +126,9 @@ Void Async() {
 
 			declare Text CHALLENGE_TOKEN for LocalUser;
 			declare SuccessMap = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&vehicle={{{TextLib::Join(",",VehicleNames)}}}""", CHALLENGE_TOKEN);
+		}
+		else {
+
 		}
 		Service_Map::AsyncDestroy("PUBLISH");
 	}

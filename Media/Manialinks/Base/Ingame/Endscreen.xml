@@ -27,6 +27,10 @@
 				<label z-index="0" size="200 7" text="REVERSE + REVERSE + REVERSE" textfont="Oswald" textsize="4" textcolor="EEE" id="LABEL_CHALLENGE_2" halign="right"/>
 			</frame>
 			<label pos="0 -40" z-index="0" size="130 15" text="" halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" textprefix="$i$o" id="LABEL_SHOWCASE"/>
+			<frame pos="0 -40" id="FRAME_FAIL_REFRESH" hidden="1">
+				<quad z-index="-2" size="60 10" bgcolor="FFFA" valign="center" halign="center" style="Bgs1InRace" substyle="BgCard" modulatecolor="036" scriptevents="1" id="QUAD_BUTTON_FAIL_REFRESH"/>
+				<label pos="0 -.4" z-index="0" size="60 10" text="{{{{REFRESH}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="3" textcolor="EEE"/>
+			</frame>
 			<frame id="FRAME_RESULTS" pos="0 -29" hidden="0">
 				<frame id="FRAME_FASTEST_TIME">
 					<label pos="60 0" z-index="0" size="14 5" text="-:--.---" halign="right" textfont="BiryaniDemiBold" valign="center" textsize="2" textcolor="DDD" id="LABEL_TIME"/>
