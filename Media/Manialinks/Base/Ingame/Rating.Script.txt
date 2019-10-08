@@ -180,12 +180,15 @@ else {
 }
 
 if(DifficultyValue == -1) {
+	(Page.GetFirstChild("QUAD_DIFFICULTY_BLINK") as CMlQuad).Show();
+	(Page.GetFirstChild("QUAD_DIFFICULTY_BLINK") as CMlQuad).Opacity = (MathLib::Sin(Now/100.)+1)/2.*.25;
 	if(AverageDifficultyValue == -1)
 		(Page.GetFirstChild("GAUGE_DIFFICULTY") as CMlGauge).Ratio = 0.;
 	else
 		(Page.GetFirstChild("GAUGE_DIFFICULTY") as CMlGauge).Ratio = AverageDifficultyValue;
 }
 else {
+	(Page.GetFirstChild("QUAD_DIFFICULTY_BLINK") as CMlQuad).Hide();
 	if(AverageDifficultyValue == -1)
 		(Page.GetFirstChild("GAUGE_DIFFICULTY") as CMlGauge).Ratio = DifficultyValue;
 	else if(AverageDifficultyCount > 0)
@@ -195,12 +198,15 @@ else {
 }
 
 if(QualityValue == -1) {
+	(Page.GetFirstChild("QUAD_QUALITY_BLINK") as CMlQuad).Show();
+	(Page.GetFirstChild("QUAD_QUALITY_BLINK") as CMlQuad).Opacity = (MathLib::Sin(Now/100.+180)+1)/2.*.25;
 	if(AverageQualityValue == -1)
 		(Page.GetFirstChild("GAUGE_QUALITY") as CMlGauge).Ratio = 0.;
 	else
 		(Page.GetFirstChild("GAUGE_QUALITY") as CMlGauge).Ratio = AverageQualityValue;
 }
 else {
+	(Page.GetFirstChild("QUAD_QUALITY_BLINK") as CMlQuad).Hide();
 	if(AverageQualityValue == -1)
 		(Page.GetFirstChild("GAUGE_QUALITY") as CMlGauge).Ratio = QualityValue;
 	else if(AverageQualityCount > 0)
