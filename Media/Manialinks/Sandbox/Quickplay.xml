@@ -225,7 +225,7 @@
 					<quad pos="25 -24" z-index="0" size="44 44" halign="center" valign="center" style="Bgs1" substyle="BgMetalBar" opacity=".75" modulatecolor="222"/>
 					<frame pos="25 -24" clipsizen="42.5 42.5" z-index="1">
 						<quad size="42.5 42.5" halign="center" valign="center" opacity=".9" id="QUAD_MAPLIST_THUMBNAIL" bgcolor="000A"/>
-						<quad size="30 21.75" halign="center" valign="center" opacity=".9" id="QUAD_MAPLIST_SCREENSHOT" hidden="0" z-index="1" pos="-4 8"/>
+						<quad size="30 21.75" halign="center" valign="center" opacity=".9" id="QUAD_MAPLIST_SCREENSHOT" hidden="1" z-index="1" pos="-4 8"/>
 					</frame>
 					
 					<label pos="25 -50" z-index="1" size="40 10" halign="center" valign="center2" text="???" textfont="BiryaniDemiBold" id="LABEL_MAPLIST_MAPNAME" textsize="2"/>
