@@ -787,7 +787,7 @@ main() {
 	else {
 		declare Text[] _Scripts;
 		foreach(Script,Scripts)
-			_Scripts.add(TextLib::SubText(Script.Name, 0, TextLib::Length(Script.Name)-11));
+			_Scripts.add(Script.Metadata.Name);
 		SetMapStyle(TextLib::Join("+",_Scripts));
 
 		declare Continue = True;
@@ -833,7 +833,8 @@ main() {
 							BuildScript = File::Read("Media/Challenges/"^Script.Name);
 						}
 						case "Local": {
-							
+							declare persistent Text[Text] CHALLENGE_LOCAL_CODES for LocalUser;
+							BuildScript = CHALLENGE_LOCAL_CODES[Script.Name];
 						}
 						case "Online": {
 							

@@ -142,6 +142,8 @@ declare Text[] MapBrowserSubFolders;
 declare SMapInfo[] MapBrowserMapInfos;
 
 declare SChScriptInfo[] ScriptBrowserScripts;
+declare SChScriptInfo[] ScriptBrowserLocalScripts;
+declare SChScriptInfo[] LocalScripts;
 
 declare SMXTrackInfo[] MapBrowserMXTrackInfos;
 declare Integer MXPage;
@@ -522,6 +524,10 @@ Void UpdateMapManager(Integer _Offset) {
 
 Void UpdateScriptList(Integer _Offset) {
 	declare Scripts = ScriptBrowserScripts;
+	if(ScriptLocation == "Local") {
+		Scripts = ScriptBrowserLocalScripts;
+	}
+
 	declare ScriptsCount = Scripts.count;
 
 	declare ScrollLength = 10.*ScriptsCount-100;
@@ -551,7 +557,10 @@ Void UpdateScriptList(Integer _Offset) {
 			declare LabelCounter = (FrameCounter.GetFirstChild("LABEL_POSITION") as CMlLabel);
 
 			declare Folders = TextLib::Split("\\ ",Script.Name);
-			Label.SetText(Folders[Folders.count-1]);
+			if(ScriptLocation == "Official")
+				Label.SetText(Folders[Folders.count-1]);
+			else if(ScriptLocation == "Local")
+				Label.SetText(Folders[Folders.count-1]^".Script.txt");
 
 			if(Nicknames.existskey(Script.Metadata.AuthorLogin) && Nicknames[Script.Metadata.AuthorLogin] != "")
 				LabelAuthor.SetText("{{{{by}}}} "^Nicknames[Script.Metadata.AuthorLogin]);
@@ -611,15 +620,42 @@ Void UpdateScriptList(Integer _Offset) {
 	}
 
 	if(SelectedScripts.count == 0) {
-		(Page.GetFirstChild("LABEL_SCRIPT_NAME") as CMlLabel).SetText("{{{{OFFICIAL}}}} / $888{{{{no_script_selected}}}}");
+		if(ScriptLocation == "Official") {
+			(Page.GetFirstChild("LABEL_SCRIPT_NAME") as CMlLabel).SetText("{{{{OFFICIAL}}}} / $888{{{{no_script_selected}}}}");
+		}
+		if(ScriptLocation == "Local") {
+			(Page.GetFirstChild("LABEL_SCRIPT_NAME") as CMlLabel).SetText("{{{{LOCAL}}}} / $888{{{{no_script_selected}}}}");
+		}
 	}
 	else if(SelectedScripts.count == 1) {
 		declare Folders = TextLib::Split("\\ ",SelectedScripts[0].Name);
-		if(Folders.count > 0) (Page.GetFirstChild("LABEL_SCRIPT_NAME") as CMlLabel).SetText("{{{{OFFICIAL}}}} / " ^ Folders[Folders.count-1]);
+		
+		if(Folders.count > 0) {
+			if(ScriptLocation == "Official") {
+				(Page.GetFirstChild("LABEL_SCRIPT_NAME") as CMlLabel).SetText("{{{{OFFICIAL}}}} / " ^ Folders[Folders.count-1]);
+			}
+			if(ScriptLocation == "Local") {
+				(Page.GetFirstChild("LABEL_SCRIPT_NAME") as CMlLabel).SetText("{{{{LOCAL}}}} / " ^ Folders[Folders.count-1]);
+			}
+		}
 	}
 	else if(SelectedScripts.count > 1) {
 		(Page.GetFirstChild("LABEL_SCRIPT_NAME") as CMlLabel).SetText("""$o{{{SelectedScripts.count}}}/5 {{{{scripts}}}}""");
 	}
+}
+
+Void UpdateLocalScripts() {
+	declare persistent Text[Text] CHALLENGE_LOCAL_CODES for LocalUser;
+	declare SChScriptInfo[] Scripts;
+	foreach(Name => Script,CHALLENGE_LOCAL_CODES) {
+		declare SChScriptInfo Info;
+		Info.Name = Name;
+		Info.Type = "Local";
+		Scripts.add(Info);
+	}
+
+	ScriptBrowserLocalScripts = Scripts;
+	UpdateScriptList(0);
 }
 
 ***Start***
@@ -725,7 +761,8 @@ foreach(Event,PendingEvents) {
 						AnimMgr.Add(Page.GetFirstChild("FRAME_CHALLENGE_SCRIPT"), "<frame pos=\"0 100\" hidden=\"0\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 						Page.GetFirstChild("FRAME_CHALLENGE_SCRIPT").DataAttributeSet("open","1");
 
-						if(ScriptLocation == "Official") UpdateScriptList(MathLib::NearestInteger((Page.GetFirstChild("FRAME_SCRIPTLIST") as CMlFrame).ScrollOffset.Y/10.0));
+						UpdateLocalScripts();
+						UpdateScriptList(MathLib::NearestInteger((Page.GetFirstChild("FRAME_SCRIPTLIST") as CMlFrame).ScrollOffset.Y/10.0));
 					}
 					PlayAudio(Sound_ClickSoft);
 				}
@@ -767,52 +804,50 @@ foreach(Event,PendingEvents) {
 					}
 				}
 				case "QUAD_SELECTOR_SCRIPT": {
-					if(ScriptLocation == "Official") {
-						declare Script = Event.Control.Parent.DataAttributeGet("script");
-						declare Folder = Event.Control.Parent.DataAttributeGet("folder");
+					declare Script = Event.Control.Parent.DataAttributeGet("script");
+					declare Folder = Event.Control.Parent.DataAttributeGet("folder");
 
-						declare SChScriptInfo Info;
-						declare JsonSuccess = Info.fromjson(Script);
+					declare SChScriptInfo Info;
+					declare JsonSuccess = Info.fromjson(Script);
 
-						declare Text[] SelectedScriptNames;
-						foreach(S,SelectedScripts) {
-							SelectedScriptNames.add(S.Name);
-						}
+					declare Text[] SelectedScriptNames;
+					foreach(S,SelectedScripts) {
+						SelectedScriptNames.add(S.Name);
+					}
 
-						if(SelectedScriptNames.exists(Info.Name)){
-							for(i,0,SelectedScriptNames.count-1)
-								if(SelectedScriptNames[i] == Info.Name)
-									SelectedScripts.removekey(i);
-						}
-						else if(SelectedScripts.count == 0 || (IsMultipleScript() && SelectedScripts.count < 5))
-							SelectedScripts.add(Info);
-						else if(SelectedScripts.count == 1)
-							SelectedScripts[0] = Info;
+					if(SelectedScriptNames.exists(Info.Name)){
+						for(i,0,SelectedScriptNames.count-1)
+							if(SelectedScriptNames[i] == Info.Name)
+								SelectedScripts.removekey(i);
+					}
+					else if(SelectedScripts.count == 0 || (IsMultipleScript() && SelectedScripts.count < 5))
+						SelectedScripts.add(Info);
+					else if(SelectedScripts.count == 1)
+						SelectedScripts[0] = Info;
+					
+
+					/*if(Folder == "") {
+						declare Index = TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("index"));
+						//log(VisibleMapInfos[Index].Name);
+						SelectedMapInfo.fromjson(Event.Control.Parent.DataAttributeGet("mapinfo"));
 						
-
-						/*if(Folder == "") {
-							declare Index = TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("index"));
-							//log(VisibleMapInfos[Index].Name);
-							SelectedMapInfo.fromjson(Event.Control.Parent.DataAttributeGet("mapinfo"));
-							
-						}
-						else if (Folder == "...") {
-							declare Folders = TextLib::Split("\\",CurrentFolder);
-							if(Folders.count > 0) {
-								Folders.removekey(Folders.count-1);
-								declare NewFolder = TextLib::Join("\\",Folders);
-								SendCustomEvent("MapList_Local_Folder", [NewFolder,(Page.GetFirstChild("ENTRY_MAPLIST_SEARCH") as CMlEntry).Value, (Page.GetFirstChild("ENTRY_MAPLIST_AUTHOR") as CMlEntry).Value]);
-							}
-							else {
-								log("Yo, what dimension is this 8|");
-							}
+					}
+					else if (Folder == "...") {
+						declare Folders = TextLib::Split("\\",CurrentFolder);
+						if(Folders.count > 0) {
+							Folders.removekey(Folders.count-1);
+							declare NewFolder = TextLib::Join("\\",Folders);
+							SendCustomEvent("MapList_Local_Folder", [NewFolder,(Page.GetFirstChild("ENTRY_MAPLIST_SEARCH") as CMlEntry).Value, (Page.GetFirstChild("ENTRY_MAPLIST_AUTHOR") as CMlEntry).Value]);
 						}
 						else {
-							SendCustomEvent("MapList_Local_Folder", [Folder, (Page.GetFirstChild("ENTRY_MAPLIST_SEARCH") as CMlEntry).Value, (Page.GetFirstChild("ENTRY_MAPLIST_AUTHOR") as CMlEntry).Value]);
-						}*/
-
-						UpdateScriptList(MathLib::NearestInteger((Page.GetFirstChild("FRAME_SCRIPTLIST") as CMlFrame).ScrollOffset.Y/10.0));
+							log("Yo, what dimension is this 8|");
+						}
 					}
+					else {
+						SendCustomEvent("MapList_Local_Folder", [Folder, (Page.GetFirstChild("ENTRY_MAPLIST_SEARCH") as CMlEntry).Value, (Page.GetFirstChild("ENTRY_MAPLIST_AUTHOR") as CMlEntry).Value]);
+					}*/
+
+					UpdateScriptList(MathLib::NearestInteger((Page.GetFirstChild("FRAME_SCRIPTLIST") as CMlFrame).ScrollOffset.Y/10.0));
 					PlayAudio(Sound_ClickSoft);
 				}
 				case "QUAD_LOCATION_MAP_LOCAL": {
@@ -894,15 +929,21 @@ foreach(Event,PendingEvents) {
 					(Page.GetFirstChild("QUAD_LOCATION_SCRIPT_ONLINE") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
 
 					ScriptLocation = "Official";
+
+					UpdateScriptList(MathLib::NearestInteger((Page.GetFirstChild("FRAME_SCRIPTLIST") as CMlFrame).ScrollOffset.Y/10.0));
 					
 					PlayAudio(Sound_Click);
 				}
 				case "QUAD_LOCATION_SCRIPT_LOCAL": {
-					/*(Event.Control as CMlQuad).ModulateColor = <0.0,0.2,0.4>;
+					(Event.Control as CMlQuad).ModulateColor = <0.0,0.2,0.4>;
 					(Page.GetFirstChild("QUAD_LOCATION_SCRIPT_OFFICIAL") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
 					(Page.GetFirstChild("QUAD_LOCATION_SCRIPT_ONLINE") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
 
-					ScriptLocation = "Local";*/
+					ScriptLocation = "Local";
+
+					UpdateScriptList(MathLib::NearestInteger((Page.GetFirstChild("FRAME_SCRIPTLIST") as CMlFrame).ScrollOffset.Y/10.0));
+
+					PlayAudio(Sound_Click);
 				}
 				case "QUAD_LOCATION_SCRIPT_ONLINE": {
 					/*(Event.Control as CMlQuad).ModulateColor = <0.0,0.2,0.4>;
@@ -1036,12 +1077,19 @@ foreach(Event,PendingEvents) {
 					ScriptBrowserScripts = Scripts;
 					UpdateScriptList(0);
 				}
+				case "ScriptList_Local_Update": {
+					UpdateLocalScripts();
+				}
 				case "ScriptList_Metadata_Response": {
 					declare SChMetadata Metadata;
 					declare JsonSuccess = Metadata.fromjson(Event.CustomEventData[1]);
 					for(i,0,ScriptBrowserScripts.count-1) {
 						if(ScriptBrowserScripts[i].Name == Event.CustomEventData[0])
 							ScriptBrowserScripts[i].Metadata = Metadata;
+					}
+					for(i,0,ScriptBrowserLocalScripts.count-1) {
+						if(ScriptBrowserLocalScripts[i].Name == Event.CustomEventData[0])
+							ScriptBrowserLocalScripts[i].Metadata = Metadata;
 					}
 					UpdateScriptList(MathLib::NearestInteger((Page.GetFirstChild("FRAME_SCRIPTLIST") as CMlFrame).ScrollOffset.Y/10.0));
 				}

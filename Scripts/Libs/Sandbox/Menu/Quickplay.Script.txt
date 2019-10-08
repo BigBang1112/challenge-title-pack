@@ -85,6 +85,10 @@ Void UpdateOfficialScripts(Text[] _Scripts) {
 	Layers::SendEvent("Quickplay", "ScriptList_Official_Update", [Scripts.tojson()]);
 }
 
+Void UpdateLocalScripts() {
+	Layers::SendEvent("Quickplay", "ScriptList_Local_Update");
+}
+
 Boolean CheckMapOnline(Text _MapUid) {
 	declare Status = Service_Status::LastStatus(LocalUser);
 	declare Map = Http::SyncGET(Status.Global.Service ^"/map.php?uid="^_MapUid);
@@ -175,14 +179,13 @@ Void Start() {
 		"Reverse.Script.txt",
 		"Checkpointless.Script.txt",
 		"Comeback.Script.txt",
-		"Bumpooster.Script.txt",
-		"Default.Script.txt",
 		"NoCP.Script.txt"
 	];
 	
 	declare SMapInfoFilter Filter;
 	UpdateLocalMaps("",Filter);
 	UpdateOfficialScripts(OfficialScripts);
+	UpdateLocalScripts();
 	
 	Task::Async_DataFileMgr("DOWNLOADED_MAPUIDS",DataFileMgr.Map_GetGameList("Downloaded", True));
 }
@@ -299,6 +302,10 @@ Void Event(CManiaAppEvent _Event) {
 				declare Text ScriptContent;
 				
 				if(Info.Type == "Official") ScriptContent = File::Read("Media/Challenges/"^Info.Name);
+				else if(Info.Type == "Local") {
+					declare persistent Text[Text] CHALLENGE_LOCAL_CODES for LocalUser;
+					ScriptContent = CHALLENGE_LOCAL_CODES[Info.Name];
+				}
 				
 				declare LayerAPI = UILayerCreate();
 				LayerAPI.ManialinkPage = Manialink::Construct("",File::Read("Media/API_Base.Script.txt")^"""

@@ -176,7 +176,7 @@ foreach(Event,PendingEvents) {
 					CHALLENGE_LOCAL_CODES[NewName] = Code;
 					Event.Control.Parent.Parent.Controls[ActuallySelected].DataAttributeSet("name", NewName);
 				}
-				CHALLENGE_LOCAL_CODES.sortkey();
+				CHALLENGE_LOCAL_CODES = CHALLENGE_LOCAL_CODES.sortkey();
 				SelectedScriptIndex = CHALLENGE_LOCAL_CODES.count-1;
 				UpdateLocalScripto(SelectedScriptIndex);
 			}
