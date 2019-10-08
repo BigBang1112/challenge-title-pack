@@ -155,6 +155,7 @@ Void Start() {
 
 ***Loop***
 ***
+
 foreach(Event,PendingEvents) {
 	switch(Event.Type) {
 		case CMlScriptEvent::Type::MouseOver: {
@@ -169,14 +170,14 @@ foreach(Event,PendingEvents) {
 				case "QUAD_VEHICLE": {
 					declare PreviousIndex = VehicleIndex;
 					VehicleIndex = TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("id"));
-					Frame_Vehicles.Scroll(<0.,(VehicleIndex-PreviousIndex)*1.>);
 
-					if(PreviousIndex - VehicleIndex == 0) {
-						if(Event.Control.Parent.DataAttributeGet("locked") == "False") {
+					if(Event.Control.Parent.DataAttributeGet("locked") == "False") {
+						Frame_Vehicles.Scroll(<0.,(VehicleIndex-PreviousIndex)*1.>);
+						if(PreviousIndex - VehicleIndex == 0) {
 							Start();
 						}
-						else if(HasEnvimixLicense == 0) SendCustomEvent("BuyEnvimixLicense", []);
 					}
+					else if(HasEnvimixLicense == 0) SendCustomEvent("BuyEnvimixLicense", []);
 
 					PlayAudio(Sound_ClickSoft);
 				}
@@ -257,6 +258,8 @@ if(Frame_Vehicles.ScrollOffset != OldScroll) {
 	OldScroll = Frame_Vehicles.ScrollOffset;
 }
 
++++CheckLicense+++
+
 if(VehicleIndex != OldVehicleIndex) {
 	UpdateVehicles();
 	OldVehicleIndex = VehicleIndex;
@@ -274,7 +277,10 @@ if(IsMenuOpen != IsMenuNavigationForeground) {
 		
 	}
 }
+***
 
+***CheckLicense***
+***
 declare Integer HasEnvimixLicense for LocalUser;
 
 foreach(Control,Frame_Inner_Vehicles.Controls) {
@@ -341,6 +347,7 @@ foreach(Control,Frame_Inner_Vehicles.Controls) {
 				if(Client_VehicleIndex^"" == Veh.DataAttributeGet("id")) {
 					VehicleIndex = MapVehicleIndex;
 					Client_VehicleIndex = MapVehicleIndex;
+					UpdateVehicles();
 				}
 
 				Label_Vehicle.Hide();
@@ -363,6 +370,13 @@ foreach(Control,Frame_Inner_Vehicles.Controls) {
 					Label_Preorder.SetText("{{{{BUY_ENVIMIX_LICENSE}}}}");
 					Label_Preorder.Show();
 					Label_Vehicle.Hide();
+
+					declare netwrite Integer Client_VehicleIndex for UI;
+					if(Client_VehicleIndex^"" == Veh.DataAttributeGet("id")) {
+						VehicleIndex = MapVehicleIndex;
+						Client_VehicleIndex = MapVehicleIndex;
+						UpdateVehicles();
+					}
 				}
 			}
 		}
