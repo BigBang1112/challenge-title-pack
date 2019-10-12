@@ -25,7 +25,7 @@ ModifierBase::SChallengeBlock[] GetBlocks() {
 	declare ModifierBase::SChallengeBlock[] ChallengeBlocks;
 
 	declare ModifierBase::SChWaypoints Waypoints;
-	declare JsonSuccess = Waypoints.fromjson(File::Read("Media/Waypoints.json"));
+	declare JsonSuccess = Waypoints.fromjson(File::Read("Media/Base/Waypoints.json"));
 	declare Int3[] Coords;
 
 	foreach(Instance, MacroblockInstances) {
@@ -129,7 +129,7 @@ ModifierBase::SChallengeBlock PlaceBlockSpecial(Text _BlockName, Int3 _Coord, ::
 	
 	if(IsSpecialBlock(_BlockName)) {
 		declare ModifierBase::SChWaypoints Waypoints;
-		declare JsonSuccess = Waypoints.fromjson(File::Read("Media/Waypoints.json"));
+		declare JsonSuccess = Waypoints.fromjson(File::Read("Media/Base/Waypoints.json"));
 
 		declare MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\{{{_BlockName}}}-{{{GetVariant(_Coord)}}}.Macroblock.Gbx""");
 		if(MacroblockModel == Null) return Result;
@@ -766,6 +766,24 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode)
 			
 			declare IsSpecial = IsSpecialBlock(BlockName);
 			Respond(_LayerAPI, _Type, [IsSpecial^""]);
+		}
+		case "Ch_DisableWaypoint": {
+			declare ModifierBase::SChWaypoint Waypoint;
+			declare JsonSuccess = Waypoint.fromjson(_Data[0]);
+			
+			declare Disabled = False;
+			if(Waypoint.IsBlock) {
+				declare Removed = SafeRemoveBlock(Waypoint.Block);
+				declare Placement = PlaceBlockSpecial(Waypoint.Block.Name^"_D", Waypoint.Block.Coord, Conversion::ToDirectionMap(Waypoint.Block.Direction));
+				Disabled = Placement.Placed;
+				
+				if(Disabled) {
+					declare metadata Vec3[] DisabledFinishes for Map;
+					DisabledFinishes.add(GetVec3FromCoord(Waypoint.Block.Coord));
+				}
+			}
+			
+			Respond(_LayerAPI, _Type, [""^Disabled]);
 		}
 		case "Ch_Problem": {
 			declare ModifierBase::SChProblem Problem;

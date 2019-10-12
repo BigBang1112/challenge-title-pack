@@ -1,0 +1,135 @@
+#Struct SResponse {
+	Text Name;
+	Text[] Values;
+	Integer Time;
+}
+
+#Struct SChAnchor {
+	Text Id;
+	Text DefaultTag;
+	Integer DefaultOrder;
+	Text Tag;
+	Integer Order;
+}
+
+#Struct SChMetadata {
+	Text Name;
+	Text AuthorLogin;
+	Text Description;
+	Text CompatibleCollections;
+}
+
+#Struct SChBlock {
+	Text Id;
+	Text Name;
+	Int3 Coord;
+	Text Direction;
+	Boolean IsRoad; 
+	Boolean IsTerrain;
+	Boolean IsPodium;
+	SChAnchor[] Anchors; 
+	Boolean NoRespawn;
+	Boolean IsSpecial;
+	Text Waypoint;
+}
+
+#Struct SChMacroblock {
+	Boolean IsGround;
+	Boolean HasStart;
+	Boolean HasFinish;
+	Boolean HasCheckpoint;
+	Boolean HasMultilap;
+	Text Name;
+}
+
+#Struct SChItem {
+	Vec3 Position;
+	SChAnchor Anchor;
+}
+
+#Struct SChWaypoint {
+	Text Type;
+	Boolean IsBlock;
+	SChBlock Block;
+	Boolean IsItem;
+	SChItem Item;
+}
+
+#Struct SChApproxBlock {
+	Text Name;
+	Int3 Coord;
+	Text Direction;
+}
+
+#Struct SChRelationBlock {
+	Text Name;
+	Int3 Coord; // Offset
+	Integer Direction; // Offset
+}
+
+#Struct SReplacementResult {
+	Boolean Removed;
+	Boolean Placed;
+}
+
+#Struct SPlaceBlockResult {
+	Boolean Placed;
+	SChBlock Block;
+}
+
+#Struct SChSolution {
+	Text Value;
+	Text AdditionalInfo;
+	Boolean IsInteractive;
+}
+
+#Struct SChProblem {
+	Text Name;
+	Int3[] Coords;
+	SChWaypoint[] Waypoints;
+	SChBlock[] Blocks;
+	SChItem[] Items;
+	SChApproxBlock[] ApproxBlocks;
+	Text ShortDescription;
+	Text LongDescription;
+	SChSolution[] Solutions;
+}
+
+#Struct SChNote {
+	Text Name;
+	Text Value;
+	Int3[] Coords;
+	SChWaypoint[] Waypoints;
+	SChBlock[] Blocks;
+	SChItem[] Items;
+	SChApproxBlock[] ApproxBlocks;
+	Text ShortDescription;
+	Text LongDescription;
+}
+
+#Struct SChMap {
+	Text MapUid;
+	Text Comments;
+	Integer CopperPrice;
+	Text CollectionName;
+	Text AuthorLogin;
+	Text AuthorNickName;
+	Text AuthorZonePath;
+	Text AuthorZoneFlagUrl;
+	Text AuthorCountryFlagUrl;
+	Text MapType;
+	Text MapStyle;
+	Boolean Unlocked;
+	Boolean IsPlayable;
+	Boolean CreatedWithSimpleEditor;
+	Boolean CreatedWithPartyEditor;
+	Integer TMObjective_AuthorTime;
+	Integer TMObjective_GoldTime;
+	Integer TMObjective_SilverTime;
+	Integer TMObjective_BronzeTime;
+	Integer TMObjective_NbLaps;
+	Boolean TMObjective_IsLapRace;
+	Text Name;
+	Text Path;
+	Text FileName;
+}

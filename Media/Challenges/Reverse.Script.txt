@@ -71,6 +71,7 @@ Void Problem_MultipleFinishes(SChWaypoint[] _Finishes) {
 	Problem_MultipleFinishes.LongDescription = "{{{{PROBLEM_MULTIPLE_FINISHES_LONG}}}}";
 	Problem_MultipleFinishes.Solutions.add(Solution("{{{{PROBLEM_MULTIPLE_FINISHES_SOLUTION_1}}}}", "", True));
 	Problem_MultipleFinishes.Solutions.add(Solution("{{{{PROBLEM_MULTIPLE_FINISHES_SOLUTION_2}}}}", "", True));
+	Problem_MultipleFinishes.Solutions.add(Solution("{{{{PROBLEM_MULTIPLE_FINISHES_SOLUTION_3}}}}", "", True));
 	Problem(Problem_MultipleFinishes);
 }
 
@@ -211,6 +212,21 @@ switch(Solver_Problem.Name) {
 				foreach(Finish, Solver_Problem.Waypoints) {
 					if(Finish.IsBlock) {
 						if(!RemoveSpecificBlock(Finish.Block)) {
+
+						}
+					}
+					else if(Finish.IsItem) {
+						if(!RemoveItem(Finish.Item)) {
+
+						}
+					}
+				}
+			}
+			case 2: {
+				declare Removed = Solver_Problem.Waypoints.removekey(Solver_Point);
+				foreach(Finish, Solver_Problem.Waypoints) {
+					if(Finish.IsBlock) {
+						if(!DisableWaypoint(Finish)) {
 
 						}
 					}
