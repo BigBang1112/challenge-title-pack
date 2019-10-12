@@ -9,13 +9,13 @@ declare Label_Date = (Page.GetFirstChild("LABEL_DATE") as CMlLabel);
 ***Loop***
 ***
 if(CampaignRelease == "") {
-	Label_Delta.SetText("COMING SOON");
-	Label_Date.SetText("EXACT DATE TO BE YET ANNOUNCED");
+	Label_Delta.SetText("{{{{COMING_SOON}}}}");
+	Label_Date.SetText("{{{{EXACT_DATE_SOON}}}}");
 }
 else {
 	declare Delta = TimeLib::FormatDelta(TimeLib::GetCurrent(), CampaignRelease, TimeLib::EDurationFormats::Full);
 	if(Delta == "")
-		Label_Delta.SetText("LET'S GO");
+		Label_Delta.SetText("{{{{LETS_GO}}}}");
 	else
 		Label_Delta.SetText(Delta);
 	Label_Date.SetText(TimeLib::FormatDate(CampaignRelease, TimeLib::EDateFormats::Full));
