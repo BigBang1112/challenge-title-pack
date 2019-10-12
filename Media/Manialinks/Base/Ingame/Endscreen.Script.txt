@@ -328,8 +328,8 @@ if(Now - Start > 400) {
 
 if(RefreshTime != -1) {
 	declare Time = Now - RefreshTime;
-	if(Time < 3000) {
-		Label_Showcase.RelativeScale = AnimLib::EaseOutQuad(Time, 0., 1., 500) - AnimLib::EaseInOutQuad(Time-2500, 0., 1., 500);
+	if(Time < 2500) {
+		Label_Showcase.RelativeScale = AnimLib::EaseOutQuad(Time, 0., 1., 500) - AnimLib::EaseInOutQuad(Time-2000, 0., 1., 500);
 	}
 	else if(RecordFailed) {
 		Page.GetFirstChild("FRAME_FAIL_REFRESH").Show();
