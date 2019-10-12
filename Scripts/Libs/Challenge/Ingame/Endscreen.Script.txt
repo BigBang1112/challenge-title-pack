@@ -132,10 +132,13 @@ Void Loop() {
 			Layers::SendEvent("Endscreen", "Update");
 
 			if(Server_IsValidationMode) {
-
+				Layers::SendEvent("Endscreen", "PrivateMap");
 			}
 			else if(PublicMap.Public) {
 				SubmitRecord();
+			}
+			else {
+				Layers::SendEvent("Endscreen", "PrivateMap");
 			}
 			Layers::Show("Endscreen", True);
 		}

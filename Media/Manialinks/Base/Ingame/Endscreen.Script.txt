@@ -108,6 +108,8 @@ declare Integer CurrentShowcase;
 
 declare RecordSubmitted = False;
 declare RecordFailed = False;
+
+declare PrivateMap = False;
 ***
 
 ***Loop***
@@ -117,7 +119,7 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_CONTINUE": {
-					if(RecordSubmitted) {
+					if(RecordSubmitted || PrivateMap) {
 						PlayAudio(Sound_Click);
 						SendCustomEvent("Continue", []);
 					}
@@ -211,8 +213,9 @@ foreach(Event,PendingEvents) {
 				}
 				case "Record": {
 					declare SRecordResult[Text] RecordResult for Page;
-
 					declare Result_Time = RecordResult["Time"];
+
+					PrivateMap = False;
 
 					if(Result_Time.Rankings["World"].Count == 1 && Result_Time.LastRecord == -1)
 						Showcases.add("{{{{NEW_VALIDATION}}}}");
@@ -306,12 +309,19 @@ foreach(Event,PendingEvents) {
 					RecordFailed = True;
 					RecordSubmitted = False;
 				}
+				case "RecordFail": {
+					RecordFailed = True;
+					RecordSubmitted = False;
+				}
+				case "PrivateMap": {
+					PrivateMap = True;
+				}
 			}
 		}
 		case CMlScriptEvent::Type::MenuNavigation: {
 			switch(Event.MenuNavAction) {
 				case CMlScriptEvent::EMenuNavAction::Select: {
-					if(RecordSubmitted)
+					if(RecordSubmitted || PrivateMap)
 						SendCustomEvent("Continue", []);
 				}
 			}
