@@ -7,6 +7,7 @@ CTmMlPlayer GetOwner() {
 ***Start***
 ***
 declare CollectedCheckpoints = 0;
+declare LapCounter = 1;
 
 (Page.GetFirstChild("QUAD_FLASH") as CMlQuad).Blend = CMlQuad::EBlendMode::Add;
 ***
@@ -20,14 +21,18 @@ foreach(Event,RaceEvents) {
 				
 			}
 			else if(Event.IsEndLap) {
-
+				LapCounter += 1;
+				CollectedCheckpoints = 0;
 			}
 			else {
 				CollectedCheckpoints += 1;
 			}
 		}
 		case CTmRaceClientEvent::EType::Respawn: {
-			CollectedCheckpoints = 0;
+			if(Event.Player.CurRace.Time == -1) { // If fully respawned to start
+				CollectedCheckpoints = 0;
+				LapCounter = 1;
+			}
 		}
 	}
 }
@@ -37,7 +42,7 @@ foreach(Finish, MapFinishLinePos)
 	if(ClosestFinishDistance > MathLib::Distance(Finish, GetOwner().Position))
 		ClosestFinishDistance = MathLib::Distance(Finish, GetOwner().Position);
 
-if(CollectedCheckpoints == MapCheckpointPos.count && ClosestFinishDistance <= 64.) {
+if(LapCounter == MapNbLaps && CollectedCheckpoints == MapCheckpointPos.count && ClosestFinishDistance <= 64.) {
 	(Page.GetFirstChild("QUAD_FLASH") as CMlQuad).Opacity = (1-ClosestFinishDistance/64)*.25;
 }
 else {

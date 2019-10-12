@@ -1,0 +1,9 @@
+<frame id="FRAME_MULTILAP">
+	<frame pos="0 82.5">
+		<frame z-index="-1">
+			<quad z-index="0" size="40 10" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="40 10" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+		</frame>
+		<label pos="0 -0.4" z-index="0" size="35 6" text="🏁 1/5" valign="center2" textsize="4" textfont="RajdhaniMono" halign="center" id="LABEL_MULTILAP"/>
+	</frame>
+</frame>
