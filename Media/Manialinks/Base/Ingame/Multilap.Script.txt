@@ -1,0 +1,39 @@
+CTmMlPlayer GetOwner() {
+	wait(GUIPlayer != Null || InputPlayer != Null);
+	if(GUIPlayer != Null) return GUIPlayer;
+	return InputPlayer;
+}
+
+***Start***
+***
+declare Frame_Multilap = (Page.GetFirstChild("FRAME_MULTILAP") as CMlFrame);
+declare Label_Multilap = (Page.GetFirstChild("LABEL_MULTILAP") as CMlLabel);
+Label_Multilap.TextColor = <1.,1.,1.>;
+
+if(MapNbLaps > 1) Frame_Multilap.Show();
+else Frame_Multilap.Hide();
+
+declare LapCounter = 1;
+***
+
+***Loop***
+***
+foreach(Event,RaceEvents) {
+	switch(Event.Type) {
+		case CTmRaceClientEvent::EType::WayPoint: {
+			if(Event.IsEndLap && !Event.IsEndRace) {
+				LapCounter += 1;
+				if(LapCounter == MapNbLaps) Label_Multilap.TextColor = <1.,1.,0.>;
+				Label_Multilap.Value = """🏁 {{{LapCounter}}}/{{{MapNbLaps}}}""";
+			}
+		}
+		case CTmRaceClientEvent::EType::Respawn: {
+			if(Event.Player.CurRace.Time == -1) { // If fully respawned to start
+				LapCounter = 1;
+				Label_Multilap.Value = """🏁 1/{{{MapNbLaps}}}""";
+				Label_Multilap.TextColor = <1.,1.,1.>;
+			}
+		}
+	}
+}
+***
