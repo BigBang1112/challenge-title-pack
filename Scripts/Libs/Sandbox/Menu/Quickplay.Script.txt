@@ -106,7 +106,7 @@ Void StartMap(Text _MapLocation, Map::SMapInfo _MapInfo, SScriptInfo[] _Scripts)
 		Dialog_Message("This map wasn't validated in original version.");
 		return;
 	}
-	if(_Scripts.count == 0 && _MapInfo.MapType != "Challenge") {
+	if(_Scripts.count == 0 && (_MapInfo.MapType != "Challenge" && _MapInfo.MapType != "TrackMania\\Challenge")) {
 		Dialog_Message("Please select at least one script.");
 		return;
 	}
@@ -220,7 +220,7 @@ Void Event(CManiaAppEvent _Event) {
 					declare JsonSuccessMapInfo = MapInfo.fromjson(Event.CustomEventData[1]);
 					declare SScriptInfo[] Scripts;
 					declare JsonSuccessScripts = Scripts.fromjson(Event.CustomEventData[2]);
-					if(MapInfo.MapType == "TrackMania\\Challenge") {
+					if(MapInfo.MapType == "TrackMania\\Challenge" || MapInfo.MapType == "Challenge") {
 						if(MapInfo.IsPlayable) {
 							Loading::SetLoading(MapInfo.CollectionName, MapInfo);
 							if(TitleControl.IsReady)
@@ -406,7 +406,7 @@ Void Async() {
 				if(Filter.Author != "")
 					if(!TextLib::Find(Filter.Author, MapInfo.AuthorLogin ^ MapInfo.AuthorNickName, False, False)) continue;
 				
-				if(MapInfo.IsPlayable || MapInfo.MapType == "TrackMania\\Challenge") {
+				if(MapInfo.IsPlayable || MapInfo.MapType == "TrackMania\\Challenge" || MapInfo.MapType == "Challenge") {
 					declare Map::SMapInfo Info;
 					Info = Map::ToSMapInfo(MapInfo);
 					MapInfos.add(Info);

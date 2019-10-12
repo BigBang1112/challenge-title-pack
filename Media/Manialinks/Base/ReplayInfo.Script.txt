@@ -250,7 +250,7 @@ foreach(Event,PendingEvents) {
 						declare SMapInfo Map;
 						declare JsonSuccess = Map.fromjson(MapData);
 						(Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel).SetText(Map.Name);
-						if(Map.MapType == "TrackMania\\Challenge" && Mode == "View")
+						if((Map.MapType == "TrackMania\\Challenge" || Map.MapType == "Challenge") && Mode == "View")
 							EnablePlayButton();
 						else
 							DisablePlayButton();

@@ -9,7 +9,7 @@ Void SetLoading(Text _Environment, Map::SMapInfo _MapInfo) {
 	declare Opacities = Time::GetTimeOpacities();
 	
 	declare AuthorText = Dictionary::Get("by");
-	if(_MapInfo.MapType == "TrackMania\\Challenge") AuthorText = Dictionary::Get("modified_by");
+	if(_MapInfo.MapType == "TrackMania\\Challenge" || _MapInfo.MapType == "Challenge") AuthorText = Dictionary::Get("modified_by");
 
 	declare LoadingManialink = """<frame z-index="0">
 	<quad pos="0 0" z-index="-6" size="320 180" bgcolor="000D" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Sunrise.jpg" opacity="{{{Opacities[0]*.9}}}" id="QUAD_SUNRISE"/>

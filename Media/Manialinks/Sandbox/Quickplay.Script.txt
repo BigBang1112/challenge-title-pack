@@ -212,7 +212,7 @@ Void UpdateLocalMapsFolder(Integer _Offset) {
 		if(SelectedMapInfo.TMObjective_BronzeTime == -1) (Page.GetFirstChild("LABEL_MAPLIST_MEDALBRONZE") as CMlLabel).SetText("None");
 		else (Page.GetFirstChild("LABEL_MAPLIST_MEDALBRONZE") as CMlLabel).SetText(TimeToTextWithMilli(SelectedMapInfo.TMObjective_BronzeTime));
 		
-		if(SelectedMapInfo.MapType == "TrackMania\\Challenge") {
+		if(SelectedMapInfo.MapType == "TrackMania\\Challenge" || SelectedMapInfo.MapType == "Challenge") {
 			//AnimMgr.Add(Page.GetFirstChild("LABEL_SCRIPT_NAME"), "<label opacity=\"0\" hidden=\"1\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 			Page.GetFirstChild("LABEL_SCRIPT_NAME").Hide();
 			Page.GetFirstChild("QUAD_BUTTON_CHALLENGE_SCRIPT_DISABLE").Show();
@@ -771,6 +771,7 @@ foreach(Event,PendingEvents) {
 					if(MapLocation == "Local") {
 						declare Folder = Event.Control.Parent.DataAttributeGet("folder");
 						if(Folder == "") {
+							log(SelectedMapInfo.MapType);
 							declare MapInfo = SelectedMapInfo;
 							declare JsonSuccess = SelectedMapInfo.fromjson(Event.Control.Parent.DataAttributeGet("mapinfo"));
 							if(MapInfo.MapUid == SelectedMapInfo.MapUid)
