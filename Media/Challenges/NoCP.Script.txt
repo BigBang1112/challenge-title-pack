@@ -122,9 +122,33 @@ for(i,0,Checkpoints.count-1) {
 				declare Removed = RemoveSpecificBlock(Checkpoint.Block);
 				if(Removed) {
 					if(RoadBlock.Name != "") {
-						log(RoadBlock.Name ^ " " ^ RoadBlock.Direction);
 						declare Block = PlaceBlock(RoadBlock.Name, Checkpoint.Block.Coord + RoadBlock.Coord, ClockwiseDirection(Checkpoint.Block.Direction, RoadBlock.Direction));
-						if(Block.Placed) SetStatusMessage(CheckpointBlock.Name ^ " {{{{replaced_with}}}} " ^ RoadBlock.Name ^ ".");
+						if(Block.Placed) {
+							SetStatusMessage(CheckpointBlock.Name ^ " {{{{replaced_with}}}} " ^ RoadBlock.Name ^ ".");
+
+							if(Checkpoint.Block.Direction == "North" || Checkpoint.Block.Direction == "South") {
+								// Z check
+								if(GetBlock(Checkpoint.Block.Coord + <0,0,1>).Name == RoadBlock.Name) {
+									declare Placed = PlaceRoadBlocks(RoadBlock.Name, Checkpoint.Block.Coord, Checkpoint.Block.Coord + <0,0,1>);
+									if(Placed) SetStatusMessage(RoadBlock.Name^": "^Checkpoint.Block.Coord^" {{{{connected_with}}}} "^(Checkpoint.Block.Coord+<0,0,1>)^".");
+								}
+								if(GetBlock(Checkpoint.Block.Coord + <0,0,-1>).Name == RoadBlock.Name) {
+									declare Placed = PlaceRoadBlocks(RoadBlock.Name, Checkpoint.Block.Coord, Checkpoint.Block.Coord + <0,0,-1>);
+									if(Placed) SetStatusMessage(RoadBlock.Name^": "^Checkpoint.Block.Coord^" {{{{connected_with}}}} "^(Checkpoint.Block.Coord+<0,0,-1>)^".");
+								}
+							}
+							else if(Checkpoint.Block.Direction == "West" || Checkpoint.Block.Direction == "East") {
+								// X check
+								if(GetBlock(Checkpoint.Block.Coord + <1,0,0>).Name == RoadBlock.Name) {
+									declare Placed = PlaceRoadBlocks(RoadBlock.Name, Checkpoint.Block.Coord, Checkpoint.Block.Coord + <1,0,0>);
+									if(Placed) SetStatusMessage(RoadBlock.Name^": "^Checkpoint.Block.Coord^" {{{{connected_with}}}} "^(Checkpoint.Block.Coord+<1,0,0>)^".");
+								}
+								if(GetBlock(Checkpoint.Block.Coord + <-1,0,0>).Name == RoadBlock.Name) {
+									declare Placed = PlaceRoadBlocks(RoadBlock.Name, Checkpoint.Block.Coord, Checkpoint.Block.Coord + <-1,0,0>);
+									if(Placed) SetStatusMessage(RoadBlock.Name^": "^Checkpoint.Block.Coord^" {{{{connected_with}}}} "^(Checkpoint.Block.Coord+<-1,0,0>)^".");
+								}
+							}
+						}
 						else Problem_BlockMissing(RoadBlock.Name, Checkpoint.Block.Coord);
 					}
 				}
