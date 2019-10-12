@@ -64,6 +64,8 @@ main() {
 		Menu_Release::Start();
 		wait(Menu_Release::Loop());
 		
+		Notification::Init();
+		
 		Status = Service_Status::CheckStatus(LocalUser);
 		while(!(Status.Global.InsiderAccess || Menu_AuthBeta::GetAccess().Organizer || Menu_AuthBeta::GetAccess().Owner)) {
 			log("Insiders don't have access to the title pack at the moment.");
@@ -75,28 +77,25 @@ main() {
 		
 		Layers::Create("Preload", Manialink::FromFile("Media/Manialinks/Preload", False, [], Settings::Get().Theme), True);
 		Menu_Main::Init();
-		Layers::SendEvent("Preload", "Progress", 1/8.);
+		Layers::SendEvent("Preload", "Progress", 1/7.);
 		yield;
 		Menu_Quickplay::Init();
-		Layers::SendEvent("Preload", "Progress", 2/8.);
+		Layers::SendEvent("Preload", "Progress", 2/7.);
 		yield;
 		Menu_Top::Init();
-		Layers::SendEvent("Preload", "Progress", 3/8.);
+		Layers::SendEvent("Preload", "Progress", 3/7.);
 		yield;
 		Menu_Editor::Init();
-		Layers::SendEvent("Preload", "Progress", 4/8.);
+		Layers::SendEvent("Preload", "Progress", 4/7.);
 		yield;
 		Menu_Playsessions::Init();
-		Layers::SendEvent("Preload", "Progress", 5/8.);
+		Layers::SendEvent("Preload", "Progress", 5/7.);
 		yield;
 		Menu_News::Init();
-		Layers::SendEvent("Preload", "Progress", 6/8.);
+		Layers::SendEvent("Preload", "Progress", 6/7.);
 		yield;
 		Menu_Replays::Init();
-		Layers::SendEvent("Preload", "Progress", 7/8.);
-		yield;
-		Notification::Init();
-		Layers::SendEvent("Preload", "Progress", 8/8.);
+		Layers::SendEvent("Preload", "Progress", 7/7.);
 		sleep(300);
 		Layers::Destroy("Preload");
 		sleep(200);

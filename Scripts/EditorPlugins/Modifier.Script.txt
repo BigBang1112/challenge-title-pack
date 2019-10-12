@@ -424,13 +424,13 @@ Void Finish() {
 					LayerAPI = UILayerCreate();
 					LayerAPI.ManialinkPage = Manialink::Construct("","""#RequireContext CMapEditorPluginLayer
 	
-					{{{File::Read("Media/API_Base.Script.txt")}}}
+					{{{File::Read("Media/Base/API_Base.Script.txt")}}}
 								
-					{{{Dictionary::TranslateAllPhrases(File::Read("Media/API.Script.txt"))}}}
+					{{{Dictionary::TranslateAllPhrases(File::Read("Media/Base/API.Script.txt"))}}}
 								
 					{{{Dictionary::TranslateAllPhrases(GetScriptFromIndex(CurrentScript))}}}
 								
-					{{{File::Read("Media/API_Main_Solver.Script.txt")}}}""");
+					{{{File::Read("Media/Base/API_Main_Solver.Script.txt")}}}""");
 					
 					LayerCustomEvent(LayerAPI, "Solver", [SelectedProblem^"", Problem.tojson(), SelectedSolution^"", SelectedPoint^""]);
 					
@@ -581,13 +581,13 @@ Boolean ProcessScript(Text _ScriptName, Text _ScriptContent) {
 	LayerAPI = UILayerCreate();
 	LayerAPI.ManialinkPage = Manialink::Construct("","""#RequireContext CMapEditorPluginLayer
 
-{{{File::Read("Media/API_Base.Script.txt")}}}
+{{{File::Read("Media/Base/API_Base.Script.txt")}}}
 			
-{{{File::Read("Media/API.Script.txt")}}}
+{{{File::Read("Media/Base/API.Script.txt")}}}
 			
 {{{_ScriptContent}}}
 			
-{{{File::Read("Media/API_Main.Script.txt")}}}""");
+{{{File::Read("Media/Base/API_Main.Script.txt")}}}""");
 
 	declare Start = Now;
 	declare Crashed = False;
@@ -671,6 +671,7 @@ main() {
 	declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
 	if(Scripts.count == 0) declare JsonSuccess = Scripts.fromjson(CHALLENGE_SCRIPTS.tojson());
 	
+	DefineProblemResult(Problems);
 	if(Problems.count == 0) {
 		if(CHALLENGE_SCRIPTS.count == 0 && !S_TestMode) return;
 	}

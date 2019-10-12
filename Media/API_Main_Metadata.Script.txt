@@ -1,5 +1,0 @@
-***Start***
-***
-+++Metadata+++
-SendCustomEvent("ScriptMetadata", [Script.tojson()]);
-***

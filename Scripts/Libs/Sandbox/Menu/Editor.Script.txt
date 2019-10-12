@@ -12,7 +12,7 @@
 #Const C_Manialink "Media/Manialinks/Sandbox/Editor"
 
 Void Init() {
-	declare API = ChallengeAPI::FromFile("Media/API.json");
+	declare API = ChallengeAPI::FromFile("Media/Base/API.json");
 	declare Text ChallengeAPI_ML;
 	
 	// Structures
