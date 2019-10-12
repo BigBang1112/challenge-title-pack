@@ -73,9 +73,6 @@ foreach(Event,RaceEvents) {
 			if(Event.IsEndRace) {
 				PlayerTime = Event.RaceTime;
 			}
-			else if(Event.IsEndLap) {
-
-			}
 			else {
 				//PlayAudio(Sound_TimeChange);
 				for(I,0,8) {

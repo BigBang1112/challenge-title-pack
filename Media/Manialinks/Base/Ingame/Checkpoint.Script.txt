@@ -38,6 +38,9 @@ declare Frame_Checkpoint = (Page.GetFirstChild("FRAME_CHECKPOINT") as CMlFrame);
 declare Label_Checkpoint_Time = (Page.GetFirstChild("LABEL_CHECKPOINT_TIME") as CMlLabel);
 declare Frame_Differences = (Page.GetFirstChild("FRAME_DIFFERENCES") as CMlFrame);
 
+declare Frame_Lap = (Page.GetFirstChild("FRAME_LAP") as CMlFrame);
+declare Label_Lap_Time = (Frame_Lap.GetFirstChild("LABEL_TIME") as CMlLabel);
+
 declare CheckpointShowTime = -1;
 
 declare netread SVehicle[] Server_Vehicles for UI;
@@ -62,19 +65,21 @@ foreach(Event,RaceEvents) {
 			if(Event.IsEndRace) {
 
 			}
-			else if(Event.IsEndLap) {
-
-			}
 			else {
 				Label_Checkpoint_Time.SetText(TimeToTextWithMilli(Event.RaceTime));
 
-				Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 1, 1.);
-				Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 0, .8, 100);
-				Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 0, .8, 200);
+				if(Event.IsEndLap) Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 1, 1.);
+				else Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 0, 1.);
 				Frame_Checkpoint.Show();
 				CheckpointShowTime = Now;
 
 				declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
+
+				if(Event.RaceTime != Event.LapTime) {
+					Label_Lap_Time.SetText(TimeToTextWithMilli(Event.LapTime));
+					Frame_Lap.Show();
+				}
+				else Frame_Lap.Hide();
 				
 				if(Performances.existskey(VehicleName) && Performances[VehicleName].BestFinishIndex != -1) {
 					declare Performance = Performances[VehicleName];
