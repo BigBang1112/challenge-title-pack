@@ -179,6 +179,7 @@ Void Start() {
 		"Reverse.Script.txt",
 		"Checkpointless.Script.txt",
 		"Comeback.Script.txt",
+		"Lunatic.Script.txt",
 		"NoCP.Script.txt"
 	];
 	

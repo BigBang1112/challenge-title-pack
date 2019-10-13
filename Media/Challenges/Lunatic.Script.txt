@@ -1,0 +1,29 @@
+***Metadata***
+***
+Script.Name = "Lunatic";
+Script.AuthorLogin = "bigbang1112";
+Script.Description = "Removes approximately 20% of the blocks except the start and finishes.";
+Script.CompatibleCollections = "Canyon,Stadium,Valley,Lagoon";
+***
+
+***Main***
+***
+SetStatusStage("{{{{ANALYZING}}}}...");
+SetStatusMessage("{{{{SEARCHING_PURE_BLOCKS}}}}...");
+declare PureBlocks = GetPureBlocks();
+
+SetStatusStage("{{{{MODIFYING}}}}...");
+SetStatusMessage("...");
+
+declare Counter = 0.;
+foreach(Block in PureBlocks) {
+	if(Chance(.2)) {
+		if(Block.Waypoint != "Start" && Block.Waypoint != "Finish") {
+			RemoveSpecificBlock(Block);
+			SetStatusMessage("Removed " ^ Block.Name ^ ".");
+			SetStatusProgress(Counter/PureBlocks.count);
+		}
+	}
+	Counter += 1;
+}
+***
