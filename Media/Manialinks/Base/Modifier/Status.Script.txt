@@ -1,3 +1,12 @@
+***Start***
+***
+declare Gauge_Progress = (Page.GetFirstChild("GAUGE_PROGRESS") as CMlGauge);
+declare Frame_Background = (Page.GetFirstChild("FRAME_BACKGROUND") as CMlFrame);
+
+declare Start = -1;
+declare End = -1;
+***
+
 ***Loop***
 ***
 foreach(Event,PendingEvents) {
@@ -21,8 +30,38 @@ foreach(Event,PendingEvents) {
 					declare ColorText = TextLib::Split(" ",Event.CustomEventData[0]);
 					(Page.GetFirstChild("GAUGE_PROGRESS") as CMlGauge).Color = <TextLib::ToReal(ColorText[0]),TextLib::ToReal(ColorText[1]),TextLib::ToReal(ColorText[2])>;
 				}
+				case "Show": {
+					Start = Now;
+					End = -1;
+					foreach(Control,Frame_Background.Controls) {
+						declare Quad = (Control as CMlQuad);
+						Quad.Size.X = 2.0;
+						AnimMgr.Add(Quad, "<quad size=\"130 15\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+					}
+					Gauge_Progress.Size.X = 2.0;
+					AnimMgr.Add(Gauge_Progress, "<gauge size=\"130 6\"/>", Now + 300, 300, CAnimManager::EAnimManagerEasing::QuadOut);
+				}
+				case "Hide": {
+					Start = -1;
+					End = Now;
+					foreach(Control,Frame_Background.Controls) {
+						declare Quad = (Control as CMlQuad);
+						AnimMgr.Add(Quad, "<quad size=\"2 15\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+					}
+				}
 			}
 		}
+	}
+}
+
+if(End == -1) {
+	(Page.GetFirstChild("FRAME_INNER") as CMlFrame).ClipWindowSize.X = AnimLib::EaseOutQuad(Now - Start, 4.0, 260.0-4, 300);
+}
+else {
+	(Page.GetFirstChild("FRAME_INNER") as CMlFrame).ClipWindowSize.X = AnimLib::EaseOutQuad(Now - End, 260.0-4, -260.0, 300);
+	if(Now - End > 300) {
+		End = -1;
+		SendCustomEvent("Hide_Response", []);
 	}
 }
 ***

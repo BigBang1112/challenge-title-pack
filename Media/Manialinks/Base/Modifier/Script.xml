@@ -1,8 +1,12 @@
 <frame pos="-150 -80">
-	<frame z-index="1" pos="7.5 7.2" clip="True" clipsizen="80 15" clipposn="40 0">
-		<label size="200 15" text="..." textsize="4" valign="center2" textfont="BiryaniDemiBold" id="LABEL_SCRIPTNAME" textcolor="EEE"/>
+	<frame id="FRAME_BACKGROUND">
+		<quad pos="0 0" z-index="-1" size="110 15" style="Bgs1" substyle="BgCardList" valign="bottom"/>
+		<quad pos="0 0" z-index="0" size="110 15" style="Bgs1" substyle="BgGradV" valign="bottom"/>
 	</frame>
-	<quad pos="0 0" z-index="-1" size="110 15" bgcolor="FFFA" style="Bgs1" substyle="BgCardList" valign="bottom"/>
-	<quad pos="0 0" z-index="0" size="110 15" bgcolor="FFFA" style="Bgs1" substyle="BgGradV" valign="bottom"/>
-	<label z-index="1" size="15 15" text="-.---s" textsize="4" valign="center2" textfont="OswaldMono" pos="97.5 7.2" id="LABEL_TIME" textcolor="EEE" halign="center"/>
+	<frame id="FRAME_INNER" z-index="1" clip="True" clipsizen="4 15" clipposn="0 7.5">
+		<frame pos="7.5 7.2" clip="False" clipsizen="80 15" clipposn="40 0">
+			<label size="200 15" text="..." textsize="4" valign="center2" textfont="BiryaniDemiBold" id="LABEL_SCRIPTNAME" textcolor="EEE"/>
+		</frame>
+		<label size="15 15" text="-.---s" textsize="4" valign="center2" textfont="OswaldMono" pos="97.5 7.2" id="LABEL_TIME" textcolor="EEE" halign="center"/>
+	</frame>
 </frame>

@@ -9,7 +9,7 @@ Boolean IsNotAnimating(Integer _Start, Integer _End) {
 
 ***Start***
 ***
-declare Start = Now;
+declare Start = -1;
 declare End = -1;
 ***
 

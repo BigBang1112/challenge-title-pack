@@ -142,11 +142,16 @@ Void UpdateCamera() {
 }
 
 Void Finish() {
-	Layers::Hide("ModifierScript");
-	Layers::Hide("ModifierStatus");
-	Layers::Hide("ModifierMetadata");
+	Layers::Hide("ModifierScript", True);
+	Layers::Hide("ModifierStatus", True);
+	Layers::Hide("ModifierMetadata", True);
 	
-	sleep(500);
+	declare Wait = Now + 500;
+	while(Now < Wait) {
+		foreach(Event,PendingEvents)
+			Layers::Event(Event);
+		yield;
+	}
 
 	declare metadata ModifierBase::SChMap OriginalMap for Map;
 	declare metadata ModifierBase::SChProblem[] Problems for Map;
@@ -723,13 +728,6 @@ main() {
 		Layers::SendEvent("ModifierSolutions", "Position", "-100 10");
 		Layers::SendEvent("ModifierSolutions", "Size", "100 60");
 		Layers::SendEvent("ModifierSolutions", "Animation_Out", "-210 10");
-	
-		Layers::SetAnimationInOut("ModifierScript",CUILayer::EUILayerAnimation::DownSlow);
-		Layers::SetAnimationInOut("ModifierStatus",CUILayer::EUILayerAnimation::DownSlow);
-		Layers::SetAnimationInOut("ModifierMap",CUILayer::EUILayerAnimation::RightSlow);
-		Layers::SetAnimationInOut("ModifierMetadata",CUILayer::EUILayerAnimation::UpSlow);
-			
-		Layers::SetAnimationInOut("ModifierResult",CUILayer::EUILayerAnimation::DownSlow);
 	}
 	
 	if(Problems.count > 0) {
@@ -809,19 +807,19 @@ main() {
 				else {
 					CurrentScript += 1;
 					if(!S_FastMode) {
-						Layers::Show("ModifierScript");
+						Layers::Show("ModifierScript", True);
 						sleep(100);
-						Layers::Show("ModifierStatus");
+						Layers::Show("ModifierStatus", True);
 						Layers::SendEvent("ModifierStatus", "Progress", "0");
 						Layers::SendEvent("ModifierScript", "ScriptName", Script.Name);
 						Layers::SendEvent("ModifierStatus", "Status", "...");
 						Layers::SendEvent("ModifierStatus", "Message", "");
 						sleep(100);
-						Layers::Show("ModifierMap");
+						Layers::Show("ModifierMap", True);
 						Layers::SendEvent("ModifierMap", "MapName", OriginalMap.Name);
 						Layers::SendEvent("ModifierMap", "Challenge", TextLib::Join(" + ",_Scripts));
 						sleep(100);
-						Layers::Show("ModifierMetadata");
+						Layers::Show("ModifierMetadata", True);
 						sleep(200);
 					}
 					

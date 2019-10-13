@@ -16,6 +16,7 @@ Void Start() {
 }
 
 declare Boolean VisitMap;
+declare Boolean Authorize;
 
 Void Event(CManiaAppEvent _Event) {
 	declare Event <=> _Event;
@@ -24,7 +25,9 @@ Void Event(CManiaAppEvent _Event) {
 		switch(Event.CustomEventType) {
 			case "Button_Skins": {
 				VisitMap = True;
-				
+			}
+			case "Button_Authorize": {
+				Authorize = True;
 			}
 		}
 	}
@@ -41,5 +44,15 @@ Void Loop() {
 		Loading::SetLoading(Map.CollectionName, Map);
 		TitleControl.PlayMap(Map.FileName, "TrackMania/SkinSelect.Script.txt", "");
 		VisitMap = False;
+	}
+	
+	if(Authorize) {
+		Layers::Hide("Menu", True);
+		Layers::Hide("Quickplay", True);
+		Layers::Hide("Top", True);
+		Layers::Hide("Playsessions", True);
+		Layers::Hide("News", True);
+		Layers::Show("AuthBeta", True);
+		Authorize = False;
 	}
 }

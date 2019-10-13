@@ -1,6 +1,10 @@
 ***Start***
 ***
 declare Time = -1;
+declare Frame_Background = (Page.GetFirstChild("FRAME_BACKGROUND") as CMlFrame);
+
+declare Start = -1;
+declare End = -1;
 ***
 
 ***Loop***
@@ -15,6 +19,23 @@ foreach(Event,PendingEvents) {
 				case "Time": {
 					Time = TextLib::ToInteger(Event.CustomEventData[0]);
 				}
+				case "Show": {
+					Start = Now;
+					End = -1;
+					foreach(Control,Frame_Background.Controls) {
+						declare Quad = (Control as CMlQuad);
+						Quad.Size.X = 2.0;
+						AnimMgr.Add(Quad, "<quad size=\"110 15\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+					}
+				}
+				case "Hide": {
+					Start = -1;
+					End = Now;
+					foreach(Control,Frame_Background.Controls) {
+						declare Quad = (Control as CMlQuad);
+						AnimMgr.Add(Quad, "<quad size=\"2 15\"/>", Now + 100, 400, CAnimManager::EAnimManagerEasing::QuadOut);
+					}
+				}
 			}
 		}
 	}
@@ -25,5 +46,16 @@ else {
 	Time -= Period;
 	if(Time < 0) Time = 0;
 	(Page.GetFirstChild("LABEL_TIME") as CMlLabel).SetText(TextLib::FormatReal(Time/1000., 3, False, False)^"s");
+}
+
+if(End == -1) {
+	(Page.GetFirstChild("FRAME_INNER") as CMlFrame).ClipWindowSize.X = AnimLib::EaseOutQuad(Now - Start, 4.0, 220.0-4, 300);
+}
+else {
+	(Page.GetFirstChild("FRAME_INNER") as CMlFrame).ClipWindowSize.X = AnimLib::EaseOutQuad(Now - 100 - End, 220.0-4, -220.0, 400);
+	if(Now - End > 500) {
+		End = -1;
+		SendCustomEvent("Hide_Response", []);
+	}
 }
 ***

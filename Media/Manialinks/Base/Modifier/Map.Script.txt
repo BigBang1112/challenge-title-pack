@@ -11,6 +11,11 @@ declare Label_Challenge = (Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel);
 declare Label_Challenge2 = (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel);
 
 declare LabelDistance = 15;
+
+declare StartMap = -1;
+declare MapTextLength = 0.;
+declare StartChallenge = -1;
+declare ChallengeTextLength = 0.;
 ***
 
 ***Loop***
@@ -20,46 +25,61 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::PluginCustomEvent: {
 			switch(Event.CustomEventType) {
 				case "MapName": {
+					StartMap = Now;
 					declare MapName = Event.CustomEventData[0];
 
-					declare TextLength = Label_MapName.ComputeWidth(MapName);
-					if(TextLength < 74.5) {
+					MapTextLength = Label_MapName.ComputeWidth(MapName);
+					if(MapTextLength < 74.5) {
 						foreach(Control, Frame_MapName_Bg.Controls) {
 							declare Quad <=> (Control as CMlQuad);
-							Quad.Size.X = TextLength+7.;
+							AnimMgr.Add(Quad, "<quad size=\""^MapTextLength+7.^" 15\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
 						}
 					}
 					else {
 						foreach(Control, Frame_MapName_Bg.Controls) {
 							declare Quad <=> (Control as CMlQuad);
-							Quad.Size.X = 80.;
+							AnimMgr.Add(Quad, "<quad size=\"80 15\"/>", 200, CAnimManager::EAnimManagerEasing::QuadOut);
 						}
 					}
 
 					SlideText_Set(Label_MapName, Label_MapName2, MapName, LabelDistance);
 				}
 				case "Challenge": {
+					StartChallenge = Now+100;
 					declare Challenge = TextLib::ToUpperCase(Event.CustomEventData[0]);
 
-					declare TextLength = Label_Challenge.ComputeWidth(Challenge);
-					if(TextLength < 65) {
+					declare ChallengeTextLength = Label_Challenge.ComputeWidth(Challenge);
+					if(ChallengeTextLength < 65) {
 						foreach(Control, Frame_Challenge_Bg.Controls) {
 							declare Quad <=> (Control as CMlQuad);
-							Quad.Size.X = TextLength+6.;
+							AnimMgr.Add(Quad, "<quad size=\""^ChallengeTextLength+6.^" 10\"/>", Now + 100, 300, CAnimManager::EAnimManagerEasing::QuadOut);
 						}
 					}
 					else {
 						foreach(Control, Frame_Challenge_Bg.Controls) {
 							declare Quad <=> (Control as CMlQuad);
-							Quad.Size.X = 70.;
+							AnimMgr.Add(Quad, "<quad size=\"70 10\"/>", Now + 100, 300, CAnimManager::EAnimManagerEasing::QuadOut);
 						}
 					}
 
 					SlideText_Set(Label_Challenge, Label_Challenge2, Challenge, LabelDistance);
 				}
+				case "Show": {
+					
+				}
+				case "Hide": {
+					SendCustomEvent("Hide_Response", []);
+				}
 			}
 		}
 	}
+}
+
+if(StartMap != -1) {
+	Frame_Label_MapName.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - StartMap, 38., -76., 300);
+}
+if(StartChallenge != -1) {
+	Frame_Label_Challenge.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - StartChallenge, 32.5, -65.0, 300);
 }
 
 SlideText_Loop(Frame_Label_MapName, Label_MapName, Label_MapName2, LabelDistance, -.01);

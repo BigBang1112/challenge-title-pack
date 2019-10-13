@@ -1,9 +1,9 @@
 <frame>
 	<frame pos="110 72.5">
 		<frame pos="40 0" id="FRAME_MAPNAME_BG">
-			<quad z-index="0" size="80 15" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
-			<quad z-index="1" size="80 15" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgGradV"/>
-			<quad z-index="2" size="80 15" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
+			<quad z-index="0" size="2 15" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="2 15" valign="center" halign="right" style="Bgs1InRace" substyle="BgGradV"/>
+			<quad z-index="2" size="2 15" valign="center" halign="right" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
 		</frame>
 		<frame pos="37.5 7" clip="True" clipposn="-38 -7.5" clipsizen="74.5 15" id="FRAME_LABEL_MAPNAME" z-index="3">
 			<label z-index="0" size="90 12" text="E3" textsize="12" textfont="Oswald" id="LABEL_MAPNAME" halign="right" pos="0 -1.25" textemboss="1"/>
@@ -12,9 +12,9 @@
 	</frame>
 	<frame pos="115 59">
 		<frame pos="35 0" id="FRAME_CHALLENGE_BG">
-			<quad z-index="0" size="70 10" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
-			<quad z-index="1" size="70 10" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgGradV"/>
-			<quad z-index="2" size="70 10" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
+			<quad z-index="0" size="2 10" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="2 10" valign="center" halign="right" style="Bgs1InRace" substyle="BgGradV"/>
+			<quad z-index="2" size="2 10" valign="center" halign="right" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
 		</frame>
 		<frame pos="32.5 4.5" clip="True" clipposn="-32.5 -5" clipsizen="65 10" id="FRAME_LABEL_CHALLENGE" z-index="3">
 			<label z-index="0" size="90 7" text="REVERSE + CHECKPOINTLESS" textsize="6" textfont="Oswald" id="LABEL_CHALLENGE" halign="right" pos="0 -1.25" textemboss="1"/>
