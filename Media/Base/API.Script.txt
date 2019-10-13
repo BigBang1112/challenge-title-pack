@@ -232,6 +232,20 @@ SChBlock[] GetBlocks() {
 	return Blocks;
 }
 
+SChBlock[] GetTerrainBlocks() {
+	declare Response = Request("Ch_GetTerrainBlocks", []);
+	declare SChBlock[] Blocks;
+	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
+	return Blocks;  
+}
+
+SChBlock[] GetPureBlocks() {
+	declare Response = Request("Ch_GetPureBlocks", []);
+	declare SChBlock[] Blocks;
+	declare JsonSuccess = Blocks.fromjson(Response.Values[0]);
+	return Blocks;  
+}
+
 Boolean RemoveItem(SChItem _Item) {
 	declare Params = [_Item.tojson()];
 	declare Response = Request("Ch_RemoveItem", Params);

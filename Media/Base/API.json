@@ -1205,6 +1205,26 @@
 				"Parameters": []
 			}
 		],
+		"GetPureBlocks": [
+			{
+				"Return": "SChBlock",
+				"Array": true,
+				"Kind": "Regular",
+				"Explanation": "Gets all regular blocks available on the map. May sometimes crash a game on large maps.",
+				"Supported": false,
+				"Parameters": []
+			}
+		],
+		"GetTerrainBlocks": [
+			{
+				"Return": "SChBlock",
+				"Array": true,
+				"Kind": "Regular",
+				"Explanation": "Gets all terrain blocks available on the map. May sometimes crash a game on large maps.",
+				"Supported": false,
+				"Parameters": []
+			}
+		],
 		"GetMapInfo": [
 			{
 				"Return": "SChMap",

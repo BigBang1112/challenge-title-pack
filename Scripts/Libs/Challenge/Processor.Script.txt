@@ -450,6 +450,20 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode)
 			foreach(Block, GetBlocks()) ChBlocks.add(Conversion::ToSChBlock(Block));
 			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
 		}
+		case "Ch_GetTerrainBlocks": {
+			declare ModifierBase::SChBlock[] ChBlocks;
+			foreach(Block, GetBlocks())
+				if(Block.Block != Null && Block.Block.BlockModel.IsTerrain)
+					ChBlocks.add(Conversion::ToSChBlock(Block));
+			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
+		}
+		case "Ch_GetPureBlocks": {
+			declare ModifierBase::SChBlock[] ChBlocks;
+			foreach(Block, GetBlocks())
+				if(Block.Block != Null && !Block.Block.BlockModel.IsTerrain)
+					ChBlocks.add(Conversion::ToSChBlock(Block));
+			Respond(_LayerAPI, _Type, [ChBlocks.tojson()]);
+		}
 		case "Ch_GetAnchorData": {
 			declare ModifierBase::SChAnchor[] Anchor;
 			foreach(Data, AnchorData) Anchor.add(Conversion::ToSChAnchor(Data));
