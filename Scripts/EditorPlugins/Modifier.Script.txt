@@ -146,7 +146,7 @@ Void Finish() {
 	Layers::Hide("ModifierStatus", True);
 	Layers::Hide("ModifierMetadata", True);
 	
-	declare Wait = Now + 500;
+	declare Wait = Now + 600;
 	while(Now < Wait) {
 		foreach(Event,PendingEvents)
 			Layers::Event(Event);
@@ -779,7 +779,20 @@ main() {
 	if(S_TestMode) {
 		declare Text CHALLENGE_CODE for LocalUser;
 		SetMapStyle("Test Script");
+		Layers::Show("ModifierScript", True);
 		Layers::SendEvent("ModifierScript", "ScriptName", [Dictionary::Get("TEST_SCRIPT")]);
+		sleep(100);
+		Layers::Show("ModifierStatus", True);
+		Layers::SendEvent("ModifierStatus", "Progress", "0");
+		Layers::SendEvent("ModifierStatus", "Status", "...");
+		Layers::SendEvent("ModifierStatus", "Message", "");
+		sleep(100);
+		Layers::Show("ModifierMap", True);
+		Layers::SendEvent("ModifierMap", "MapName", OriginalMap.Name);
+		Layers::SendEvent("ModifierMap", "Challenge", Dictionary::Get("TEST_SCRIPT"));
+		sleep(100);
+		Layers::Show("ModifierMetadata", True);
+		sleep(200);
 		//Layers::SendEvent("ModifierStatus", "Status", [Dictionary::Get("MODIFYING")^"..."]);
 		declare Continue = ProcessScript("TEST SCRIPT", CHALLENGE_CODE);
 	}
@@ -808,10 +821,10 @@ main() {
 					CurrentScript += 1;
 					if(!S_FastMode) {
 						Layers::Show("ModifierScript", True);
+						Layers::SendEvent("ModifierScript", "ScriptName", Script.Name);
 						sleep(100);
 						Layers::Show("ModifierStatus", True);
 						Layers::SendEvent("ModifierStatus", "Progress", "0");
-						Layers::SendEvent("ModifierScript", "ScriptName", Script.Name);
 						Layers::SendEvent("ModifierStatus", "Status", "...");
 						Layers::SendEvent("ModifierStatus", "Message", "");
 						sleep(100);

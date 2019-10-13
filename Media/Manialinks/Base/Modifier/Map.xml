@@ -17,8 +17,8 @@
 			<quad z-index="2" size="2 10" valign="center" halign="right" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
 		</frame>
 		<frame pos="32.5 4.5" clip="True" clipposn="-32.5 -5" clipsizen="65 10" id="FRAME_LABEL_CHALLENGE" z-index="3">
-			<label z-index="0" size="90 7" text="REVERSE + CHECKPOINTLESS" textsize="6" textfont="Oswald" id="LABEL_CHALLENGE" halign="right" pos="0 -1.25" textemboss="1"/>
-			<label z-index="0" size="90 7" text="REVERSE + CHECKPOINTLESS" textsize="6" textfont="Oswald" id="LABEL_CHALLENGE_2" halign="right" pos="0 -1.25" textemboss="1"/>
+			<label z-index="0" size="90 7" text="REVERSE + CHECKPOINTLESS" textsize="6" textfont="OswaldMono" id="LABEL_CHALLENGE" halign="right" pos="0 -1.25" textemboss="1"/>
+			<label z-index="0" size="90 7" text="REVERSE + CHECKPOINTLESS" textsize="6" textfont="OswaldMono" id="LABEL_CHALLENGE_2" halign="right" pos="0 -1.25" textemboss="1"/>
 		</frame>
 	</frame>
 </frame>
