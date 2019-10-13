@@ -296,7 +296,7 @@ foreach(Event,PendingEvents) {
 							declare Record = Result_Time.Leaderboards["World"].Records[I];
 							
 							declare RankColor = "";
-							switch(Record.Rank) {
+							switch(I+1) {
 								case 1: { RankColor = "$FF0"; }
 								case 2: { RankColor = "$DDD"; }
 								case 3: { RankColor = "$A62"; }
@@ -304,7 +304,7 @@ foreach(Event,PendingEvents) {
 							}
 
 							declare Label_Record = (Frame_Record.GetFirstChild("LABEL_RECORD") as CMlLabel);
-							Label_Record.SetText(RankColor^TextLib::FormatInteger(Record.Rank, 2)^")$z "^TimeToTextWithMilli(Record.Time));
+							Label_Record.SetText(RankColor^TextLib::FormatInteger(I+1, 2)^")$z "^TimeToTextWithMilli(Record.Time));
 
 							declare Label_Nickname = (Frame_Record.GetFirstChild("LABEL_NICKNAME") as CMlLabel);
 							Label_Nickname.SetText(Record.Nickname);
@@ -322,7 +322,7 @@ foreach(Event,PendingEvents) {
 							declare Record = RecordResult["Distance"].Leaderboards["World"].Records[I];
 							
 							declare RankColor = "";
-							switch(Record.Rank) {
+							switch(I+1) {
 								case 1: { RankColor = "$FF0"; }
 								case 2: { RankColor = "$DDD"; }
 								case 3: { RankColor = "$A62"; }
@@ -330,7 +330,7 @@ foreach(Event,PendingEvents) {
 							}
 
 							declare Label_Record = (Frame_Record.GetFirstChild("LABEL_RECORD") as CMlLabel);
-							Label_Record.SetText(RankColor^TextLib::FormatInteger(Record.Rank, 2)^")$z "^Record.Distance);
+							Label_Record.SetText(RankColor^TextLib::FormatInteger(I+1, 2)^")$z "^Record.Distance);
 
 							declare Label_Nickname = (Frame_Record.GetFirstChild("LABEL_NICKNAME") as CMlLabel);
 							Label_Nickname.SetText(Record.Nickname);
