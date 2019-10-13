@@ -138,10 +138,11 @@ Void InitPerformances(CScore _Score) {
 			Finish.Timestamp = Finish_Ser.Timestamp;
 			if(Finish_Ser.Ghost == Null)
 				Finish.Time = -1;
-			else
+			else {
 				Finish.Time = Finish_Ser.Ghost.Result.Time;
-			foreach(Checkpoint, Finish_Ser.Ghost.Result.Checkpoints)
-				Finish.Checkpoints.add(Checkpoint);
+				foreach(Checkpoint, Finish_Ser.Ghost.Result.Checkpoints)
+					Finish.Checkpoints.add(Checkpoint);
+			}
 			Performance.Finishes.add(Finish);
 		}
 		Performances[Vehicle.Name] = Performance;
