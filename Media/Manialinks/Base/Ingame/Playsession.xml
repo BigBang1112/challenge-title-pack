@@ -1,11 +1,54 @@
 <frame>
 	<frame pos="-132.5 -75">
+		<frame pos="0 4" clip="True" clipsizen="50 60" clipposn="0 30">
+			<frame pos="0 -60" hidden="1" id="FRAME_CHAT_WINDOW">
+				<quad z-index="0" size="50 60" valign="bottom" halign="center" style="Bgs1" substyle="BgCardList" hidden="1"/>
+				<quad z-index="1" size="50 60" valign="bottom" halign="center" style="Bgs1" substyle="BgGradV" hidden="0"/>
+				<quad pos="23 60" z-index="0" size="2 50" bgcolor="FFFA" style="Bgs1" substyle="BgCardList"/>
+				<frame z-index="2">
+					<frame pos="-25 60">
+						<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
+						<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
+						<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
+						<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
+					</frame>
+					<frame pos="-25 50">
+						<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
+						<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
+						<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
+						<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
+					</frame>
+					<frame pos="-25 40">
+						<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
+						<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
+						<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
+						<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
+					</frame>
+					<frame pos="-25 30">
+						<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
+						<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
+						<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
+						<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
+					</frame>
+					<frame pos="-25 20">
+						<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
+						<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
+						<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
+						<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
+					</frame>
+					<frame pos="-22.5 0">
+						<quad pos="-2.5 0" z-index="0" size="50 10" style="Bgs1" substyle="BgCardList" valign="bottom"/>
+						<entry pos="0 2.5" z-index="1" size="45 4" default="" valign="bottom" textsize="1.5"/>
+					</frame>
+				</frame>
+			</frame>
+		</frame>
 		<frame z-index="-1">
-			<quad z-index="0" size="50 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-			<quad z-index="1" size="50 8" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+			<quad z-index="0" size="50 8" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="50 8" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
 		</frame>
 		<frame>
-			<quad z-index="0" size="50 8" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON_SHADOWS_DEFAULT" pos="0 0" halign="center" valign="center"/>
+			<quad z-index="0" size="50 8" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON_CHAT" halign="center" valign="center"/>
 			<label pos="0 -0.3" z-index="1" size="45 5" text=" {{{{CHAT}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="2"/>
 		</frame>
 	</frame>
