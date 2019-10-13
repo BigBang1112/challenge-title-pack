@@ -440,7 +440,7 @@ Boolean RemoveSpecificBlock(SChBlock _Block) {
 
 Integer Random(Integer _Min, Integer _Max) { // Consistent randomizer
 	RandomProgression += 1;
-	if(RandomSeed == 0) RandomSeed = GetMapInfo().CopperPrice;
+	if(RandomSeed == 0) RandomSeed = GetOriginalMapInfo().CopperPrice;
 	return MathLib::Rand(_Min, _Max, RandomSeed+RandomProgression);
 }
 
@@ -450,7 +450,7 @@ Integer Random(Integer _Max) {
 
 Real Random(Real _Min, Real _Max) { // Consistent randomizer
 	RandomProgression += 1;
-	if(RandomSeed == 0) RandomSeed = GetMapInfo().CopperPrice;
+	if(RandomSeed == 0) RandomSeed = GetOriginalMapInfo().CopperPrice;
 	return MathLib::Rand(_Min, _Max, RandomSeed+RandomProgression);
 }
 
