@@ -9,6 +9,7 @@
 
 Void Init() {
 	Layers::Create("Top", Manialink::FromFile(C_Manialink, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
+	Layers::Create("Authors", Manialink::FromFile("Media/Manialinks/Base/Authors", True, ["TextAnimation", "Audio"], Settings::Get().Theme));
 }
 
 Void Start() {
@@ -22,12 +23,41 @@ Void Event(CManiaAppEvent _Event) {
 	declare Event <=> _Event;
 
 	if(Event.Type == CManiaAppEvent::EType::LayerCustomEvent) {
-		switch(Event.CustomEventType) {
-			case "Button_Skins": {
-				VisitMap = True;
+		switch(_Event.CustomEventLayer) {
+			case Layers::Get("Top"): {
+				switch(Event.CustomEventType) {
+					case "Button_Skins": {
+						VisitMap = True;
+					}
+					case "Button_Authorize": {
+						Layers::Hide("Menu", True);
+						Layers::Hide("Quickplay", True);
+						Layers::Hide("Top", True);
+						Layers::Hide("Playsessions", True);
+						Layers::Hide("News", True);
+						Layers::Show("AuthBeta", True);
+					}
+					case "Button_Authors": {
+						Layers::Hide("Menu", True);
+						Layers::Hide("Quickplay", True);
+						Layers::Hide("Top", True);
+						Layers::Hide("Playsessions", True);
+						Layers::Hide("News", True);
+						Layers::Show("Authors", True);
+					}
+				}
 			}
-			case "Button_Authorize": {
-				Authorize = True;
+			case Layers::Get("Authors"): {
+				switch(Event.CustomEventType) {
+					case "Button_Exit": {
+						Layers::Show("Menu", True);
+						Layers::Show("Quickplay", True);
+						Layers::Show("Top", True);
+						Layers::Show("Playsessions", True);
+						Layers::Show("News", True);
+						Layers::Hide("Authors", False);
+					}
+				}
 			}
 		}
 	}
@@ -44,15 +74,5 @@ Void Loop() {
 		Loading::SetLoading(Map.CollectionName, Map);
 		TitleControl.PlayMap(Map.FileName, "TrackMania/SkinSelect.Script.txt", "");
 		VisitMap = False;
-	}
-	
-	if(Authorize) {
-		Layers::Hide("Menu", True);
-		Layers::Hide("Quickplay", True);
-		Layers::Hide("Top", True);
-		Layers::Hide("Playsessions", True);
-		Layers::Hide("News", True);
-		Layers::Show("AuthBeta", True);
-		Authorize = False;
 	}
 }

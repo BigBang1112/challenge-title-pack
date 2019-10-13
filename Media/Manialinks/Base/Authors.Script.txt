@@ -1,0 +1,15 @@
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseClick: {
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON_EXIT": {
+					SendCustomEvent("Button_Exit", []);
+					PlayAudio(Sound_Click);
+				}
+			}
+		}
+	}
+}
+***

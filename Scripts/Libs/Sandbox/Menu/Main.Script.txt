@@ -17,29 +17,33 @@ Void Event(CManiaAppEvent _Event) {
 	declare Event <=> _Event;
 
 	if(Event.Type == CManiaAppEvent::EType::LayerCustomEvent) {
-		switch(Event.CustomEventType) {
-			case "Button_Exit": {
-				Menu_Quit();
-			}
-			case "Button_CreateChallenge": {
-				Layers::Show("Editor", True);
-				Layers::Hide("Menu", True);
-				Layers::Hide("Quickplay", True);
-				Layers::Hide("Top", True);
-				Layers::Hide("Playsessions", True);
-				Layers::Hide("News", True);
-				
-				Layers::SendEvent("Editor","UpdateLocalScripto");
-				Layers::SendEvent("Notification", "Position", ["140 45"]);
-			}
-			case "Button_Replays": {
-				Layers::Show("Replays", True);
-				Layers::Show("ReplayInfo", True);
-				Layers::Hide("Menu", True);
-				Layers::Hide("Quickplay", True);
-				Layers::Hide("Top", True);
-				Layers::Hide("Playsessions", True);
-				Layers::Hide("News", True);
+		switch(_Event.CustomEventLayer) {
+			case Layers::Get("Menu"): {
+				switch(Event.CustomEventType) {
+					case "Button_Exit": {
+						Menu_Quit();
+					}
+					case "Button_CreateChallenge": {
+						Layers::Show("Editor", True);
+						Layers::Hide("Menu", True);
+						Layers::Hide("Quickplay", True);
+						Layers::Hide("Top", True);
+						Layers::Hide("Playsessions", True);
+						Layers::Hide("News", True);
+						
+						Layers::SendEvent("Editor","UpdateLocalScripto");
+						Layers::SendEvent("Notification", "Position", ["140 45"]);
+					}
+					case "Button_Replays": {
+						Layers::Show("Replays", True);
+						Layers::Show("ReplayInfo", True);
+						Layers::Hide("Menu", True);
+						Layers::Hide("Quickplay", True);
+						Layers::Hide("Top", True);
+						Layers::Hide("Playsessions", True);
+						Layers::Hide("News", True);
+					}
+				}
 			}
 		}
 	}

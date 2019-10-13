@@ -27,6 +27,11 @@ foreach(Event,PendingEvents) {
 				}
 				case "QUAD_BUTTON_JOIN": {
 					SendCustomEvent("Button_Authorize", []);
+					PlayAudio(Sound_Click);
+				}
+				case "QUAD_BUTTON_AUTHORS": {
+					SendCustomEvent("Button_Authors", []);
+					PlayAudio(Sound_Click);
 				}
 			}
 		}

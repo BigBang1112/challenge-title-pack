@@ -1,0 +1,37 @@
+<frame>
+	<label pos="-145 75" z-index="0" size="120 10" text="$oENTIRETY CONSTRUCTED BY" textfont="Oswald" textsize="8" textemboss="1"/>
+	<label pos="-70 52" z-index="0" size="200 30" text="$o$n$i$fffBIGBANG1112" valign="center2" textfont="RajdhaniMono" textsize="25" textemboss="1" halign="center" style="TextCardMedium" scriptevents="1"/>
+	<label pos="-120 40" z-index="0" size="120 10" text="$o$i... CODE, DESIGN, MEDIA, MUSIC ..." textfont="Oswald" textsize="6" textemboss="1"/>
+	<label pos="-20 30" z-index="0" size="120 10" text="$o$i... DOCUMENTATION, CZECH TRANSLATION ..." textfont="Oswald" textsize="3" textemboss="1" halign="right"/>
+	
+	<frame pos="90 75">
+		<label z-index="0" size="100 15" text="$oSPECIAL THANKS TO MY AMAZING ORGANIZERS" textfont="Oswald" textsize="6" textemboss="1" halign="center" autonewline="1"/>
+		<label pos="0 -25" z-index="0" size="100 20" text="$i$0ad»$0bcт$0cbо$1daм" halign="center" valign="center2" textfont="RajdhaniMono" textsize="20" textemboss="1" hidden="0" style="TextCardMedium" scriptevents="1"/>
+		<label pos="0 -40" z-index="0" size="100 20" text="$o$f30/$fff/$o $i$39fИн$f0f.$FFFpekatour$000'" halign="center" valign="center2" textfont="RajdhaniMono" textsize="10" textemboss="1" style="TextCardMedium" scriptevents="1"/>
+		<label pos="0 -55" z-index="0" size="100 20" text="$fd0CS P$FC0o$FA0u$F90t$F80r$F60el$z $000_|,,/'" halign="center" valign="center2" textfont="RajdhaniMono" textsize="10" textemboss="1" style="TextCardMedium" scriptevents="1"/>
+	</frame>
+	
+	<frame pos="90 5">
+		<label z-index="0" size="100 75" text="$oACTIVE BETA TESTERS" textfont="Oswald" textsize="6" textemboss="1" halign="center"/>
+		<label pos="0 -15" z-index="0" size="100 20" text="$000D$f81E$000L$f81E$000T$f81E$000_$f81C$000L$f81U$000B" halign="center" valign="center2" textfont="RajdhaniMono" textsize="8" textemboss="1" hidden="0" style="TextCardMedium" scriptevents="1"/>
+		<label pos="0 -25" z-index="0" size="100 20" text="$FFFm$09Fx$000.$fffคгкєร»$i$0ffиѕт$fff!" halign="center" valign="center2" textfont="RajdhaniMono" textsize="8" textemboss="1" hidden="0" style="TextCardMedium" scriptevents="1"/>
+		<label pos="0 -35" z-index="0" size="100 20" text="$s$fffmime$0ff.$fffс$0ffט$fffт" halign="center" valign="center2" textfont="RajdhaniMono" textsize="8" textemboss="1" hidden="0" style="TextCardMedium" scriptevents="1"/>
+		<label pos="0 -45" z-index="0" size="100 20" text="$fff$o$nwörtex$0c0.$ffflcg" halign="center" valign="center2" textfont="RajdhaniMono" textsize="8" textemboss="1" hidden="0" style="TextCardMedium" scriptevents="1"/>
+		<label pos="0 -55" z-index="0" size="100 20" text="$fff$iM4x1 $i$i$0CCฟ$0EEß$0FF〞" halign="center" valign="center2" textfont="RajdhaniMono" textsize="8" textemboss="1" hidden="0" style="TextCardMedium" scriptevents="1"/>
+		<label pos="0 -65" z-index="0" size="100 20" text="$77dBlue$99fSheep" halign="center" valign="center2" textfont="RajdhaniMono" textsize="8" textemboss="1" hidden="0" style="TextCardMedium" scriptevents="1"/>
+		<label pos="0 -75" z-index="0" size="100 20" text="$i$f60L$f93ź$ff9f$f93i$f60x" halign="center" valign="center2" textfont="RajdhaniMono" textsize="8" textemboss="1" hidden="0" style="TextCardMedium" scriptevents="1"/>
+	</frame>
+	
+	<label pos="-145 17.5" z-index="0" size="150 10" text="$oWEB DESIGN:$z $i$0ad»$0bcт$0cbо$1daм" textfont="Oswald" textsize="10" halign="left" textemboss="1"/>
+	
+	<label pos="-145 0" z-index="0" size="150 10" text="$oTRANSLATORS" textfont="Oswald" textsize="6" textemboss="1" halign="left"/>
+	<label pos="-145 -10" z-index="0" size="150 40" text="$i$0ad»$0bcт$0cbо$1daм$z , $o$f30/$fff/$o $i$39fИн$f0f.$FFFpekatour$000'$z , $i$39cT$fffR$f30F $z- $39F$iИн$f0f.$39FS$FFFigeth $o$fe0ו$f00ו $z , $fff$o$nwörtex$0c0.$ffflcg$z" textfont="Oswald" textsize="6" textemboss="1" halign="left" autonewline="1"/>
+	
+	<label pos="-145 -55" z-index="0" size="160 8" text="$oTHANK YOU NADEO FOR BEAUTIFUL MAPS" textfont="Oswald" textsize="6" textemboss="1"/>
+	<label pos="-145 -65" z-index="0" size="160 8" text="$oTHANK YOU NADEO FOR TRACKMANIA" textfont="Oswald" textsize="6" textemboss="1"/>
+
+	<frame pos="140 -60" z-index="1">
+		<quad z-index="0" size="20 20" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="600" id="QUAD_BUTTON_EXIT" class="opacity"/>
+		<label pos="0 -11.8" z-index="1" size="20 20" text="" halign="center" valign="center2" textfont="RajdhaniMono" class="opacity" textsize="8"/>
+	</frame>
+</frame>
