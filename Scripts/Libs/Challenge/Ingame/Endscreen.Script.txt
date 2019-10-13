@@ -34,6 +34,8 @@ Void SubmitRecord() {
 	RecordParams.MapUid = Map.MapInfo.MapUid;
 	RecordParams.Time = Server_EndRaceInfo.Finish.Time;
 	RecordParams.Checkpoints = Server_EndRaceInfo.Finish.Checkpoints;
+	RecordParams.Distance = Server_EndRaceInfo.Finish.Distance;
+	RecordParams.Stunts = Server_EndRaceInfo.Finish.Stunts;
 
 	declare Success = Service_Record::AsyncRecord("RECORD", LocalUser, RecordParams);
 	if(!Success) Layers::SendEvent("Endscreen", "RecordFail");

@@ -2,6 +2,8 @@
 	Integer Timestamp;
 	Integer Time;
 	Integer[] Checkpoints;
+	Real Distance;
+	Integer Stunts;
 }
 
 #Struct SPerformance {
@@ -51,6 +53,8 @@
 	Text Nickname;
 	Integer Time;
 	Integer[] Checkpoints;
+	Real Distance;
+	Integer Stunts;
 }
 
 #Struct SLeaderboard {
@@ -62,6 +66,8 @@
 	Integer LastRecord;
 	Integer ActivityPoints;
 	Integer Skillpoints;
+	Real ShortestDistance;
+	Integer MostStuntPoints;
 	Real WRPB;
 	Text Gamemode;
 	SRanking[Text] Rankings;
@@ -91,6 +97,7 @@ declare Frame_Discord = (Page.GetFirstChild("FRAME_DISCORD") as CMlFrame);
 declare Frame_Discord_Users = [(Frame_Discord.GetFirstChild("FRAME_USER#1") as CMlFrame),(Frame_Discord.GetFirstChild("FRAME_USER#2") as CMlFrame)];
 
 declare Frame_LB_Global_Records = (Page.GetFirstChild("FRAME_LB_GLOBAL_RECORDS") as CMlFrame);
+declare Frame_LB_Shortest_Distance = (Page.GetFirstChild("FRAME_LB_SHORTEST_DISTANCE") as CMlFrame);
 
 declare Frame_Fastest_Time = (Page.GetFirstChild("FRAME_FASTEST_TIME") as CMlFrame);
 declare Frame_Shortest_Distance = (Page.GetFirstChild("FRAME_SHORTEST_DISTANCE") as CMlFrame);
@@ -266,10 +273,17 @@ foreach(Event,PendingEvents) {
 							(Frame_Fastest_Time.GetFirstChild("LABEL_TIME") as CMlLabel).SetText(TimeToTextWithMilli(BestRecord));
 							SlideText_Set((Frame_Fastest_Time.GetFirstChild("LABEL_RANK") as CMlLabel), (Frame_Fastest_Time.GetFirstChild("LABEL_RANK_2") as CMlLabel), TextLib::Join("    ",Ranks), 15);
 						}
-						if(Type == "Distance")
+						if(Type == "Distance") {
+							(Frame_Shortest_Distance.GetFirstChild("LABEL_TIME") as CMlLabel).SetText(RecordSet.ShortestDistance^"");
 							SlideText_Set((Frame_Shortest_Distance.GetFirstChild("LABEL_RANK") as CMlLabel), (Frame_Shortest_Distance.GetFirstChild("LABEL_RANK_2") as CMlLabel), TextLib::Join("    ",Ranks), 15);
-						if(Type == "Stunt")
+						}
+						if(Type == "Stunt") {
+							if(RecordSet.MostStuntPoints < 0)
+								(Frame_Most_Acrobatic.GetFirstChild("LABEL_TIME") as CMlLabel).SetText("-");
+							else
+								(Frame_Most_Acrobatic.GetFirstChild("LABEL_TIME") as CMlLabel).SetText(RecordSet.MostStuntPoints^"");
 							SlideText_Set((Frame_Most_Acrobatic.GetFirstChild("LABEL_RANK") as CMlLabel), (Frame_Most_Acrobatic.GetFirstChild("LABEL_RANK_2") as CMlLabel), TextLib::Join("    ",Ranks), 15);
+						}
 						if(Type == "FirstLap")
 							SlideText_Set((Frame_First_Lap.GetFirstChild("LABEL_RANK") as CMlLabel), (Frame_First_Lap.GetFirstChild("LABEL_RANK_2") as CMlLabel), TextLib::Join("    ",Ranks), 15);
 						if(Type == "BestLap")
@@ -291,6 +305,32 @@ foreach(Event,PendingEvents) {
 
 							declare Label_Record = (Frame_Record.GetFirstChild("LABEL_RECORD") as CMlLabel);
 							Label_Record.SetText(RankColor^TextLib::FormatInteger(Record.Rank, 2)^")$z "^TimeToTextWithMilli(Record.Time));
+
+							declare Label_Nickname = (Frame_Record.GetFirstChild("LABEL_NICKNAME") as CMlLabel);
+							Label_Nickname.SetText(Record.Nickname);
+
+							Frame_Record.Show();
+						}
+						else {
+							Frame_Record.Hide();
+						}
+					}
+
+					for(I,0,Frame_LB_Shortest_Distance.Controls.count-1) {
+						declare Frame_Record = (Frame_LB_Shortest_Distance.Controls[I] as CMlFrame);
+						if(RecordResult["Distance"].Leaderboards["World"].Records.existskey(I)) {
+							declare Record = RecordResult["Distance"].Leaderboards["World"].Records[I];
+							
+							declare RankColor = "";
+							switch(Record.Rank) {
+								case 1: { RankColor = "$FF0"; }
+								case 2: { RankColor = "$DDD"; }
+								case 3: { RankColor = "$A62"; }
+								default: { RankColor = "$AAA"; }
+							}
+
+							declare Label_Record = (Frame_Record.GetFirstChild("LABEL_RECORD") as CMlLabel);
+							Label_Record.SetText(RankColor^TextLib::FormatInteger(Record.Rank, 2)^")$z "^Record.Distance);
 
 							declare Label_Nickname = (Frame_Record.GetFirstChild("LABEL_NICKNAME") as CMlLabel);
 							Label_Nickname.SetText(Record.Nickname);

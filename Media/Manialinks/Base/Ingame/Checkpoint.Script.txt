@@ -14,6 +14,8 @@
 	Integer Timestamp;
 	Integer Time;
 	Integer[] Checkpoints;
+	Real Distance;
+	Integer Stunts;
 }
 
 #Struct SPerformance {

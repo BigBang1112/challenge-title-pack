@@ -19,7 +19,7 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 	declare UI <=> _Mode.UIManager.GetUI(Player);
 	
 	switch(_Event.Type) {
-		case CTmModeEvent::EType::GiveUp: {			
+		case CTmModeEvent::EType::GiveUp: {
 			declare SStunt[] CurrentStunts for Player;
 			CurrentStunts.clear();
 		}

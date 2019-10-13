@@ -13,6 +13,8 @@
 	Text Nickname;
 	Integer Time;
 	Integer[] Checkpoints;
+	Real Distance;
+	Integer Stunts;
 }
 
 #Struct SLeaderboard {
@@ -24,6 +26,8 @@
 	Integer LastRecord;
 	Integer ActivityPoints;
 	Integer Skillpoints;
+	Real ShortestDistance;
+	Integer MostStuntPoints;
 	Real WRPB;
 	Text Gamemode;
 	SRanking[Text] Rankings;
@@ -36,6 +40,16 @@
 	Text Vehicle;
 	Integer Time;
 	Integer[] Checkpoints;
+	Real Distance;
+	Integer Stunts;
+}
+
+#Struct SMidRecordParams {
+	Text UserToken;
+	Text MapUid;
+	Text Vehicle;
+	Integer LapNumber;
+	Integer LapTime;
 }
 
 Void Record(CUser _User, SRecordParams _Params) {

@@ -1,4 +1,5 @@
 #Include "TextLib" as TextLib
+#Include "MathLib" as MathLib
 
 #Include "Libs/BigBang1112/File.Script.txt" as File
 #Include "Libs/BigBang1112/Task.Script.txt" as Task
@@ -9,6 +10,8 @@
 	Integer Timestamp;
 	CGhost Ghost;
 	CGhost NicerGhost;
+	Real Distance;
+	Integer Stunts;
 }
 
 #Struct SPerformance_Server {
@@ -21,6 +24,8 @@
 	Integer Timestamp;
 	Integer Time;
 	Integer[] Checkpoints;
+	Real Distance;
+	Integer Stunts;
 }
 
 #Struct SPerformance {
@@ -234,6 +239,15 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 				declare SFinish_Server Finish_Server;
 				Finish_Server.Timestamp = Now;
 				Finish_Server.Ghost = ScoreMgr.Playground_GetPlayerGhost(_Event.Player);
+				Finish_Server.Distance = _Event.Distance;
+				
+				declare metadata Integer StuntTimeLimit for Map;
+				if(StuntTimeLimit == 0)
+					Finish_Server.Stunts = -1;
+				else {
+					declare StuntPenalty = MathLib::FloorInteger((Finish_Server.Ghost.Result.Time-StuntTimeLimit)/100.);
+					Finish_Server.Stunts = _Event.StuntsScore-MathLib::Max(0, StuntPenalty);
+				}
 				
 				declare SPerformance_Server Performance_Server;
 				Performance_Server.BestFinishIndex = -1;
@@ -253,6 +267,8 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 				Finish.Time = Finish_Server.Ghost.Result.Time;
 				foreach(Checkpoint, Finish_Server.Ghost.Result.Checkpoints)
 					Finish.Checkpoints.add(Checkpoint);
+				Finish.Distance = Finish_Server.Distance;
+				Finish.Stunts = Finish_Server.Stunts;
 				
 				declare netwrite SPerformance[Text] Performances for _Event.Player.Score;
 				declare SPerformance Performance;

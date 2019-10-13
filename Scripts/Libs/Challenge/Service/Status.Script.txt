@@ -1,5 +1,4 @@
 #Include "Libs/BigBang1112/Http.Script.txt" as Http
-#Include "Libs/BigBang1112/Auth.Script.txt" as Auth
 
 #Include "Libs/Challenge/Notification.Script.txt" as Notification
 
@@ -96,7 +95,7 @@
 	Text Token;
 }
 
-#Const C_Host "https://challenge.bigbang1112.eu"
+#Const C_Host "http://server.bigbang1112.eu/challenge"
 
 Void ProcessNotifications(CUser _User, SStatus _Status) {
 	if(_Status.User.count > 0)

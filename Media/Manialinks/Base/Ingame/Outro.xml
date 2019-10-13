@@ -16,7 +16,7 @@
 			<label pos="0 -.5" z-index="0" size="60 15" text="{{{{EXIT}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="5" textcolor="EEE"/>
 		</frame>
 	</frame>
-	<frame pos="-155 15">
+	<frame pos="-155 15" hidden="1">
 		<quad pos="0 0" z-index="-1" size="60 90" style="Bgs1" substyle="BgCardList" valign="center"/>
 		<quad pos="0 0" z-index="-1" size="60 90" style="Bgs1" substyle="BgGradV" valign="center"/>
 		<label pos="30 36.5" z-index="0" size="50 5" text="$o{{{{SHORTEST_DISTANCE}}}}" halign="center" textfont="Oswald" valign="bottom"/>

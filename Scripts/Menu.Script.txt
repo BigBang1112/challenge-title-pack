@@ -111,7 +111,7 @@ main() {
 			GetUnauthorizedToken(Status);
 		}
 		
-		Layers::Hide("Loading");
+		Layers::Destroy("Loading");
 		
 		Menu_Release::Start();
 		wait(Menu_Release::Loop());
