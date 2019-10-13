@@ -559,8 +559,12 @@ Void UpdateScriptList(Integer _Offset) {
 			declare Folders = TextLib::Split("\\ ",Script.Name);
 			if(ScriptLocation == "Official")
 				Label.SetText(Folders[Folders.count-1]);
-			else if(ScriptLocation == "Local")
-				Label.SetText(Folders[Folders.count-1]^".Script.txt");
+			else if(ScriptLocation == "Local") {
+				if(Folders.count == 0)
+					Label.SetText("[bugged].Script.txt");
+				else
+					Label.SetText(Folders[Folders.count-1]^".Script.txt");
+			}
 
 			if(Nicknames.existskey(Script.Metadata.AuthorLogin) && Nicknames[Script.Metadata.AuthorLogin] != "")
 				LabelAuthor.SetText("{{{{by}}}} "^Nicknames[Script.Metadata.AuthorLogin]);
@@ -635,7 +639,7 @@ Void UpdateScriptList(Integer _Offset) {
 				(Page.GetFirstChild("LABEL_SCRIPT_NAME") as CMlLabel).SetText("{{{{OFFICIAL}}}} / " ^ Folders[Folders.count-1]);
 			}
 			if(ScriptLocation == "Local") {
-				(Page.GetFirstChild("LABEL_SCRIPT_NAME") as CMlLabel).SetText("{{{{LOCAL}}}} / " ^ Folders[Folders.count-1]);
+				(Page.GetFirstChild("LABEL_SCRIPT_NAME") as CMlLabel).SetText("{{{{LOCAL}}}} / " ^ Folders[Folders.count-1] ^".Script.txt");
 			}
 		}
 	}
