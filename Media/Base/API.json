@@ -433,6 +433,11 @@
  			"Explanation": "How many times the random function was called. This variable is used internally to modify randomizer seed."
 		},
 		{
+			"Type": "Integer",
+			"Name": "RandomSeed",
+ 			"Explanation": "Randomizer seed defined by the map copper size."
+		},
+		{
 			"Type": "SChProblem",
 			"Name": "Solver_Problem",
  			"Explanation": "Usable only in Solver. The problem user has selected."
