@@ -85,7 +85,7 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 	
 	declare SPerformance_Server[Text] Performances_Server for _Player.Score;
 	declare Performance = Performances_Server[VehicleName];
-	if(Performance.BestFinishIndex != -1)
+	if(Performance.BestFinishIndex != -1 && Performance.Finishes[Performance.BestFinishIndex].Ghost != Null)
 		declare Ghost = _Mode.RaceGhost_Add(Performance.Finishes[Performance.BestFinishIndex].Ghost, True);
 		
 	declare netread Text[] SelectedGhostFiles for UI;
@@ -95,7 +95,7 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 		declare GhostTask = DataFileMgr.Replay_Load(File);
 		wait(!GhostTask.IsProcessing);
 		if(GhostTask.HasSucceeded) {
-			if(GhostTask.Ghosts.count > 0)
+			if(GhostTask.Ghosts.count > 0 && GhostTask.Ghosts[0] != Null)
 			declare Ghost = _Mode.RaceGhost_Add(GhostTask.Ghosts[0], False);
 		}
 		DataFileMgr.TaskResult_Release(GhostTask.Id);
