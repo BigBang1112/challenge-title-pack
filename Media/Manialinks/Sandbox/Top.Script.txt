@@ -25,6 +25,9 @@ foreach(Event,PendingEvents) {
 					}
 					PlayAudio(Sound_Click);
 				}
+				case "QUAD_BUTTON_JOIN": {
+					SendCustomEvent("Button_Authorize", []);
+				}
 			}
 		}
 		case CMlScriptEvent::Type::PluginCustomEvent: {
@@ -41,6 +44,9 @@ foreach(Event,PendingEvents) {
 					Start = -1;
 
 					AnimMgr.Add(Page.GetFirstChild("FRAME_TOP"), "<frame pos=\"0 120\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+				}
+				case "HideJoin": {
+					Page.GetFirstChild("FRAME_JOIN").Hide();
 				}
 			}
 		}

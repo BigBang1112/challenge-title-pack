@@ -1,0 +1,12 @@
+***Start***
+***
+Page.GetClassChildren("LOADING", Page.MainFrame, True);
+***
+
+***Loop***
+***
+
+foreach(Control,Page.GetClassChildren_Result) {
+	Control.RelativeRotation += Period / 5.0;
+}
+***

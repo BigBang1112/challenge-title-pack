@@ -29,10 +29,8 @@ SAccess GetAccess() {
 	return Access;
 }
 
-Void Start() {
-	declare Status = Service_Status::LastStatus(LocalUser);
-	Layers::Create("AuthBeta", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme), True);
-	declare Success = Auth2::AsyncAuthorize("Authorize", "b1a3d10ba7", "basic maps", Status.Global.Service^"/auth.php");
+Void Init() {
+	Layers::Create("AuthBeta", Manialink::FromFile(C_Manialink, True, [], Settings::Get().Theme));
 }
 
 Void Event(CManiaAppEvent _Event) {
@@ -44,6 +42,18 @@ Void Event(CManiaAppEvent _Event) {
 				if(AcceptUrl != "") {
 					declare Success = Auth2::AsyncAuthorize("Authorize", AcceptUrl);
 				}
+				else {
+					declare Status = Service_Status::LastStatus(LocalUser);
+					declare Success = Auth2::AsyncAuthorize("Authorize", "b1a3d10ba7", "basic maps", Status.Global.Service^"/auth.php");
+				}
+			}
+			case "Back": {
+				Layers::Show("Menu", True);
+				Layers::Show("Quickplay", True);
+				Layers::Show("Top", True);
+				Layers::Show("Playsessions", True);
+				Layers::Show("News", True);
+				Layers::Hide("AuthBeta", False);
 			}
 			default: {
 				
@@ -63,7 +73,6 @@ Void Async() {
 			}
 			else {
 				AcceptUrl = Result.AcceptUrl;
-				Layers::SendEvent("AuthBeta", "ShowAuthWindow");
 			}
 		}
 		else {
@@ -74,10 +83,15 @@ Void Async() {
 	if(Http::IsCompleted("Redirect")) {
 		if(Http::IsSuccessful("Redirect")) {
 			declare JsonSuccess = Access.fromjson(Http::GetResult("Redirect"));
-			if(!Access.Pass) Layers::SendEvent("AuthBeta", "ShowNoAccess");
 			
-			declare Text CHALLENGE_TOKEN for LocalUser;
-			CHALLENGE_TOKEN = Access.UserToken;
+			Layers::Show("Menu", True);
+			Layers::Show("Quickplay", True);
+			Layers::Show("Top", True);
+			Layers::Show("Playsessions", True);
+			Layers::Show("News", True);
+			Layers::Hide("AuthBeta", False);
+			
+			Layers::SendEvent("Top", "HideJoin");
 		}
 		else {
 			log("Redirect: " ^ Http::GetStatusCode("Redirect"));

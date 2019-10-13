@@ -12,7 +12,7 @@
 	<frame id="FRAME_CONNECTIONLONG" hidden="1">
 		<label pos="0 -0.5" z-index="0" size="200 10" text="{{{{AUTHBETA_CONNECTIONLONG}}}}..." halign="center" valign="center2" textsize="6" textfont="RajdhaniMono" textemboss="1"/>
 	</frame>
-	<frame id="FRAME_AUTH" hidden="1" z-index="1">
+	<frame id="FRAME_AUTH" hidden="0" z-index="1">
 		<quad pos="0 0" z-index="-1" size="100 110" bgcolor="FFFA" halign="center" valign="center" style="Bgs1" substyle="BgCardList" class="opacity"/>
 		<quad pos="0 0" z-index="0" size="100 110" bgcolor="FFFA" halign="center" valign="center" style="Bgs1" substyle="BgGradV" class="opacity"/>
 		<label pos="0 45" z-index="1" size="90 10" text="{{{{AUTHBETA_WELCOME}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="4"/>
@@ -45,7 +45,11 @@
 		<label pos="0 -35" z-index="1" size="90 10" text="{{{{AUTHBETA_NOABUSE}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="1.2"/>
 		<frame z-index="1" pos="0 -45">
 			<quad z-index="0" size="90 10" halign="center" valign="center" style="Bgs1" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_BUTTON_AUTHORIZE"/>
-			<label pos="0 -0.25" z-index="1" size="90 10" text="{{{{AUTHBETA_AUTHORIZE}}}}" valign="center2" halign="center" textfont="RajdhaniMono"/>
+			<label pos="0 -0.25" z-index="1" size="80 10" text="{{{{AUTHBETA_AUTHORIZE}}}}" valign="center2" halign="center" textfont="RajdhaniMono"/>
+		</frame>
+		<frame z-index="1" pos="40 61">
+			<quad z-index="0" size="10 10" halign="center" valign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="600" id="QUAD_BUTTON_EXIT"/>
+			<label pos="0 -0.8" z-index="1" size="10 10" text="" valign="center2" halign="center" textfont="RajdhaniMono"/>
 		</frame>
 	</frame>
 </frame>

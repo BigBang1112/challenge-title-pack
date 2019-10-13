@@ -1,0 +1,4 @@
+<frame class="LOADING">
+	<quad pos="0.2 -0.2" z-index="0" size="20 20" halign="center" valign="center" style="BgRaceScore2" substyle="SandTimer" colorize="000"/>
+	<quad pos="0 0" z-index="1" size="20 20" halign="center" valign="center" style="BgRaceScore2" substyle="SandTimer"/>
+</frame>

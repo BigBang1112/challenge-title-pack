@@ -1,4 +1,5 @@
 #Include "Libs/BigBang1112/Http.Script.txt" as Http
+#Include "Libs/BigBang1112/Auth.Script.txt" as Auth
 
 #Include "Libs/Challenge/Notification.Script.txt" as Notification
 
@@ -42,6 +43,7 @@
 	Boolean HasCampaign;
 	Boolean HasMaker;
 	Integer HasEnvimixLicense;
+	Boolean Authorized;
 	Notification::SNotification[] Notifications;
 }
 
@@ -88,10 +90,13 @@
 
 #Struct SStatusParams {
 	Text TitleId;
+	Text UserToken;
+	
+	Text Login; // Unauthorized but still indentifiable status check
 	Text Token;
 }
 
-#Const C_Host "http://server.bigbang1112.eu/challenge"
+#Const C_Host "https://challenge.bigbang1112.eu"
 
 Void ProcessNotifications(CUser _User, SStatus _Status) {
 	if(_Status.User.count > 0)
@@ -101,18 +106,24 @@ Void ProcessNotifications(CUser _User, SStatus _Status) {
 	Notification::Update();
 }
 
-SStatusParams GetStatusParams(CUser _User) {
+SStatusParams GetStatusParams(CUser _User, Text _IngameToken) {
 	declare SStatusParams Params;
 	Params.TitleId = LoadedTitle.TitleId;
 	if(_User != Null) {
-		declare Text CHALLENGE_TOKEN for _User;
-		Params.Token = CHALLENGE_TOKEN;
+		if(_IngameToken == "") {
+			declare Text CHALLENGE_TOKEN for _User;
+			Params.UserToken = CHALLENGE_TOKEN;
+		}
+		else {
+			Params.Login = _User.Login;
+			Params.Token = _IngameToken;
+		}
 	}
 	return Params;
 }
 
-SStatus CheckStatus(CUser _User) {
-	declare Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User).tojson());
+SStatus CheckStatus(CUser _User, Text _IngameToken) {
+	declare Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
 	declare SStatus Status;
 	declare JsonSuccess = Status.fromjson(Request.Result);
 	Http.Destroy(Request);
@@ -121,6 +132,10 @@ SStatus CheckStatus(CUser _User) {
 	declare SStatus[] States for _User;
 	States.add(Status);
 	return Status;
+}
+
+SStatus CheckStatus(CUser _User) {
+	return CheckStatus(_User, "");
 }
 
 SStatus LastStatus(CUser _User) {
@@ -226,8 +241,12 @@ Text AsyncGetResult(Text _Name) {
 	return Http::GetResult(_Name);
 }
 
+Boolean AsyncCheckStatus(Text _Name, CUser _User, Text _IngameToken) {
+	return Http::AsyncPOST(_Name, C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
+}
+
 Boolean AsyncCheckStatus(Text _Name, CUser _User) {
-	return Http::AsyncPOST(_Name, C_Host^"/status.php", GetStatusParams(_User).tojson());
+	return AsyncCheckStatus(_Name, _User, "");
 }
 
 SStatus GetAsyncCheckStatusResult(Text _Name, CUser _User) {

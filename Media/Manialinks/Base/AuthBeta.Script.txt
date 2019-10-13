@@ -4,8 +4,8 @@ Page.GetFirstChild("SC_SLIDELABEL_LOGIN").DataAttributeSet("text",LocalUser.Logi
 Page.GetFirstChild("SC_SLIDELABEL_NICKNAME").DataAttributeSet("text",LocalUser.Name);
 Page.GetFirstChild("SC_SLIDELABEL_ZONE").DataAttributeSet("text",TextLib::Replace(LocalUser.ZonePath,"|"," | "));
 
-Page.GetFirstChild("FRAME_REQUESTING").RelativeScale = 0.;
-AnimMgr.Add(Page.GetFirstChild("FRAME_REQUESTING"), "<frame scale=\"1\" hidden=\"0\" />", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+//Page.GetFirstChild("FRAME_REQUESTING").RelativeScale = 0.;
+//AnimMgr.Add(Page.GetFirstChild("FRAME_REQUESTING"), "<frame scale=\"1\" hidden=\"0\" />", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 ***
 
 ***Loop***
@@ -15,6 +15,9 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseClick: {
 			if(Event.ControlId == "QUAD_BUTTON_AUTHORIZE") {
 				SendCustomEvent("Authorize", []);
+			}
+			if(Event.ControlId == "QUAD_BUTTON_EXIT") {
+				SendCustomEvent("Back", []);
 			}
 		}
 		case CMlScriptEvent::Type::PluginCustomEvent: {

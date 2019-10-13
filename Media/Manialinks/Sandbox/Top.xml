@@ -15,7 +15,7 @@
 		<quad pos="0.1 -0.1" z-index="0" size="40 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_BUTTON_LANGUAGES"/>
 		<label pos="0 -0.25" z-index="1" size="30 10" text="{{{{LANGUAGES}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
 	</frame>
-	<frame pos="42.5 0">
+	<frame pos="42.5 0" id="FRAME_JOIN">
 		<quad z-index="0" size="80 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
 		<quad pos="0.1 -0.1" z-index="0" size="80 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_BUTTON_JOIN"/>
 		<label pos="0 -0.25" z-index="1" size="70 10" text="{{{{JOIN_CHALLENGE}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>

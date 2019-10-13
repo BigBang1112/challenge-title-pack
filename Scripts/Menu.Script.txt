@@ -4,12 +4,14 @@
 #Include "ColorLib" as ColorLib
 #Include "TimeLib" as TimeLib
 
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/Auth.Script.txt" as Auth
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
 #Include "Libs/BigBang1112/Time.Script.txt" as Time
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Auth2.Script.txt" as Auth2
 
 #Include "Libs/Sandbox/Menu/Quickplay.Script.txt" as Menu_Quickplay
 #Include "Libs/Sandbox/Menu/Main.Script.txt" as Menu_Main
@@ -30,6 +32,17 @@
 
 #Setting S_Devmode True
 
+Void GetUnauthorizedToken(Service_Status::SStatus _Status) {
+	declare Request = Http::SyncGET("""{{{_Status.Global.Service}}}/auth.php?login={{{LocalUser.Login}}}&token={{{Auth::GetToken().Value}}}""");
+	if(Http::IsSuccessfulStatusCode(Request.StatusCode)) {
+		declare Menu_AuthBeta::SAccess Access;
+		declare JsonSuccess = Access.fromjson(Request.Result);
+		declare Text CHALLENGE_TOKEN for LocalUser;
+		CHALLENGE_TOKEN = Access.UserToken;
+	}
+	Http.Destroy(Request);
+}
+
 main() {
 	while(True) { // Restart mechanism
 		Settings::Restart(False);
@@ -39,63 +52,96 @@ main() {
 		Dictionary::SetTranslationFolder("Media/Translations");
 		Dictionary::SetTranslationLanguage(Settings::Get().Language);
 		
-		declare Status = Service_Status::CheckStatus(LocalUser);
-		while(!Status.Global.Running) {
-			sleep(10000);
-			Status = Service_Status::CheckStatus(LocalUser);
-		}
-		
 		Auth::Start();
 		
-		Menu_AuthBeta::Start();
-		while(!Menu_AuthBeta::GetAccess().Pass) {
-			foreach(Event,PendingEvents) {
-				Menu_AuthBeta::Event(Event);
-			}
+		Notification::Init();
+		yield;
 		
-			Menu_AuthBeta::Async();
-			
-			Auth::Loop();
-			Menu_AuthBeta::Loop();
-			yield;
+		Layers::Create("Loading", Manialink::FromFile("Media/Manialinks/Loading", False, [], Settings::Get().Theme), True);
+		
+		declare Status = Service_Status::CheckStatus(LocalUser, Auth::GetToken().Value);
+		while(!Status.Global.Running) {
+			sleep(10000);
+			Status = Service_Status::CheckStatus(LocalUser, Auth::GetToken().Value);
 		}
-		Menu_AuthBeta::End();
+		
+		declare Authorized = False;
+		
+		if(Status.User.count > 0) {
+			if(Status.User[0].Authorized) {
+				declare Success = Auth2::AsyncAuthorize("Authorize", "b1a3d10ba7", "basic maps", Status.Global.Service^"/auth.php");
+				while(True) {
+					if(Auth2::IsCompleted("Authorize")) {
+						if(Auth2::IsSuccessful("Authorize")) {
+							declare Result = Auth2::GetAsyncAuthorizeResult("Authorize");
+							if(Result.AlreadyAccepted) {
+								declare Success = Http::AsyncGET("Redirect", Result.RedirectUrl);
+							}
+						}
+						else {
+							log("Authorize: " ^ Auth2::GetStatusCode("Authorize"));
+						}
+						Auth2::Destroy("Authorize");
+					}
+					
+					if(Http::IsCompleted("Redirect")) {
+						if(Http::IsSuccessful("Redirect")) {
+							declare Menu_AuthBeta::SAccess Access;
+							declare JsonSuccess = Access.fromjson(Http::GetResult("Redirect"));
+							declare Text CHALLENGE_TOKEN for LocalUser;
+							CHALLENGE_TOKEN = Access.UserToken;
+							break;
+						}
+						else {
+							log("Redirect: " ^ Http::GetStatusCode("Redirect"));
+						}
+						Http::Destroy("Redirect");
+					}
+					
+					Auth::Loop();
+					yield;
+				}
+				Authorized = True;
+			}
+			else {
+				GetUnauthorizedToken(Status);
+			}
+		}
+		else {
+			GetUnauthorizedToken(Status);
+		}
+		
+		Layers::Hide("Loading");
 		
 		Menu_Release::Start();
 		wait(Menu_Release::Loop());
-		
-		Notification::Init();
-		
-		Status = Service_Status::CheckStatus(LocalUser);
-		while(!(Status.Global.InsiderAccess || Menu_AuthBeta::GetAccess().Organizer || Menu_AuthBeta::GetAccess().Owner)) {
-			log("Insiders don't have access to the title pack at the moment.");
-			sleep(10000);
-			Status = Service_Status::CheckStatus(LocalUser);
-		}
 		
 		yield;
 		
 		Layers::Create("Preload", Manialink::FromFile("Media/Manialinks/Preload", False, [], Settings::Get().Theme), True);
 		Menu_Main::Init();
-		Layers::SendEvent("Preload", "Progress", 1/7.);
+		Layers::SendEvent("Preload", "Progress", 1/8.);
 		yield;
 		Menu_Quickplay::Init();
-		Layers::SendEvent("Preload", "Progress", 2/7.);
+		Layers::SendEvent("Preload", "Progress", 2/8.);
 		yield;
 		Menu_Top::Init();
-		Layers::SendEvent("Preload", "Progress", 3/7.);
+		Layers::SendEvent("Preload", "Progress", 3/8.);
 		yield;
 		Menu_Editor::Init();
-		Layers::SendEvent("Preload", "Progress", 4/7.);
+		Layers::SendEvent("Preload", "Progress", 4/8.);
 		yield;
 		Menu_Playsessions::Init();
-		Layers::SendEvent("Preload", "Progress", 5/7.);
+		Layers::SendEvent("Preload", "Progress", 5/8.);
 		yield;
 		Menu_News::Init();
-		Layers::SendEvent("Preload", "Progress", 6/7.);
+		Layers::SendEvent("Preload", "Progress", 6/8.);
 		yield;
 		Menu_Replays::Init();
-		Layers::SendEvent("Preload", "Progress", 7/7.);
+		Layers::SendEvent("Preload", "Progress", 7/8.);
+		yield;
+		Menu_AuthBeta::Init();
+		Layers::SendEvent("Preload", "Progress", 8/8.);
 		sleep(300);
 		Layers::Destroy("Preload");
 		sleep(200);
@@ -115,13 +161,15 @@ main() {
 		Menu_News::Start();
 		yield;
 		Menu_Replays::Start();
-		
+		yield;
+		if(Authorized) Layers::SendEvent("Top", "HideJoin");
+		yield;
 		NotificationPresets::Notify_Campaign(LocalUser);
-		
+		yield;
 		if(S_Devmode) {
 			Devmode::Start();
 		}
-	
+		
 		while(!Settings::IsRestarting()) {
 			foreach(Event,PendingEvents) {
 				Layers::Event(Event);
@@ -132,6 +180,7 @@ main() {
 				Menu_Playsessions::Event(Event);
 				Menu_News::Event(Event);
 				Menu_Replays::Event(Event);
+				Menu_AuthBeta::Event(Event);
 				Notification::Event(Event);
 			}
 			
@@ -142,6 +191,7 @@ main() {
 			Menu_Playsessions::Async();
 			Menu_News::Async();
 			Menu_Replays::Async();
+			Menu_AuthBeta::Async();
 			Notification::Async();
 	
 			Auth::Loop();
