@@ -25,6 +25,7 @@ declare Frame_Info <=> (Page.GetFirstChild("FRAME_INFO") as CMlFrame);
 
 declare Label_Time <=> (Page.GetFirstChild("LABEL_TIME") as CMlLabel);
 declare Label_Speed <=> (Page.GetFirstChild("LABEL_SPEED") as CMlLabel);
+declare Label_Distance <=> (Page.GetFirstChild("LABEL_DISTANCE") as CMlLabel);
 declare Gauge_RPM <=> (Page.GetFirstChild("GAUGE_RPM") as CMlGauge);
 declare Quad_Steer_Left <=> (Page.GetFirstChild("QUAD_STEER_LEFT") as CMlQuad);
 declare Quad_Steer_Right <=> (Page.GetFirstChild("QUAD_STEER_RIGHT") as CMlQuad);
@@ -187,6 +188,7 @@ switch(GetOwner().RaceState) {
 Label_Time.SetText(TimeToTextWithMilli(PlayerTime));
 Label_Speed.SetText(""^GetOwner().DisplaySpeed);
 Label_Speed.RelativeScale = RpmRatio*.2+0.9;
+Label_Distance.SetText(""^MathLib::FloorInteger(GetOwner().Distance));
 Gauge_RPM.Ratio = RpmRatio;
 Gauge_RPM.RelativeScale = GetOwner().EngineTurboRatio*.25+1;
 
