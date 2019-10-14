@@ -38,7 +38,7 @@
 					<quad z-index="-1" size="150 10" style="Bgs1" substyle="NavButtonBlink" hidden="0" modulatecolor="333"/>
 					<quad z-index="-1" size="150 10" style="Bgs1" substyle="NavButtonBlink" hidden="0" modulatecolor="333"/>
 					<entry pos="3 -5" z-index="0" size="50 6" default="" valign="center2" id="ENTRY_MAPLIST_LOCAL_SEARCH"/>
-					<label pos="56 -5.3" z-index="0" size="20 5" text="$o{{{{MORE_FILTERS}}}}" valign="center2" textfont="Oswald" style="TextButtonBig" scriptevents="1" id="LABEL_MOREFILTERS_LOCAL"/>
+					<label pos="56 -5.3" z-index="0" size="20 5" text="$o{{{{MORE_FILTERS}}}}" valign="center2" textfont="Oswald" style="TextButtonBig" scriptevents="1" id="LABEL_MOREFILTERS_LOCAL" hidden="1"/>
 					
 					<quad z-index="0" pos="144 -5" size="8 8" valign="center" halign="center" style="UIConstruction_Buttons" substyle="Reload" id="QUAD_MAPLIST_REFRESH" scriptevents="1"/>
 				</frame>
