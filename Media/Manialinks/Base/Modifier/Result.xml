@@ -2,7 +2,7 @@
 	<frame id="FRAME_SUCCESS">
 		<quad pos="-150 0" z-index="-1" size="300 10" bgcolor="FFFA" style="Bgs1" substyle="BgCardList" class="opacity" scriptevents="1"/>
 		<quad pos="-150 0" z-index="0" size="300 10" bgcolor="FFFA" style="Bgs1" substyle="BgGradV" valign="top" class="opacity"/>
-		<label pos="150 5" z-index="0" size="20 5" text="Interface" style="CardButtonSmallS" scriptevents="1" id="LABEL_INTERFACE" valign="center" halign="right"/>
+		<label pos="150 5" z-index="0" size="20 5" text="Interface" style="CardButtonSmallS" scriptevents="1" id="LABEL_INTERFACE" valign="center" halign="right" hidden="1"/>
 		<frame pos="-125" clip="True" clipposn="0 30" clipsizen="82 60">
 			<frame pos="0 0" id="FRAME_SHADOWS" hidden="1">
 				<quad z-index="-2" size="50 51" bgcolor="000A" valign="top" style="Bgs1" substyle="BgCardList" scriptevents="1" halign="center"/>

@@ -142,28 +142,21 @@ switch(Solver_Problem.Name) {
 
 		declare Removed = False;
 		while(!Removed) {
-			declare BlockName = Event_MapModified();
-			if(BlockName != "") {
-				declare Checkpoints = GetCheckpoints();
-				declare Boolean Exists;
-				foreach(Checkpoint, Checkpoints) {
-					if(Checkpoint.IsBlock && Solver_Problem.Waypoints[0].Block.Id == Checkpoint.Block.Id)
-						Exists = True;
-					if(Checkpoint.IsItem && Solver_Problem.Waypoints[0].Item.Position == Checkpoint.Item.Position)
-						Exists = True;
-				}
-
-				log(BlockName);
-
-				if(Exists) {
-					Editor.HideEditorInterface = False;
-					Editor.EditMode = CMapEditorPlugin::EditMode::Place;
-					SetCursorBlock(BlockName);
-				}
-				else Removed = True;
+			declare Checkpoints = GetCheckpoints();
+			declare Boolean Exists;
+			foreach(Checkpoint, Checkpoints) {
+				if(Checkpoint.IsBlock && Solver_Problem.Waypoints[0].Block.Id == Checkpoint.Block.Id)
+					Exists = True;
+				if(Checkpoint.IsItem && Solver_Problem.Waypoints[0].Item.Position == Checkpoint.Item.Position)
+					Exists = True;
 			}
 
-			yield;
+			if(Exists) {
+				
+			}
+			else Removed = True;
+
+			sleep(500);
 		}
 
 		Editor.HideEditorInterface = True;

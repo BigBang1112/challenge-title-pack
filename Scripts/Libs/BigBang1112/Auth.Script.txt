@@ -271,7 +271,7 @@ Void AuthorizeInExternal(Text _ClientId, Text _Scopes, Text _RedirectUri) {
 }
 
 Void Start() {
-	  declare Token = GetNewToken();
+	declare Token = GetNewToken();
 	if(Auth_Token.Successful) log("[Auth.Script.txt] First automatic token: "^Auth_Token.Value);
 }
 

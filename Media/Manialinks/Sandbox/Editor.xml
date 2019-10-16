@@ -33,7 +33,7 @@
 		<frame id="FRAME_DOC" clip="True" clipposn="30 60" clipsizen="230 280" hidden="1">
 			<quad pos="32.5 -8" z-index="0" size="229.5 137" bgcolor="0004" halign="center" valign="center"/>
 			<frame pos="-75 55" z-index="1">
-				<label z-index="0" size="220 10" text="$oCHALLENGE API" textsize="8" textfont="OswaldMono"/>
+				<label z-index="0" size="220 10" text="$l[https://challenge.bigbang1112.eu/docs/#/reference]$oCHALLENGE API" textsize="8" textfont="OswaldMono"/>
 				<frame clip="True" clipsizen="130 110" clipposn="65 -70" scroll="True" scrollgrid="0 10" id="FRAME_OUTER_CHALLENGE_API">
 					<frame id="FRAME_CHALLENGE_API"/>
 				</frame>
@@ -42,15 +42,19 @@
 					<quad z-index="1" size="1 20" style="Bgs1" substyle="BgWindow4" opacity="1" halign="center" pos="1 0" id="QUAD_SCROLLBAR" scriptevents="1"/>
 				</frame>
 				<frame pos="140">
-					<label z-index="0" size="220 10" text="$oGETTING STARTED" textsize="8" textfont="OswaldMono"/>
+					<label z-index="0" size="220 10" text="$l[https://challenge.bigbang1112.eu/docs]$oGETTING STARTED" textsize="8" textfont="OswaldMono"/>
 					<frame pos="0 -13">
 						<label z-index="0" size="220 5" text="$l[https://doc.maniaplanet.com/maniascript/syntax-basics]Learn ManiaScript syntax" textsize="4" pos="0 0" textfont="Oswald"/>
-						<label z-index="0" size="220 5" text="$l[]Labels and structures" textsize="4" pos="0 -10" textfont="Oswald"/>
-						<label z-index="0" size="220 5" text="$l[]Understanding the modification script" textsize="4" pos="0 -20" textfont="Oswald"/>
+						<label z-index="0" size="220 5" text="$l[https://challenge.bigbang1112.eu/docs/#/understanding-modification-scripts]Understanding modification scripts" textsize="4" pos="0 -10" textfont="Oswald"/>
+						<label z-index="0" size="220 5" text="$l[https://challenge.bigbang1112.eu/docs/#/making-your-first-modification]Making your first modification" textsize="4" pos="0 -20" textfont="Oswald"/>
 						<label z-index="0" size="220 5" text="$l[https://maniaplanet.github.io/maniascript-reference]See the ManiaScript reference" textsize="4" pos="0 -30" textfont="Oswald"/>
 					</frame>
 				</frame>
 			</frame>
+		</frame>
+		<frame pos="-70 60" id="FRAME_PUBLISHING" clip="True" clipposn="100 1" clipsizen="230 280" hidden="1">
+			<label pos="0 -50" z-index="0" size="227.5 5" text="PUBLISHING COMING SOON" valign="center2" textsize="3" textfont="BiryaniDemiBold"/>
+			<label pos="0 -60" z-index="0" size="227.5 5" text="I just want to make sure that best out of publishing can be achieved. Meanwhile you can share your scripts on $l[https://discord.gg/v6TW88m]my Discord$l." valign="center2" textsize="2" textfont="BiryaniDemiBold"/>
 		</frame>
 	</frame>
 	<frame>

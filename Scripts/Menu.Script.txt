@@ -30,7 +30,7 @@
 #Include "Libs/Challenge/Devmode.Script.txt" as Devmode
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
-#Setting S_Devmode True
+#Setting S_Devmode False
 
 Void GetUnauthorizedToken(Service_Status::SStatus _Status) {
 	declare Request = Http::SyncGET("""{{{_Status.Global.Service}}}/auth.php?login={{{LocalUser.Login}}}&token={{{Auth::GetToken().Value}}}""");
@@ -40,6 +40,7 @@ Void GetUnauthorizedToken(Service_Status::SStatus _Status) {
 		declare Text CHALLENGE_TOKEN for LocalUser;
 		CHALLENGE_TOKEN = Access.UserToken;
 	}
+	else Dialog_Message("HTTP ERROR "^Request.StatusCode^"\nTry to reload the title pack.");
 	Http.Destroy(Request);
 }
 
@@ -79,7 +80,7 @@ main() {
 							}
 						}
 						else {
-							log("Authorize: " ^ Auth2::GetStatusCode("Authorize"));
+							Dialog_Message("HTTP ERROR "^Auth2::GetStatusCode("Authorize")^"\nTry to reload the title pack.");
 						}
 						Auth2::Destroy("Authorize");
 					}
@@ -93,7 +94,7 @@ main() {
 							break;
 						}
 						else {
-							log("Redirect: " ^ Http::GetStatusCode("Redirect"));
+							Dialog_Message("HTTP ERROR "^Auth2::GetStatusCode("Redirect")^"\nTry to reload the title pack.");
 						}
 						Http::Destroy("Redirect");
 					}

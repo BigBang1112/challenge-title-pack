@@ -89,6 +89,7 @@ Void CheckStatus() {
 					ContainsThisMap = True;
 					Layers::SendEvent("Playsession", "Count", Playsession.Users.count^"");
 					Layers::SendEvent("Playsession", "Users", Playsession.Users.tojson());
+					Layers::SendEvent("Playsession", "UpdateChat", Playsession.Chat.tojson());
 
 					declare Text PlaysessionSecret for This;
 					

@@ -4,6 +4,8 @@
 	Text Content;
 	Text Type;
 	Text Date;
+	Text Manialink;
+	Text Link;
 }
 
 declare Boolean IsOpen;
@@ -86,6 +88,9 @@ Void UpdateNotifications() {
 				(Page.GetFirstChild("LABEL_SHORTDESCRIPTION") as CMlLabel).SetText(Notification.Content ^ " ");
 			}
 		}
+
+		(Page.GetFirstChild("QUAD_CLICKABLE") as CMlQuad).DataAttributeSet("manialink",Notification.Manialink);
+		(Page.GetFirstChild("QUAD_CLICKABLE") as CMlQuad).DataAttributeSet("link",Notification.Link);
 	}
 	else {
 		(Page.GetFirstChild("LABEL_TITLE") as CMlLabel).SetText("");
@@ -189,6 +194,11 @@ foreach(Event,PendingEvents) {
 				UpdateNotifications();
 
 				PlayAudio(Sound_ClickSoft);
+			}
+			if(Event.ControlId == "QUAD_CLICKABLE") {
+				if(Event.Control.DataAttributeGet("manialink") != "") {
+					OpenLink(Event.Control.DataAttributeGet("manialink"), CMlScript::LinkType::ManialinkBrowser);
+				}
 			}
 		}
 		case CMlScriptEvent::Type::PluginCustomEvent: {

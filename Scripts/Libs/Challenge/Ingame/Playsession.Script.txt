@@ -105,6 +105,17 @@ Void Event(CManiaAppEvent _Event) {
 
 							declare Success = Service_Map::AsyncPublish("PUBLISH", LocalUser, Params);
 						}
+						case "SendMessage": {
+							declare Text PlaysessionSecret for This;
+							declare Text CHALLENGE_TOKEN for LocalUser;
+
+							declare Service_Status::SMessageParams Params;
+							Params.UserToken = CHALLENGE_TOKEN;
+							Params.PlaysessionSecret = PlaysessionSecret;
+							Params.Message = _Event.CustomEventData[0];
+
+							declare Success = Http::AsyncPOST("MESSAGE", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/ingame/message.php""", Params.tojson());
+						}
 					}
 				}
 			}
@@ -128,15 +139,22 @@ Void Async() {
 			declare SuccessMap = Http::AsyncPOST("MAP", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/map.php?uid={{{Map.MapInfo.MapUid}}}&vehicle={{{TextLib::Join(",",VehicleNames)}}}""", CHALLENGE_TOKEN);
 		}
 		else {
-
+			Dialog_Message("HTTP ERROR "^Service_Map::AsyncGetStatusCode("PUBLISH")^"\nCouldn't publish the map.");
 		}
 		Service_Map::AsyncDestroy("PUBLISH");
 	}
 
 	if(Http::IsCompleted("PLAYSESSION")) {
 		if(Http::IsSuccessful("PLAYSESSION")) {
-			log(Http::GetResult("PLAYSESSION"));
+			
 		}
 		Http::Destroy("PLAYSESSION");
+	}
+
+	if(Http::IsCompleted("MESSAGE")) {
+		if(Http::IsSuccessful("MESSAGE")) {
+			declare Success = Service_Status::AsyncCheckStatus("STATUS", LocalUser);
+		}
+		Http::Destroy("MESSAGE");
 	}
 }

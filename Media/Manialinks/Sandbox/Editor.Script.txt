@@ -96,18 +96,28 @@ foreach(Event,PendingEvents) {
 			PlayAudio(Sound_Click);
 			Page.GetFirstChild("FRAME_SCRIPTING").Show();
 			Page.GetFirstChild("FRAME_DOC").Hide();
+			Page.GetFirstChild("FRAME_PUBLISHING").Hide();
 			(Page.GetFirstChild("QUAD_BUTTON_DOC") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
+			(Page.GetFirstChild("QUAD_BUTTON_PUBLISH") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
 			(Page.GetFirstChild("QUAD_BUTTON_SCRIPT") as CMlQuad).ModulateColor = <0.0,0.2,0.4>;
 		}
 		if(Event.ControlId == "QUAD_BUTTON_DOC") {
 			PlayAudio(Sound_Click);
 			Page.GetFirstChild("FRAME_SCRIPTING").Hide();
 			Page.GetFirstChild("FRAME_DOC").Show();
+			Page.GetFirstChild("FRAME_PUBLISHING").Hide();
 			(Page.GetFirstChild("QUAD_BUTTON_DOC") as CMlQuad).ModulateColor = <0.0,0.2,0.4>;
+			(Page.GetFirstChild("QUAD_BUTTON_PUBLISH") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
 			(Page.GetFirstChild("QUAD_BUTTON_SCRIPT") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
 		}
 		if(Event.ControlId == "QUAD_BUTTON_PUBLISH") {
 			PlayAudio(Sound_Click);
+			Page.GetFirstChild("FRAME_SCRIPTING").Hide();
+			Page.GetFirstChild("FRAME_DOC").Hide();
+			Page.GetFirstChild("FRAME_PUBLISHING").Show();
+			(Page.GetFirstChild("QUAD_BUTTON_DOC") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
+			(Page.GetFirstChild("QUAD_BUTTON_PUBLISH") as CMlQuad).ModulateColor = <0.0,0.2,0.4>;
+			(Page.GetFirstChild("QUAD_BUTTON_SCRIPT") as CMlQuad).ModulateColor = <0.2,0.2,0.2>;
 		}
 		if(Event.ControlId == "BUTTON_CREATECHALLENGE_BACK") {
 			if(End == -1)
@@ -159,6 +169,12 @@ foreach(Event,PendingEvents) {
 			SelectedScriptIndex = TextLib::ToInteger(Event.Control.Parent.DataAttributeGet("id"));
 			UpdateLocalScripto(SelectedScriptIndex);
 			PlayAudio(Sound_Click);
+		}
+		if(Event.ControlId == "LABEL_FUNCTION") {
+			SendCustomEvent("Explain", [Event.Control.DataAttributeGet("name"), Event.Control.DataAttributeGet("explanation")]);
+		}
+		if(Event.ControlId == "LABEL_GLOBAL") {
+			SendCustomEvent("Explain", [Event.Control.DataAttributeGet("name"), Event.Control.DataAttributeGet("explanation")]);
 		}
 	}
 	if(Event.Type == CMlScriptEvent::Type::EntrySubmit) {
@@ -287,11 +303,13 @@ if(End == -1) {
 	if(Now - Start <= 1000) {
 		(Page.GetFirstChild("FRAME_SCRIPTING") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseOutQuad(Now - Start - 400, 0.0, 280.0, 500);
 		(Page.GetFirstChild("FRAME_DOC") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseOutQuad(Now - Start - 400, 0.0, 280.0, 500);
+		(Page.GetFirstChild("FRAME_PUBLISHING") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseOutQuad(Now - Start - 400, 0.0, 280.0, 500);
 		(Page.GetFirstChild("FRAME_INNER_PANEL") as CMlFrame).ClipWindowRelativePosition.Y = AnimLib::EaseOutQuad(Now - Start, 90.0, -160.0, 500);
 	}
 	else {
 		(Page.GetFirstChild("FRAME_SCRIPTING") as CMlFrame).ClipWindowSize.Y = 280.0;
 		(Page.GetFirstChild("FRAME_DOC") as CMlFrame).ClipWindowSize.Y = 280.0;
+		(Page.GetFirstChild("FRAME_PUBLISHING") as CMlFrame).ClipWindowSize.Y = 280.0;
 		(Page.GetFirstChild("FRAME_INNER_PANEL") as CMlFrame).ClipWindowRelativePosition.Y = -70.0;
 
 		Page.GetFirstChild("FRAME_BUTTON_SCRIPT").RelativePosition_V3 = <-55.,70.>;
@@ -322,6 +340,7 @@ if(End == -1) {
 else {
 	(Page.GetFirstChild("FRAME_SCRIPTING") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseOutQuad(Now - End, 280.0, -280.0, 400);
 	(Page.GetFirstChild("FRAME_DOC") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseOutQuad(Now - End, 280.0, -280.0, 400);
+	(Page.GetFirstChild("FRAME_PUBLISHING") as CMlFrame).ClipWindowSize.Y = AnimLib::EaseOutQuad(Now - End, 280.0, -280.0, 400);
 	(Page.GetFirstChild("FRAME_INNER_PANEL") as CMlFrame).ClipWindowRelativePosition.Y = AnimLib::EaseOutQuad(Now - End, -70.0, -160.0, 500);
 	if(Now - End > 1000) {
 		SendCustomEvent("Hide_Response", []);

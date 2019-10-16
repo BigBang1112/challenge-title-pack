@@ -11,6 +11,8 @@
 	Text Content;
 	Text Type;
 	Text Date;
+	Text Manialink;
+	Text Link;
 }
 
 #Const C_Manialink "Media/Manialinks/Base/Notification"

@@ -49,8 +49,8 @@
 #Struct SMessage {
 	Text Login;
 	Text Nickname;
-	Text Message;
-	Text Time;
+	Text Content;
+	Text Date;
 }
 
 #Struct SUser {
@@ -95,7 +95,13 @@
 	Text Token;
 }
 
-#Const C_Host "http://server.bigbang1112.eu/challenge"
+#Struct SMessageParams {
+	Text UserToken;
+	Text PlaysessionSecret;
+	Text Message;
+}
+
+#Const C_Host "https://challenge.bigbang1112.eu"
 
 Void ProcessNotifications(CUser _User, SStatus _Status) {
 	if(_Status.User.count > 0)

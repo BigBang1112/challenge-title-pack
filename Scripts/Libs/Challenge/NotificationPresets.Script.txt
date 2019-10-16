@@ -19,6 +19,7 @@ Void Notify_Campaign(CUser _User) {
 		Notification.Name = "TRY_CAMPAIGN";
 		Notification.Title = Dictionary::Get("NOTIFICATION_TRY_CAMPAIGN_TITLE");
 		Notification.Content = Dictionary::Get("NOTIFICATION_TRY_CAMPAIGN_CONTENT");
+		Notification.Manialink = "challenge?campaign";
 		Notify(_User, Notification);
 	}
 }

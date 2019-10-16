@@ -12,6 +12,7 @@
 #Include "Libs/Challenge/Conversion.Script.txt" as Conversion
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 #Include "Libs/Challenge/Processor.Script.txt" as Processor
+#Include "Libs/Challenge/Notification.Script.txt" as Notification
 
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
@@ -207,6 +208,7 @@ Void Finish() {
 						return;
 					}
 					case "Button_Exit": {
+						if(Terminate) DefineProblemResult(Problems);
 						Quit();
 					}
 					case "Button_Validate": {
@@ -728,6 +730,9 @@ main() {
 		Layers::SendEvent("ModifierSolutions", "Position", "-100 10");
 		Layers::SendEvent("ModifierSolutions", "Size", "100 60");
 		Layers::SendEvent("ModifierSolutions", "Animation_Out", "-210 10");
+		
+		Notification::Init();
+		Notification::Start(<150.,-47.5>);
 	}
 	
 	if(Problems.count > 0) {

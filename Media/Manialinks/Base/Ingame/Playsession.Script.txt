@@ -14,6 +14,15 @@
 	Text Nickname;
 }
 
+#Struct SChatMessage {
+	Text Nickname;
+	Text Login;
+	Text Zone;
+	Text Content;
+	Text Date;
+	Text Timestamp;
+}
+
 ***Start***
 ***
 declare SPublicMap PublicMap;
@@ -25,6 +34,15 @@ declare Integer EndOfYellow = -1;
 ***
 foreach(Event,PendingEvents) {
 	switch(Event.Type) {
+		case CMlScriptEvent::Type::EntrySubmit: {
+			switch(Event.ControlId) {
+				case "ENTRY_CHAT": {
+					declare Message = (Event.Control as CMlEntry).Value;
+					SendCustomEvent("SendMessage", [Message]);
+					(Event.Control as CMlEntry).Value = "";
+				}
+			}
+		}
 		case CMlScriptEvent::Type::MouseOver: {
 			switch(Event.ControlId) {
 				case "LABEL_COUNT": {
@@ -122,6 +140,25 @@ foreach(Event,PendingEvents) {
 					(Page.GetFirstChild("QUAD_BUTTON_PUBLISH_DISABLE") as CMlQuad).Show();
 					(Page.GetFirstChild("QUAD_BUTTON_PUBLISH") as CMlQuad).ModulateColor = <.2, .4, .2>;
 					(Page.GetFirstChild("LABEL_BUTTON_PUBLISH") as CMlLabel).TextColor = <.5, .5, .5>;
+				}
+				case "UpdateChat": {
+					declare SChatMessage[] Messages;
+					declare JsonSuccess = Messages.fromjson(Event.CustomEventData[0]);
+
+					declare Frame_Chat = (Page.GetFirstChild("FRAME_CHAT_INNER") as CMlFrame);
+					for(I, 0, Frame_Chat.Controls.count-1) {
+						declare Index = Frame_Chat.Controls.count-1-I;
+						declare Frame = (Frame_Chat.Controls[Index] as CMlFrame);
+
+						if(Messages.existskey(I)) {
+							declare M = Messages[I];
+							(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText(M.Nickname);
+							(Frame.GetFirstChild("LABEL_DATE") as CMlLabel).SetText(M.Date);
+							(Frame.GetFirstChild("LABEL_CONTENT") as CMlLabel).SetText(M.Content);
+							Frame.Show();
+						}
+						else Frame.Hide();
+					}
 				}
 			}
 		}

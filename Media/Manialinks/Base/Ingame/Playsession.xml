@@ -6,39 +6,41 @@
 				<quad z-index="1" size="50 60" valign="bottom" halign="center" style="Bgs1" substyle="BgGradV" hidden="0"/>
 				<quad pos="23 60" z-index="0" size="2 50" bgcolor="FFFA" style="Bgs1" substyle="BgCardList"/>
 				<frame z-index="2">
-					<frame pos="-25 60">
-						<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
-						<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
-						<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
-						<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
-					</frame>
-					<frame pos="-25 50">
-						<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
-						<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
-						<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
-						<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
-					</frame>
-					<frame pos="-25 40">
-						<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
-						<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
-						<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
-						<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
-					</frame>
-					<frame pos="-25 30">
-						<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
-						<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
-						<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
-						<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
-					</frame>
-					<frame pos="-25 20">
-						<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
-						<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
-						<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
-						<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
+					<frame id="FRAME_CHAT_INNER" pos="-25 60">
+						<frame hidden="1">
+							<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
+							<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
+							<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
+							<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
+						</frame>
+						<frame pos="0 -10" hidden="1">
+							<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
+							<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
+							<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
+							<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
+						</frame>
+						<frame pos="0 -20" hidden="1">
+							<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
+							<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
+							<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
+							<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
+						</frame>
+						<frame pos="0 -30" hidden="1">
+							<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
+							<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
+							<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
+							<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
+						</frame>
+						<frame pos="0 -40" hidden="1">
+							<quad pos="0 0" z-index="0" size="48 10" style="Bgs1" substyle="BgCardList"/>
+							<label pos="2 -2" z-index="1" size="25 4" text="$o$n$iBIGBANG1112" textsize="1.5" textfont="Oswald" id="LABEL_NICKNAME"/>
+							<label pos="46 -2" z-index="1" size="18 4" text="2019-10-13 20:13:25" textsize="0.5" halign="right" textfont="Oswald" id="LABEL_DATE"/>
+							<label pos="2 -8.5" z-index="1" size="45 4" text="yo wtf is this fuck" textsize="1.5" valign="bottom" textfont="Oswald" id="LABEL_CONTENT"/>
+						</frame>
 					</frame>
 					<frame pos="-22.5 0">
 						<quad pos="-2.5 0" z-index="0" size="50 10" style="Bgs1" substyle="BgCardList" valign="bottom"/>
-						<entry pos="0 2.5" z-index="1" size="45 4" default="" valign="bottom" textsize="1.5"/>
+						<entry pos="0 2.5" z-index="1" size="45 4" default="" valign="bottom" textsize="1.5" id="ENTRY_CHAT"/>
 					</frame>
 				</frame>
 			</frame>

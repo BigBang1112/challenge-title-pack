@@ -3,185 +3,25 @@
 		"Name": "CanyonCar",
 		"Image": "",
 		"File": "Vehicles/CanyonCar.Item.Gbx",
-		"Skins": [
-			{
-				"File": "CanyonCar/Reflective.zip",
-				"Icon": "SkinIcons/CanyonCar/Reflective.dds"
-			},
-			{
-				"File": "CanyonCar/Ace.zip",
-				"Icon": "SkinIcons/CanyonCar/Ace.dds"
-			},
-			{
-				"File": "CanyonCar/Defrag.zip",
-				"Icon": "SkinIcons/CanyonCar/Defrag.dds"
-			},
-			{
-				"File": "CanyonCar/Duke.zip",
-				"Icon": "SkinIcons/CanyonCar/Duke.dds"
-			},
-			{
-				"File": "CanyonCar/EXD.zip",
-				"Icon": "SkinIcons/CanyonCar/EXD.dds"
-			},
-			{
-				"File": "CanyonCar/ForTOne.zip",
-				"Icon": "SkinIcons/CanyonCar/ForTOne.dds"
-			},
-			{
-				"File": "CanyonCar/Fusi5n.zip",
-				"Icon": "SkinIcons/CanyonCar/Fusi5n.dds"
-			},
-			{
-				"File": "CanyonCar/Gramberg.zip",
-				"Icon": "SkinIcons/CanyonCar/Gramberg.dds"
-			},
-			{
-				"File": "CanyonCar/GT500.zip",
-				"Icon": "SkinIcons/CanyonCar/GT500.dds"
-			},
-			{
-				"File": "CanyonCar/JustForward.zip",
-				"Icon": "SkinIcons/CanyonCar/JustForward.dds"
-			},
-			{
-				"File": "CanyonCar/Liberty.zip",
-				"Icon": "SkinIcons/CanyonCar/Liberty.dds"
-			},
-			{
-				"File": "CanyonCar/Magma.zip",
-				"Icon": "SkinIcons/CanyonCar/Magma.dds"
-			},
-			{
-				"File": "CanyonCar/MP.zip",
-				"Icon": "SkinIcons/CanyonCar/MP.dds"
-			},
-			{
-				"File": "CanyonCar/NTeam.zip",
-				"Icon": "SkinIcons/CanyonCar/NTeam.dds"
-			},
-			{
-				"File": "CanyonCar/SafetyCar.zip",
-				"Icon": "SkinIcons/CanyonCar/SafetyCar.dds"
-			},
-			{
-				"File": "CanyonCar/Tecnivals.zip",
-				"Icon": "SkinIcons/CanyonCar/Tecnivals.dds"
-			}
-		]
+		"Skins": []
 	},
 	{
 		"Name": "StadiumCar",
 		"Image": "",
 		"File": "Vehicles/StadiumCar.Item.Gbx",
-		"Skins": [
-			{
-				"File": "StadiumCar/CZE.zip",
-				"Icon": "SkinIcons/StadiumCar/CZE.dds"
-			}
-		]
+		"Skins": []
 	},
 	{
 		"Name": "ValleyCar",
 		"Image": "",
 		"File": "Vehicles/ValleyCar.Item.Gbx",
-		"Skins": [
-			{
-				"File": "ValleyCar/AzurSwift.zip",
-				"Icon": "SkinIcons/ValleyCar/AzurSwift.dds"
-			},
-			{
-				"File": "ValleyCar/Grass99TM.zip",
-				"Icon": "SkinIcons/ValleyCar/Grass99TM.dds"
-			},
-			{
-				"File": "ValleyCar/KingMustard.zip",
-				"Icon": "SkinIcons/ValleyCar/KingMustard.dds"
-			},
-			{
-				"File": "ValleyCar/RedTurn.zip",
-				"Icon": "SkinIcons/ValleyCar/RedTurn.dds"
-			},
-			{
-				"File": "ValleyCar/ShadowMantis.zip",
-				"Icon": "SkinIcons/ValleyCar/ShadowMantis.dds"
-			},
-			{
-				"File": "ValleyCar/StraightBlue.zip",
-				"Icon": "SkinIcons/ValleyCar/StraightBlue.dds"
-			},
-			{
-				"File": "ValleyCar/TheWasp.zip",
-				"Icon": "SkinIcons/ValleyCar/TheWasp.dds"
-			},
-			{
-				"File": "ValleyCar/TriGen.zip",
-				"Icon": "SkinIcons/ValleyCar/TriGen.dds"
-			},
-			{
-				"File": "ValleyCar/WhiteLegend.zip",
-				"Icon": "SkinIcons/ValleyCar/WhiteLegend.dds"
-			},
-			{
-				"File": "ValleyCar/Windleaf.zip",
-				"Icon": "SkinIcons/ValleyCar/Windleaf.dds"
-			}
-		]
+		"Skins": []
 	},
 	{
 		"Name": "LagoonCar",
 		"Image": "",
 		"File": "Vehicles/LagoonCar.Item.Gbx",
-		"Skins": [
-			{
-				"File": "LagoonCar/Aloha.zip",
-				"Icon": "SkinIcons/LagoonCar/Aloha.dds"
-			},
-			{
-				"File": "LagoonCar/Coral.zip",
-				"Icon": "SkinIcons/LagoonCar/Coral.dds"
-			},
-			{
-				"File": "LagoonCar/Farewell.zip",
-				"Icon": "SkinIcons/LagoonCar/Farewell.dds"
-			},
-			{
-				"File": "LagoonCar/jellyfish.zip",
-				"Icon": "SkinIcons/LagoonCar/jellyfish.dds"
-			},
-			{
-				"File": "LagoonCar/Ocean.zip",
-				"Icon": "SkinIcons/LagoonCar/Ocean.dds"
-			},
-			{
-				"File": "LagoonCar/Orchid.zip",
-				"Icon": "SkinIcons/LagoonCar/Orchid.dds"
-			},
-			{
-				"File": "LagoonCar/R3D.zip",
-				"Icon": "SkinIcons/LagoonCar/R3D.dds"
-			},
-			{
-				"File": "LagoonCar/Ray.zip",
-				"Icon": "SkinIcons/LagoonCar/Ray.dds"
-			},
-			{
-				"File": "LagoonCar/Samurai.zip",
-				"Icon": "SkinIcons/LagoonCar/Samurai.dds"
-			},
-			{
-				"File": "LagoonCar/Shark.zip",
-				"Icon": "SkinIcons/LagoonCar/Shark.dds"
-			},
-			{
-				"File": "LagoonCar/Thunder.zip",
-				"Icon": "SkinIcons/LagoonCar/Thunder.dds"
-			},
-			{
-				"File": "LagoonCar/Wave.zip",
-				"Icon": "SkinIcons/LagoonCar/Wave.dds"
-			}
-		]
+		"Skins": []
 	},
 	{
 		"Name": "DesertCar",

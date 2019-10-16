@@ -114,7 +114,7 @@ Void UpdateMedals() {
 		LoadedGhosts.add(Ghost);
 	}
 
-	LoadedGhosts = SortGhosts(LoadedGhosts);
+	//LoadedGhosts = SortGhosts(LoadedGhosts);
 	Layers::SendEvent("Menu", "UpdateLoadedGhosts");
 }
 
@@ -261,7 +261,7 @@ Void Async() {
 						Info.Checkpoints.add(Checkpoint);
 					LoadedGhosts.add(Info);
 
-					LoadedGhosts = SortGhosts(LoadedGhosts);
+					//LoadedGhosts = SortGhosts(LoadedGhosts);
 
 					Layers::SendEvent("Menu", "UpdateLoadedGhosts");
 				}
