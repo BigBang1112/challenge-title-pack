@@ -152,7 +152,10 @@ foreach(Event,PendingEvents) {
 
 						if(Messages.existskey(I)) {
 							declare M = Messages[I];
-							(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText(M.Nickname);
+							if(M.Nickname == "")
+								(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText(M.Login);
+							else
+								(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText(M.Nickname);
 							(Frame.GetFirstChild("LABEL_DATE") as CMlLabel).SetText(M.Date);
 							(Frame.GetFirstChild("LABEL_CONTENT") as CMlLabel).SetText(M.Content);
 							Frame.Show();
