@@ -335,6 +335,14 @@ foreach(Event,PendingEvents) {
 
 					if(CurrentSection == 0)
 						SendCustomEvent("UpdateMedals", []);
+					else {
+						declare ConnectZones = GhostSections;
+						declare Removed = ConnectZones.removekey(0);
+						declare Zone = ConnectZones[0];
+						for(I,1,CurrentSection-1)
+							Zone ^= "|"^ConnectZones[I];
+						SendCustomEvent("FetchRecords", [Zone]);
+					}
 				}
 				case "Open": {
 					ShowInGameMenu();
@@ -451,8 +459,6 @@ else {
 		Quad_Scrollbar.RelativePosition_V3.Y = -ScrollRatio*(56-Quad_Scrollbar.Size.Y);
 
 		PreviousScroll = Frame_Outer_Ghosts.ScrollOffset;
-
-		
 	}
 
 	HoldScrollbar = False;
