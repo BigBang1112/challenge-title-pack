@@ -77,7 +77,7 @@ foreach(Event,RaceEvents) {
 			else {
 				//PlayAudio(Sound_TimeChange);
 				for(I,0,8) {
-					Audio.PlaySoundEvent(CAudioManager::ELibSound::Countdown, 1, .5, I*100);
+					Audio.PlaySoundEvent(CAudioManager::ELibSound::ScoreIncrease, 0, .5, I*80);
 				}
 
 				if(Event.Player.Score != Null)
