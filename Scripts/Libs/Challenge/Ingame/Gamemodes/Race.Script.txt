@@ -264,7 +264,7 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 				Performance_Server.Finishes.add(Finish_Server);
 				
 				Performance_Server.Vehicle = RealVehicles[Server_CurrentVehicle];
-				if(Performance_Server.BestFinishIndex == -1 || Performance_Server.Finishes[Performance_Server.BestFinishIndex].Ghost != Null || Performance_Server.Finishes[Performance_Server.BestFinishIndex].Ghost.Result.Time > Finish_Server.Ghost.Result.Time)
+				if(Performance_Server.BestFinishIndex == -1 || Performance_Server.Finishes[Performance_Server.BestFinishIndex].Ghost.Result.Time > Finish_Server.Ghost.Result.Time)
 					Performance_Server.BestFinishIndex = Performance_Server.Finishes.count-1;
 				
 				Performances_Server[VehicleName] = Performance_Server;
