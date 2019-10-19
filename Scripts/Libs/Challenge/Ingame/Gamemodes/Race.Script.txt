@@ -200,11 +200,19 @@ Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
 		}
 	}
 	
+	declare metadata Vec3[] DisabledFinishes for Map;
+	
 	foreach(Player, _Mode.AllPlayers) {
 		declare UI <=> _Mode.UIManager.GetUI(Player);
 		
 		declare netwrite Vehicle::SVehicle Server_MapVehicle for UI;
 		Server_MapVehicle = MapVehicle;
+	}
+	
+	foreach(Finish,DisabledFinishes) {
+		_Mode.UIManager.UIAll.MarkersXML ^= """
+			<marker label="$f00" pos="{{{Finish.X}}} {{{Finish.Y}}} {{{Finish.Z}}}" box="32 8 32"/>
+		""";
 	}
 	
 	_Mode.CutOffTimeLimit = -1;
