@@ -266,7 +266,6 @@ Void Async() {
 	if(Http::IsCompleted("RECORDS")) {
 		if(Http::IsSuccessful("RECORDS")) {
 			declare SRecord[][Text] Records;
-			log(Http::GetResult("RECORDS"));
 			declare Success = Records.fromjson(Http::GetResult("RECORDS"));
 
 			declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");
@@ -278,7 +277,8 @@ Void Async() {
 			if(Records.existskey(VehicleName))
 			foreach(Record, Records[VehicleName]) {
 				declare SGhostInfo Info;
-				Info.Nickname = Record.Nickname;
+				if(Record.Nickname == "") Info.Nickname = Record.Login;
+				else Info.Nickname = Record.Nickname;
 				Info.Time = Record.Time;
 				LoadedGhosts.add(Info);
 			}
