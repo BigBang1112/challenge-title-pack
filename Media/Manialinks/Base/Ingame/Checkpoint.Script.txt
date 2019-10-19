@@ -87,6 +87,10 @@ foreach(Event,RaceEvents) {
 					declare Performance = Performances[VehicleName];
 
 					declare BestFinish = Performance.Finishes[Performance.BestFinishIndex];
+					if(!BestFinish.Checkpoints.existskey(Event.CheckpointInRace)) {
+						Frame_Differences.Hide();
+						continue;
+					}
 					declare ThisCheckpoint = BestFinish.Checkpoints[Event.CheckpointInRace];
 
 					declare Frame_Time = ((Frame_Differences.Controls[0] as CMlFrame).GetFirstChild("FRAME_TIME") as CMlFrame);
