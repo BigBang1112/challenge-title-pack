@@ -220,6 +220,7 @@ foreach(Event,PendingEvents) {
 				}
 				case "Record": {
 					declare SRecordResult[Text] RecordResult for Page;
+					declare Success = RecordResult.fromjson(Event.CustomEventData[0]);
 					declare Result_Time = RecordResult["Time"];
 
 					PrivateMap = False;
