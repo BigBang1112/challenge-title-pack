@@ -31,3 +31,11 @@ Void Notify_Skins(CUser _User) {
 	Notification.Content = Dictionary::Get("NOTIFICATION_SKINS_CONTENT");
 	Notify(_User, Notification);
 }
+
+Void Notify_DisabledFinishes(CUser _User) {
+	declare Notification::SNotification Notification;
+	Notification.Name = "DISABLED_FINISHES";
+	Notification.Title = Dictionary::Get("NOTIFICATION_DISABLED_FINISHES_TITLE");
+	Notification.Content = Dictionary::Get("NOTIFICATION_DISABLED_FINISHES_CONTENT");
+	Notify(_User, Notification);
+}

@@ -42,6 +42,7 @@
 #Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
 
 declare Boolean SkinNotified;
+declare Boolean DisabledFinishesNotified;
 
 Void ShowIngame() {
 	Layers::Show("Dashboard", True);
@@ -193,6 +194,7 @@ Layers::Hide("Loading");
 declare Boolean Close for This = False;
 declare Text PlaysessionSecret for This;
 SkinNotified = False;
+DisabledFinishesNotified = False;
 
 Ingame_Menu::Start();
 Ingame_Playsession::Start();
@@ -201,12 +203,18 @@ Ingame_Rating::Start();
 Ingame_Outro::Start();
 Ingame_Vehicle::Start();
 
+yield;
+
 declare Boolean IsPauseMenu for Layers::Page("Menu");
 declare Boolean IsBlurred for Layers::Page("Menu");
 
 Ingame_Menu::CheckMode();
 
 Notification::Start(<157.5,40.>);
+
+declare metadata Vec3[] DisabledFinishes for Map;
+if(DisabledFinishes.count > 0)
+	NotificationPresets::Notify_DisabledFinishes(LocalUser);
 
 declare netread Boolean Server_EndRace for UI;
 declare RaceEnded = Server_EndRace;
