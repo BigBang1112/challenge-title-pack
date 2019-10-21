@@ -97,7 +97,7 @@ Boolean SafeRemoveBlock(CBlock _Block) {
 	if(Block == Null) return False;
 	
 	if(Block.BlockScriptId == _Block.BlockScriptId) 
-		return RemoveBlock(_Block.Coord);
+		return RemoveBlock(_Block.BlockModel, _Block.Coord, Conversion::ToDirectionMap(_Block.Direction));
 	return False;
 }
 
@@ -549,7 +549,7 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode)
 					declare Direction = Conversion::ToDirectionMap(Block.Direction);
 					declare Coord = Block.Coord;
 			
-					declare Removed = RemoveBlock(Coord);
+					declare Removed = SafeRemoveBlock(Block);
 					declare Placed = PlaceBlockSpecial(Replacement, Coord, Direction);
 				}
 			}
@@ -562,8 +562,8 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode)
 			declare ModifierBase::SChBlock Block2;
 			declare JsonSuccessBlock2 = Block2.fromjson(_Data[1]);
 
-			declare RemovedBlock1 = RemoveBlock(Block1.Coord);
-			declare RemovedBlock2 = RemoveBlock(Block2.Coord);
+			declare RemovedBlock1 = SafeRemoveBlock(Block1);
+			declare RemovedBlock2 = SafeRemoveBlock(Block2);
 
 			declare PlacedBlock1 = PlaceBlockSpecial(Block2.Name, Block1.Coord, Conversion::ToDirectionMap(Block1.Direction));
 			declare PlacedBlock2 = PlaceBlockSpecial(Block1.Name, Block2.Coord, Conversion::ToDirectionMap(Block2.Direction));
