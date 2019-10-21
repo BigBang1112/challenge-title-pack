@@ -32,6 +32,8 @@ Void UpdatePublicMap(Service_Status::SPublicMap _PublicMap) {
 	}
 }
 
+declare Integer PlaysessionPingTime;
+
 Boolean AsyncPlaysession(Text _Secret, Text _Action) {
 	declare Text CHALLENGE_TOKEN for LocalUser;
 	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
@@ -48,11 +50,15 @@ Boolean AsyncPlaysession(Text _Secret, Text _Action) {
 	Playsession.Action = _Action;
 	Playsession.TitleId = LoadedTitle.TitleId;
 
+	PlaysessionPingTime = Now;
+
 	return Http::AsyncPOST("PLAYSESSION", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/ingame/playsession.php""", Playsession.tojson());
 }
 
 Void Init() {
 	Layers::Create("Playsession", Manialink::FromFile(C_Manialink, True, ["Audio", "TextAnimation"], Settings::Get().Theme));
+
+	PlaysessionPingTime = -1;
 }
 
 Void Start() {
@@ -146,7 +152,8 @@ Void Async() {
 
 	if(Http::IsCompleted("PLAYSESSION")) {
 		if(Http::IsSuccessful("PLAYSESSION")) {
-			
+			declare Integer Ping for Layers::Page("Playsession");
+			Ping = Now - PlaysessionPingTime;
 		}
 		Http::Destroy("PLAYSESSION");
 	}

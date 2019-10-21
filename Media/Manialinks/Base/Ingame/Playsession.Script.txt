@@ -28,6 +28,9 @@
 declare SPublicMap PublicMap;
 declare Integer PreviousCount;
 declare Integer EndOfYellow = -1;
+
+declare Integer Ping for Page;
+Ping = -1;
 ***
 
 ***Loop***
@@ -49,12 +52,43 @@ foreach(Event,PendingEvents) {
 					if(PreviousCount > 0)
 						Page.GetFirstChild("FRAME_TOOLTIP").Show();
 				}
+				case "QUAD_BUTTON_PLAYSESSION": {
+					AnimMgr.Add(Page.GetFirstChild("QUAD_PLAYSESSION_BG"), "<frame size=\"51 20\" opacity=\"1\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+					Page.GetFirstChild("QUAD_BUTTON_PLAYSESSION").DataAttributeSet("open","1");
+
+					AnimMgr.Add(Page.GetFirstChild("FRAME_PLAYSESSION_DETAIL"), "<frame pos=\"0 0\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+					AnimMgr.Add(Page.GetFirstChild("FRAME_PLAYSESSION_DETAIL"), "<frame hidden=\"0\"/>", Now+200, 0, CAnimManager::EAnimManagerEasing::QuadOut);
+					/*foreach(Control,(Page.GetFirstChild("FRAME_PLAYSESSION_DETAIL") as CMlFrame).Controls) {
+						switchtype(Control) {
+							case CMlLabel: {
+								AnimMgr.Flush(Control);
+								AnimMgr.Add(Control, "<label hidden=\"0\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+							}
+						}
+					}*/
+				}
 			}
 		}
 		case CMlScriptEvent::Type::MouseOut: {
 			switch(Event.ControlId) {
 				case "LABEL_COUNT": {
 					Page.GetFirstChild("FRAME_TOOLTIP").Hide();
+				}
+				case "QUAD_BUTTON_PLAYSESSION": {
+					AnimMgr.Add(Page.GetFirstChild("QUAD_PLAYSESSION_BG"), "<quad size=\"51 8\" opacity=\"0\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+					Page.GetFirstChild("QUAD_BUTTON_PLAYSESSION").DataAttributeSet("open","0");
+					
+					AnimMgr.Add(Page.GetFirstChild("FRAME_PLAYSESSION_DETAIL"), "<frame pos=\"0 -12\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+					Page.GetFirstChild("FRAME_PLAYSESSION_DETAIL").Hide();
+					/*foreach(Control,(Page.GetFirstChild("FRAME_PLAYSESSION_DETAIL") as CMlFrame).Controls) {
+						switchtype(Control) {
+							case CMlLabel: {
+								AnimMgr.Add(Control, "<label hidden=\"1\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+							}
+						}
+						AnimMgr.Flush(Control);
+						Control.Hide();
+					}*/
 				}
 			}
 		}
@@ -76,6 +110,9 @@ foreach(Event,PendingEvents) {
 						Page.GetFirstChild("FRAME_CHAT_WINDOW").DataAttributeSet("open","1");
 					}
 				}
+				case "QUAD_BUTTON_PLAYSESSION": {
+					PlayAudio(Sound_ClickSoft);
+				}
 			}
 		}
 		case CMlScriptEvent::Type::PluginCustomEvent: {
@@ -87,6 +124,7 @@ foreach(Event,PendingEvents) {
 					Page.GetFirstChild("FRAME_UNPUBLISHED").Hide();
 					Page.GetFirstChild("FRAME_PUBLISHED").Show();
 					(Page.GetFirstChild("LABEL_COUNT") as CMlLabel).SetText("-");
+					(Page.GetFirstChild("QUAD_THUMBNAIL") as CMlQuad).ChangeImageUrl("file://Thumbnails/MapUid/"^Map.MapInfo.MapUid);
 					PreviousCount = -1;
 				}
 				case "Private": {
@@ -174,4 +212,9 @@ if(EndOfYellow != -1 && EndOfYellow < Now) {
 }
 
 if(Page.GetFirstChild("FRAME_TOOLTIP").Visible) Page.GetFirstChild("FRAME_TOOLTIP").RelativePosition_V3 = <MouseX, MouseY>;
+
+if(Ping == -1)
+	(Page.GetFirstChild("LABEL_PLAYSESSION_PING") as CMlLabel).SetText("-.---s");
+else
+	(Page.GetFirstChild("LABEL_PLAYSESSION_PING") as CMlLabel).SetText(TextLib::FormatReal(Ping/1000.,3,False,False)^"s");
 ***
