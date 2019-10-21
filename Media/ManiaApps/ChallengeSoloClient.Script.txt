@@ -404,10 +404,10 @@ if(Server_CurrentVehicle != OldVehicle) { // If server vehicle was changed
 	if(Server_CurrentVehicle >= 0) { // If vehicle is selected
 		Layers::SendEvent("Menu", "Car", Server_Vehicles[Server_CurrentVehicle].Name);
 		Layers::SendEvent("Map", "Car", Server_Vehicles[Server_CurrentVehicle].Name);
-		Map.MapName = """({{{OriginalMap.CollectionName}}}) {{{OriginalMap.Name}}}.{{{TextLib::Replace(Map.MapStyle, "+", "")}}} [{{{Server_Vehicles[Server_CurrentVehicle].Name}}}]""";
+		Map.MapName = """({{{OriginalMap.CollectionName}}}) {{{OriginalMap.Name}}} - {{{TextLib::Replace(Map.MapStyle, "+", "")}}} [{{{Server_Vehicles[Server_CurrentVehicle].Name}}}]""";
 	}
 	else { // If vehicle is not selected
-		Map.MapName = """({{{OriginalMap.CollectionName}}}) {{{OriginalMap.Name}}}.{{{TextLib::Replace(Map.MapStyle, "+", "")}}}""";
+		Map.MapName = """({{{OriginalMap.CollectionName}}}) {{{OriginalMap.Name}}} - {{{TextLib::Replace(Map.MapStyle, "+", "")}}}""";
 		Layers::SendEvent("Menu", "Car", "");
 		Layers::SendEvent("Map", "Car", "");
 	}
