@@ -93,7 +93,7 @@ Boolean IsSpecialBlock(Text _BlockName) {
 
 Boolean SafeRemoveBlock(CBlock _Block) {
 	if(_Block == Null) return False;
-	declare Block = GetBlock(_Block.Coord);
+	declare Block = GetBlock(_Block.BlockModel, _Block.Coord, Conversion::ToDirectionMap(_Block.Direction));
 	if(Block == Null) return False;
 	
 	if(Block.BlockScriptId == _Block.BlockScriptId) 
@@ -159,7 +159,7 @@ ModifierBase::SChallengeBlock PlaceBlockSpecial(Text _BlockName, Int3 _Coord, ::
 
 		yield; //Required so that AnchorData actually updates, thanks Nadeo
 
-		declare Block = GetBlock(_Coord);
+		declare Block = GetBlock(BlockModel, _Coord, _Direction);
 		if(Block != Null) {
 			Result.Placed = True;
 			Result.Block = Block;
