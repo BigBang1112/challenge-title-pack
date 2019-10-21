@@ -74,6 +74,9 @@ Void HideIngame() {
 }
 
 Void CheckStatus() {
+	declare persistent Text[Text] CHALLENGE_SETTINGS for LocalUser;
+	if(CHALLENGE_SETTINGS.existskey("PrivateSession") && CHALLENGE_SETTINGS["PrivateSession"] == "True") return;
+
 	if(!Time::Stamp_CreateOnce("STATUS", 10*1000)) {
 		if(Time::Stamp_Reached("STATUS")) {
 			declare Success = Service_Status::AsyncCheckStatus("STATUS", LocalUser);
@@ -445,7 +448,9 @@ if(!Server_IsValidationMode) { // In validation mode, Menu and Vehicle layers ar
 if(Close) {
 	if(!Server_IsValidationMode) {
 		declare Success = Ingame_Playsession::AsyncPlaysession(PlaysessionSecret, "Close");
-		wait(Service_Status::AsyncIsCompleted("PLAYSESSION"));
+		if(Success)
+			wait(Service_Status::AsyncIsCompleted("PLAYSESSION"));
+		Service_Status::AsyncDestroy("PLAYSESSION");
 	}
 	Playground.QuitServer(True);
 	Layers::SendEvent("Menu", "Exit", Server_IsValidationMode^"");

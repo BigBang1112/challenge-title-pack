@@ -101,13 +101,16 @@ foreach(Event,PendingEvents) {
 				case "QUAD_BUTTON_CHAT": {
 					PlayAudio(Sound_ClickSoft);
 
-					if(Page.GetFirstChild("FRAME_CHAT_WINDOW").DataAttributeGet("open") == "1") {
-						AnimMgr.Add(Page.GetFirstChild("FRAME_CHAT_WINDOW"), "<frame pos=\"0 -60\" hidden=\"1\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
-						Page.GetFirstChild("FRAME_CHAT_WINDOW").DataAttributeSet("open","0");
-					}
-					else {
-						AnimMgr.Add(Page.GetFirstChild("FRAME_CHAT_WINDOW"), "<frame pos=\"0 0\" hidden=\"0\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
-						Page.GetFirstChild("FRAME_CHAT_WINDOW").DataAttributeSet("open","1");
+					declare persistent Text[Text] CHALLENGE_SETTINGS for LocalUser;
+					if(!CHALLENGE_SETTINGS.existskey("PrivateSession") || CHALLENGE_SETTINGS["PrivateSession"] == "False") {
+						if(Page.GetFirstChild("FRAME_CHAT_WINDOW").DataAttributeGet("open") == "1") {
+							AnimMgr.Add(Page.GetFirstChild("FRAME_CHAT_WINDOW"), "<frame pos=\"0 -60\" hidden=\"1\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+							Page.GetFirstChild("FRAME_CHAT_WINDOW").DataAttributeSet("open","0");
+						}
+						else {
+							AnimMgr.Add(Page.GetFirstChild("FRAME_CHAT_WINDOW"), "<frame pos=\"0 0\" hidden=\"0\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+							Page.GetFirstChild("FRAME_CHAT_WINDOW").DataAttributeSet("open","1");
+						}
 					}
 				}
 				case "QUAD_BUTTON_PLAYSESSION": {

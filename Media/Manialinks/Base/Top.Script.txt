@@ -2,6 +2,12 @@
 ***
 declare Start = Now;
 declare End = -1;
+
+declare persistent Text[Text] CHALLENGE_SETTINGS for LocalUser;
+if(!CHALLENGE_SETTINGS.existskey("PrivateSession") || CHALLENGE_SETTINGS["PrivateSession"] == "False")
+	(Page.GetFirstChild("QUAD_SETTING_PRIVATE") as CMlQuad).Colorize = <0.2,0.2,0.2>;
+else
+	(Page.GetFirstChild("QUAD_SETTING_PRIVATE") as CMlQuad).Colorize = <0.0,0.2,0.4>;
 ***
 
 ***Loop***
@@ -31,6 +37,21 @@ foreach(Event,PendingEvents) {
 				}
 				case "QUAD_BUTTON_AUTHORS": {
 					SendCustomEvent("Button_Authors", []);
+					PlayAudio(Sound_Click);
+				}
+				case "QUAD_SETTING_PRIVATE": {
+					declare persistent Text[Text] CHALLENGE_SETTINGS for LocalUser;
+
+					if((Event.Control as CMlQuad).Colorize == <0.2,0.2,0.2>) {
+						(Event.Control as CMlQuad).Colorize = <0.0,0.2,0.4>;
+						CHALLENGE_SETTINGS["PrivateSession"] = "True";
+					}
+					else {
+						(Event.Control as CMlQuad).Colorize = <0.2,0.2,0.2>;
+						CHALLENGE_SETTINGS["PrivateSession"] = "False";
+					}
+					log("Private session: " ^ CHALLENGE_SETTINGS["PrivateSession"]);
+
 					PlayAudio(Sound_Click);
 				}
 			}

@@ -39,6 +39,9 @@ Boolean AsyncPlaysession(Text _Secret, Text _Action) {
 	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
 	declare netread Integer Server_CurrentVehicle for UI;
 
+	declare persistent Text[Text] CHALLENGE_SETTINGS for LocalUser;
+	if(CHALLENGE_SETTINGS.existskey("PrivateSession") && CHALLENGE_SETTINGS["PrivateSession"] == "True") return False;
+
 	declare SPlaysession Playsession;
 	Playsession.UserToken = CHALLENGE_TOKEN;
 	Playsession.MapUid = Map.MapInfo.MapUid;
@@ -81,7 +84,8 @@ Void Start() {
 
 	declare Text PlaysessionSecret for This;
 	PlaysessionSecret = Random::String(32);
-	if(PublicMap.Public && !Server_IsValidationMode) AsyncPlaysession(PlaysessionSecret, "Playing");
+	if(PublicMap.Public && !Server_IsValidationMode)
+		AsyncPlaysession(PlaysessionSecret, "Playing");
 
 	if(Server_IsValidationMode) Layers::SendEvent("Playsession", "DisablePublish");
 }

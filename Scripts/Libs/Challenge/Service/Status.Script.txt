@@ -247,7 +247,7 @@ Text AsyncGetResult(Text _Name) {
 }
 
 Boolean AsyncCheckStatus(Text _Name, CUser _User, Text _IngameToken) {
-	return Http::AsyncPOST(_Name, C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
+	return Http::AsyncPOST(_Name, C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson(), "", True);
 }
 
 Boolean AsyncCheckStatus(Text _Name, CUser _User) {
