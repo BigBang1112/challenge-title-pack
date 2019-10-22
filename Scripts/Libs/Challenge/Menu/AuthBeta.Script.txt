@@ -89,6 +89,8 @@ Void Async() {
 			Layers::Show("Top", True);
 			Layers::Show("Playsessions", True);
 			Layers::Show("News", True);
+			Layers::Show("PreCampaign", True);
+			Layers::Show("Bottom", True);
 			Layers::Hide("AuthBeta", False);
 			
 			Layers::SendEvent("Top", "HideJoin");
