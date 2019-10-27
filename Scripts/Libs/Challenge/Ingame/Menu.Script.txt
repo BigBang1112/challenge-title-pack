@@ -88,42 +88,44 @@ SGhostInfo[] SortGhosts(SGhostInfo[] _Ghosts) {
 Void UpdateMedals() {
 	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
 	declare netread Integer Server_CurrentVehicle for UI;
-	declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
-	declare metadata Integer[Text] Validations for Map;
+	if(Server_Vehicles.existskey(Server_CurrentVehicle)) {
+		declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
+		declare metadata Integer[Text] Validations for Map;
 
-	declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");
+		declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");
 
-	for(I,0,LoadedGhosts.count-1)
-	for(J,0,LoadedGhosts.count-1) {
-		if(LoadedGhosts.existskey(J) && LoadedGhosts[J].IsMedal) {
-			declare Removed = LoadedGhosts.removekey(J);
-			continue;
+		for(I,0,LoadedGhosts.count-1)
+		for(J,0,LoadedGhosts.count-1) {
+			if(LoadedGhosts.existskey(J) && LoadedGhosts[J].IsMedal) {
+				declare Removed = LoadedGhosts.removekey(J);
+				continue;
+			}
 		}
-	}
 
-	if(Validations.existskey(VehicleName)) {
-		declare SGhostInfo Ghost;
-		Ghost.Nickname = LocalUser.Name;
-		Ghost.Time = Validations[VehicleName];
-		Ghost.IsMedal = True;
-		Ghost.IsAuthorMedal = True;
-		Ghost.Vehicle = VehicleName;
-		LoadedGhosts.add(Ghost);
+		if(Validations.existskey(VehicleName)) {
+			declare SGhostInfo Ghost;
+			Ghost.Nickname = LocalUser.Name;
+			Ghost.Time = Validations[VehicleName];
+			Ghost.IsMedal = True;
+			Ghost.IsAuthorMedal = True;
+			Ghost.Vehicle = VehicleName;
+			LoadedGhosts.add(Ghost);
 
-		Ghost.Time = MathLib::NearestInteger(Validations[VehicleName]*1.1);
-		Ghost.IsAuthorMedal = False;
-		Ghost.IsGoldMedal = True;
-		LoadedGhosts.add(Ghost);
+			Ghost.Time = MathLib::NearestInteger(Validations[VehicleName]*1.1);
+			Ghost.IsAuthorMedal = False;
+			Ghost.IsGoldMedal = True;
+			LoadedGhosts.add(Ghost);
 
-		Ghost.Time = MathLib::NearestInteger(Validations[VehicleName]*1.2);
-		Ghost.IsGoldMedal = False;
-		Ghost.IsSilverMedal = True;
-		LoadedGhosts.add(Ghost);
+			Ghost.Time = MathLib::NearestInteger(Validations[VehicleName]*1.2);
+			Ghost.IsGoldMedal = False;
+			Ghost.IsSilverMedal = True;
+			LoadedGhosts.add(Ghost);
 
-		Ghost.Time = MathLib::NearestInteger(Validations[VehicleName]*1.5);
-		Ghost.IsSilverMedal = False;
-		Ghost.IsBronzeMedal = True;
-		LoadedGhosts.add(Ghost);
+			Ghost.Time = MathLib::NearestInteger(Validations[VehicleName]*1.5);
+			Ghost.IsSilverMedal = False;
+			Ghost.IsBronzeMedal = True;
+			LoadedGhosts.add(Ghost);
+		}
 	}
 
 	//LoadedGhosts = SortGhosts(LoadedGhosts);
@@ -245,6 +247,7 @@ Void Async() {
 			declare ReplayList = (Task::Get("LOCAL_GHOSTS") as CTaskResult_ReplayList);
 
 			declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");
+			LoadedGhosts.clear();
 
 			foreach(Replay, ReplayList.ReplayInfos) {
 				if(Map.MapInfo.MapUid != "" && Replay.MapUid == Map.MapInfo.MapUid) {
