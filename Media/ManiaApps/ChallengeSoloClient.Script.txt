@@ -127,6 +127,7 @@ Void Init() {
 ***Init***
 ***
 declare netwrite Integer Client_VehicleIndex for UI;
+Client_VehicleIndex = -1;
 
 declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
 declare netread Vehicle::SVehicle Server_MapVehicle for UI;
@@ -198,6 +199,12 @@ declare Boolean Close for This = False;
 declare Text PlaysessionSecret for This;
 SkinNotified = False;
 DisabledFinishesNotified = False;
+
+for(I,0,Server_Vehicles.count-1) {
+	declare Veh = Server_Vehicles[I];
+	if(Veh.Name == Server_MapVehicle.Name)
+		Client_VehicleIndex = I;
+}
 
 Ingame_Menu::Start();
 Ingame_Playsession::Start();
@@ -398,8 +405,8 @@ if(VehicleIndex != OldVehicleIndex) { // If vehicle was changed
 
 	log(Client_VehicleIndex);*/
 	Client_VehicleIndex = VehicleIndex;
-	
 	SendCustomEvent("VehicleIndexChanged", [Client_VehicleIndex^""]);
+	
 
 	for(I,0,30) { // Lag creator for car switch to function better on higher end PCs
 		Layers::Create("Lag", Manialink::FromFile("Media/Manialinks/Lag", True));

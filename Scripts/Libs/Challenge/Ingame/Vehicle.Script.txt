@@ -86,7 +86,6 @@ Void Start() {
 	VehicleCount = Server_Vehicles.count;
 
 	declare netwrite Integer Client_VehicleIndex for UI;
-	Client_VehicleIndex = VehicleIndex;
 
 	Layers::Show("Vehicle", True);
 }

@@ -72,32 +72,34 @@ Void UpdateRating(Service_Status::SPublicMap _PublicMap) {
 	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
 	declare netread Integer Server_CurrentVehicle for UI;
 
-	declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
+	if(Server_Vehicles.existskey(Server_CurrentVehicle)) {
+		declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
 
-	declare Real DifficultyValue for Layers::Page("Rating");
-	declare Real AverageDifficultyValue for Layers::Page("Rating");
-	declare Integer AverageDifficultyCount for Layers::Page("Rating");
-	declare Real QualityValue for Layers::Page("Rating");
-	declare Real AverageQualityValue for Layers::Page("Rating");
-	declare Integer AverageQualityCount for Layers::Page("Rating");
+		declare Real DifficultyValue for Layers::Page("Rating");
+		declare Real AverageDifficultyValue for Layers::Page("Rating");
+		declare Integer AverageDifficultyCount for Layers::Page("Rating");
+		declare Real QualityValue for Layers::Page("Rating");
+		declare Real AverageQualityValue for Layers::Page("Rating");
+		declare Integer AverageQualityCount for Layers::Page("Rating");
 
-	if(_PublicMap.Vehicles.existskey(VehicleName)) {
-		DifficultyValue = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.User;
-		QualityValue = _PublicMap.Vehicles[VehicleName].Rating.Quality.User;
+		if(_PublicMap.Vehicles.existskey(VehicleName)) {
+			DifficultyValue = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.User;
+			QualityValue = _PublicMap.Vehicles[VehicleName].Rating.Quality.User;
 
-		AverageDifficultyValue = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.AverageWithoutYou;
-		AverageDifficultyCount = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.Count;
-		AverageQualityValue = _PublicMap.Vehicles[VehicleName].Rating.Quality.AverageWithoutYou;
-		AverageQualityCount = _PublicMap.Vehicles[VehicleName].Rating.Quality.Count;
-	}
-	else {
-		DifficultyValue = -2.;
-		QualityValue = -2.;
+			AverageDifficultyValue = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.AverageWithoutYou;
+			AverageDifficultyCount = _PublicMap.Vehicles[VehicleName].Rating.Difficulty.Count;
+			AverageQualityValue = _PublicMap.Vehicles[VehicleName].Rating.Quality.AverageWithoutYou;
+			AverageQualityCount = _PublicMap.Vehicles[VehicleName].Rating.Quality.Count;
+		}
+		else {
+			DifficultyValue = -2.;
+			QualityValue = -2.;
 
-		AverageDifficultyValue = 0.;
-		AverageDifficultyCount = 0;
-		AverageQualityValue = 0.;
-		AverageQualityCount = 0;
+			AverageDifficultyValue = 0.;
+			AverageDifficultyCount = 0;
+			AverageQualityValue = 0.;
+			AverageQualityCount = 0;
+		}
 	}
 }
 
