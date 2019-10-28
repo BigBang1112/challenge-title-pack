@@ -39,6 +39,14 @@
 
 Void Init() {
 	Layers::Create("Menu", Manialink::FromFile(C_Manialink, True, ["Audio", "SlideText", "Navigation"], Settings::Get().Theme));
+
+	declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+	declare Text[] VehicleNames;
+	foreach(Vehicle,Server_Vehicles)
+		VehicleNames.add(Vehicle.Name);
+	
+	declare Success = Http::AsyncGET("VALIDATION", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/validation.php?uid={{{Map.MapInfo.MapUid}}}&car={{{TextLib::Join(",",VehicleNames)}}}""");
+	declare Success2 = Http::AsyncGET("RECORDS", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/records.php?uid={{{Map.MapInfo.MapUid}}}&car={{{TextLib::Join(",",VehicleNames)}}}&zone=World""", True);
 }
 
 Void Start() {
@@ -201,13 +209,24 @@ Void Event(CManiaAppEvent _Event) {
 							declare Zone = _Event.CustomEventData[0];
 							declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");
 							LoadedGhosts.clear();
-							Layers::SendEvent("Menu", "UpdateLoadedGhosts");
 
 							declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
 							declare netread Integer Server_CurrentVehicle for UI;
 							declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
-							Http::Destroy("RECORDS");
-							declare Success = Http::AsyncGET("RECORDS", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/records.php?uid={{{Map.MapInfo.MapUid}}}&car={{{VehicleName}}}&zone={{{Zone}}}""", True);
+
+							declare SRecord[][Text] Records for This;
+							if(Records.existskey(VehicleName))
+							foreach(Record, Records[VehicleName]) {
+								declare SGhostInfo Info;
+								if(Record.Nickname == "") Info.Nickname = Record.Login;
+								else Info.Nickname = Record.Nickname;
+								Info.Time = Record.Time;
+								LoadedGhosts.add(Info);
+							}
+
+							//LoadedGhosts = SortGhosts(LoadedGhosts);
+
+							Layers::SendEvent("Menu", "UpdateLoadedGhosts");
 						}
 						case "FetchLocalGhosts": {
 							Task::Async_DataFileMgr("LOCAL_GHOSTS", DataFileMgr.Replay_GetGameList("", True));
@@ -268,32 +287,32 @@ Void Async() {
 
 	if(Http::IsCompleted("RECORDS")) {
 		if(Http::IsSuccessful("RECORDS")) {
-			declare SRecord[][Text] Records;
+			declare SRecord[][Text] Records for This;
 			declare Success = Records.fromjson(Http::GetResult("RECORDS"));
-
-			declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");
-
-			declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
-			declare netread Integer Server_CurrentVehicle for UI;
-			declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
-
-			if(Records.existskey(VehicleName))
-			foreach(Record, Records[VehicleName]) {
-				declare SGhostInfo Info;
-				if(Record.Nickname == "") Info.Nickname = Record.Login;
-				else Info.Nickname = Record.Nickname;
-				Info.Time = Record.Time;
-				LoadedGhosts.add(Info);
-			}
-
-			//LoadedGhosts = SortGhosts(LoadedGhosts);
-
-			Layers::SendEvent("Menu", "UpdateLoadedGhosts");
 		}
 		else {
 			log("Records error " ^ Http::GetStatusCode("RECORDS"));
 		}
 		Http::Destroy("RECORDS");
+	}
+
+	if(Http::IsCompleted("VALIDATION")) {
+		if(Http::IsSuccessful("VALIDATION")) {
+			declare SRecord[Text] Validations;
+			declare Success = Validations.fromjson(Http::GetResult("VALIDATION"));
+
+			declare Text[Text] Validators for Layers::Page("Menu");
+			foreach(Car => Record, Validations) {
+				if(Record.Nickname == "")
+					Validators[Car] = Record.Login;
+				else
+					Validators[Car] = Record.Nickname;
+			}
+		}
+		else {
+			log("Validation error " ^ Http::GetStatusCode("VALIDATION"));
+		}
+		Http::Destroy("VALIDATION");
 	}
 
 	declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");

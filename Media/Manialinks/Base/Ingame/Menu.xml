@@ -5,16 +5,20 @@
 		<quad z-index="1" size="80 160" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
 	</frame>
 	<frame pos="-145 75" clip="True" clipposn="36 -6" clipsizen="70 17" id="FRAME_LABEL_MAPNAME">
-		<label z-index="0" size="70 15" text="KTFWTWTWTWF" textsize="16" textfont="Oswald" valign="top" id="LABEL_MAPNAME" textemboss="1"/>
-		<label z-index="0" size="70 15" text="KTFWTWTWTWF" textsize="16" textfont="Oswald" valign="top" id="LABEL_MAPNAME_2" textemboss="1"/>
+		<label z-index="0" size="70 15" text="[unknown]" textsize="16" textfont="Oswald" valign="top" id="LABEL_MAPNAME" textemboss="1"/>
+		<label z-index="0" size="70 15" text="[unknown]" textsize="16" textfont="Oswald" valign="top" id="LABEL_MAPNAME_2" textemboss="1"/>
 	</frame>
 	<frame pos="-145 59" clip="True" clipposn="36 -2.5" clipsizen="70 10" id="FRAME_LABEL_CHALLENGE">
-		<label z-index="0" size="70 7" text="REVERSE + CHECKPOINTLESSFS" textsize="6" textfont="Oswald" valign="top" id="LABEL_CHALLENGE" textemboss="1"/>
-		<label z-index="0" size="70 7" text="REVERSE + CHECKPOINTLESSFS" textsize="6" textfont="Oswald" valign="top" id="LABEL_CHALLENGE_2" textemboss="1"/>
+		<label z-index="0" size="70 7" text="[unknown]" textsize="6" textfont="Oswald" valign="top" id="LABEL_CHALLENGE" textemboss="1"/>
+		<label z-index="0" size="70 7" text="[unknown]" textsize="6" textfont="Oswald" valign="top" id="LABEL_CHALLENGE_2" textemboss="1"/>
 	</frame>
-	<frame pos="-75 50" clip="True" clipposn="-34 -2.5" clipsizen="70 10" id="FRAME_LABEL_CAR">
-		<label z-index="0" size="70 7" text="StadiumCar" textsize="4" textfont="Oswald" valign="top" id="LABEL_CAR" textprefix="$o" halign="right"/>
-		<label z-index="0" size="70 7" text="StadiumCar" textsize="4" textfont="Oswald" valign="top" id="LABEL_CAR_2" textprefix="$o" halign="right"/>
+	<frame pos="-75 50" clip="True" clipposn="-17 -2.5" clipsizen="35 10" id="FRAME_LABEL_CAR">
+		<label z-index="0" size="35 7" text="[unknown]" textsize="4" textfont="Oswald" valign="top" id="LABEL_CAR" textprefix="$o" halign="right"/>
+		<label z-index="0" size="35 7" text="[unknown]" textsize="4" textfont="Oswald" valign="top" id="LABEL_CAR_2" textprefix="$o" halign="right"/>
+	</frame>
+	<frame pos="-145 50">
+		<label z-index="0" size="35 6" text="{{{{VALIDATED_BY}}}}:" textsize="0.5" textfont="Oswald" id="LABEL_VALIDATOR_TEXT" valign="top"/>
+		<label z-index="0" size="35 4" text="[unknown]" textsize="1.5" textfont="Oswald" valign="top" id="LABEL_VALIDATOR" pos="0 -2.5"/>
 	</frame>
 	<frame pos="-110 42">
 		<quad z-index="0" size="80 10" bgcolor="FFFA" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="036" opacity=".5" id="QUAD_BUTTON_EXIT" pos="0 0" halign="center"/>
