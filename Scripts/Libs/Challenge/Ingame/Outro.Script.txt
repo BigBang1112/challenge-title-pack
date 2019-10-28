@@ -68,6 +68,12 @@ Void Event(CManiaAppEvent _Event) {
 							Layers::SendEvent("ReplayInfo", "SetReplay", """{{{TextLib::StripFormatting(OriginalMap.Name)}}}_{{{Map.MapStyle}}}_{{{Server_Vehicles[Server_CurrentVehicle].Name}}}_({{{Time::TimeToFileNameSupportedText(Time)}}})""");
 							Layers::Hide("Outro");
 							Layers::Hide("Rating");
+
+							declare Service_Status::SPublicMap PublicMap for This;
+							if(PublicMap.Public) {
+								declare Text[] Exchange for This;
+								Exchange.add("Rating_ApplyRating");
+							}
 						}
 					}
 				}
