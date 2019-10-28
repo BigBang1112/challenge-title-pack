@@ -228,10 +228,11 @@ foreach(Event,PendingEvents) {
 					if(Result_Time.Rankings["World"].Count == 1 && Result_Time.LastRecord == -1)
 						Showcases.add("{{{{NEW_VALIDATION}}}}");
 					
-					if(Result_Time.Record.Time == Result_Time.LastRecord) {
-						Showcases.add("{{{{YOU_HAVE_EQUALED_WORLD_RECORD}}}}");
-					}
-					else if(Result_Time.LastRecord == -1 || Result_Time.Record.Time < Result_Time.LastRecord) {
+					//if(Result_Time.Record.Time == Result_Time.LastRecord) {
+					//	Showcases.add("{{{{YOU_HAVE_EQUALED_WORLD_RECORD}}}}");
+					//}
+					//else 
+					if(Result_Time.LastRecord == -1 || Result_Time.Record.Time < Result_Time.LastRecord) {
 						if(Result_Time.Rankings["World"].Rank == 1)
 							Showcases.add("{{{{NEW_WORLD_RECORD}}}}");
 
