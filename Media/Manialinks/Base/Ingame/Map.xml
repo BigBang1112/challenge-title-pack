@@ -39,8 +39,8 @@
 			<quad z-index="2" size="25 5" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
 		</frame>
 		<frame pos="25 0.3" clip="True" clipposn="-25 0" clipsizen="50 10" id="FRAME_LABEL_RATE" z-index="3">
-			<label z-index="0" size="20 4" text="CLICK TO RATE" textsize="1.5" textfont="Oswald" id="LABEL_RATE" halign="right" valign="center"/>
-			<label z-index="0" size="20 4" text="CLICK TO RATE" textsize="1.5" textfont="Oswald" id="LABEL_RATE_2" halign="right" valign="center"/>
+			<label z-index="0" size="20 4" text="{{{{CLICK_TO_RATE}}}}" textsize="1.5" textfont="Oswald" id="LABEL_RATE" halign="right" valign="center"/>
+			<label z-index="0" size="20 4" text="{{{{CLICK_TO_RATE}}}}" textsize="1.5" textfont="Oswald" id="LABEL_RATE_2" halign="right" valign="center"/>
 		</frame>
 	</frame>
 </frame>

@@ -32,9 +32,9 @@
 			<quad z-index="-1" size="60 81" style="Bgs1" substyle="BgGradV" halign="center"/>
 			<frame pos="0 -10">
 				<quad z-index="0" size="55 8" valign="center" halign="center" style="Bgs1" substyle="BgCard" colorize="333" scriptevents="1" id="QUAD_SETTING_PRIVATE"/>
-				<label pos="0 -.4" z-index="1" size="50 5" text="PRIVATE SESSION" halign="center" valign="center2" textfont="RajdhaniMono" textsize="2"/>
+				<label pos="0 -.4" z-index="1" size="50 5" text="{{{{PRIVATE_SESSION}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="2"/>
 			</frame>
-			<label pos="0 -16" z-index="0" size="55 6" text="If you're experiencing 10-second lags while playing, enable this." halign="center" textsize="1" autonewline="1" textcolor="FF0"/>
+			<label pos="0 -16" z-index="0" size="55 6" text="{{{{PRIVATE_SESSION_NOTE}}}}" halign="center" textsize="1" autonewline="1" textcolor="FF0"/>
 		</frame>
 	</frame>
 </frame>

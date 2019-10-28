@@ -26,7 +26,7 @@ declare TextLength = Label_Rate.ComputeWidth(Label_Rate.Value);
 if(TextLength < 40) {
 	foreach(Control, Frame_Rate_Bg.Controls) {
 		declare Quad <=> (Control as CMlQuad);
-		Quad.Size.X = TextLength+5.2;
+		Quad.Size.X = TextLength+5.1;
 	}
 }
 else {

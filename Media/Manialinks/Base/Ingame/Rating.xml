@@ -1,8 +1,8 @@
 <frame z-index="10">
 	<quad pos="0 0" z-index="-1" size="320 180" halign="center" valign="center" style="Bgs1" substyle="BgEmpty" hidden="1" scriptevents="1" id="QUAD_BLUR"/>
 	<frame id="FRAME_CENTERED">
-		<label pos="0 25" z-index="0" size="100 10" text="RATE THIS COMBINATION" halign="center" valign="center" textfont="Oswald" textsize="6" textemboss="1"/>
-		<label pos="0 19.5" z-index="0" size="140 10" text="(by spamming clearly false ratings, you're in a risk of a rate ban)" halign="center" valign="center" textfont="BiryaniDemiBold" textsize="1" textemboss="1"/>
+		<label pos="0 25" z-index="0" size="100 10" text="{{{{RATE_THIS_COMBINATION}}}}" halign="center" valign="center" textfont="Oswald" textsize="6" textemboss="1"/>
+		<label pos="0 19.5" z-index="0" size="140 10" text="({{{{RATE_THIS_COMBINATION_NOTE}}}})" halign="center" valign="center" textfont="BiryaniDemiBold" textsize="1" textemboss="1"/>
 		<frame pos="-10 -25" class="BUTTON">
 			<quad z-index="0" size="50 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="036" id="QUAD_BUTTON_APPLY" class="opacity" valign="center"/>
 			<label z-index="1" size="50 10" text="{{{{APPLY}}}}" valign="center2" textfont="RajdhaniMono" halign="center" pos="0 -0.3" textsize="3" id="LABEL_BUTTON_APPLY"/>
