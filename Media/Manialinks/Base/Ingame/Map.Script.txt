@@ -15,7 +15,26 @@ declare Frame_Label_Car = (Page.GetFirstChild("FRAME_LABEL_CAR") as CMlFrame);
 declare Label_Car = (Page.GetFirstChild("LABEL_CAR") as CMlLabel);
 declare Label_Car2 = (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel);
 
+declare Frame_Rate_Bg = (Page.GetFirstChild("FRAME_RATE_BG") as CMlFrame);
+declare Frame_Rate_Car = (Page.GetFirstChild("FRAME_LABEL_RATE") as CMlFrame);
+declare Label_Rate = (Page.GetFirstChild("LABEL_RATE") as CMlLabel);
+declare Label_Rate2 = (Page.GetFirstChild("LABEL_RATE_2") as CMlLabel);
+
 declare LabelDistance = 15;
+
+declare TextLength = Label_Rate.ComputeWidth(Label_Rate.Value);
+if(TextLength < 40) {
+	foreach(Control, Frame_Rate_Bg.Controls) {
+		declare Quad <=> (Control as CMlQuad);
+		Quad.Size.X = TextLength+5.2;
+	}
+}
+else {
+	foreach(Control, Frame_Rate_Bg.Controls) {
+		declare Quad <=> (Control as CMlQuad);
+		Quad.Size.X = 45.;
+	}
+}
 ***
 
 ***Loop***
@@ -30,7 +49,7 @@ foreach(Event,PendingEvents) {
 				case "FRAME_CHALLENGE_BG": {
 					
 				}
-				case "FRAME_CAR_BG": {
+				case "FRAME_RATE_BG": {
 					SendCustomEvent("RateCombination", []);
 				}
 			}
