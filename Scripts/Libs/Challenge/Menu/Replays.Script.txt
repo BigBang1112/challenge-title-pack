@@ -47,7 +47,7 @@ Void Event(CManiaAppEvent _Event) {
 			case "Open": {
 				declare File = ReplayBrowser::GetSelectedElement().File;
 				if(TitleControl.IsReady && File != "")
-					TitleControl.ViewReplay(File);
+					TitleControl.EditReplay([File]);
 			}
 			case "Play": {
 				if(TitleControl.IsReady) {
