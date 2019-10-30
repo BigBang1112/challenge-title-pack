@@ -300,9 +300,12 @@ foreach(Event,PendingEvents) {
 							declare Record = Result_Time.Leaderboards["World"].Records[I];
 
 							declare Rank = I+1;
-							if(Result_Time.Leaderboards["World"].Records.existskey(I-1))
+							if(Result_Time.Leaderboards["World"].Records.existskey(I-1)) {
 								if(Record.Time == Result_Time.Leaderboards["World"].Records[I-1].Time)
 									RankOffset += 1;
+								else
+									RankOffset = 0;
+							}
 							Rank = I+1-RankOffset;
 							
 							declare RankColor = "";
@@ -335,9 +338,12 @@ foreach(Event,PendingEvents) {
 							declare Record = RecordResult["Distance"].Leaderboards["World"].Records[I];
 
 							declare Rank = I+1;
-							if(RecordResult["Distance"].Leaderboards["World"].Records.existskey(I-1))
+							if(RecordResult["Distance"].Leaderboards["World"].Records.existskey(I-1)) {
 								if(Record.Distance == RecordResult["Distance"].Leaderboards["World"].Records[I-1].Distance)
 									RankOffset += 1;
+								else
+									RankOffset = 0;
+							}
 							Rank = I+1-RankOffset;
 							
 							declare RankColor = "";
