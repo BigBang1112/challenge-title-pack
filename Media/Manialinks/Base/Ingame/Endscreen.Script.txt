@@ -291,14 +291,22 @@ foreach(Event,PendingEvents) {
 						if(Type == "BestLap")
 							SlideText_Set((Frame_Best_Lap.GetFirstChild("LABEL_RANK") as CMlLabel), (Frame_Best_Lap.GetFirstChild("LABEL_RANK_2") as CMlLabel), TextLib::Join("    ",Ranks), 15);
 					}
+
+					declare RankOffset = 0;
 					
 					for(I,0,Frame_LB_Global_Records.Controls.count-1) {
 						declare Frame_Record = (Frame_LB_Global_Records.Controls[I] as CMlFrame);
 						if(Result_Time.Leaderboards["World"].Records.existskey(I)) {
 							declare Record = Result_Time.Leaderboards["World"].Records[I];
+
+							declare Rank = I+1;
+							if(Result_Time.Leaderboards["World"].Records.existskey(I-1))
+								if(Record.Time == Result_Time.Leaderboards["World"].Records[I-1].Time)
+									RankOffset += 1;
+							Rank = I+1-RankOffset;
 							
 							declare RankColor = "";
-							switch(I+1) {
+							switch(Rank) {
 								case 1: { RankColor = "$FF0"; }
 								case 2: { RankColor = "$DDD"; }
 								case 3: { RankColor = "$A62"; }
@@ -306,7 +314,7 @@ foreach(Event,PendingEvents) {
 							}
 
 							declare Label_Record = (Frame_Record.GetFirstChild("LABEL_RECORD") as CMlLabel);
-							Label_Record.SetText(RankColor^TextLib::FormatInteger(I+1, 2)^")$z "^TimeToTextWithMilli(Record.Time));
+							Label_Record.SetText(RankColor^TextLib::FormatInteger(Rank, 2)^")$z "^TimeToTextWithMilli(Record.Time));
 
 							declare Label_Nickname = (Frame_Record.GetFirstChild("LABEL_NICKNAME") as CMlLabel);
 							if(Record.Nickname == "") Label_Nickname.SetText(Record.Login);
@@ -319,13 +327,21 @@ foreach(Event,PendingEvents) {
 						}
 					}
 
+					RankOffset = 0;
+
 					for(I,0,Frame_LB_Shortest_Distance.Controls.count-1) {
 						declare Frame_Record = (Frame_LB_Shortest_Distance.Controls[I] as CMlFrame);
 						if(RecordResult["Distance"].Leaderboards["World"].Records.existskey(I)) {
 							declare Record = RecordResult["Distance"].Leaderboards["World"].Records[I];
+
+							declare Rank = I+1;
+							if(RecordResult["Distance"].Leaderboards["World"].Records.existskey(I-1))
+								if(Record.Distance == RecordResult["Distance"].Leaderboards["World"].Records[I-1].Distance)
+									RankOffset += 1;
+							Rank = I+1-RankOffset;
 							
 							declare RankColor = "";
-							switch(I+1) {
+							switch(Rank) {
 								case 1: { RankColor = "$FF0"; }
 								case 2: { RankColor = "$DDD"; }
 								case 3: { RankColor = "$A62"; }
@@ -333,7 +349,7 @@ foreach(Event,PendingEvents) {
 							}
 
 							declare Label_Record = (Frame_Record.GetFirstChild("LABEL_RECORD") as CMlLabel);
-							Label_Record.SetText(RankColor^TextLib::FormatInteger(I+1, 2)^")$z "^Record.Distance);
+							Label_Record.SetText(RankColor^TextLib::FormatInteger(Rank, 2)^")$z "^Record.Distance);
 
 							declare Label_Nickname = (Frame_Record.GetFirstChild("LABEL_NICKNAME") as CMlLabel);
 							if(Record.Nickname == "") Label_Nickname.SetText(Record.Login);
