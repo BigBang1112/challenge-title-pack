@@ -215,4 +215,9 @@ if(GetOwner().InputIsBraking != PreviousBrakeState) {
 	}
 	PreviousBrakeState = GetOwner().InputIsBraking;
 }
+
+if(GetOwner().FreeWheelingDuration > 0)
+	(Page.GetFirstChild("QUAD_SPEED_FREEWHEELING") as CMlQuad).Opacity = (MathLib::Sin(GetOwner().FreeWheelingDuration/100.+180)+1)/2.*.25;
+else
+	(Page.GetFirstChild("QUAD_SPEED_FREEWHEELING") as CMlQuad).Opacity = 0.;
 ***
