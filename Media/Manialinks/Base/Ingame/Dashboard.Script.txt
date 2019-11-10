@@ -23,6 +23,12 @@ declare Frame_Speed <=> (Page.GetFirstChild("FRAME_SPEED") as CMlFrame);
 declare Frame_Gear <=> (Page.GetFirstChild("FRAME_GEAR") as CMlFrame);
 declare Frame_Info <=> (Page.GetFirstChild("FRAME_INFO") as CMlFrame);
 
+declare Frame_Steepness <=> (Page.GetFirstChild("FRAME_STEEPNESS") as CMlFrame);
+declare Frame_Steepness_Zero_Minus_One = (Page.GetFirstChild("FRAME_STEEPNESS_ZERO_MINUS_ONE") as CMlFrame);
+declare Frame_Steepness_Zero_One = (Page.GetFirstChild("FRAME_STEEPNESS_ZERO_ONE") as CMlFrame);
+declare Label_Steepness_Zero_Minus_One = (Page.GetFirstChild("LABEL_STEEPNESS_ZERO_MINUS_ONE") as CMlLabel);
+declare Label_Steepness_Zero_One = (Page.GetFirstChild("LABEL_STEEPNESS_ZERO_ONE") as CMlLabel);
+
 declare Label_Time <=> (Page.GetFirstChild("LABEL_TIME") as CMlLabel);
 declare Label_Speed <=> (Page.GetFirstChild("LABEL_SPEED") as CMlLabel);
 declare Label_Distance <=> (Page.GetFirstChild("LABEL_DISTANCE") as CMlLabel);
@@ -157,6 +163,19 @@ Frame_Speed.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - Start-100,
 Frame_Gear.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - Start-100, -30., 30., 1000);
 Frame_Info.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - Start-100, 30., -30., 1000);
 
+foreach(Control in Frame_Steepness.Controls) {
+	if(Control is CMlFrame) {
+		foreach(Control2 in (Control as CMlFrame).Controls) {
+			if(Control2 is CMlQuad) {
+				(Control2 as CMlQuad).Opacity = AnimLib::EaseOutQuad(Now - Start-800, 0., 1., 200);
+			}
+			else if(Control2 is CMlLabel) {
+				(Control2 as CMlLabel).Opacity = AnimLib::EaseOutQuad(Now - Start-800, 0., 1., 200);
+			}
+		}
+	}
+}
+
 declare RpmRatio = MathLib::Clamp(GetOwner().EngineRpm/10000,0.,1.);
 
 switch(GetOwner().RaceState) {
@@ -220,4 +239,19 @@ if(GetOwner().FreeWheelingDuration > 0)
 	(Page.GetFirstChild("QUAD_SPEED_FREEWHEELING") as CMlQuad).Opacity = (MathLib::Sin(GetOwner().FreeWheelingDuration/100.+180)+1)/2.*.25;
 else
 	(Page.GetFirstChild("QUAD_SPEED_FREEWHEELING") as CMlQuad).Opacity = 0.;
+
+if(GetOwner().AimPitch <= 0. && GetOwner().AimPitch >= -1) {
+	Frame_Steepness_Zero_Minus_One.RelativeRotation = GetOwner().AimPitch*90;
+	Label_Steepness_Zero_Minus_One.Value = MathLib::NearestInteger(-GetOwner().AimPitch*90)^"°";
+
+	Frame_Steepness_Zero_Minus_One.Visible = True;
+	Frame_Steepness_Zero_One.Visible = False;
+}
+if(GetOwner().AimPitch >= 0. && GetOwner().AimPitch <= 1) {
+	Frame_Steepness_Zero_One.RelativeRotation = GetOwner().AimPitch*90;
+	Label_Steepness_Zero_One.Value = MathLib::NearestInteger(-GetOwner().AimPitch*90)^"°";
+
+	Frame_Steepness_Zero_One.Visible = True;
+	Frame_Steepness_Zero_Minus_One.Visible = False;
+}
 ***

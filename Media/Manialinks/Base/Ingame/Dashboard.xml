@@ -41,7 +41,21 @@
 			<quad z-index="0" size="12 8" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="1" size="12 8" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
 			<quad z-index="2" size="12 8" valign="center" halign="center" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
-			<label pos="0 -.3" z-index="3" size="12 8" text="?" halign="center" valign="center2" textfont="RajdhaniMono" textsize="1.5" id="LABEL_DISTANCE" textcolor="EEE"/>
+			<label pos="0 -.3" z-index="3" size="12 8" text="?" halign="center" valign="center2" textfont="RajdhaniMono" textsize="1.5" id="LABEL_DISTANCE" textcolor="EEE" hidden="1"/>
+		</frame>
+		<frame pos="-66 -78.5" z-index="1">
+			<frame clip="True" clipsizen="5 4" id="FRAME_STEEPNESS">
+				<frame pos="-2.5 -1.5" z-index="0" rot="-10" id="FRAME_STEEPNESS_ZERO_MINUS_ONE">
+					<quad size="20 5" bgcolor="FFFD" halign="center"/>
+					<label pos="2.75 0" z-index="0" size="8 3" text="?°" valign="bottom" halign="center" textsize="0.2" textfont="Oswald" opacity=".75" id="LABEL_STEEPNESS_ZERO_MINUS_ONE"/>
+				</frame>
+				<frame pos="2.5 -1.5" z-index="0" rot="10" id="FRAME_STEEPNESS_ZERO_ONE" hidden="1">
+					<quad size="20 5" bgcolor="FFFD" halign="center"/>
+					<label pos="-2.25 0" z-index="0" size="8 3" text="?°" valign="bottom" halign="center" textsize="0.2" textfont="Oswald" opacity=".75" id="LABEL_STEEPNESS_ZERO_ONE"/>
+				</frame>
+				<quad pos="2.5 1.5" z-index="0" size="20 5" bgcolor="FFFD" halign="center" rot="170" hidden="1"/>
+				<quad pos="-2.5 1.5" z-index="0" size="20 5" bgcolor="FFFD" halign="center" rot="190" hidden="1"/>
+			</frame>
 		</frame>
 	</frame>
 </frame>
