@@ -39,11 +39,13 @@ CTmMlPlayer GetOwner() {
 declare Frame_Checkpoint = (Page.GetFirstChild("FRAME_CHECKPOINT") as CMlFrame);
 declare Label_Checkpoint_Time = (Page.GetFirstChild("LABEL_CHECKPOINT_TIME") as CMlLabel);
 declare Frame_Differences = (Page.GetFirstChild("FRAME_DIFFERENCES") as CMlFrame);
+declare Frame_Checkpoint_Time = (Page.GetFirstChild("FRAME_CHECKPOINT_TIME") as CMlFrame);
 
 declare Frame_Lap = (Page.GetFirstChild("FRAME_LAP") as CMlFrame);
 declare Label_Lap_Time = (Frame_Lap.GetFirstChild("LABEL_TIME") as CMlLabel);
 
 declare CheckpointShowTime = -1;
+Frame_Checkpoint.Hide();
 
 declare netread SVehicle[] Server_Vehicles for UI;
 declare netread Integer Server_CurrentVehicle for UI;
@@ -73,6 +75,13 @@ foreach(Event,RaceEvents) {
 				if(Event.IsEndLap) Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 1, 1.);
 				else Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 0, 1.);
 				Frame_Checkpoint.Show();
+
+				foreach(Control in (Frame_Checkpoint_Time.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls) {
+					Control.Size.X = 0.;
+					AnimMgr.Add(Control, """<quad size="40 9"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+				}
+				(Page.GetFirstChild("FRAME_INNER_CHECKPOINT_TIME") as CMlFrame).ClipWindowSize.X = 0.;
+
 				CheckpointShowTime = Now;
 
 				declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
@@ -122,7 +131,47 @@ foreach(Event,RaceEvents) {
 	}
 }
 
-if(CheckpointShowTime == -1 || Now - CheckpointShowTime > 3000) {
-	Frame_Checkpoint.Hide();
+if(CheckpointShowTime != -1) {
+	declare Time = Now - CheckpointShowTime;
+	if(Time > 2700) {
+		(Page.GetFirstChild("FRAME_INNER_CHECKPOINT_TIME") as CMlFrame).ClipWindowSize.X = AnimLib::EaseOutQuad(Time-2700, 40.0, -40.0, 300);
+		foreach(Control in (Frame_Checkpoint_Time.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls) {
+			Control.Size.X = AnimLib::EaseOutQuad(Time-2700, 40.0, -40.0, 300);
+		}
+		for(I, 0, (Page.GetFirstChild("FRAME_DIFFERENCES") as CMlFrame).Controls.count-1) {
+			declare Frame = ((Page.GetFirstChild("FRAME_DIFFERENCES") as CMlFrame).Controls[I] as CMlFrame);
+
+			declare Frame_RecordType = (Frame.GetFirstChild("FRAME_RECORDTYPE") as CMlFrame);
+			foreach(Control in (Frame_RecordType.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls)
+				Control.Size.X = AnimLib::EaseOutQuad(Time-2800-I*100, 30.0, -30.0, 300);
+			Frame_RecordType.ClipWindowSize.X = AnimLib::EaseOutQuad(Time-2800-I*100, 60.0, -60.0, 300);
+
+			declare Frame_Time = (Frame.GetFirstChild("FRAME_TIME") as CMlFrame);
+			foreach(Control in (Frame_Time.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls)
+				Control.Size.X = AnimLib::EaseOutQuad(Time-2800-I*100, 20.0, -20.0, 300);
+			Frame_Time.ClipWindowSize.X = AnimLib::EaseOutQuad(Time-2800-I*100, 40.0, -40.0, 300);
+		}
+		if(Time > 3600) {
+			Frame_Checkpoint.Hide();
+			CheckpointShowTime = -1;
+		}
+	}
+	else {
+		(Page.GetFirstChild("FRAME_INNER_CHECKPOINT_TIME") as CMlFrame).ClipWindowSize.X = AnimLib::EaseOutQuad(Time, 0.0, 40.0, 300);
+
+		for(I, 0, (Page.GetFirstChild("FRAME_DIFFERENCES") as CMlFrame).Controls.count-1) {
+			declare Frame = ((Page.GetFirstChild("FRAME_DIFFERENCES") as CMlFrame).Controls[I] as CMlFrame);
+			
+			declare Frame_RecordType = (Frame.GetFirstChild("FRAME_RECORDTYPE") as CMlFrame);
+			foreach(Control in (Frame_RecordType.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls)
+				Control.Size.X = AnimLib::EaseOutQuad(Time-100-I*100, 0.0, 30.0, 300);
+			Frame_RecordType.ClipWindowSize.X = AnimLib::EaseOutQuad(Time-100-I*100, 0.0, 60.0, 300);
+
+			declare Frame_Time = (Frame.GetFirstChild("FRAME_TIME") as CMlFrame);
+			foreach(Control in (Frame_Time.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls)
+				Control.Size.X = AnimLib::EaseOutQuad(Time-100-I*100, 0.0, 20.0, 300);
+			Frame_Time.ClipWindowSize.X = AnimLib::EaseOutQuad(Time-100-I*100, 0.0, 40.0, 300);
+		}
+	}
 }
 ***

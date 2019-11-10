@@ -1,4 +1,4 @@
-<frame hidden="0" id="FRAME_CHECKPOINT">
+<frame id="FRAME_CHECKPOINT">
 	<frame pos="0 58" id="FRAME_LAP" hidden="1">
 		<frame z-index="-1" id="FRAME_BACKGROUND">
 			<quad z-index="0" size="20 6" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
@@ -7,109 +7,116 @@
 		</frame>
 		<label pos="0 -0.2" z-index="0" size="20 6" text="0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center" id="LABEL_TIME"/>
 	</frame>
-	<frame pos="0 50">
-		<frame z-index="-1">
+	<frame pos="0 50" id="FRAME_CHECKPOINT_TIME">
+		<frame z-index="-1" id="FRAME_BACKGROUND">
 			<quad z-index="0" size="40 9" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="1" size="40 9" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
 		</frame>
-		<label pos="0 -0.4" z-index="0" size="35 6" text="0:00.000" valign="center2" textsize="4" textfont="RajdhaniMono" halign="center" id="LABEL_CHECKPOINT_TIME"/>
+		<frame clip="True" clipsizen="40 6" id="FRAME_INNER_CHECKPOINT_TIME">
+			<label pos="0 -0.4" z-index="0" size="35 6" text="0:00.000" valign="center2" textsize="4" textfont="RajdhaniMono" halign="center" id="LABEL_CHECKPOINT_TIME"/>
+		</frame>
 	</frame>
 	<frame pos="0 42" hidden="0" id="FRAME_DIFFERENCES">
 		<frame>
-			<frame pos="-10 0">
-				<frame z-index="-1">
-					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
-				</frame>
-				<label pos="0 -0.2" z-index="0" size="25 6" text="{{{{PERSONAL_BEST}}}}" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
-			</frame>
-			<frame pos="15 0" id="FRAME_TIME">
+			<frame pos="5 0" id="FRAME_RECORDTYPE" clip="True" clipsizen="60 6">
 				<frame z-index="-1" id="FRAME_BACKGROUND">
-					<quad z-index="0" size="20 6" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-					<quad z-index="1" size="20 6" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
-					<quad z-index="2" size="20 6" valign="center" halign="center" style="Bgs1" substyle="BgWindow4" modulatecolor="03F" opacity=".5" id="QUAD_COLOR"/>
+					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
+					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgGradV"/>
 				</frame>
-				<label pos="0 -0.2" z-index="0" size="20 6" text="-0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center" id="LABEL_TIME"/>
+				<label pos="-15 -0.2" z-index="0" size="25 6" text="{{{{PERSONAL_BEST}}}}" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
+			</frame>
+			<frame pos="5 0" id="FRAME_TIME" clip="True" clipsizen="40 6">
+				<frame z-index="-1" id="FRAME_BACKGROUND">
+					<quad z-index="0" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgCardList"/>
+					<quad z-index="1" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgGradV"/>
+					<quad z-index="2" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgWindow4" modulatecolor="03F" opacity=".5" id="QUAD_COLOR"/>
+				</frame>
+				<label pos="10 -0.2" z-index="0" size="20 6" text="-0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center" id="LABEL_TIME"/>
 			</frame>
 		</frame>
-		<frame pos="0 35.5" hidden="1">
-			<frame pos="-10 0">
-				<frame z-index="-1">
-					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+		<frame pos="0 -6" hidden="1">
+			<frame pos="5 0" id="FRAME_RECORDTYPE" clip="True" clipsizen="60 6">
+				<frame z-index="-1" id="FRAME_BACKGROUND">
+					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
+					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgGradV"/>
 				</frame>
-				<label pos="0 -0.2" z-index="0" size="25 6" text="$o$i$nBIGBANG1112" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
+				<label pos="-15 -0.2" z-index="0" size="25 6" text="$o$n$iBIGBANG1112" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
 			</frame>
-			<frame pos="15 0">
-				<frame z-index="-1">
-					<quad z-index="0" size="20 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-					<quad z-index="1" size="20 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+			<frame pos="5 0" id="FRAME_TIME" clip="True" clipsizen="40 6">
+				<frame z-index="-1" id="FRAME_BACKGROUND">
+					<quad z-index="0" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgCardList"/>
+					<quad z-index="1" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgGradV"/>
+					<quad z-index="2" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgWindow4" modulatecolor="03F" opacity=".5" id="QUAD_COLOR"/>
 				</frame>
-				<label pos="0 -0.2" z-index="0" size="20 6" text="-0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center"/>
-			</frame>
-		</frame>
-		<frame pos="0 29" hidden="1">
-			<frame pos="-10 0">
-				<frame z-index="-1">
-					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
-				</frame>
-				<label pos="0 -0.2" z-index="0" size="25 6" text="$o$i$nBIGBANG1112" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
-			</frame>
-			<frame pos="15 0">
-				<frame z-index="-1">
-					<quad z-index="0" size="20 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-					<quad z-index="1" size="20 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
-				</frame>
-				<label pos="0 -0.2" z-index="0" size="20 6" text="-0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center"/>
+				<label pos="10 -0.2" z-index="0" size="20 6" text="-0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center" id="LABEL_TIME"/>
 			</frame>
 		</frame>
-		<frame pos="0 22.5" hidden="1">
-			<frame pos="-10 0">
-				<frame z-index="-1">
-					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+		<frame pos="0 -12" hidden="1">
+			<frame pos="5 0" id="FRAME_RECORDTYPE" clip="True" clipsizen="60 6">
+				<frame z-index="-1" id="FRAME_BACKGROUND">
+					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
+					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgGradV"/>
 				</frame>
-				<label pos="0 -0.2" z-index="0" size="25 6" text="$o$i$nBIGBANG1112" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
+				<label pos="-15 -0.2" z-index="0" size="25 6" text="$o$n$iBIGBANG1112" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
 			</frame>
-			<frame pos="15 0">
-				<frame z-index="-1">
-					<quad z-index="0" size="20 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-					<quad z-index="1" size="20 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+			<frame pos="5 0" id="FRAME_TIME" clip="True" clipsizen="40 6">
+				<frame z-index="-1" id="FRAME_BACKGROUND">
+					<quad z-index="0" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgCardList"/>
+					<quad z-index="1" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgGradV"/>
+					<quad z-index="2" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgWindow4" modulatecolor="03F" opacity=".5" id="QUAD_COLOR"/>
 				</frame>
-				<label pos="0 -0.2" z-index="0" size="20 6" text="-0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center"/>
-			</frame>
-		</frame>
-		<frame pos="0 16" hidden="1">
-			<frame pos="-10 0">
-				<frame z-index="-1">
-					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
-				</frame>
-				<label pos="0 -0.2" z-index="0" size="25 6" text="$o$i$nBIGBANG1112" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
-			</frame>
-			<frame pos="15 0">
-				<frame z-index="-1">
-					<quad z-index="0" size="20 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-					<quad z-index="1" size="20 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
-				</frame>
-				<label pos="0 -0.2" z-index="0" size="20 6" text="-0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center"/>
+				<label pos="10 -0.2" z-index="0" size="20 6" text="-0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center" id="LABEL_TIME"/>
 			</frame>
 		</frame>
-		<frame pos="0 9.5" hidden="1">
-			<frame pos="-10 0">
-				<frame z-index="-1">
-					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+		<frame pos="0 -18" hidden="1">
+			<frame pos="5 0" id="FRAME_RECORDTYPE" clip="True" clipsizen="60 6">
+				<frame z-index="-1" id="FRAME_BACKGROUND">
+					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
+					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgGradV"/>
 				</frame>
-				<label pos="0 -0.2" z-index="0" size="25 6" text="$o$i$nBIGBANG1112" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
+				<label pos="-15 -0.2" z-index="0" size="25 6" text="$o$n$iBIGBANG1112" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
 			</frame>
-			<frame pos="15 0">
-				<frame z-index="-1">
-					<quad z-index="0" size="20 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
-					<quad z-index="1" size="20 6" bgcolor="FFFA" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+			<frame pos="5 0" id="FRAME_TIME" clip="True" clipsizen="40 6">
+				<frame z-index="-1" id="FRAME_BACKGROUND">
+					<quad z-index="0" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgCardList"/>
+					<quad z-index="1" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgGradV"/>
+					<quad z-index="2" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgWindow4" modulatecolor="03F" opacity=".5" id="QUAD_COLOR"/>
 				</frame>
-				<label pos="0 -0.2" z-index="0" size="20 6" text="-0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center"/>
+				<label pos="10 -0.2" z-index="0" size="20 6" text="-0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center" id="LABEL_TIME"/>
+			</frame>
+		</frame>
+		<frame pos="0 -24" hidden="1">
+			<frame pos="5 0" id="FRAME_RECORDTYPE" clip="True" clipsizen="60 6">
+				<frame z-index="-1" id="FRAME_BACKGROUND">
+					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
+					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgGradV"/>
+				</frame>
+				<label pos="-15 -0.2" z-index="0" size="25 6" text="$o$n$iBIGBANG1112" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
+			</frame>
+			<frame pos="5 0" id="FRAME_TIME" clip="True" clipsizen="40 6">
+				<frame z-index="-1" id="FRAME_BACKGROUND">
+					<quad z-index="0" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgCardList"/>
+					<quad z-index="1" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgGradV"/>
+					<quad z-index="2" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgWindow4" modulatecolor="03F" opacity=".5" id="QUAD_COLOR"/>
+				</frame>
+				<label pos="10 -0.2" z-index="0" size="20 6" text="-0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center" id="LABEL_TIME"/>
+			</frame>
+		</frame>
+		<frame pos="0 -30" hidden="1">
+			<frame pos="5 0" id="FRAME_RECORDTYPE" clip="True" clipsizen="60 6">
+				<frame z-index="-1" id="FRAME_BACKGROUND">
+					<quad z-index="0" size="30 6" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
+					<quad z-index="1" size="30 6" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgGradV"/>
+				</frame>
+				<label pos="-15 -0.2" z-index="0" size="25 6" text="$o$n$iBIGBANG1112" valign="center2" textsize="1" textfont="RajdhaniMono" halign="center"/>
+			</frame>
+			<frame pos="5 0" id="FRAME_TIME" clip="True" clipsizen="40 6">
+				<frame z-index="-1" id="FRAME_BACKGROUND">
+					<quad z-index="0" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgCardList"/>
+					<quad z-index="1" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgGradV"/>
+					<quad z-index="2" size="20 6" valign="center" halign="left" style="Bgs1" substyle="BgWindow4" modulatecolor="03F" opacity=".5" id="QUAD_COLOR"/>
+				</frame>
+				<label pos="10 -0.2" z-index="0" size="20 6" text="-0:00.000" valign="center2" textsize="1.3" textfont="RajdhaniMono" halign="center" id="LABEL_TIME"/>
 			</frame>
 		</frame>
 	</frame>
