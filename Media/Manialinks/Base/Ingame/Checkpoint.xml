@@ -1,5 +1,5 @@
 <frame id="FRAME_CHECKPOINT">
-	<frame pos="0 58" id="FRAME_LAP" hidden="1">
+	<frame pos="0 58" id="FRAME_LAP" hidden="1" clip="True" clipsizen="40 7">
 		<frame z-index="-1" id="FRAME_BACKGROUND">
 			<quad z-index="0" size="20 6" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="1" size="20 6" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>

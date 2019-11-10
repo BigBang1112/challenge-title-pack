@@ -135,9 +135,16 @@ if(CheckpointShowTime != -1) {
 	declare Time = Now - CheckpointShowTime;
 	if(Time > 2700) {
 		(Page.GetFirstChild("FRAME_INNER_CHECKPOINT_TIME") as CMlFrame).ClipWindowSize.X = AnimLib::EaseOutQuad(Time-2700, 40.0, -40.0, 300);
+
 		foreach(Control in (Frame_Checkpoint_Time.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls) {
 			Control.Size.X = AnimLib::EaseOutQuad(Time-2700, 40.0, -40.0, 300);
 		}
+
+		declare Frame_Lap = (Page.GetFirstChild("FRAME_LAP") as CMlFrame);
+		foreach(Control in (Frame_Lap.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls)
+			Control.Size.X = AnimLib::EaseOutQuad(Time-2800, 20.0, -20.0, 300);
+		Frame_Lap.ClipWindowSize.X = AnimLib::EaseOutQuad(Time-2800, 20.0, -20.0, 300);
+
 		for(I, 0, (Page.GetFirstChild("FRAME_DIFFERENCES") as CMlFrame).Controls.count-1) {
 			declare Frame = ((Page.GetFirstChild("FRAME_DIFFERENCES") as CMlFrame).Controls[I] as CMlFrame);
 
@@ -158,6 +165,11 @@ if(CheckpointShowTime != -1) {
 	}
 	else {
 		(Page.GetFirstChild("FRAME_INNER_CHECKPOINT_TIME") as CMlFrame).ClipWindowSize.X = AnimLib::EaseOutQuad(Time, 0.0, 40.0, 300);
+
+		declare Frame_Lap = (Page.GetFirstChild("FRAME_LAP") as CMlFrame);
+		foreach(Control in (Frame_Lap.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls)
+			Control.Size.X = AnimLib::EaseOutQuad(Time-100, 0.0, 20.0, 300);
+		Frame_Lap.ClipWindowSize.X = AnimLib::EaseOutQuad(Time-100, 0.0, 20.0, 300);
 
 		for(I, 0, (Page.GetFirstChild("FRAME_DIFFERENCES") as CMlFrame).Controls.count-1) {
 			declare Frame = ((Page.GetFirstChild("FRAME_DIFFERENCES") as CMlFrame).Controls[I] as CMlFrame);
