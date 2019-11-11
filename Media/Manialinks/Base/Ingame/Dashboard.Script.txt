@@ -189,7 +189,7 @@ foreach(Control in Frame_Steepness.Controls) {
 	}
 }
 
-declare RpmRatio = MathLib::Clamp(GetOwner().EngineRpm/10000,0.,1.);
+declare RpmRatio = MathLib::Clamp((GetOwner().EngineRpm-1000)/9000,0.,1.);
 
 switch(GetOwner().RaceState) {
 	case CTmMlPlayer::ERaceState::BeforeStart: {
