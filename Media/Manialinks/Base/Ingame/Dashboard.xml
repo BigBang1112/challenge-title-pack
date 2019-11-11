@@ -25,12 +25,22 @@
 			<label pos="0 -0.4" z-index="3" size="20 5" text="0:00.000" halign="center" valign="center2" textfont="RajdhaniMono" textsize="3" textcolor="D0F" opacity=".9" hidden="1" id="LABEL_CP_PURPLE"/>
 			<quad z-index="2" size="30 20" valign="center" halign="center" style="Bgs1" substyle="ProgressBarSmall" opacity="1" hidden="1" colorize="F0F" id="QUAD_CP_PURPLE"/>
 		</frame>
+		<frame pos="-45 -70.5" id="FRAME_CHECKPOINT_COUNTER" clip="True" clipsizen="30 6">
+			<quad z-index="0" size="25 4" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="25 4" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+			<label pos="0 -0.15" z-index="3" size="20 5" text="CHECKPOINT: $o?/?" halign="center" valign="center2" textfont="OswaldMono" textsize="0.3" id="LABEL_CHECKPOINT_COUNTER"/>
+		</frame>
 		<frame pos="45 -77.5" id="FRAME_SPEED" clip="True" clipsizen="40 15">
 			<quad z-index="0" size="30 10" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="1" size="30 10" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
 			<quad z-index="5" size="30 10" valign="center" halign="center" style="Bgs1" substyle="BgWindow4" colorize="F00" opacity="0" id="QUAD_SPEED_FREEWHEELING"/>
 			<label pos="0 0.5" z-index="4" size="25 5" text="123" halign="center" valign="center2" textfont="RajdhaniMono" textsize="3" id="LABEL_SPEED" textcolor="EEE"/>
 			<gauge pos="0 -3" z-index="3" size="28 6.5" style="EnergyBar" halign="center" drawbg="0" valign="center" id="GAUGE_RPM" centered="1"/>
+		</frame>
+		<frame pos="45 -70.5" id="FRAME_DISTANCE" clip="True" clipsizen="30 6">
+			<quad z-index="0" size="25 4" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
+			<quad z-index="1" size="25 4" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
+			<label pos="0 -0.15" z-index="3" size="20 5" text="DISTANCE: $o?" halign="center" valign="center2" textfont="OswaldMono" textsize="0.3" id="LABEL_DISTANCE"/>
 		</frame>
 		<frame pos="66 -78.5" id="FRAME_GEAR" clip="True" clipsizen="13 10">
 			<quad z-index="0" size="12 8" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>

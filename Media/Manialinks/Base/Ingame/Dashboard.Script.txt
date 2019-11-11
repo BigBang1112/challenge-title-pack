@@ -22,6 +22,8 @@ declare Frame_Checkpoint = (Page.GetFirstChild("FRAME_CHECKPOINT") as CMlFrame);
 declare Frame_Speed = (Page.GetFirstChild("FRAME_SPEED") as CMlFrame);
 declare Frame_Gear = (Page.GetFirstChild("FRAME_GEAR") as CMlFrame);
 declare Frame_Info = (Page.GetFirstChild("FRAME_INFO") as CMlFrame);
+declare Frame_Checkpoint_Counter = (Page.GetFirstChild("FRAME_CHECKPOINT_COUNTER") as CMlFrame);
+declare Frame_Distance = (Page.GetFirstChild("FRAME_DISTANCE") as CMlFrame);
 
 declare Frame_Steepness = (Page.GetFirstChild("FRAME_STEEPNESS") as CMlFrame);
 declare Frame_Steepness_Zero_Minus_One = (Page.GetFirstChild("FRAME_STEEPNESS_ZERO_MINUS_ONE") as CMlFrame);
@@ -32,6 +34,7 @@ declare Label_Steepness_Zero_One = (Page.GetFirstChild("LABEL_STEEPNESS_ZERO_ONE
 declare Label_Time = (Page.GetFirstChild("LABEL_TIME") as CMlLabel);
 declare Label_Speed = (Page.GetFirstChild("LABEL_SPEED") as CMlLabel);
 declare Label_Distance = (Page.GetFirstChild("LABEL_DISTANCE") as CMlLabel);
+declare Label_Checkpoint_Counter = (Page.GetFirstChild("LABEL_CHECKPOINT_COUNTER") as CMlLabel);
 declare Gauge_RPM = (Page.GetFirstChild("GAUGE_RPM") as CMlGauge);
 declare Quad_Steer_Left = (Page.GetFirstChild("QUAD_STEER_LEFT") as CMlQuad);
 declare Quad_Steer_Right = (Page.GetFirstChild("QUAD_STEER_RIGHT") as CMlQuad);
@@ -52,9 +55,14 @@ declare Integer TimeResetLength = 500;
 
 Frame_Time.ClipWindowRelativePosition.Y = -20.;
 Frame_Checkpoint.ClipWindowRelativePosition.X = 32.;
-Frame_Speed.ClipWindowRelativePosition.X = -32.;
+//Frame_Distance.ClipWindowRelativePosition.X = -32.;
+
+Frame_Checkpoint_Counter.ClipWindowRelativePosition.Y = -6.;
+Frame_Distance.ClipWindowRelativePosition.Y = -6.;
 
 declare LastGear = GetOwner().EngineCurGear;
+
+declare CPCounter = 0;
 ***
 
 ***Loop***
@@ -81,6 +89,7 @@ foreach(Event,RaceEvents) {
 				PlayerTime = Event.RaceTime;
 			}
 			else {
+				CPCounter += 1;
 				//PlayAudio(Sound_TimeChange);
 				for(I,0,8) {
 					Audio.PlaySoundEvent(CAudioManager::ELibSound::ScoreIncrease, 0, .5, I*80);
@@ -146,6 +155,8 @@ foreach(Event,RaceEvents) {
 				SlowSetText(Label_CP_Start,"-:--.---",500);
 				Label_CP_Start.Show();
 
+				CPCounter = 0;
+
 				Label_CP_Blue.Hide();
 				Label_CP_Red.Hide();
 				Label_CP_Purple.Hide();
@@ -162,6 +173,8 @@ Frame_Checkpoint.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - Start
 Frame_Speed.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - Start-100, -40., 40., 500);
 Frame_Gear.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - Start-100, -30., 30., 1000);
 Frame_Info.ClipWindowRelativePosition.X = AnimLib::EaseOutQuad(Now - Start-100, 30., -30., 1000);
+Frame_Checkpoint_Counter.ClipWindowRelativePosition.Y = AnimLib::EaseOutQuad(Now - Start-400, -6., 6., 500);
+Frame_Distance.ClipWindowRelativePosition.Y = AnimLib::EaseOutQuad(Now - Start-400, -6., 6., 500);
 
 foreach(Control in Frame_Steepness.Controls) {
 	if(Control is CMlFrame) {
@@ -207,7 +220,19 @@ switch(GetOwner().RaceState) {
 Label_Time.SetText(TimeToTextWithMilli(PlayerTime));
 Label_Speed.SetText(""^GetOwner().DisplaySpeed);
 Label_Speed.RelativeScale = RpmRatio*.2+0.9;
-Label_Distance.SetText(""^MathLib::FloorInteger(GetOwner().Distance));
+Label_Distance.Value = "{{{{DISTANCE}}}}: $o"^TextLib::FormatReal(GetOwner().Distance, 2, False, False)^"m";
+
+declare CheckpointCount = MapCheckpointPos.count*NbLaps+NbLaps-1;
+
+if(CheckpointCount == 0)
+	Label_Checkpoint_Counter.Value = "NO CHECKPOINTS";
+else
+	Label_Checkpoint_Counter.Value = "CHECKPOINT: $o"^CPCounter^"/"^CheckpointCount;
+
+if(CheckpointCount > 0 && CheckpointCount == CPCounter)
+	Label_Checkpoint_Counter.TextColor = <1.,1.,0.>;
+else Label_Checkpoint_Counter.TextColor = <1.,1.,1.>;
+
 Gauge_RPM.Ratio = RpmRatio;
 Gauge_RPM.RelativeScale = GetOwner().EngineTurboRatio*.25+1;
 
