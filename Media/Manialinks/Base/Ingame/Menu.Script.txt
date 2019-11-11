@@ -369,6 +369,9 @@ foreach(Event,PendingEvents) {
 				case "UpdateLoadedGhosts": {
 					UpdateLoadedGhosts();
 				}
+				case "Show": {
+					
+				}
 			}
 		}
 		case CMlScriptEvent::Type::MenuNavigation: {
@@ -440,6 +443,8 @@ if(IsMenuOpen != IsMenuNavigationForeground) {
 	if(IsMenuOpen) {
 		SendCustomEvent("Open", []);
 		Select((Page.GetFirstChild("QUAD_BUTTON_CONTINUE") as CMlQuad));
+		Page.GetFirstChild("FRAME_MENU").RelativePosition_V3.X = -110.;
+		AnimMgr.Add(Page.GetFirstChild("FRAME_MENU"), "<frame pos=\"0 0\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 	}
 	else {
 		SendCustomEvent("Close", []);

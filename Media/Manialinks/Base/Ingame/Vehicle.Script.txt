@@ -188,6 +188,9 @@ foreach(Event,PendingEvents) {
 				case "Show": {
 					UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll);
 					UpdateVehicles();
+
+					Page.GetFirstChild("FRAME_OUTER_VEHICLES").RelativePosition_V3.X = 100.;
+					AnimMgr.Add(Page.GetFirstChild("FRAME_OUTER_VEHICLES"), "<frame pos=\"0 0\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 				}
 				case "Navigation": {
 					EnableMenuNavigationInputs = Event.CustomEventData[0] == "True";
@@ -272,7 +275,12 @@ if(VehicleLock != OldVehicleLock) {
 
 if(IsMenuOpen != IsMenuNavigationForeground) {
 	IsMenuOpen = IsMenuNavigationForeground;
-	if(IsMenuOpen) UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll, True);
+	if(IsMenuOpen) {
+		UpdatePositions(Frame_Vehicles.ScrollOffset, OldScroll, True);
+		
+		Page.GetFirstChild("FRAME_OUTER_VEHICLES").RelativePosition_V3.X = 110.;
+		AnimMgr.Add(Page.GetFirstChild("FRAME_OUTER_VEHICLES"), "<frame pos=\"0 0\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+	}
 	else {
 		
 	}
