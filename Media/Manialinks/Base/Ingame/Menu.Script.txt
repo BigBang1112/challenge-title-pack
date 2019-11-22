@@ -351,7 +351,7 @@ foreach(Event,PendingEvents) {
 						declare Zone = ConnectZones[0];
 						for(I,1,CurrentSection-1)
 							Zone ^= "|"^ConnectZones[I];
-						SendCustomEvent("FetchRecords", [Zone]);
+						SendCustomEvent("ShowRecords", [Zone]);
 					}
 				}
 				case "Open": {
