@@ -100,8 +100,8 @@ Void UpdateLoadedGhosts() {
 			}
 			else {
 				Frame.GetFirstChild("QUAD_SAVEGHOST").Show();
-				Frame.GetFirstChild("LABEL_TIME").RelativePosition_V3 = <24., -0.2>;
-				Frame.GetFirstChild("LABEL_AUTOSAVE").RelativePosition_V3 = <23., -3.>;
+				Frame.GetFirstChild("LABEL_TIME").RelativePosition_V3 = <27., -0.2>;
+				Frame.GetFirstChild("LABEL_AUTOSAVE").RelativePosition_V3 = <26., -3.>;
 			}
 
 			if(Ghost.IsAuthorMedal)
