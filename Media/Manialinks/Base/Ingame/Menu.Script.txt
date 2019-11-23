@@ -86,6 +86,11 @@ Void UpdateLoadedGhosts() {
 			declare Ghost = VisibleGhosts[I+Offset];
 			Frame.DataAttributeSet("file", Ghost.File);
 
+			if(TextLib::StartsWith("autosave", Ghost.File, False, False))
+				Frame.GetFirstChild("LABEL_AUTOSAVE").Show();
+			else
+				Frame.GetFirstChild("LABEL_AUTOSAVE").Hide();
+
 			if(Ghost.IsAuthorMedal)
 				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$0f0●$z {{{{AUTHOR_MEDAL}}}}");
 			else if(Ghost.IsGoldMedal)

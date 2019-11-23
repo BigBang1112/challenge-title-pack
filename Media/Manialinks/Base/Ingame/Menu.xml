@@ -54,42 +54,49 @@
 							<quad pos="-1 0" z-index="-1" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" opacity=".5" colorize="036" scriptevents="1" id="QUAD_GHOST"/>
 							<label size="47.5 5" text="$o$i$nTESTBOI" valign="center2" pos="-35 -0.3" textfont="Oswald" id="LABEL_NICKNAME"/>
 							<label pos="33 -0.2" z-index="0" size="17.5 5" text="0:00.000" textsize="3" textfont="OswaldMono" halign="right" id="LABEL_TIME" valign="center2"/>
+							<label pos="34 -3" z-index="1" size="17.5 5" text="$ff0AUTOSAVE" textsize="1" textfont="OswaldMono" halign="right" id="LABEL_AUTOSAVE" valign="bottom" textemboss="1" hidden="1"/>
 						</frame>
 						<frame pos="0 -8" hidden="1">
 							<quad pos="-1 0" z-index="-2" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardList" opacity=".5"/>
 							<quad pos="-1 0" z-index="-1" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" opacity=".5" colorize="036" scriptevents="1" id="QUAD_GHOST"/>
 							<label size="47.5 5" text="$o$i$nTESTBOI" valign="center2" pos="-35 -0.3" textfont="Oswald" id="LABEL_NICKNAME"/>
 							<label pos="33 -0.2" z-index="0" size="17.5 5" text="0:00.000" textsize="3" textfont="OswaldMono" halign="right" id="LABEL_TIME" valign="center2"/>
+							<label pos="34 -3" z-index="1" size="17.5 5" text="$ff0AUTOSAVE" textsize="1" textfont="OswaldMono" halign="right" id="LABEL_AUTOSAVE" valign="bottom" textemboss="1" hidden="1"/>
 						</frame>
 						<frame pos="0 -16" hidden="1">
 							<quad pos="-1 0" z-index="-2" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardList" opacity=".5"/>
 							<quad pos="-1 0" z-index="-1" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" opacity=".5" colorize="036" scriptevents="1" id="QUAD_GHOST"/>
 							<label size="47.5 5" text="$o$i$nTESTBOI" valign="center2" pos="-35 -0.3" textfont="Oswald" id="LABEL_NICKNAME"/>
 							<label pos="33 -0.2" z-index="0" size="17.5 5" text="0:00.000" textsize="3" textfont="OswaldMono" halign="right" id="LABEL_TIME" valign="center2"/>
+							<label pos="34 -3" z-index="1" size="17.5 5" text="$ff0AUTOSAVE" textsize="1" textfont="OswaldMono" halign="right" id="LABEL_AUTOSAVE" valign="bottom" textemboss="1" hidden="1"/>
 						</frame>
 						<frame pos="0 -24" hidden="1">
 							<quad pos="-1 0" z-index="-2" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardList" opacity=".5"/>
 							<quad pos="-1 0" z-index="-1" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" opacity=".5" colorize="036" scriptevents="1" id="QUAD_GHOST"/>
 							<label size="47.5 5" text="$o$i$nTESTBOI" valign="center2" pos="-35 -0.3" textfont="Oswald" id="LABEL_NICKNAME"/>
 							<label pos="33 -0.2" z-index="0" size="17.5 5" text="0:00.000" textsize="3" textfont="OswaldMono" halign="right" id="LABEL_TIME" valign="center2"/>
+							<label pos="34 -3" z-index="1" size="17.5 5" text="$ff0AUTOSAVE" textsize="1" textfont="OswaldMono" halign="right" id="LABEL_AUTOSAVE" valign="bottom" textemboss="1" hidden="1"/>
 						</frame>
 						<frame pos="0 -32" hidden="1">
 							<quad pos="-1 0" z-index="-2" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardList" opacity=".5"/>
 							<quad pos="-1 0" z-index="-1" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" opacity=".5" colorize="036" scriptevents="1" id="QUAD_GHOST"/>
 							<label size="47.5 5" text="$o$i$nTESTBOI" valign="center2" pos="-35 -0.3" textfont="Oswald" id="LABEL_NICKNAME"/>
 							<label pos="33 -0.2" z-index="0" size="17.5 5" text="0:00.000" textsize="3" textfont="OswaldMono" halign="right" id="LABEL_TIME" valign="center2"/>
+							<label pos="34 -3" z-index="1" size="17.5 5" text="$ff0AUTOSAVE" textsize="1" textfont="OswaldMono" halign="right" id="LABEL_AUTOSAVE" valign="bottom" textemboss="1" hidden="1"/>
 						</frame>
 						<frame pos="0 -40" hidden="1">
 							<quad pos="-1 0" z-index="-2" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardList" opacity=".5"/>
 							<quad pos="-1 0" z-index="-1" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" opacity=".5" colorize="036" scriptevents="1" id="QUAD_GHOST"/>
 							<label size="47.5 5" text="$o$i$nTESTBOI" valign="center2" pos="-35 -0.3" textfont="Oswald" id="LABEL_NICKNAME"/>
 							<label pos="33 -0.2" z-index="0" size="17.5 5" text="0:00.000" textsize="3" textfont="OswaldMono" halign="right" id="LABEL_TIME" valign="center2"/>
+							<label pos="34 -3" z-index="1" size="17.5 5" text="$ff0AUTOSAVE" textsize="1" textfont="OswaldMono" halign="right" id="LABEL_AUTOSAVE" valign="bottom" textemboss="1" hidden="1"/>
 						</frame>
 						<frame pos="0 -48" hidden="1">
 							<quad pos="-1 0" z-index="-2" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardList" opacity=".5"/>
 							<quad pos="-1 0" z-index="-1" size="73 8" halign="center" valign="center" style="Bgs1" substyle="BgCardInventoryItem" opacity=".5" colorize="036" scriptevents="1" id="QUAD_GHOST"/>
 							<label size="47.5 5" text="$o$i$nTESTBOI" valign="center2" pos="-35 -0.3" textfont="Oswald" id="LABEL_NICKNAME"/>
 							<label pos="33 -0.2" z-index="0" size="17.5 5" text="0:00.000" textsize="3" textfont="OswaldMono" halign="right" id="LABEL_TIME" valign="center2"/>
+							<label pos="34 -3" z-index="1" size="17.5 5" text="$ff0AUTOSAVE" textsize="1" textfont="OswaldMono" halign="right" id="LABEL_AUTOSAVE" valign="bottom" textemboss="1" hidden="1"/>
 						</frame>
 					</frame>
 				</frame>
