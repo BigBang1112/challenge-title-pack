@@ -14,9 +14,11 @@
 
 #Struct SGhostInfo {
 	Text Nickname;
+	Text Login;
 	Integer Time;
 	Integer[] Checkpoints;
 	Text File;
+	Text Url;
 	Boolean IsMedal;
 	Boolean IsAuthorMedal;
 	Boolean IsGoldMedal;
@@ -90,6 +92,17 @@ Void UpdateLoadedGhosts() {
 				Frame.GetFirstChild("LABEL_AUTOSAVE").Show();
 			else
 				Frame.GetFirstChild("LABEL_AUTOSAVE").Hide();
+
+			if(Ghost.Url == "") {
+				Frame.GetFirstChild("QUAD_SAVEGHOST").Hide();
+				Frame.GetFirstChild("LABEL_TIME").RelativePosition_V3 = <33., -0.2>;
+				Frame.GetFirstChild("LABEL_AUTOSAVE").RelativePosition_V3 = <34., -3.>;
+			}
+			else {
+				Frame.GetFirstChild("QUAD_SAVEGHOST").Show();
+				Frame.GetFirstChild("LABEL_TIME").RelativePosition_V3 = <24., -0.2>;
+				Frame.GetFirstChild("LABEL_AUTOSAVE").RelativePosition_V3 = <23., -3.>;
+			}
 
 			if(Ghost.IsAuthorMedal)
 				(Frame.GetFirstChild("LABEL_NICKNAME") as CMlLabel).SetText("$0f0●$z {{{{AUTHOR_MEDAL}}}}");
@@ -385,6 +398,24 @@ foreach(Event,PendingEvents) {
 					Playground.QuitServer(!ValidationMode);
 				}
 				case "UpdateLoadedGhosts": {
+					UpdateLoadedGhosts();
+				}
+				case "UpdateRecord": {
+					declare _Car = Event.CustomEventData[0];
+					declare _Login = Event.CustomEventData[1];
+					declare _Nickname = Event.CustomEventData[2];
+					declare _Time = TextLib::ToInteger(Event.CustomEventData[3]);
+					declare _Url = Event.CustomEventData[4];
+					declare _FileName = Event.CustomEventData[5];
+
+					declare SGhostInfo[] LoadedGhosts for Page;
+					for(I, 0, LoadedGhosts.count-1) {
+						declare Ghost = LoadedGhosts[I];
+						if(Ghost.Login == _Login && Ghost.Time == _Time) {
+							Ghost.Url = _Url;
+							LoadedGhosts[I] = Ghost;
+						}
+					}
 					UpdateLoadedGhosts();
 				}
 				case "Show": {

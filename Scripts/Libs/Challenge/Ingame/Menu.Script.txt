@@ -14,9 +14,11 @@
 
 #Struct SGhostInfo {
 	Text Nickname;
+	Text Login;
 	Integer Time;
 	Integer[] Checkpoints;
 	Text File;
+	Text Url;
 	Boolean IsMedal;
 	Boolean IsAuthorMedal;
 	Boolean IsGoldMedal;
@@ -178,6 +180,7 @@ Void ShowRecords() {
 		declare SGhostInfo Info;
 		if(Record.Nickname == "") Info.Nickname = Record.Login;
 		else Info.Nickname = Record.Nickname;
+		Info.Login = Record.Login;
 		Info.Time = Record.Time;
 		LoadedGhosts.add(Info);
 	}
@@ -231,6 +234,23 @@ Void Event(CManiaAppEvent _Event) {
 						}
 						case "FetchRecords": {
 							Zone = _Event.CustomEventData[0];
+
+							declare Boolean Leaderboards_Request for This;
+							declare CTaskResult_NaturalLeaderBoardInfoList[Text] Leaderboards for This;
+							foreach(LB,Leaderboards)
+								if(LB != Null)
+									ScoreMgr.TaskResult_Release(LB.Id);
+							Leaderboards.clear();
+							
+							foreach(Vehicle,VehicleNames) {
+								declare Request = ScoreMgr.MapLeaderBoard_GetPlayerList(NullId, Map.MapInfo.MapUid, Vehicle, Zone, 0, 20);
+								if(Request == Null)
+									log("Records on " ^ Map.MapInfo.MapUid ^ " with car " ^ Vehicle ^ " are not available in this title pack.");
+								else
+									Leaderboards[Vehicle] = Request;
+							}
+							Leaderboards_Request = True;
+
 							declare Success2 = Http::AsyncGET("RECORDS", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/records.php?uid={{{Map.MapInfo.MapUid}}}&car={{{TextLib::Join(",",VehicleNames)}}}&zone={{{Zone}}}""", True);
 						}
 						case "ShowRecords": {
@@ -354,6 +374,26 @@ Void Async() {
 				declare Removed2 = LoadedGhosts_Task_Files.removekey(GhostTask.Id);
 
 				DataFileMgr.TaskResult_Release(GhostTask.Id);
+			}
+		}
+	}
+
+	declare Boolean Leaderboards_Request for This;
+	if(Leaderboards_Request) {
+		Leaderboards_Request = False;
+		declare CTaskResult_NaturalLeaderBoardInfoList[Text] Leaderboards for This;
+		foreach(Car => L,Leaderboards) {
+			if(L != Null) {
+				Leaderboards_Request = True;
+				if(!L.IsProcessing) {
+					if(L.HasSucceeded) {
+						foreach(Record,L.LeaderBoardInfo) {
+							Layers::SendEvent("Menu", "UpdateRecord", [Car, Record.Login, Record.DisplayName, Record.Score^"", Record.ReplayUrl, Record.FileName]);
+						}
+					}
+					ScoreMgr.TaskResult_Release(L.Id);
+					Leaderboards[Car] = Null;
+				}
 			}
 		}
 	}
