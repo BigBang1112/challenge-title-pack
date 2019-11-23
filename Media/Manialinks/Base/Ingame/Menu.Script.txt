@@ -50,17 +50,26 @@ Void Button_Start() {
 }
 
 Void UpdateLoadedGhosts() {
+	declare Text Car for This;
+
 	declare SGhostInfo[] LoadedGhosts for Page;
 	declare netwrite Text[] SelectedGhostFiles for UI;
 	declare netwrite Text[] SelectedGhostUrls for UI;
 
+	declare SGhostInfo[] VisibleGhosts;
+
+	for(I,0,LoadedGhosts.count-1)
+	if(LoadedGhosts.existskey(I))
+	if(Car == "" || TextLib::Find(Car, LoadedGhosts[I].File, True, True))
+	VisibleGhosts.add(LoadedGhosts[I]);
+
 	declare Frame_Outer_Ghosts = (Page.GetFirstChild("FRAME_OUTER_GHOSTS") as CMlFrame);
 	declare Frame_Ghosts = (Page.GetFirstChild("FRAME_GHOSTS") as CMlFrame);
 	declare Quad_Scrollbar = (Page.GetFirstChild("QUAD_SCROLLBAR") as CMlQuad);
-	if(LoadedGhosts.count > 7) {
-		Frame_Outer_Ghosts.ScrollMax.Y = LoadedGhosts.count*8.-7*8;
+	if(VisibleGhosts.count > 7) {
+		Frame_Outer_Ghosts.ScrollMax.Y = VisibleGhosts.count*8.-7*8;
 
-		declare VisibleRatio = 7./LoadedGhosts.count;
+		declare VisibleRatio = 7./VisibleGhosts.count;
 		Quad_Scrollbar.Size.Y = 56*VisibleRatio;
 
 		Quad_Scrollbar.Show();
@@ -73,8 +82,8 @@ Void UpdateLoadedGhosts() {
 	declare Offset = MathLib::NearestInteger(Frame_Outer_Ghosts.ScrollOffset.Y/10);
 	for(I,0,Frame_Ghosts.Controls.count-1) {
 		declare Frame = (Frame_Ghosts.Controls[I] as CMlFrame);
-		if(LoadedGhosts.existskey(I+Offset)) {
-			declare Ghost = LoadedGhosts[I+Offset];
+		if(VisibleGhosts.existskey(I+Offset)) {
+			declare Ghost = VisibleGhosts[I+Offset];
 			Frame.DataAttributeSet("file", Ghost.File);
 
 			if(Ghost.IsAuthorMedal)
@@ -317,7 +326,8 @@ foreach(Event,PendingEvents) {
 					SlideText_Set(Label_Challenge, Label_Challenge2, Challenge, LabelDistance);
 				}
 				case "Car": {
-					declare Car = Event.CustomEventData[0];
+					declare Text Car for This;
+					Car = Event.CustomEventData[0];
 					SlideText_Set(Label_Car, Label_Car2, Car, LabelDistance);
 
 					if(Car == "") {
