@@ -194,6 +194,9 @@ if(File != "") {
 	declare Folders = TextLib::Split("\\",File);
 	declare Name = Folders[Folders.count-1];
 
+	declare Text Car for This;
+	Name = TextLib::Replace(Name, Car, "$ff0"^Car^"$z");
+
 	declare Frame_Tooltip = (Page.GetFirstChild("FRAME_TOOLTIP") as CMlFrame);
 	declare Label_Text = (Frame_Tooltip.GetFirstChild("LABEL_TEXT") as CMlLabel);
 	declare Quad_Tooltip = (Frame_Tooltip.GetFirstChild("QUAD_TOOLTIP") as CMlQuad);
