@@ -60,7 +60,7 @@ Void UpdateLoadedGhosts() {
 
 	for(I,0,LoadedGhosts.count-1)
 	if(LoadedGhosts.existskey(I))
-	if(Car == "" || TextLib::Find(Car, LoadedGhosts[I].File, True, True))
+	if(Car == "" || LoadedGhosts[I].File == "" || TextLib::Find(Car, LoadedGhosts[I].File, True, True))
 	VisibleGhosts.add(LoadedGhosts[I]);
 
 	declare Frame_Outer_Ghosts = (Page.GetFirstChild("FRAME_OUTER_GHOSTS") as CMlFrame);
