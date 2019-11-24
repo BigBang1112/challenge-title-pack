@@ -28,7 +28,7 @@
 		<frame pos="-45 -70.5" id="FRAME_CHECKPOINT_COUNTER" clip="True" clipsizen="30 6">
 			<quad z-index="0" size="25 4" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="1" size="25 4" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
-			<label pos="0 -0.15" z-index="3" size="20 5" text="CHECKPOINT: $o?/?" halign="center" valign="center2" textfont="OswaldMono" textsize="0.3" id="LABEL_CHECKPOINT_COUNTER"/>
+			<label pos="0 -0.15" z-index="3" size="20 5" text="{{{{CHECKPOINT}}}} $o?/?" halign="center" valign="center2" textfont="OswaldMono" textsize="0.3" id="LABEL_CHECKPOINT_COUNTER"/>
 		</frame>
 		<frame pos="45 -77.5" id="FRAME_SPEED" clip="True" clipsizen="40 15">
 			<quad z-index="0" size="30 10" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
@@ -40,7 +40,7 @@
 		<frame pos="45 -70.5" id="FRAME_DISTANCE" clip="True" clipsizen="30 6">
 			<quad z-index="0" size="25 4" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="1" size="25 4" valign="center" halign="center" style="Bgs1" substyle="BgGradV"/>
-			<label pos="0 -0.15" z-index="3" size="20 5" text="DISTANCE: $o?" halign="center" valign="center2" textfont="OswaldMono" textsize="0.3" id="LABEL_DISTANCE"/>
+			<label pos="0 -0.15" z-index="3" size="20 5" text="{{{{DISTANCE}}}}: $o?" halign="center" valign="center2" textfont="OswaldMono" textsize="0.3" id="LABEL_DISTANCE"/>
 		</frame>
 		<frame pos="66 -78.5" id="FRAME_GEAR" clip="True" clipsizen="13 10">
 			<quad z-index="0" size="12 8" valign="center" halign="center" style="Bgs1" substyle="BgCardList"/>

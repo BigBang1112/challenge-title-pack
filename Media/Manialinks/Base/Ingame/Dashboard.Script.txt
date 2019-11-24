@@ -225,9 +225,9 @@ Label_Distance.Value = "{{{{DISTANCE}}}}: $o"^TextLib::FormatReal(GetOwner().Dis
 declare CheckpointCount = MapCheckpointPos.count*NbLaps+NbLaps-1;
 
 if(CheckpointCount == 0)
-	Label_Checkpoint_Counter.Value = "NO CHECKPOINTS";
+	Label_Checkpoint_Counter.Value = "{{{{NO_CHECKPOINTS}}}}";
 else
-	Label_Checkpoint_Counter.Value = "CHECKPOINT: $o"^CPCounter^"/"^CheckpointCount;
+	Label_Checkpoint_Counter.Value = "{{{{CHECKPOINT}}}} $o"^CPCounter^"/"^CheckpointCount;
 
 if(CheckpointCount > 0 && CheckpointCount == CPCounter)
 	Label_Checkpoint_Counter.TextColor = <1.,1.,0.>;
