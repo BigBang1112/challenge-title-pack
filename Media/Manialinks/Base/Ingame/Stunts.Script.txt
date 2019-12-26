@@ -18,6 +18,7 @@ CTmMlPlayer GetOwner() {
 declare Label_Points = (Page.GetFirstChild("LABEL_POINTS") as CMlLabel);
 declare Label_Stunt = (Page.GetFirstChild("LABEL_STUNT") as CMlLabel);
 declare Label_TimePenalty = (Page.GetFirstChild("LABEL_TIMEPENALTY") as CMlLabel);
+declare Label_AddPoints = (Page.GetFirstChild("LABEL_ADDPOINTS") as CMlLabel);
 
 declare TotalPoints = 0;
 
@@ -49,12 +50,32 @@ foreach(Event,PendingEvents) {
 							Label_Stunt.SetText(Stunt.Figure);
 						else
 							Label_Stunt.SetText(Stunt.Figure ^ " " ^ Stunt.Angle);
+
+						Label_Stunt.RelativeScale = .8;
+						Label_Stunt.Opacity = .0;
+						AnimMgr.Add(Label_Stunt, "<label scale=\"1\" opacity=\"1\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+						AnimMgr.Add(Label_Stunt, "<label scale=\".8\" opacity=\"0\"/>", Now + 2000, 300, CAnimManager::EAnimManagerEasing::QuadIn);
 					}
 					else if(Stunt.Quality == 0) TotalPoints += Stunt.Points;
 					else if(Stunt.Quality < 0) {
 						TotalPoints -= Stunt.Points;
 						Label_Stunt.SetText(Stunt.Figure);
 					}
+
+					if(Stunt.Quality >= 0) {
+						Label_AddPoints.SetText("+"^Stunt.Points^" ");
+						Label_AddPoints.TextColor = <1.,1.,0.>;
+					}
+					if(Stunt.Quality < 0) {
+						Label_AddPoints.SetText("-"^Stunt.Points^" ");
+						Label_AddPoints.TextColor = <1.,0.,0.>;
+					}
+
+					AnimMgr.AddChain(Label_AddPoints, "<label opacity=\"1\" pos=\"0 5.5\"/>", 1000, CAnimManager::EAnimManagerEasing::QuadOut);
+					AnimMgr.AddChain(Label_AddPoints, "<label opacity=\"0\" pos=\"0 -0.5\"/>", 500, CAnimManager::EAnimManagerEasing::QuadIn);
+
+					Label_Points.RelativeScale = MathLib::Min(Stunt.Points, 100)/100*.2+1.2;
+					AnimMgr.Add(Label_Points, "<label scale=\"1\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 				}
 			}
 		}
