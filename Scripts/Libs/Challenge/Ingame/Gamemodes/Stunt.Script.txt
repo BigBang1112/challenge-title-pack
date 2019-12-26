@@ -24,55 +24,59 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 			CurrentStunts.clear();
 		}
 		case CTmModeEvent::EType::Stunt: {
-			declare SStunt[] CurrentStunts for Player;
-			
-			declare SStunt Stunt;
-			Stunt.Timestamp = _Mode.Now;
-			Stunt.RaceTime = _Event.RaceTime;
-			Stunt.Points = _Event.Points;
-			Stunt.Angle = _Event.Angle;
-			
-			switch(_Event.StuntFigure) {
-				case CTmModeEvent::EStuntFigure::StraightJump: { Stunt.Figure = "STUNT_STRAIGHT_JUMP"; Stunt.Quality = 0; }
-				case CTmModeEvent::EStuntFigure::Flip: { Stunt.Figure = "STUNT_FLIP"; Stunt.Quality = 1; }
-				case CTmModeEvent::EStuntFigure::BackFlip: { Stunt.Figure = "STUNT_BACKFLIP"; Stunt.Quality = 2; }
-				case CTmModeEvent::EStuntFigure::Spin: { Stunt.Figure = "STUNT_SPIN"; Stunt.Quality = 3; }
-				case CTmModeEvent::EStuntFigure::Aerial: { Stunt.Figure = "STUNT_AERIAL"; Stunt.Quality = 4; }
-				case CTmModeEvent::EStuntFigure::AlleyOop: { Stunt.Figure = "STUNT_ALLEY_OOP"; Stunt.Quality = 5; }
-				case CTmModeEvent::EStuntFigure::Roll: { Stunt.Figure = "STUNT_ROLL"; Stunt.Quality = 6; }
-				case CTmModeEvent::EStuntFigure::Corkscrew: { Stunt.Figure = "STUNT_CORKSCREW"; Stunt.Quality = 7; }
-				case CTmModeEvent::EStuntFigure::SpinOff: { Stunt.Figure = "STUNT_SPIN_OFF"; Stunt.Quality = 8; }
-				case CTmModeEvent::EStuntFigure::Rodeo: { Stunt.Figure = "STUNT_RODEO"; Stunt.Quality = 9; }
-				case CTmModeEvent::EStuntFigure::FlipFlap: { Stunt.Figure = "STUNT_FLIP_FLAP"; Stunt.Quality = 10; }
-				case CTmModeEvent::EStuntFigure::Twister: { Stunt.Figure = "STUNT_TWISTER"; Stunt.Quality = 11; }
-				case CTmModeEvent::EStuntFigure::FreeStyle: { Stunt.Figure = "STUNT_FREE_STYLE"; Stunt.Quality = 12; }
-				case CTmModeEvent::EStuntFigure::SpinningMix: { Stunt.Figure = "STUNT_SPINNING_MIX"; Stunt.Quality = 13; }
-				case CTmModeEvent::EStuntFigure::FlippingChaos: { Stunt.Figure = "STUNT_FLIPPING_CHAOS"; Stunt.Quality = 14; }
-				case CTmModeEvent::EStuntFigure::RollingMadness: { Stunt.Figure = "STUNT_ROLLING_MADNESS"; Stunt.Quality = 15; }
-				case CTmModeEvent::EStuntFigure::WreckNone: { Stunt.Figure = "STUNT_WRECK"; Stunt.Quality = 0; }
-				case CTmModeEvent::EStuntFigure::WreckStraightJump: { Stunt.Figure = "STUNT_WRECK_STRAIGHT_JUMP"; Stunt.Quality = 0; }
-				case CTmModeEvent::EStuntFigure::WreckFlip: { Stunt.Figure = "STUNT_WRECK_FLIP"; Stunt.Quality = 0; }
-				case CTmModeEvent::EStuntFigure::WreckBackFlip: { Stunt.Figure = "STUNT_WRECK_BACKFLIP"; Stunt.Quality = 0; }
-				case CTmModeEvent::EStuntFigure::WreckSpin: { Stunt.Figure = "STUNT_WRECK_SPIN"; Stunt.Quality = 1; }
-				case CTmModeEvent::EStuntFigure::WreckAerial: { Stunt.Figure = "STUNT_WRECK_AERIAL"; Stunt.Quality = 1; }
-				case CTmModeEvent::EStuntFigure::WreckAlleyOop: { Stunt.Figure = "STUNT_WRECK_ALLEY_OOP"; Stunt.Quality = 1; }
-				case CTmModeEvent::EStuntFigure::WreckRoll: { Stunt.Figure = "STUNT_WRECK_ROLL"; Stunt.Quality = 2; }
-				case CTmModeEvent::EStuntFigure::WreckCorkscrew: { Stunt.Figure = "STUNT_WRECK_CORKSCREW"; Stunt.Quality = 2; }
-				case CTmModeEvent::EStuntFigure::WreckSpinOff: { Stunt.Figure = "STUNT_WRECK_SPIN_OFF"; Stunt.Quality = 3; }
-				case CTmModeEvent::EStuntFigure::WreckRodeo: { Stunt.Figure = "STUNT_WRECK_RODEO"; Stunt.Quality = 3; }
-				case CTmModeEvent::EStuntFigure::WreckFlipFlap: { Stunt.Figure = "STUNT_WRECK_FLIP_FLAP"; Stunt.Quality = 3; }
-				case CTmModeEvent::EStuntFigure::WreckTwister: { Stunt.Figure = "STUNT_WRECK_TWISTER"; Stunt.Quality = 4; }
-				case CTmModeEvent::EStuntFigure::WreckFreeStyle: { Stunt.Figure = "STUNT_WRECK_FREE_STYLE"; Stunt.Quality = 4; }
-				case CTmModeEvent::EStuntFigure::WreckSpinningMix: { Stunt.Figure = "STUNT_WRECK_SPINNING_MIX"; Stunt.Quality = 4; }
-				case CTmModeEvent::EStuntFigure::WreckFlippingChaos: { Stunt.Figure = "STUNT_WRECK_FLIPPING_CHAOS"; Stunt.Quality = 5; }
-				case CTmModeEvent::EStuntFigure::WreckRollingMadness: { Stunt.Figure = "STUNT_WRECK_ROLLING_MADNESS"; Stunt.Quality = 5; }
-				case CTmModeEvent::EStuntFigure::RespawnPenalty: { Stunt.Figure = "STUNT_RESPAWN_PENALTY"; Stunt.Quality = -1; }
+			declare metadata Integer StuntTimeLimit for Map;
+		
+			if(StuntTimeLimit == 0 || _Event.RaceTime <= StuntTimeLimit) {
+				declare SStunt[] CurrentStunts for Player;
+				
+				declare SStunt Stunt;
+				Stunt.Timestamp = _Mode.Now;
+				Stunt.RaceTime = _Event.RaceTime;
+				Stunt.Points = _Event.Points;
+				Stunt.Angle = _Event.Angle;
+				
+				switch(_Event.StuntFigure) {
+					case CTmModeEvent::EStuntFigure::StraightJump: { Stunt.Figure = "STUNT_STRAIGHT_JUMP"; Stunt.Quality = 0; }
+					case CTmModeEvent::EStuntFigure::Flip: { Stunt.Figure = "STUNT_FLIP"; Stunt.Quality = 1; }
+					case CTmModeEvent::EStuntFigure::BackFlip: { Stunt.Figure = "STUNT_BACKFLIP"; Stunt.Quality = 2; }
+					case CTmModeEvent::EStuntFigure::Spin: { Stunt.Figure = "STUNT_SPIN"; Stunt.Quality = 3; }
+					case CTmModeEvent::EStuntFigure::Aerial: { Stunt.Figure = "STUNT_AERIAL"; Stunt.Quality = 4; }
+					case CTmModeEvent::EStuntFigure::AlleyOop: { Stunt.Figure = "STUNT_ALLEY_OOP"; Stunt.Quality = 5; }
+					case CTmModeEvent::EStuntFigure::Roll: { Stunt.Figure = "STUNT_ROLL"; Stunt.Quality = 6; }
+					case CTmModeEvent::EStuntFigure::Corkscrew: { Stunt.Figure = "STUNT_CORKSCREW"; Stunt.Quality = 7; }
+					case CTmModeEvent::EStuntFigure::SpinOff: { Stunt.Figure = "STUNT_SPIN_OFF"; Stunt.Quality = 8; }
+					case CTmModeEvent::EStuntFigure::Rodeo: { Stunt.Figure = "STUNT_RODEO"; Stunt.Quality = 9; }
+					case CTmModeEvent::EStuntFigure::FlipFlap: { Stunt.Figure = "STUNT_FLIP_FLAP"; Stunt.Quality = 10; }
+					case CTmModeEvent::EStuntFigure::Twister: { Stunt.Figure = "STUNT_TWISTER"; Stunt.Quality = 11; }
+					case CTmModeEvent::EStuntFigure::FreeStyle: { Stunt.Figure = "STUNT_FREE_STYLE"; Stunt.Quality = 12; }
+					case CTmModeEvent::EStuntFigure::SpinningMix: { Stunt.Figure = "STUNT_SPINNING_MIX"; Stunt.Quality = 13; }
+					case CTmModeEvent::EStuntFigure::FlippingChaos: { Stunt.Figure = "STUNT_FLIPPING_CHAOS"; Stunt.Quality = 14; }
+					case CTmModeEvent::EStuntFigure::RollingMadness: { Stunt.Figure = "STUNT_ROLLING_MADNESS"; Stunt.Quality = 15; }
+					case CTmModeEvent::EStuntFigure::WreckNone: { Stunt.Figure = "STUNT_WRECK"; Stunt.Quality = 0; }
+					case CTmModeEvent::EStuntFigure::WreckStraightJump: { Stunt.Figure = "STUNT_WRECK_STRAIGHT_JUMP"; Stunt.Quality = 0; }
+					case CTmModeEvent::EStuntFigure::WreckFlip: { Stunt.Figure = "STUNT_WRECK_FLIP"; Stunt.Quality = 0; }
+					case CTmModeEvent::EStuntFigure::WreckBackFlip: { Stunt.Figure = "STUNT_WRECK_BACKFLIP"; Stunt.Quality = 0; }
+					case CTmModeEvent::EStuntFigure::WreckSpin: { Stunt.Figure = "STUNT_WRECK_SPIN"; Stunt.Quality = 1; }
+					case CTmModeEvent::EStuntFigure::WreckAerial: { Stunt.Figure = "STUNT_WRECK_AERIAL"; Stunt.Quality = 1; }
+					case CTmModeEvent::EStuntFigure::WreckAlleyOop: { Stunt.Figure = "STUNT_WRECK_ALLEY_OOP"; Stunt.Quality = 1; }
+					case CTmModeEvent::EStuntFigure::WreckRoll: { Stunt.Figure = "STUNT_WRECK_ROLL"; Stunt.Quality = 2; }
+					case CTmModeEvent::EStuntFigure::WreckCorkscrew: { Stunt.Figure = "STUNT_WRECK_CORKSCREW"; Stunt.Quality = 2; }
+					case CTmModeEvent::EStuntFigure::WreckSpinOff: { Stunt.Figure = "STUNT_WRECK_SPIN_OFF"; Stunt.Quality = 3; }
+					case CTmModeEvent::EStuntFigure::WreckRodeo: { Stunt.Figure = "STUNT_WRECK_RODEO"; Stunt.Quality = 3; }
+					case CTmModeEvent::EStuntFigure::WreckFlipFlap: { Stunt.Figure = "STUNT_WRECK_FLIP_FLAP"; Stunt.Quality = 3; }
+					case CTmModeEvent::EStuntFigure::WreckTwister: { Stunt.Figure = "STUNT_WRECK_TWISTER"; Stunt.Quality = 4; }
+					case CTmModeEvent::EStuntFigure::WreckFreeStyle: { Stunt.Figure = "STUNT_WRECK_FREE_STYLE"; Stunt.Quality = 4; }
+					case CTmModeEvent::EStuntFigure::WreckSpinningMix: { Stunt.Figure = "STUNT_WRECK_SPINNING_MIX"; Stunt.Quality = 4; }
+					case CTmModeEvent::EStuntFigure::WreckFlippingChaos: { Stunt.Figure = "STUNT_WRECK_FLIPPING_CHAOS"; Stunt.Quality = 5; }
+					case CTmModeEvent::EStuntFigure::WreckRollingMadness: { Stunt.Figure = "STUNT_WRECK_ROLLING_MADNESS"; Stunt.Quality = 5; }
+					case CTmModeEvent::EStuntFigure::RespawnPenalty: { Stunt.Figure = "STUNT_RESPAWN_PENALTY"; Stunt.Quality = -1; }
+				}
+				
+				CurrentStunts.add(Stunt);
+				
+				declare netwrite SStunt Server_Stunt for UI;
+				Server_Stunt = Stunt;
 			}
-			
-			CurrentStunts.add(Stunt);
-			
-			declare netwrite SStunt Server_Stunt for UI;
-			Server_Stunt = Stunt;
 		}
 		case CTmModeEvent::EType::WayPoint: {
 			if(_Event.IsEndRace) {

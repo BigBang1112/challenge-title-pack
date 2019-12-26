@@ -21,6 +21,7 @@ declare Label_TimePenalty = (Page.GetFirstChild("LABEL_TIMEPENALTY") as CMlLabel
 declare Label_AddPoints = (Page.GetFirstChild("LABEL_ADDPOINTS") as CMlLabel);
 
 declare TotalPoints = 0;
+declare StuntPenalty = 0;
 
 declare CTmMlPlayer::ERaceState PreviousRaceState;
 
@@ -91,24 +92,28 @@ else if(GetOwner().RaceStartTime == 0) {
 else {
 	declare Time = MathLib::Clamp(StuntTimeLimit-(GameTime-GetOwner().RaceStartTime),0,StuntTimeLimit);
 	Label_TimePenalty.SetText(TextLib::TimeToText(Time, True));
+
+	StuntPenalty = MathLib::Max(MathLib::FloorInteger((GameTime-GetOwner().RaceStartTime-StuntTimeLimit)/100.),0);
+	if(StuntPenalty > 0) Label_Points.TextColor = <1.,.5,0.>;
+	else Label_Points.TextColor = <1.,1.,1.>;
 }
 
 foreach(Event,RaceEvents) {
 	switch(Event.Type) {
 		case CTmRaceClientEvent::EType::Respawn: {
-			
+			if(Event.Player.CurRace.Time == -1) {
+				TotalPoints = 0;
+				StuntPenalty = 0;
+				Label_Stunt.SetText("");
+			}
 		}
 	}
 }
 
 if(GetOwner().RaceState != PreviousRaceState) {
 	declare State = GetOwner().RaceState;
-	if(State == CTmMlPlayer::ERaceState::BeforeStart) {
-		TotalPoints = 0;
-		Label_Stunt.SetText("");
-	}
 	PreviousRaceState = State;
 }
 
-Label_Points.SetText(TotalPoints^"");
+Label_Points.SetText(MathLib::Max(0, TotalPoints-StuntPenalty)^"");
 ***
