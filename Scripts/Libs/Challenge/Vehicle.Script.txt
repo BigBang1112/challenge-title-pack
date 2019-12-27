@@ -15,6 +15,7 @@
 #Struct SRealVehicle {
 	Text Name;
 	Ident[Text] Id; //Basically each one is skin
+	Ident DefaultId;
 }
 
 SRealVehicle[] Load(SVehicle[] _Vehicles, CMode _Mode) {
@@ -26,6 +27,12 @@ SRealVehicle[] Load(SVehicle[] _Vehicles, CMode _Mode) {
 		RealVehicle.Name = Vehicle.Name;
 		
 		RealVehicle.Id[""] = _Mode.ItemList_Add(Vehicle.File);
+		
+		declare DefaultVehicles = ["CanyonCar", "StadiumCar", "ValleyCar", "LagoonCar", "DesertCar", "RallyCar", "SnowCar", "IslandCar", "BayCar", "CoastCar"];
+		
+		if(DefaultVehicles.exists(Vehicle.Name))
+			RealVehicle.DefaultId = _Mode.ItemList_Add(Vehicle.Name);
+		
 		if(Vehicle.Skins.count > 0) {
 			foreach(Skin, Vehicle.Skins) {
 				RealVehicle.Id[Skin.File] = _Mode.ItemList_AddWithSkin(Vehicle.File, "Skins/Models/"^Skin.File);

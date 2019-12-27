@@ -44,15 +44,19 @@ declare Vehicle::SRealVehicle[] RealVehicles;
 declare Vehicle::SRealVehicle RealMapVehicle;
 declare CTmPlayer[] RespawnList;
 
-Void SetCarModel(CTmPlayer _Player, CUIConfig _UI) {
+Void SetCarModel(CTmPlayer _Player, CUIConfig _UI, CMode _Mode) {
 	declare netwrite Integer Server_CurrentVehicle for _UI;
 	declare persistent Text[Text] P_Skin for _Player.User;
 
 	declare VehicleName = Vehicles[Server_CurrentVehicle].Name;
 	
+	declare TM2Vehicles = ["CanyonCar", "StadiumCar", "ValleyCar", "LagoonCar"];
+	
 	if(P_Skin.existskey(VehicleName)) {
 		if(Vehicles.existskey(Server_CurrentVehicle)) {
-			if(RealVehicles[Server_CurrentVehicle].Id.existskey(P_Skin[VehicleName])) // If exact skin doesnt exist
+			if(_Mode.Map.CollectionName != "Stadium" && TM2Vehicles.exists(VehicleName))
+				_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].DefaultId;
+			else if(RealVehicles[Server_CurrentVehicle].Id.existskey(P_Skin[VehicleName])) // If exact skin doesnt exist
 				_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[P_Skin[VehicleName]];
 			else _Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[""];
 		} else _Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[""];
@@ -73,7 +77,7 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 	if(!Vehicles.existskey(Client_VehicleIndex)) return;
 	Server_CurrentVehicle = Client_VehicleIndex;
 	
-	SetCarModel(_Player, UI);
+	SetCarModel(_Player, UI, _Mode);
 	if(Server_NoGravity) _Player.GravityCoef = 0.;
 	else _Player.GravityCoef = 1.;
 	_Mode.SpawnPlayer(_Player, 0, -1);
@@ -264,7 +268,7 @@ Void Event(CTmMode _Mode, CTmModeEvent _Event) {
 				Performance_Server.Finishes.add(Finish_Server);
 				
 				Performance_Server.Vehicle = RealVehicles[Server_CurrentVehicle];
-				if(Performance_Server.BestFinishIndex == -1 || Performance_Server.Finishes[Performance_Server.BestFinishIndex].Ghost.Result.Time > Finish_Server.Ghost.Result.Time)
+				if(Performance_Server.BestFinishIndex == -1 || (Performance_Server.Finishes.existskey(Performance_Server.BestFinishIndex) && Performance_Server.Finishes[Performance_Server.BestFinishIndex].Ghost.Result.Time > Finish_Server.Ghost.Result.Time))
 					Performance_Server.BestFinishIndex = Performance_Server.Finishes.count-1;
 				
 				Performances_Server[VehicleName] = Performance_Server;
@@ -357,7 +361,7 @@ Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
 								if(!Vehicles.existskey(Client_VehicleIndex)) continue;
 								Server_CurrentVehicle = Client_VehicleIndex;
 								
-								SetCarModel(Player, _Event.UI);
+								SetCarModel(Player, _Event.UI, _Mode);
 								Player.IsSpawned = True;
 								Player.RaceStartTime = -1;
 								
@@ -434,7 +438,7 @@ Void Loop(CTmMode _Mode) {
 				else
 					Server_CurrentVehicle = Server_VehicleLock;
 
-				SetCarModel(Player, UI);
+				SetCarModel(Player, UI, _Mode);
 			}
 			else {
 				Player.IsSpawned = False;
@@ -471,16 +475,18 @@ Void Loop(CTmMode _Mode) {
 		}
 		
 		declare SPerformance_Server[Text] Performances_Server for Player.Score;
-		declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
-		
-		if(Performances_Server.existskey(VehicleName))
-		if(Performances_Server[VehicleName].Finishes.count > 0) {
-			declare Finishes = Performances_Server[VehicleName].Finishes;
-			if(Finishes[Finishes.count-1].NicerGhost == Null && Finishes[Finishes.count-1].Timestamp != -1 && _Mode.Now - Finishes[Finishes.count-1].Timestamp >= 1000) {
-				if(Player.IsSpawned) {
-					declare Ghost = ScoreMgr.Playground_GetPlayerGhost(Player);
-					if(Ghost != Null && Ghost.Result != Null && Ghost.Result.Time != -1)
-						Performances_Server[VehicleName].Finishes[Finishes.count-1].NicerGhost = Ghost;
+		if(RealVehicles.existskey(Server_CurrentVehicle)) {
+			declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
+			
+			if(Performances_Server.existskey(VehicleName))
+			if(Performances_Server[VehicleName].Finishes.count > 0) {
+				declare Finishes = Performances_Server[VehicleName].Finishes;
+				if(Finishes[Finishes.count-1].NicerGhost == Null && Finishes[Finishes.count-1].Timestamp != -1 && _Mode.Now - Finishes[Finishes.count-1].Timestamp >= 1000) {
+					if(Player.IsSpawned) {
+						declare Ghost = ScoreMgr.Playground_GetPlayerGhost(Player);
+						if(Ghost != Null && Ghost.Result != Null && Ghost.Result.Time != -1)
+							Performances_Server[VehicleName].Finishes[Finishes.count-1].NicerGhost = Ghost;
+					}
 				}
 			}
 		}
@@ -508,7 +514,7 @@ Void Loop(CTmMode _Mode) {
 		
 		Server_VehicleLock = -1;
 		
-		if(Server_Playing && !Server_EndRace && !Server_Outro) {			
+		if(Server_Playing && !Server_EndRace && !Server_Outro) {
 			SpawnEnvimixPlayer(_Mode, Player);
 		}
 		
