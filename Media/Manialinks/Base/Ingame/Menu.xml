@@ -43,6 +43,7 @@
 				<quad pos="-32.5 0" z-index="0" size="8 8" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Quit" scriptevents="1" id="QUAD_GHOSTSECTION_PREVIOUS"/>
 				<quad pos="32.5 0" z-index="0" size="8 8" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Quit" scriptevents="1" rot="180" id="QUAD_GHOSTSECTION_NEXT"/>
 				<quad pos="0 5" z-index="-1" size="78 68.5" halign="center" style="Bgs1" substyle="BgCardList" scriptevents="1" opacity=".5"/>
+				<quad pos="0 -30" z-index="0" size="15 15" halign="center" valign="center" style="BgRaceScore2" substyle="SandTimer" id="QUAD_LOADING" hidden="1"/>
 				<frame pos="35.5 -5">
 					<quad z-index="0" size="2 56" style="Bgs1" substyle="BgCardList" opacity=".5" scriptevents="1" id="QUAD_SCROLLBAR_BACKGROUND"/>
 					<quad z-index="1" size="1 20" style="Bgs1" substyle="BgWindow4" opacity="1" halign="center" pos="1 0" scriptevents="1" id="QUAD_SCROLLBAR" hidden="1"/>

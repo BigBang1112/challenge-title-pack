@@ -68,6 +68,11 @@ Void UpdateLoadedGhosts() {
 	declare Frame_Outer_Ghosts = (Page.GetFirstChild("FRAME_OUTER_GHOSTS") as CMlFrame);
 	declare Frame_Ghosts = (Page.GetFirstChild("FRAME_GHOSTS") as CMlFrame);
 	declare Quad_Scrollbar = (Page.GetFirstChild("QUAD_SCROLLBAR") as CMlQuad);
+	declare Quad_Loading = (Page.GetFirstChild("QUAD_LOADING") as CMlQuad);
+
+	Frame_Ghosts.Show();
+	Quad_Loading.Hide();
+
 	if(VisibleGhosts.count > 7) {
 		Frame_Outer_Ghosts.ScrollMax.Y = VisibleGhosts.count*8.-7*8;
 
@@ -152,6 +157,7 @@ declare Label_PB_Time = (Page.GetFirstChild("LABEL_PB_TIME") as CMlLabel);
 declare Frame_Outer_Ghosts = (Page.GetFirstChild("FRAME_OUTER_GHOSTS") as CMlFrame);
 declare Frame_Ghosts = (Page.GetFirstChild("FRAME_GHOSTS") as CMlFrame);
 declare Quad_Scrollbar = (Page.GetFirstChild("QUAD_SCROLLBAR") as CMlQuad);
+declare Quad_Loading = (Page.GetFirstChild("QUAD_LOADING") as CMlQuad);
 
 declare LabelDistance = 15;
 
@@ -286,6 +292,9 @@ foreach(Event,PendingEvents) {
 						else CurrentSection += 1;
 					}
 
+					Frame_Ghosts.Hide();
+					Quad_Loading.Show();
+
 					if(CurrentSection == 0) {
 						SendCustomEvent("FetchLocalGhosts", []);
 						SendCustomEvent("UpdateMedals", []);
@@ -304,6 +313,9 @@ foreach(Event,PendingEvents) {
 						if(CurrentSection-1 < 0) CurrentSection = GhostSections.count-1;
 						else CurrentSection -= 1;
 					}
+
+					Frame_Ghosts.Hide();
+					Quad_Loading.Show();
 					
 					if(CurrentSection == 0) {
 						SendCustomEvent("FetchLocalGhosts", []);
@@ -538,4 +550,6 @@ else Page.GetFirstChild("QUAD_BACKGROUND").Hide();
 SlideText_Loop(Frame_Label_MapName, Label_MapName, Label_MapName2, LabelDistance, .015);
 SlideText_Loop(Frame_Label_Challenge, Label_Challenge, Label_Challenge2, LabelDistance, -.015);
 SlideText_Loop(Frame_Label_Car, Label_Car, Label_Car2, LabelDistance, -.015);
+
+Quad_Loading.RelativeRotation += Period / 5.0;
 ***
