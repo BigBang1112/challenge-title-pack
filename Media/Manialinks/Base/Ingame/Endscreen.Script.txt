@@ -387,8 +387,15 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MenuNavigation: {
 			switch(Event.MenuNavAction) {
 				case CMlScriptEvent::EMenuNavAction::Select: {
-					if(RecordSubmitted || PrivateMap)
-						SendCustomEvent("Continue", []);
+					if(RecordSubmitted || PrivateMap) {
+						if(CurrentShowcase + 1 == Showcases.count)
+							SendCustomEvent("Continue", []);
+						else {
+							CurrentShowcase += 1;
+							Label_Showcase.SetText(Showcases[CurrentShowcase]);
+							RefreshTime = Now;
+						}
+					}
 				}
 			}
 		}
