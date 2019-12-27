@@ -97,6 +97,11 @@
 			<quad z-index="-2" size="65 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="-1" size="65 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
 			<label pos="0 -10.5" z-index="0" size="50 5" text="$o{{{{SHORTEST_DISTANCE}}}}" halign="center" textfont="Oswald" valign="bottom"/>
+			<frame pos="0 -17.5" id="FRAME_PANEL1_ZONE">
+				<quad pos="0 0" z-index="0" size="55 7" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".25"/>
+				<quad pos="0.1 -0.1" z-index="1" size="55 7" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_ZONE"/>
+				<label pos="0 0.2" z-index="2" size="55 7" text="World" halign="center" valign="center" textsize="1.5" style="TextButtonBig" id="LABEL_ZONE"/>
+			</frame>
 			<frame pos="-30 -60" id="FRAME_LB_SHORTEST_DISTANCE">
 				<frame pos="4 35" hidden="1">
 					<label pos="0 0" z-index="0" size="27.5 5" text="$ff001)$fff 0:05.000" textsize="3" textfont="RajdhaniMono" id="LABEL_RECORD"/>
@@ -224,6 +229,11 @@
 			<quad z-index="-2" size="65 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="-1" size="65 130" bgcolor="FFFA" halign="center" style="Bgs1" substyle="BgGradV"/>
 			<label pos="0 -10.5" z-index="0" size="50 5" text="$o{{{{FASTEST_TIME}}}}" halign="center" textfont="Oswald" valign="bottom"/>
+			<frame pos="0 -17.5" id="FRAME_PANEL2_ZONE">
+				<quad pos="0 0" z-index="0" size="55 7" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".25"/>
+				<quad pos="0.1 -0.1" z-index="1" size="55 7" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_ZONE"/>
+				<label pos="0 0.2" z-index="2" size="55 7" text="World" halign="center" valign="center" textsize="1.5" style="TextButtonBig" id="LABEL_ZONE"/>
+			</frame>
 			<frame pos="-30 -60" id="FRAME_LB_GLOBAL_RECORDS">
 				<frame pos="4 35" hidden="1">
 					<label pos="0 0" z-index="0" size="27.5 5" text="$ff001)$fff 0:05.000" textsize="3" textfont="RajdhaniMono" id="LABEL_RECORD"/>
