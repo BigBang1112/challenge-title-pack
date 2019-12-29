@@ -15,6 +15,7 @@
 #Include "Libs/Challenge/Menu/AuthBeta.Script.txt" as Menu_AuthBeta
 
 #Include "Libs/Challenge/Nicknames.Script.txt" as Nicknames
+#Include "Libs/Challenge/LoadMap.Script.txt" as LoadMap
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
 
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
@@ -135,7 +136,7 @@ Void StartMap(Text _MapLocation, Map::SMapInfo _MapInfo, SScriptInfo[] _Scripts)
 		declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
 		CHALLENGE_SCRIPTS = _Scripts;
 		
-		Loading::SetLoading(_MapInfo.CollectionName, _MapInfo);
+		Loading::SetLoading(_MapInfo);
 		TitleControl.EditNewMapFromBaseMap(_MapInfo.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt", """<settings>
 		<setting name="S_Build" type="boolean" value="True"/>
 	</settings>""");
@@ -153,7 +154,7 @@ Boolean StartMapIfExists() {
 			declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
 			CHALLENGE_SCRIPTS = MapDownloadScripts;
 			
-			Loading::SetLoading(MapInfo.CollectionName, MapInfo);
+			Loading::SetLoading(MapInfo);
 			TitleControl.EditNewMapFromBaseMap(MapInfo.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt", """<settings>
 	<setting name="S_Build" type="boolean" value="True"/>
 </settings>""");
@@ -191,6 +192,9 @@ Void Start() {
 	Task::Async_DataFileMgr("DOWNLOADED_MAPUIDS",DataFileMgr.Map_GetGameList("Downloaded", True));
 }
 
+declare Map::SMapInfo PlayLocalMap;
+declare Map::SMapInfo EditLocalMap;
+
 Void Event(CManiaAppEvent _Event) {
 	declare Event <=> _Event;
 
@@ -223,16 +227,10 @@ Void Event(CManiaAppEvent _Event) {
 					declare JsonSuccessScripts = Scripts.fromjson(Event.CustomEventData[2]);
 					if(MapInfo.MapType == "TrackMania\\Challenge" || MapInfo.MapType == "Challenge") {
 						if(MapInfo.IsPlayable) {
-							Loading::SetLoading(MapInfo.CollectionName, MapInfo);
-							if(TitleControl.IsReady)
-								TitleControl.PlayMap(MapInfo.FileName,"","");
+							PlayLocalMap = MapInfo;
 						}
 						else {
-							Loading::SetLoading(MapInfo.CollectionName, MapInfo);
-							if(TitleControl.IsReady)
-								TitleControl.EditMap(MapInfo.FileName, "Modifier.Script.txt", """<settings>
-	<setting name="S_Build" type="boolean" value="True"/>
-</settings>""");
+							EditLocalMap = MapInfo;
 						}
 					}
 					else {
@@ -493,9 +491,7 @@ Void Loop() {
 				declare List = Task::SyncMapList(DataFileMgr.Map_GetGameList(MapDownloadApproximateLocation, True));
 				foreach(MapInfo,List.MapInfos) {
 					if(MapInfo.MapUid == MapDownloadUid) {
-						wait(TitleControl.IsReady);
-						Loading::SetLoading(MapInfo.CollectionName, MapInfo);
-						TitleControl.PlayMap(MapInfo.FileName,"","");
+						LoadMap::Play(MapInfo);
 						
 						MapDownloadApproximateLocation = "";
 						DataFileMgr.TaskResult_Release(List.Id);
@@ -508,5 +504,17 @@ Void Loop() {
 			else
 				declare MustBeTrue = StartMapIfExists();
 		}
+	}
+
+	if(PlayLocalMap.MapUid != "") {
+		LoadMap::Play(PlayLocalMap);
+		PlayLocalMap.MapUid = "";
+	}
+
+	if(EditLocalMap.MapUid != "") {
+		LoadMap::Edit(EditLocalMap, "Modifier.Script.txt", """<settings>
+	<setting name="S_Build" type="boolean" value="True"/>
+</settings>""");
+		EditLocalMap.MapUid = "";
 	}
 }

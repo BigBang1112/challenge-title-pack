@@ -2,10 +2,29 @@
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/Map.Script.txt" as Map
 #Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
 
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
+#Include "Libs/Challenge/LoadMap.Script.txt" as LoadMap
+
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
 #Const C_Manialink "Media/Manialinks/Base/Top"
+
+#Struct STaskMap {
+	Text OriginalName;
+	Text Uid;
+	Text[] Challenge;
+	Boolean Finished;
+	Boolean[] Completed;
+}
+
+#Struct STasks {
+	Integer Start;
+	Integer Current;
+	Integer End;
+	STaskMap[] Maps;
+}
 
 Void Init() {
 	Layers::Create("Top", Manialink::FromFile(C_Manialink, True, ["TextAnimation", "Audio"], Settings::Get().Theme));
@@ -14,6 +33,9 @@ Void Init() {
 
 Void Start() {
 	Layers::Show("Top", True);
+	
+	declare Text CHALLENGE_TOKEN for LocalUser;
+	declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php", CHALLENGE_TOKEN);
 }
 
 declare Boolean VisitMap;
@@ -45,6 +67,10 @@ Void Event(CManiaAppEvent _Event) {
 						Layers::Hide("News", True);
 						Layers::Show("Authors", True);
 					}
+					case "TasksRequestNew": {
+						declare Text CHALLENGE_TOKEN for LocalUser;
+						declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php", CHALLENGE_TOKEN);
+					}
 				}
 			}
 			case Layers::Get("Authors"): {
@@ -64,15 +90,20 @@ Void Event(CManiaAppEvent _Event) {
 }
 
 Void Async() {
-
+	if(Http::IsCompleted("TASKS")) {
+		if(Http::IsSuccessful("TASKS")) {
+			declare STasks Tasks for Layers::Page("Top");
+			log(Http::GetResult("TASKS"));
+			declare Json = Tasks.fromjson(Http::GetResult("TASKS"));
+			Layers::SendEvent("Top", "TaskStartCountTime");
+		}
+		Http::Destroy("TASKS");
+	}
 }
 
 Void Loop() {
 	if(VisitMap) {
-		wait(TitleControl.IsReady);
-		declare Map = Map::MapInfo("SkinSelect.Map.Gbx");
-		Loading::SetLoading(Map.CollectionName, Map);
-		TitleControl.PlayMap(Map.FileName, "TrackMania/SkinSelect.Script.txt", "");
+		LoadMap::Play(Map::MapInfo("THE SKIN SELECT.Map.Gbx"), "TrackMania/SkinSelect.Script.txt");
 		VisitMap = False;
 	}
 }

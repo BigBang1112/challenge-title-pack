@@ -172,7 +172,7 @@ Void Loop() {
 	if(StartTest) {
 		declare Map::SMapInfo OriginalMapInfo for LocalUser;
 		OriginalMapInfo = Map::MapInfo("Challenge_Valley_I.Map.Gbx");
-		Loading::SetLoading(OriginalMapInfo.CollectionName, OriginalMapInfo);
+		Loading::SetLoading(OriginalMapInfo);
 		TitleControl.EditNewMapFromBaseMap(OriginalMapInfo.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt","""<settings>
 	<setting name="S_Build" type="boolean" value="True"/>
 	<setting name="S_TestMode" type="boolean" value="True"/>

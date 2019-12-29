@@ -9,11 +9,13 @@
 #Include "Libs/BigBang1112/Map.Script.txt" as Map
 #Include "Libs/BigBang1112/MX.Script.txt" as MX
 
-#Include "Libs/Challenge/Loading.Script.txt" as Loading
 #Include "Libs/Challenge/ReplayBrowser.Script.txt" as ReplayBrowser
+#Include "Libs/Challenge/LoadMap.Script.txt" as LoadMap
 
 #Const C_Manialink "Media/Manialinks/Window_List"
 #Const C_Manialink_ReplayInfo "Media/Manialinks/Base/ReplayInfo"
+
+declare Boolean IsPlayingMap;
 
 Void Init() {
 	ReplayBrowser::Init();
@@ -50,10 +52,7 @@ Void Event(CManiaAppEvent _Event) {
 					TitleControl.EditReplay([File]);
 			}
 			case "Play": {
-				if(TitleControl.IsReady) {
-					Loading::SetLoading(ReplayBrowser::GetSelectedMap().CollectionName, ReplayBrowser::GetSelectedMap());
-					TitleControl.PlayMap(ReplayBrowser::GetSelectedMap().FileName, "", "");
-				}
+				IsPlayingMap = True;
 			}
 		}
 	}
@@ -65,4 +64,9 @@ Void Async() {
 
 Void Loop() {
 	ReplayBrowser::Loop();
+
+	if(IsPlayingMap) {
+		LoadMap::Play(ReplayBrowser::GetSelectedMap());
+		IsPlayingMap = False;
+	}
 }

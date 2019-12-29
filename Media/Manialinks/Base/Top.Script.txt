@@ -1,5 +1,22 @@
+#Struct STaskMap {
+	Text OriginalName;
+	Text Uid;
+	Text[] Challenge;
+	Boolean Finished;
+	Boolean[] Completed;
+}
+
+#Struct STasks {
+	Integer Start;
+	Integer Current;
+	Integer End;
+	STaskMap[] Maps;
+}
+
 ***Start***
 ***
+declare Label_Tasks_Expires = (Page.GetFirstChild("LABEL_TASKS_EXPIRES") as CMlLabel);
+
 declare Start = Now;
 declare End = -1;
 
@@ -8,6 +25,9 @@ if(!CHALLENGE_SETTINGS.existskey("PrivateSession") || CHALLENGE_SETTINGS["Privat
 	(Page.GetFirstChild("QUAD_SETTING_PRIVATE") as CMlQuad).Colorize = <0.2,0.2,0.2>;
 else
 	(Page.GetFirstChild("QUAD_SETTING_PRIVATE") as CMlQuad).Colorize = <0.0,0.2,0.4>;
+
+declare STasks Tasks for Page;
+declare Text StartTaskCounter = "";
 ***
 
 ***Loop***
@@ -20,13 +40,24 @@ foreach(Event,PendingEvents) {
 					SendCustomEvent("Button_Skins", []);
 					PlayAudio(Sound_Click);
 				}
+				case "QUAD_BUTTON_TASKS": {
+					if(Page.GetFirstChild("FRAME_TASKS").DataAttributeGet("open") == "1") {
+						AnimMgr.Add(Page.GetFirstChild("FRAME_TASKS"), "<frame pos=\"-30 80\" hidden=\"1\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+						Page.GetFirstChild("FRAME_TASKS").DataAttributeSet("open","0");
+					}
+					else {
+						AnimMgr.Add(Page.GetFirstChild("FRAME_TASKS"), "<frame pos=\"-30 0\" hidden=\"0\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+						Page.GetFirstChild("FRAME_TASKS").DataAttributeSet("open","1");
+					}
+					PlayAudio(Sound_Click);
+				}
 				case "QUAD_BUTTON_SETTINGS": {
 					if(Page.GetFirstChild("FRAME_SETTINGS").DataAttributeGet("open") == "1") {
-						AnimMgr.Add(Page.GetFirstChild("FRAME_SETTINGS"), "<frame pos=\"0 80\" hidden=\"1\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+						AnimMgr.Add(Page.GetFirstChild("FRAME_SETTINGS"), "<frame pos=\"115 80\" hidden=\"1\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 						Page.GetFirstChild("FRAME_SETTINGS").DataAttributeSet("open","0");
 					}
 					else {
-						AnimMgr.Add(Page.GetFirstChild("FRAME_SETTINGS"), "<frame pos=\"0 0\" hidden=\"0\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+						AnimMgr.Add(Page.GetFirstChild("FRAME_SETTINGS"), "<frame pos=\"115 0\" hidden=\"0\"/>", 300, CAnimManager::EAnimManagerEasing::QuadOut);
 						Page.GetFirstChild("FRAME_SETTINGS").DataAttributeSet("open","1");
 					}
 					PlayAudio(Sound_Click);
@@ -74,6 +105,85 @@ foreach(Event,PendingEvents) {
 				case "HideJoin": {
 					Page.GetFirstChild("FRAME_JOIN").Hide();
 				}
+				case "TaskStartCountTime": {
+					StartTaskCounter = TimeLib::GetCurrent();
+
+					(Page.GetFirstChild("LABEL_TASKS_1") as CMlLabel).Value = "$oFinish "^Tasks.Maps[0].OriginalName^"$z$o ("^TextLib::Join(" + ", Tasks.Maps[0].Challenge)^") with original car";
+					(Page.GetFirstChild("LABEL_TASKS_2") as CMlLabel).Value = "$oFinish "^Tasks.Maps[1].OriginalName^"$z$o ("^TextLib::Join(" + ", Tasks.Maps[1].Challenge)^") with original car";
+					(Page.GetFirstChild("LABEL_TASKS_3") as CMlLabel).Value = "$oFinish "^Tasks.Maps[2].OriginalName^"$z$o ("^TextLib::Join(" + ", Tasks.Maps[2].Challenge)^") with original car";
+					
+					if(Tasks.Maps[0].Finished) {
+						if(Tasks.Maps[0].Completed[0])
+							(Page.GetFirstChild("LABEL_TASKS_1_POINTS_MAIN") as CMlLabel).Value = "$0f0$z 1500 AP";
+						else
+							(Page.GetFirstChild("LABEL_TASKS_1_POINTS_MAIN") as CMlLabel).Value = "$f00$z 1500 AP";
+					}
+					else (Page.GetFirstChild("LABEL_TASKS_1_POINTS_MAIN") as CMlLabel).Value = "1500 AP";
+
+					if(Tasks.Maps[0].Completed[1])
+						(Page.GetFirstChild("LABEL_TASKS_1_POINTS_SUB1") as CMlLabel).Value = "$0f0$z 800 AP";
+					else
+						(Page.GetFirstChild("LABEL_TASKS_1_POINTS_SUB1") as CMlLabel).Value = "800 AP";
+					
+					if(Tasks.Maps[0].Completed[2])
+						(Page.GetFirstChild("LABEL_TASKS_1_POINTS_SUB2") as CMlLabel).Value = "$0f0$z 1200 AP";
+					else
+						(Page.GetFirstChild("LABEL_TASKS_1_POINTS_SUB2") as CMlLabel).Value = "1200 AP";
+						
+					if(Tasks.Maps[0].Completed[3])
+						(Page.GetFirstChild("LABEL_TASKS_1_POINTS_SUB3") as CMlLabel).Value = "$0f0$z 500 AP";
+					else
+						(Page.GetFirstChild("LABEL_TASKS_1_POINTS_SUB3") as CMlLabel).Value = "500 AP";
+
+					if(Tasks.Maps[1].Finished) {
+						if(Tasks.Maps[1].Completed[0])
+							(Page.GetFirstChild("LABEL_TASKS_2_POINTS_MAIN") as CMlLabel).Value = "$0f0$z 1500 AP";
+						else
+							(Page.GetFirstChild("LABEL_TASKS_2_POINTS_MAIN") as CMlLabel).Value = "$f00$z 1500 AP";
+					}
+					else (Page.GetFirstChild("LABEL_TASKS_2_POINTS_MAIN") as CMlLabel).Value = "1500 AP";
+
+					if(Tasks.Maps[1].Completed[1])
+						(Page.GetFirstChild("LABEL_TASKS_2_POINTS_SUB1") as CMlLabel).Value = "$0f0$z 800 AP";
+					else
+						(Page.GetFirstChild("LABEL_TASKS_2_POINTS_SUB1") as CMlLabel).Value = "800 AP";
+					
+					if(Tasks.Maps[1].Completed[2])
+						(Page.GetFirstChild("LABEL_TASKS_2_POINTS_SUB2") as CMlLabel).Value = "$0f0$z 1200 AP";
+					else
+						(Page.GetFirstChild("LABEL_TASKS_2_POINTS_SUB2") as CMlLabel).Value = "1200 AP";
+						
+					if(Tasks.Maps[1].Completed[3])
+						(Page.GetFirstChild("LABEL_TASKS_2_POINTS_SUB3") as CMlLabel).Value = "$0f0$z 500 AP";
+					else
+						(Page.GetFirstChild("LABEL_TASKS_2_POINTS_SUB3") as CMlLabel).Value = "500 AP";
+
+					if(Tasks.Maps[2].Finished) {
+						if(Tasks.Maps[2].Completed[0])
+							(Page.GetFirstChild("LABEL_TASKS_3_POINTS_MAIN") as CMlLabel).Value = "$0f0$z 1500 AP";
+						else
+							(Page.GetFirstChild("LABEL_TASKS_3_POINTS_MAIN") as CMlLabel).Value = "$f00$z 1500 AP";
+					}
+					else (Page.GetFirstChild("LABEL_TASKS_3_POINTS_MAIN") as CMlLabel).Value = "1500 AP";
+
+					if(Tasks.Maps[2].Completed[1])
+						(Page.GetFirstChild("LABEL_TASKS_3_POINTS_SUB1") as CMlLabel).Value = "$0f0$z 800 AP";
+					else
+						(Page.GetFirstChild("LABEL_TASKS_3_POINTS_SUB1") as CMlLabel).Value = "800 AP";
+					
+					if(Tasks.Maps[2].Completed[2])
+						(Page.GetFirstChild("LABEL_TASKS_3_POINTS_SUB2") as CMlLabel).Value = "$0f0$z 1200 AP";
+					else
+						(Page.GetFirstChild("LABEL_TASKS_3_POINTS_SUB2") as CMlLabel).Value = "1200 AP";
+						
+					if(Tasks.Maps[2].Completed[3])
+						(Page.GetFirstChild("LABEL_TASKS_3_POINTS_SUB3") as CMlLabel).Value = "$0f0$z 500 AP";
+					else
+						(Page.GetFirstChild("LABEL_TASKS_3_POINTS_SUB3") as CMlLabel).Value = "500 AP";
+					
+					Page.GetFirstChild("FRAME_TASKS_NAMES").Show();
+					Page.GetFirstChild("FRAME_TASKS_VALUES").Show();
+				}
 			}
 		}
 	}
@@ -87,5 +197,25 @@ if(End == -1) {
 else if(Now - End > 500) {
 	SendCustomEvent("Hide_Response", []);
 	End = -1;
+}
+
+if(StartTaskCounter == "") {
+	Label_Tasks_Expires.Value = "{{{{WAITING_FOR_RESPONSE}}}}...";
+	
+}
+else {
+	declare PassedDelta = TimeLib::GetDelta(StartTaskCounter, TimeLib::GetCurrent());
+	declare CurrentTime = Tasks.Current-PassedDelta;
+	declare EndTime = Tasks.End;
+
+	if(CurrentTime > EndTime) {
+		SendCustomEvent("TasksRequestNew", []);
+		StartTaskCounter = "";
+		Page.GetFirstChild("FRAME_TASKS_NAMES").Hide();
+		Page.GetFirstChild("FRAME_TASKS_VALUES").Hide();
+	}
+
+	Label_Tasks_Expires.Value = TextLib::ToUpperCase("$o{{{{EXPIRES_IN}}}} "
+	^ TimeLib::FormatDelta(CurrentTime^"", EndTime^"", TimeLib::EDurationFormats::Full));
 }
 ***

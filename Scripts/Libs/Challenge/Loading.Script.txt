@@ -7,7 +7,7 @@
 #Include "Libs/BigBang1112/Dictionary.Script.txt" as Dictionary
 #Include "Libs/BigBang1112/Map.Script.txt" as Map
 
-Void SetLoading(Text _Environment, Map::SMapInfo _MapInfo) {
+Void SetLoading(Map::SMapInfo _MapInfo) {
 	declare Opacities = Time::GetTimeOpacities();
 	
 	declare IsChallenge = 0;
@@ -16,10 +16,10 @@ Void SetLoading(Text _Environment, Map::SMapInfo _MapInfo) {
 		IsChallenge = 1;
 
 	declare LoadingManialink = """<frame z-index="0">
-	<quad pos="0 0" z-index="-6" size="320 180" bgcolor="000D" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Sunrise.jpg" opacity="{{{Opacities[0]*.9}}}" id="QUAD_SUNRISE"/>
-	<quad pos="0 0" z-index="-5" size="320 180" bgcolor="000D" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Day.jpg" opacity="{{{Opacities[1]*.9}}}" id="QUAD_DAY"/>
-	<quad pos="0 0" z-index="-4" size="320 180" bgcolor="000D" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Sunset.jpg" opacity="{{{Opacities[2]*.9}}}" id="QUAD_SUNSET"/>
-	<quad pos="0 0" z-index="-3" size="320 180" bgcolor="000D" halign="center" valign="center" image="file://Media/Images/{{{_Environment}}}_Night.jpg" opacity="{{{Opacities[3]*.9}}}" id="QUAD_NIGHT"/>
+	<quad pos="0 0" z-index="-6" size="320 180" bgcolor="000D" halign="center" valign="center" image="file://Media/Images/{{{_MapInfo.CollectionName}}}_Sunrise.jpg" opacity="{{{Opacities[0]*.9}}}" id="QUAD_SUNRISE"/>
+	<quad pos="0 0" z-index="-5" size="320 180" bgcolor="000D" halign="center" valign="center" image="file://Media/Images/{{{_MapInfo.CollectionName}}}_Day.jpg" opacity="{{{Opacities[1]*.9}}}" id="QUAD_DAY"/>
+	<quad pos="0 0" z-index="-4" size="320 180" bgcolor="000D" halign="center" valign="center" image="file://Media/Images/{{{_MapInfo.CollectionName}}}_Sunset.jpg" opacity="{{{Opacities[2]*.9}}}" id="QUAD_SUNSET"/>
+	<quad pos="0 0" z-index="-3" size="320 180" bgcolor="000D" halign="center" valign="center" image="file://Media/Images/{{{_MapInfo.CollectionName}}}_Night.jpg" opacity="{{{Opacities[3]*.9}}}" id="QUAD_NIGHT"/>
 	<quad pos="0 0" z-index="-2" size="320 180" bgcolor="000A" halign="center" valign="center"/>
 	<frame pos="60">
 		<frame pos="0 2.5">
@@ -54,6 +54,6 @@ Void SetLoading(Text _Environment, Map::SMapInfo _MapInfo) {
 	}
 }
 
-Void SetLoading(Text _Environment, CMapInfo _MapInfo) {
-	SetLoading(_Environment, Map::ToSMapInfo(_MapInfo));
+Void SetLoading(CMapInfo _MapInfo) {
+	SetLoading(Map::ToSMapInfo(_MapInfo));
 }

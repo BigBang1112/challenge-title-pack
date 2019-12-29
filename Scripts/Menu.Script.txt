@@ -15,7 +15,7 @@
 
 #Include "Libs/Sandbox/Menu/Quickplay.Script.txt" as Menu_Quickplay
 #Include "Libs/Sandbox/Menu/Main.Script.txt" as Menu_Main
-#Include "Libs/Sandbox/Menu/Top.Script.txt" as Menu_Top
+#Include "Libs/Challenge/Menu/Top.Script.txt" as Menu_Top
 #Include "Libs/Sandbox/Menu/Editor.Script.txt" as Menu_Editor
 #Include "Libs/Sandbox/Menu/Playsessions.Script.txt" as Menu_Playsessions
 #Include "Libs/Sandbox/Menu/News.Script.txt" as Menu_News
@@ -30,7 +30,7 @@
 #Include "Libs/Challenge/Devmode.Script.txt" as Devmode
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
-#Setting S_Devmode False
+#Setting S_Devmode True
 
 Void GetUnauthorizedToken(Service_Status::SStatus _Status) {
 	declare Request = Http::SyncGET("""{{{_Status.Global.Service}}}/auth.php?login={{{LocalUser.Login}}}&token={{{Auth::GetToken().Value}}}""");

@@ -10,7 +10,7 @@
 #Include "Libs/BigBang1112/Time.Script.txt" as Time
 
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
-#Include "Libs/Challenge/Loading.Script.txt" as Loading
+#Include "Libs/Challenge/LoadMap.Script.txt" as LoadMap
 
 #Struct SElement {
 	Text Name;
@@ -65,8 +65,7 @@ Void Async() {
 				if(MapInfo.MapUid == SelectedPlaysession.Map.Uid)
 					PlayableMap <=> MapInfo;
 			if(PlayableMap != Null) {
-				Loading::SetLoading(PlayableMap.CollectionName, PlayableMap);
-				TitleControl.PlayMap(PlayableMap.FileName,"","");
+				LoadMap::Play(PlayableMap);
 			}
 			Task::Destroy_DataFileMgr("PLAYSESSION_MAP");
 		}
