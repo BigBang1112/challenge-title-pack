@@ -61,9 +61,9 @@ Void UpdateLoadedGhosts() {
 	declare SGhostInfo[] VisibleGhosts;
 
 	for(I,0,LoadedGhosts.count-1)
-	if(LoadedGhosts.existskey(I))
-	if(Car == "" || LoadedGhosts[I].File == "" || TextLib::Find(Car, LoadedGhosts[I].File, True, True))
-	VisibleGhosts.add(LoadedGhosts[I]);
+		if(LoadedGhosts.existskey(I))
+			if(Car == "" || LoadedGhosts[I].File == "" || TextLib::Find(Car, LoadedGhosts[I].File, True, True))
+				VisibleGhosts.add(LoadedGhosts[I]);
 
 	declare Frame_Outer_Ghosts = (Page.GetFirstChild("FRAME_OUTER_GHOSTS") as CMlFrame);
 	declare Frame_Ghosts = (Page.GetFirstChild("FRAME_GHOSTS") as CMlFrame);
@@ -425,6 +425,7 @@ foreach(Event,PendingEvents) {
 						declare Ghost = LoadedGhosts[I];
 						if(Ghost.Login == _Login && Ghost.Time == _Time) {
 							Ghost.Url = _Url;
+							Ghost.File = _FileName;
 							LoadedGhosts[I] = Ghost;
 						}
 					}

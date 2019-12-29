@@ -387,9 +387,16 @@ Void Async() {
 				Leaderboards_Request = True;
 				if(!L.IsProcessing) {
 					if(L.HasSucceeded) {
-						foreach(Record,L.LeaderBoardInfo) {
-							Layers::SendEvent("Menu", "UpdateRecord", [Car, Record.Login, Record.DisplayName, Record.Score^"", Record.ReplayUrl, Record.FileName]);
+						foreach(Record, L.LeaderBoardInfo) {
+							for(I, 0, LoadedGhosts.count-1) {
+								if(LoadedGhosts[I].Login == Record.Login && LoadedGhosts[I].Time == Record.Score) {
+									LoadedGhosts[I].Url = Record.ReplayUrl;
+									LoadedGhosts[I].File = Record.FileName;
+								}
+							}
+							//Layers::SendEvent("Menu", "UpdateRecord", [Car, Record.Login, Record.DisplayName, Record.Score^"", Record.ReplayUrl, Record.FileName]);
 						}
+						Layers::SendEvent("Menu", "UpdateLoadedGhosts");
 					}
 					ScoreMgr.TaskResult_Release(L.Id);
 					Leaderboards[Car] = Null;
