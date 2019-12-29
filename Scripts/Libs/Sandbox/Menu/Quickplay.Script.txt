@@ -130,17 +130,14 @@ Void StartMap(Text _MapLocation, Map::SMapInfo _MapInfo, SScriptInfo[] _Scripts)
 		}
 	}
 
-	if(TitleControl.IsReady) {
-		declare Map::SMapInfo OriginalMapInfo for LocalUser;
-		OriginalMapInfo = _MapInfo;
-		declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
-		CHALLENGE_SCRIPTS = _Scripts;
-		
-		Loading::SetLoading(_MapInfo);
-		TitleControl.EditNewMapFromBaseMap(_MapInfo.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt", """<settings>
-		<setting name="S_Build" type="boolean" value="True"/>
-	</settings>""");
-	}
+	declare Map::SMapInfo OriginalMapInfo for LocalUser;
+	OriginalMapInfo = _MapInfo;
+	declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
+	CHALLENGE_SCRIPTS = _Scripts;
+	
+	LoadMap::EditFromBase(_MapInfo, "Challenge.Script.txt", "Modifier.Script.txt", """<settings>
+	<setting name="S_Build" type="boolean" value="True"/>
+</settings>""");
 }
 
 Boolean StartMapIfExists() {	
@@ -154,8 +151,7 @@ Boolean StartMapIfExists() {
 			declare SScriptInfo[] CHALLENGE_SCRIPTS for LocalUser;
 			CHALLENGE_SCRIPTS = MapDownloadScripts;
 			
-			Loading::SetLoading(MapInfo);
-			TitleControl.EditNewMapFromBaseMap(MapInfo.FileName, "", "", "Challenge.Script.txt", "Modifier.Script.txt", """<settings>
+			LoadMap::EditFromBase(MapInfo, "Challenge.Script.txt", "Modifier.Script.txt", """<settings>
 	<setting name="S_Build" type="boolean" value="True"/>
 </settings>""");
 			
