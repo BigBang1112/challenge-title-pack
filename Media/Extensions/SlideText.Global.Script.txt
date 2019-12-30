@@ -1,4 +1,5 @@
 Void SlideText_Set(CMlLabel _Label, CMlLabel _Label2, Text _Text, Integer _Distance) {
+	_Label.RelativePosition_V3.X = 0.;
 	_Label.Size.X = _Label.ComputeWidth(_Text);
 	_Label.SetText(_Text);
 
@@ -8,20 +9,21 @@ Void SlideText_Set(CMlLabel _Label, CMlLabel _Label2, Text _Text, Integer _Dista
 }
 
 Void SlideText_Loop(CMlFrame _Frame, CMlLabel _Label, CMlLabel _Label2, Integer _Distance, Real _Speed) {
-	if(_Frame.ClipWindowSize.X < _Label.Size.X) {
-		_Label2.Show();
+	if(_Frame.ClipWindowSize.X < _Label.Size.X) {		
 		_Label.RelativePosition_V3.X -= Period*_Speed;
 		_Label2.RelativePosition_V3.X -= Period*_Speed;
+		_Label2.Show();
+
 		if(_Speed > 0) {
-			if(_Label.RelativePosition_V3.X + _Label.Size.X < 0)
+			if(_Label.RelativePosition_V3.X + _Label.Size.X < 0 || _Label.RelativePosition_V3.X + _Label.Size.X > _Label2.RelativePosition_V3.X)
 				_Label.RelativePosition_V3.X = _Label2.RelativePosition_V3.X+_Label2.Size.X+_Distance;
-			if(_Label2.RelativePosition_V3.X + _Label2.Size.X < 0)
+			if(_Label2.RelativePosition_V3.X + _Label2.Size.X < 0 || _Label.RelativePosition_V3.X + _Label.Size.X < _Label2.RelativePosition_V3.X)
 				_Label2.RelativePosition_V3.X = _Label.RelativePosition_V3.X+_Label.Size.X+_Distance;
 		}
 		else if(_Speed < 0) {
-			if(_Label.RelativePosition_V3.X > _Label.Size.X)
+			if(_Label.RelativePosition_V3.X - _Label.Size.X > 0 || _Label.RelativePosition_V3.X - _Label.Size.X < _Label2.RelativePosition_V3.X)
 				_Label.RelativePosition_V3.X = _Label2.RelativePosition_V3.X-_Label2.Size.X-_Distance;
-			if(_Label2.RelativePosition_V3.X > _Label2.Size.X)
+			if(_Label2.RelativePosition_V3.X - _Label2.Size.X > 0 || _Label.RelativePosition_V3.X - _Label.Size.X > _Label2.RelativePosition_V3.X)
 				_Label2.RelativePosition_V3.X = _Label.RelativePosition_V3.X-_Label.Size.X-_Distance;
 		}
 	}
