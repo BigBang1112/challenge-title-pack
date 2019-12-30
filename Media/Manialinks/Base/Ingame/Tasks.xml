@@ -12,7 +12,7 @@
 			
 			<label pos="0 -4" z-index="0" size="55 4" text="{{{{SHARED_TASK}}}}" halign="center" textsize="2" autonewline="1" textcolor="AFF" textfont="RajdhaniMono" id="LABEL_TASK_TYPE"/>
 			
-			<frame clip="True" clipposn="-10 -50" clipsizen="40 100">
+			<frame clip="True" clipposn="-7.5 -50" clipsizen="35 100">
 				<label pos="-25 -10" z-index="0" size="200 3" text="$oFinish A01 with original car" textsize="1" autonewline="1" textfont="Oswald" id="LABEL_TASKS_1" scriptevents="1" style="TextTitle2" textcolor="fff"/>
 				<label pos="-22.5 -14" z-index="0" size="50 3" text="$oImprove with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
 				<label pos="-22.5 -18" z-index="0" size="50 3" text="$oDo a WR with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>

@@ -31,6 +31,8 @@ else
 
 declare STasks Tasks for Page;
 declare Text StartTaskCounter = "";
+
+declare CMlLabel ShowMore;
 ***
 
 ***Loop***
@@ -109,18 +111,24 @@ foreach(Event,PendingEvents) {
 					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_MAPNAME") as CMlLabel).Value = Tasks.Maps[0].OriginalName;
 					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_CHALLENGE") as CMlLabel).Value = TextLib::Join(" + ", Tasks.Maps[0].Challenge);
 					Frame_Tasks_Tooltip.Show();
+
+					ShowMore = (Event.Control as CMlLabel);
 				}
 				case "LABEL_TASKS_2": {
 					(Frame_Tasks_Tooltip.GetFirstChild("QUAD_THUMBNAIL") as CMlQuad).ChangeImageUrl("file://Thumbnails/MapUid/"^Tasks.Maps[1].Uid);
 					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_MAPNAME") as CMlLabel).Value = Tasks.Maps[1].OriginalName;
 					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_CHALLENGE") as CMlLabel).Value = TextLib::Join(" + ", Tasks.Maps[1].Challenge);
 					Frame_Tasks_Tooltip.Show();
+
+					ShowMore = (Event.Control as CMlLabel);
 				}
 				case "LABEL_TASKS_3": {
 					(Frame_Tasks_Tooltip.GetFirstChild("QUAD_THUMBNAIL") as CMlQuad).ChangeImageUrl("file://Thumbnails/MapUid/"^Tasks.Maps[2].Uid);
 					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_MAPNAME") as CMlLabel).Value = Tasks.Maps[2].OriginalName;
 					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_CHALLENGE") as CMlLabel).Value = TextLib::Join(" + ", Tasks.Maps[2].Challenge);
 					Frame_Tasks_Tooltip.Show();
+
+					ShowMore = (Event.Control as CMlLabel);
 				}
 			}
 		}
@@ -128,15 +136,23 @@ foreach(Event,PendingEvents) {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_TASKS": {
 					TasksShouldBlink = True;
+					Event.Control.RelativePosition_V3.X = -25.;
+					ShowMore = Null;
 				}
 				case "LABEL_TASKS_1": {
 					Frame_Tasks_Tooltip.Hide();
+					Event.Control.RelativePosition_V3.X = -25.;
+					ShowMore = Null;
 				}
 				case "LABEL_TASKS_2": {
 					Frame_Tasks_Tooltip.Hide();
+					Event.Control.RelativePosition_V3.X = -25.;
+					ShowMore = Null;
 				}
 				case "LABEL_TASKS_3": {
 					Frame_Tasks_Tooltip.Hide();
+					Event.Control.RelativePosition_V3.X = -25.;
+					ShowMore = Null;
 				}
 			}
 		}
@@ -282,4 +298,8 @@ if(Frame_Tasks_Tooltip.Visible)
 
 if(TasksShouldBlink)
 	(Page.GetFirstChild("QUAD_TASKS_BLINK") as CMlQuad).Opacity = (MathLib::Sin(Now/100.)+1)/2.*.25;
+
+if(ShowMore != Null && (ShowMore.RelativePosition_V3.X + ShowMore.ComputeWidth(ShowMore.Value)) > 9.5) {
+	ShowMore.RelativePosition_V3.X -= Period*.01;
+}
 ***

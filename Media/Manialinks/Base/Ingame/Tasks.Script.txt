@@ -38,6 +38,8 @@ declare Label_Tasks_Expires = (Page.GetFirstChild("LABEL_TASKS_EXPIRES") as CMlL
 
 declare STasks Tasks for Page;
 declare Text StartTaskCounter = "";
+
+declare CMlLabel ShowMore;
 ***
 
 ***Loop***
@@ -59,6 +61,21 @@ foreach(Event,PendingEvents) {
 						AnimMgr.Add(Frame, "<frame pos=\"117.5 29\" hidden=\"0\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 						Frame.DataAttributeSet("open", "1");
 					}
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MouseOver: {
+			switch(Event.ControlId) {
+				case "LABEL_TASKS_1": {
+					ShowMore = (Event.Control as CMlLabel);
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MouseOut: {
+			switch(Event.ControlId) {
+				case "LABEL_TASKS_1": {
+					Event.Control.RelativePosition_V3.X = -25.;
+					ShowMore = Null;
 				}
 			}
 		}
@@ -135,5 +152,9 @@ else {
 
 	Label_Tasks_Expires.Value = TextLib::ToUpperCase("$o{{{{EXPIRES_IN}}}} "
 	^ TimeLib::FormatDelta(CurrentTime^"", EndTime^"", TimeLib::EDurationFormats::Full));
+}
+
+if(ShowMore != Null && (ShowMore.RelativePosition_V3.X + ShowMore.ComputeWidth(ShowMore.Value)) > 9.5) {
+	ShowMore.RelativePosition_V3.X -= Period*.01;
 }
 ***
