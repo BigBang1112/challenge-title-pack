@@ -16,6 +16,7 @@
 ***Start***
 ***
 declare Label_Tasks_Expires = (Page.GetFirstChild("LABEL_TASKS_EXPIRES") as CMlLabel);
+declare Frame_Tasks_Tooltip = (Page.GetFirstChild("FRAME_TASKS_TOOLTIP") as CMlFrame);
 
 declare Start = Now;
 declare End = -1;
@@ -84,6 +85,50 @@ foreach(Event,PendingEvents) {
 					log("Private session: " ^ CHALLENGE_SETTINGS["PrivateSession"]);
 
 					PlayAudio(Sound_Click);
+				}
+				case "LABEL_TASKS_1": {
+					SendCustomEvent("VisitTaskMap", [Tasks.Maps[0].Uid]);
+				}
+				case "LABEL_TASKS_2": {
+					SendCustomEvent("VisitTaskMap", [Tasks.Maps[1].Uid]);
+				}
+				case "LABEL_TASKS_3": {
+					SendCustomEvent("VisitTaskMap", [Tasks.Maps[2].Uid]);
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MouseOver: {
+			switch(Event.ControlId) {
+				case "LABEL_TASKS_1": {
+					(Frame_Tasks_Tooltip.GetFirstChild("QUAD_THUMBNAIL") as CMlQuad).ChangeImageUrl("file://Thumbnails/MapUid/"^Tasks.Maps[0].Uid);
+					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_MAPNAME") as CMlLabel).Value = Tasks.Maps[0].OriginalName;
+					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_CHALLENGE") as CMlLabel).Value = TextLib::Join(" + ", Tasks.Maps[0].Challenge);
+					Frame_Tasks_Tooltip.Show();
+				}
+				case "LABEL_TASKS_2": {
+					(Frame_Tasks_Tooltip.GetFirstChild("QUAD_THUMBNAIL") as CMlQuad).ChangeImageUrl("file://Thumbnails/MapUid/"^Tasks.Maps[1].Uid);
+					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_MAPNAME") as CMlLabel).Value = Tasks.Maps[1].OriginalName;
+					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_CHALLENGE") as CMlLabel).Value = TextLib::Join(" + ", Tasks.Maps[1].Challenge);
+					Frame_Tasks_Tooltip.Show();
+				}
+				case "LABEL_TASKS_3": {
+					(Frame_Tasks_Tooltip.GetFirstChild("QUAD_THUMBNAIL") as CMlQuad).ChangeImageUrl("file://Thumbnails/MapUid/"^Tasks.Maps[2].Uid);
+					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_MAPNAME") as CMlLabel).Value = Tasks.Maps[2].OriginalName;
+					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_CHALLENGE") as CMlLabel).Value = TextLib::Join(" + ", Tasks.Maps[2].Challenge);
+					Frame_Tasks_Tooltip.Show();
+				}
+			}
+		}
+		case CMlScriptEvent::Type::MouseOut: {
+			switch(Event.ControlId) {
+				case "LABEL_TASKS_1": {
+					Frame_Tasks_Tooltip.Hide();
+				}
+				case "LABEL_TASKS_2": {
+					Frame_Tasks_Tooltip.Hide();
+				}
+				case "LABEL_TASKS_3": {
+					Frame_Tasks_Tooltip.Hide();
 				}
 			}
 		}
@@ -184,6 +229,10 @@ foreach(Event,PendingEvents) {
 					Page.GetFirstChild("FRAME_TASKS_NAMES").Show();
 					Page.GetFirstChild("FRAME_TASKS_VALUES").Show();
 				}
+				case "TasksError": {
+					Page.GetFirstChild("FRAME_TASKS_NAMES").Hide();
+					Page.GetFirstChild("FRAME_TASKS_VALUES").Hide();
+				}
 			}
 		}
 	}
@@ -201,7 +250,6 @@ else if(Now - End > 500) {
 
 if(StartTaskCounter == "") {
 	Label_Tasks_Expires.Value = "{{{{WAITING_FOR_RESPONSE}}}}...";
-	
 }
 else {
 	declare PassedDelta = TimeLib::GetDelta(StartTaskCounter, TimeLib::GetCurrent());
@@ -215,7 +263,12 @@ else {
 		Page.GetFirstChild("FRAME_TASKS_VALUES").Hide();
 	}
 
+	if(CurrentTime >= EndTime) Label_Tasks_Expires.Value = "$o{{{{EXPIRES_SOON}}}}";
+
 	Label_Tasks_Expires.Value = TextLib::ToUpperCase("$o{{{{EXPIRES_IN}}}} "
 	^ TimeLib::FormatDelta(CurrentTime^"", EndTime^"", TimeLib::EDurationFormats::Full));
 }
+
+if(Frame_Tasks_Tooltip.Visible)
+	Frame_Tasks_Tooltip.RelativePosition_V3 = <MouseX, MouseY>;
 ***

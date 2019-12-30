@@ -39,6 +39,7 @@ Void Start() {
 }
 
 declare Boolean VisitMap;
+declare Text VisitTaskMap;
 declare Boolean Authorize;
 
 Void Event(CManiaAppEvent _Event) {
@@ -71,6 +72,9 @@ Void Event(CManiaAppEvent _Event) {
 						declare Text CHALLENGE_TOKEN for LocalUser;
 						declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php", CHALLENGE_TOKEN);
 					}
+					case "VisitTaskMap": {
+						VisitTaskMap = Event.CustomEventData[0];
+					}
 				}
 			}
 			case Layers::Get("Authors"): {
@@ -97,13 +101,20 @@ Void Async() {
 			declare Json = Tasks.fromjson(Http::GetResult("TASKS"));
 			Layers::SendEvent("Top", "TaskStartCountTime");
 		}
+		else {
+			Layers::SendEvent("Top", "TasksError", Http::GetStatusCode("TASKS"));
+		}
 		Http::Destroy("TASKS");
 	}
 }
 
 Void Loop() {
 	if(VisitMap) {
-		LoadMap::Play(Map::MapInfo("THE SKIN SELECT.Map.Gbx"), "TrackMania/SkinSelect.Script.txt");
+		LoadMap::Play(Map::FromFileName("THE SKIN SELECT.Map.Gbx"), "TrackMania/SkinSelect.Script.txt");
 		VisitMap = False;
+	}
+	if(VisitTaskMap != "") {
+		LoadMap::Play(Map::FromUid(VisitTaskMap));
+		VisitTaskMap = "";
 	}
 }
