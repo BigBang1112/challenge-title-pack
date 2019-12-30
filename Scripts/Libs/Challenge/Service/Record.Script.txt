@@ -32,6 +32,10 @@
 	Text Gamemode;
 	SRanking[Text] Rankings;
 	SLeaderboard[Text] Leaderboards;
+	Boolean TaskFinishCompleted;
+	Boolean TaskImproveCompleted;
+	Boolean TaskWRCompleted;
+	Boolean TaskOtherCarCompleted;
 }
 
 #Struct SRecordParams {

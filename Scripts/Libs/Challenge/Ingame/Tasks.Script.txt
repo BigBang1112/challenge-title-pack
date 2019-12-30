@@ -1,0 +1,60 @@
+#Include "Libs/BigBang1112/Settings.Script.txt" as Settings
+#Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
+#Include "Libs/BigBang1112/Layers.Script.txt" as Layers
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
+
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
+
+#Const C_Manialink "Media/Manialinks/Base/Ingame/Tasks"
+
+#Struct STaskMap {
+	Text OriginalName;
+	Text Uid;
+	Text[] Challenge;
+	Boolean Finished;
+	Boolean[] Completed;
+}
+
+#Struct STasks {
+	Integer Start;
+	Integer Current;
+	Integer End;
+	STaskMap[] Maps;
+}
+
+Void Init() {
+	Layers::Create("Tasks", Manialink::FromFile(C_Manialink, True, ["Audio", "TextAnimation"], Settings::Get().Theme));
+}
+
+Void Start() {
+	declare Text CHALLENGE_TOKEN for LocalUser;
+	declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php", CHALLENGE_TOKEN);
+}
+
+Void Event(CManiaAppEvent _Event) {
+	switch(_Event.Type) {
+		case CManiaAppPlaygroundEvent::EType::LayerCustomEvent: {
+			switch(_Event.CustomEventType) {
+				case "TasksRequestNew": {
+					declare Text CHALLENGE_TOKEN for LocalUser;
+					declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php", CHALLENGE_TOKEN);
+				}
+			}
+		}
+	}
+}
+
+Void Async() {
+	if(Http::IsCompleted("TASKS")) {
+		if(Http::IsSuccessful("TASKS")) {
+			declare STasks Tasks for Layers::Page("Tasks");
+			log(Http::GetResult("TASKS"));
+			declare Json = Tasks.fromjson(Http::GetResult("TASKS"));
+			Layers::SendEvent("Tasks", "TaskStartCountTime");
+		}
+		else {
+			Layers::SendEvent("Tasks", "TasksError", Http::GetStatusCode("TASKS"));
+		}
+		Http::Destroy("TASKS");
+	}
+}

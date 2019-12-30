@@ -21,6 +21,8 @@ declare Frame_Tasks_Tooltip = (Page.GetFirstChild("FRAME_TASKS_TOOLTIP") as CMlF
 declare Start = Now;
 declare End = -1;
 
+declare TasksShouldBlink = True;
+
 declare persistent Text[Text] CHALLENGE_SETTINGS for LocalUser;
 if(!CHALLENGE_SETTINGS.existskey("PrivateSession") || CHALLENGE_SETTINGS["PrivateSession"] == "False")
 	(Page.GetFirstChild("QUAD_SETTING_PRIVATE") as CMlQuad).Colorize = <0.2,0.2,0.2>;
@@ -99,6 +101,9 @@ foreach(Event,PendingEvents) {
 		}
 		case CMlScriptEvent::Type::MouseOver: {
 			switch(Event.ControlId) {
+				case "QUAD_BUTTON_TASKS": {
+					TasksShouldBlink = False;
+				}
 				case "LABEL_TASKS_1": {
 					(Frame_Tasks_Tooltip.GetFirstChild("QUAD_THUMBNAIL") as CMlQuad).ChangeImageUrl("file://Thumbnails/MapUid/"^Tasks.Maps[0].Uid);
 					(Frame_Tasks_Tooltip.GetFirstChild("LABEL_MAPNAME") as CMlLabel).Value = Tasks.Maps[0].OriginalName;
@@ -121,6 +126,9 @@ foreach(Event,PendingEvents) {
 		}
 		case CMlScriptEvent::Type::MouseOut: {
 			switch(Event.ControlId) {
+				case "QUAD_BUTTON_TASKS": {
+					TasksShouldBlink = True;
+				}
 				case "LABEL_TASKS_1": {
 					Frame_Tasks_Tooltip.Hide();
 				}
@@ -271,4 +279,7 @@ else {
 
 if(Frame_Tasks_Tooltip.Visible)
 	Frame_Tasks_Tooltip.RelativePosition_V3 = <MouseX, MouseY>;
+
+if(TasksShouldBlink)
+	(Page.GetFirstChild("QUAD_TASKS_BLINK") as CMlQuad).Opacity = (MathLib::Sin(Now/100.)+1)/2.*.25;
 ***

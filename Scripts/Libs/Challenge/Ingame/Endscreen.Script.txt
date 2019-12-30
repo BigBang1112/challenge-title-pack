@@ -76,9 +76,12 @@ Void Async() {
 	if(Http::IsCompleted("RECORD")) {
 		if(Http::IsSuccessful("RECORD")) {
 			declare Service_Record::SRecordResult[Text] RecordResult for Layers::Page("Endscreen");
-			declare Success = RecordResult.fromjson(Http::GetResult("RECORD"));
+			declare Json = RecordResult.fromjson(Http::GetResult("RECORD"));
 			Layers::SendEvent("Endscreen", "Record", RecordResult.tojson());
 			Http::Destroy("RECORD");
+
+			declare Text CHALLENGE_TOKEN for LocalUser;
+			declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php", CHALLENGE_TOKEN);
 		}
 		else {
 			declare StatusCode = Http::GetStatusCode("RECORD");

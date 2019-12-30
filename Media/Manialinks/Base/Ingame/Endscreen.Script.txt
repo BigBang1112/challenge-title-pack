@@ -72,6 +72,10 @@
 	Text Gamemode;
 	SRanking[Text] Rankings;
 	SLeaderboard[Text] Leaderboards;
+	Boolean TaskFinishCompleted;
+	Boolean TaskImproveCompleted;
+	Boolean TaskWRCompleted;
+	Boolean TaskOtherCarCompleted;
 }
 
 Text TimeToTextWithMilli(Integer _Time) {
@@ -224,6 +228,15 @@ foreach(Event,PendingEvents) {
 					declare Result_Time = RecordResult["Time"];
 
 					PrivateMap = False;
+
+					if(Result_Time.TaskFinishCompleted)
+						Showcases.add("{{{{MAIN_TASK_COMPLETED}}}}");
+					if(Result_Time.TaskImproveCompleted)
+						Showcases.add("{{{{BONUS_TASK_1_COMPLETED}}}}");
+					if(Result_Time.TaskWRCompleted)
+						Showcases.add("{{{{BONUS_TASK_2_COMPLETED}}}}");
+					if(Result_Time.TaskOtherCarCompleted)
+						Showcases.add("{{{{BONUS_TASK_3_COMPLETED}}}}");
 
 					if(Result_Time.Rankings["World"].Count == 1 && Result_Time.LastRecord == -1)
 						Showcases.add("{{{{NEW_VALIDATION}}}}");

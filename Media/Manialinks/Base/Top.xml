@@ -1,92 +1,102 @@
-<frame pos="0 75" id="FRAME_TOP" z-index="1">
-	<quad z-index="-1" size="300 10" halign="center" valign="center" style="Bgs1" substyle="BgHealthBar" hidden="0"/>
-	<frame pos="-125 0">
-		<quad pos="0 0" z-index="0" size="40 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
-		<quad pos="0.1 -0.1" z-index="0" size="40 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_BUTTON_AUTHORS"/>
-		<label pos="0 -0.25" z-index="1" size="30 10" text="{{{{AUTHORS}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
-	</frame>
-	<frame pos="-82.5 0">
-		<quad pos="0 0" z-index="0" size="40 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
-		<quad pos="0.1 -0.1" z-index="0" size="40 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_BUTTON_SKINS"/>
-		<label pos="0 -0.25" z-index="1" size="30 10" text="{{{{SKINS}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
-	</frame>
-	<frame pos="-40 0" hidden="1">
-		<quad pos="0 0" z-index="0" size="40 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
-		<quad pos="0.1 -0.1" z-index="0" size="40 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_BUTTON_LANGUAGES"/>
-		<label pos="0 -0.25" z-index="1" size="30 10" text="{{{{LANGUAGES}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
-	</frame>
-	<frame pos="-30 0">
-		<quad pos="0 0" z-index="0" size="60 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
-		<quad pos="0.1 -0.1" z-index="0" size="60 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="FB0" opacity=".5" id="QUAD_BUTTON_TASKS"/>
-		<label pos="0 -0.25" z-index="1" size="50 10" text="{{{{WHAT_TO_DO}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
-	</frame>
-	<frame pos="42.5 0" id="FRAME_JOIN">
-		<quad z-index="0" size="80 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
-		<quad pos="0.1 -0.1" z-index="0" size="80 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_BUTTON_JOIN"/>
-		<label pos="0 -0.25" z-index="1" size="70 10" text="{{{{JOIN_CHALLENGE}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
-	</frame>
-	<frame pos="115 0">
-		<quad pos="0 0" z-index="0" size="60 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
-		<quad pos="0.1 -0.1" z-index="0" size="60 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_BUTTON_SETTINGS"/>
-		<label pos="0 -0.25" z-index="1" size="50 10" text="{{{{SETTINGS}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
-	</frame>
-	<frame pos="0" clip="True" clipposn="0 -45" clipsizen="320 80.8">
-		<frame pos="-30 80" id="FRAME_TASKS" hidden="1">
-			<quad z-index="-3" size="60 85" valign="top" style="Bgs1" substyle="BgCardList" halign="center"/>
-			<quad z-index="-2" size="60 85" valign="top" style="Bgs1" substyle="BgCardList" scriptevents="1" halign="center"/>
-			<quad z-index="-1" size="60 85" style="Bgs1" substyle="BgGradV" halign="center"/>
-			
-			<label pos="0 -7.5" z-index="0" size="55 4" text="{{{{SHARED_TASK}}}}" halign="center" textsize="2" autonewline="1" textcolor="AFF" textfont="RajdhaniMono"/>
-			<label pos="0 -34.5" z-index="0" size="55 4" text="{{{{YOUR_TASKS}}}}" halign="center" textsize="2" autonewline="1" textcolor="FFA" textfont="RajdhaniMono"/>
-			
-			<frame clip="True" clipposn="-10 -50" clipsizen="40 100">
-				<frame id="FRAME_TASKS_NAMES" hidden="1">
-					<label pos="-25 -13" z-index="0" size="200 3" text="$oFinish A01 with original car" textsize="1" autonewline="1" textfont="Oswald" id="LABEL_TASKS_1" scriptevents="1" style="TextTitle2" textcolor="fff"/>
-					<label pos="-22.5 -17" z-index="0" size="50 3" text="$oImprove with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
-					<label pos="-22.5 -21" z-index="0" size="50 3" text="$oDo a WR with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
-					<label pos="-22.5 -25" z-index="0" size="50 3" text="$oFinish with any other car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
-					
-					<label pos="-25 -40" z-index="0" size="200 3" text="$oFinish A01 with original car" textsize="1" autonewline="1" textfont="Oswald" id="LABEL_TASKS_2" scriptevents="1" style="TextTitle2" textcolor="fff"/>
-					<label pos="-22.5 -44" z-index="0" size="50 3" text="$oImprove with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
-					<label pos="-22.5 -48" z-index="0" size="50 3" text="$oDo a WR with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
-					<label pos="-22.5 -52" z-index="0" size="50 3" text="$oFinish with any other car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
-					
-					<label pos="-25 -58" z-index="0" size="200 3" text="$oFinish A01 with original car" textsize="1" autonewline="1" textfont="Oswald" id="LABEL_TASKS_3" scriptevents="1" style="TextTitle2" textcolor="fff"/>
-					<label pos="-22.5 -62" z-index="0" size="50 3" text="$oImprove with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
-					<label pos="-22.5 -66" z-index="0" size="50 3" text="$oDo a WR with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
-					<label pos="-22.5 -70" z-index="0" size="50 3" text="$oFinish with any other car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
+<frame>
+	<frame pos="0 75" id="FRAME_TOP" z-index="1">
+		<quad z-index="-1" size="300 10" halign="center" valign="center" style="Bgs1" substyle="BgHealthBar" hidden="0"/>
+		<frame pos="-125 0">
+			<quad pos="0 0" z-index="0" size="40 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
+			<quad pos="0.1 -0.1" z-index="0" size="40 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_BUTTON_AUTHORS"/>
+			<label pos="0 -0.25" z-index="1" size="30 10" text="{{{{AUTHORS}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
+		</frame>
+		<frame pos="-82.5 0">
+			<quad pos="0 0" z-index="0" size="40 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
+			<quad pos="0.1 -0.1" z-index="0" size="40 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_BUTTON_SKINS"/>
+			<label pos="0 -0.25" z-index="1" size="30 10" text="{{{{SKINS}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
+		</frame>
+		<frame pos="-40 0" hidden="1">
+			<quad pos="0 0" z-index="0" size="40 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
+			<quad pos="0.1 -0.1" z-index="0" size="40 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_BUTTON_LANGUAGES"/>
+			<label pos="0 -0.25" z-index="1" size="30 10" text="{{{{LANGUAGES}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
+		</frame>
+		<frame pos="-30 0">
+			<quad pos="0 0" z-index="-1" size="60 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
+			<quad z-index="0" size="60 10" halign="center" valign="center" style="Bgs1" substyle="BgWindow4" id="QUAD_TASKS_BLINK" opacity=".25" modulatecolor="FB0"/>
+			<quad pos="0.1 -0.1" z-index="1" size="60 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="FB0" opacity=".5" id="QUAD_BUTTON_TASKS"/>
+			<label pos="0 -0.25" z-index="2" size="50 10" text="{{{{WHAT_TO_DO}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
+		</frame>
+		<frame pos="42.5 0" id="FRAME_JOIN">
+			<quad z-index="0" size="80 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
+			<quad pos="0.1 -0.1" z-index="0" size="80 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_BUTTON_JOIN"/>
+			<label pos="0 -0.25" z-index="1" size="70 10" text="{{{{JOIN_CHALLENGE}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
+		</frame>
+		<frame pos="115 0">
+			<quad pos="0 0" z-index="0" size="60 10" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".5"/>
+			<quad pos="0.1 -0.1" z-index="0" size="60 10" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_BUTTON_SETTINGS"/>
+			<label pos="0 -0.25" z-index="1" size="50 10" text="{{{{SETTINGS}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textcolor="EEE"/>
+		</frame>
+		<frame pos="0" clip="True" clipposn="0 -45" clipsizen="320 80.8">
+			<frame pos="-30 80" id="FRAME_TASKS" hidden="1">
+				<quad z-index="-3" size="60 85" valign="top" style="Bgs1" substyle="BgCardList" halign="center"/>
+				<quad z-index="-2" size="60 85" valign="top" style="Bgs1" substyle="BgCardList" scriptevents="1" halign="center"/>
+				<quad z-index="-1" size="60 85" style="Bgs1" substyle="BgGradV" halign="center"/>
+				
+				<label pos="0 -7.5" z-index="0" size="55 4" text="{{{{SHARED_TASK}}}}" halign="center" textsize="2" autonewline="1" textcolor="AFF" textfont="RajdhaniMono"/>
+				<label pos="0 -34.5" z-index="0" size="55 4" text="{{{{YOUR_TASKS}}}}" halign="center" textsize="2" autonewline="1" textcolor="FFA" textfont="RajdhaniMono"/>
+				
+				<frame clip="True" clipposn="-10 -50" clipsizen="40 100">
+					<frame id="FRAME_TASKS_NAMES" hidden="1">
+						<label pos="-25 -13" z-index="0" size="200 3" text="$oFinish A01 with original car" textsize="1" autonewline="1" textfont="Oswald" id="LABEL_TASKS_1" scriptevents="1" style="TextTitle2" textcolor="fff"/>
+						<label pos="-22.5 -17" z-index="0" size="50 3" text="$oImprove with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
+						<label pos="-22.5 -21" z-index="0" size="50 3" text="$oDo a WR with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
+						<label pos="-22.5 -25" z-index="0" size="50 3" text="$oFinish with any other car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
+						
+						<label pos="-25 -40" z-index="0" size="200 3" text="$oFinish A01 with original car" textsize="1" autonewline="1" textfont="Oswald" id="LABEL_TASKS_2" scriptevents="1" style="TextTitle2" textcolor="fff"/>
+						<label pos="-22.5 -44" z-index="0" size="50 3" text="$oImprove with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
+						<label pos="-22.5 -48" z-index="0" size="50 3" text="$oDo a WR with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
+						<label pos="-22.5 -52" z-index="0" size="50 3" text="$oFinish with any other car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
+						
+						<label pos="-25 -58" z-index="0" size="200 3" text="$oFinish A01 with original car" textsize="1" autonewline="1" textfont="Oswald" id="LABEL_TASKS_3" scriptevents="1" style="TextTitle2" textcolor="fff"/>
+						<label pos="-22.5 -62" z-index="0" size="50 3" text="$oImprove with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
+						<label pos="-22.5 -66" z-index="0" size="50 3" text="$oDo a WR with original car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
+						<label pos="-22.5 -70" z-index="0" size="50 3" text="$oFinish with any other car" textsize="1" autonewline="1" textfont="Oswald" textcolor="FF8"/>
+					</frame>
 				</frame>
+				
+				<frame id="FRAME_TASKS_VALUES" hidden="1">
+					<label pos="25 -14.5" z-index="0" size="15 3" text="$0f0$z 1500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_1_POINTS_MAIN"/>
+					<label pos="25 -18.5" z-index="0" size="15 3" text="$f00$z 800 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_1_POINTS_SUB1"/>
+					<label pos="25 -22.5" z-index="0" size="15 3" text="1200 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_1_POINTS_SUB2"/>
+					<label pos="25 -26.5" z-index="0" size="15 3" text="500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_1_POINTS_SUB3"/>
+					
+					<label pos="25 -41.5" z-index="0" size="15 3" text="$0f0$z 1500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_2_POINTS_MAIN"/>
+					<label pos="25 -45.5" z-index="0" size="15 3" text="$f00$z 800 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_2_POINTS_SUB1"/>
+					<label pos="25 -49.5" z-index="0" size="15 3" text="1200 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_2_POINTS_SUB2"/>
+					<label pos="25 -53.5" z-index="0" size="15 3" text="500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_2_POINTS_SUB3"/>
+					
+					<label pos="25 -59.5" z-index="0" size="15 3" text="$0f0$z 1500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_3_POINTS_MAIN"/>
+					<label pos="25 -63.5" z-index="0" size="15 3" text="$f00$z 800 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_3_POINTS_SUB1"/>
+					<label pos="25 -67.5" z-index="0" size="15 3" text="1200 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_3_POINTS_SUB2"/>
+					<label pos="25 -71.5" z-index="0" size="15 3" text="500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_3_POINTS_SUB3"/>
+					
+					<label pos="-25 -30" z-index="0" size="50 3" text="COMPLETED BY 0 PLAYERS" textsize="1" textfont="Oswald"/>
+				</frame>
+				<label pos="0 -77.5" z-index="0" size="50 3" text="{{{{WAITING_FOR_RESPONSE}}}}..." textsize="1" autonewline="1" textfont="Oswald" halign="center" id="LABEL_TASKS_EXPIRES"/>
 			</frame>
-			
-			<frame id="FRAME_TASKS_VALUES" hidden="1">
-				<label pos="25 -14.5" z-index="0" size="15 3" text="$0f0$z 1500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_1_POINTS_MAIN"/>
-				<label pos="25 -18.5" z-index="0" size="15 3" text="$f00$z 800 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_1_POINTS_SUB1"/>
-				<label pos="25 -22.5" z-index="0" size="15 3" text="1200 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_1_POINTS_SUB2"/>
-				<label pos="25 -26.5" z-index="0" size="15 3" text="500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_1_POINTS_SUB3"/>
-				
-				<label pos="25 -41.5" z-index="0" size="15 3" text="$0f0$z 1500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_2_POINTS_MAIN"/>
-				<label pos="25 -45.5" z-index="0" size="15 3" text="$f00$z 800 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_2_POINTS_SUB1"/>
-				<label pos="25 -49.5" z-index="0" size="15 3" text="1200 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_2_POINTS_SUB2"/>
-				<label pos="25 -53.5" z-index="0" size="15 3" text="500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_2_POINTS_SUB3"/>
-				
-				<label pos="25 -59.5" z-index="0" size="15 3" text="$0f0$z 1500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_3_POINTS_MAIN"/>
-				<label pos="25 -63.5" z-index="0" size="15 3" text="$f00$z 800 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_3_POINTS_SUB1"/>
-				<label pos="25 -67.5" z-index="0" size="15 3" text="1200 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_3_POINTS_SUB2"/>
-				<label pos="25 -71.5" z-index="0" size="15 3" text="500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_3_POINTS_SUB3"/>
-				
-				<label pos="-25 -30" z-index="0" size="50 3" text="COMPLETED BY 0 PLAYERS" textsize="1" textfont="Oswald"/>
+			<frame pos="115 80" id="FRAME_SETTINGS" hidden="1">
+				<quad z-index="-3" size="60 81" valign="top" style="Bgs1" substyle="BgCardList" halign="center"/>
+				<quad z-index="-2" size="60 81" valign="top" style="Bgs1" substyle="BgCardList" scriptevents="1" halign="center"/>
+				<quad z-index="-1" size="60 81" style="Bgs1" substyle="BgGradV" halign="center"/>
+				<frame pos="0 -10">
+					<quad z-index="0" size="55 8" valign="center" halign="center" style="Bgs1" substyle="BgCard" colorize="333" scriptevents="1" id="QUAD_SETTING_PRIVATE"/>
+					<label pos="0 -.4" z-index="1" size="50 5" text="{{{{PRIVATE_SESSION}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="2"/>
+				</frame>
+				<label pos="0 -16" z-index="0" size="55 6" text="{{{{PRIVATE_SESSION_NOTE}}}}" halign="center" textsize="1" autonewline="1" textcolor="FF0"/>
 			</frame>
-			<label pos="0 -77.5" z-index="0" size="50 3" text="{{{{WAITING_FOR_RESPONSE}}}}..." textsize="1" autonewline="1" textfont="Oswald" halign="center" id="LABEL_TASKS_EXPIRES"/>
 		</frame>
-		<frame pos="115 80" id="FRAME_SETTINGS" hidden="1">
-			<quad z-index="-3" size="60 81" valign="top" style="Bgs1" substyle="BgCardList" halign="center"/>
-			<quad z-index="-2" size="60 81" valign="top" style="Bgs1" substyle="BgCardList" scriptevents="1" halign="center"/>
-			<quad z-index="-1" size="60 81" style="Bgs1" substyle="BgGradV" halign="center"/>
-			<frame pos="0 -10">
-				<quad z-index="0" size="55 8" valign="center" halign="center" style="Bgs1" substyle="BgCard" colorize="333" scriptevents="1" id="QUAD_SETTING_PRIVATE"/>
-				<label pos="0 -.4" z-index="1" size="50 5" text="{{{{PRIVATE_SESSION}}}}" halign="center" valign="center2" textfont="RajdhaniMono" textsize="2"/>
-			</frame>
-			<label pos="0 -16" z-index="0" size="55 6" text="{{{{PRIVATE_SESSION_NOTE}}}}" halign="center" textsize="1" autonewline="1" textcolor="FF0"/>
-		</frame>
+	</frame>
+	<frame id="FRAME_TASKS_TOOLTIP" z-index="10" hidden="1">
+		<quad pos="0 0" z-index="-1" size="60 30" style="Bgs1" substyle="BgCardOnline" colorize="000"/>
+		<quad pos="2 -2" z-index="0" size="26 26" bgcolor="000A" id="QUAD_THUMBNAIL"/>
+		<label pos="30 -12.5" z-index="0" size="28 5" text="MAPNAME" textsize="2" textfont="Oswald" valign="center" id="LABEL_MAPNAME"/>
+		<label pos="30 -17.5" z-index="0" size="28 5" text="CHALLENGE" textsize="2" textfont="Oswald" valign="center2" id="LABEL_CHALLENGE"/>
+		<label pos="57.5 -28" z-index="0" size="28 5" text="CLICK TO VISIT THE MAP" textsize=".5" textfont="Oswald" valign="bottom" halign="right" textcolor="ACF"/>
 	</frame>
 </frame>

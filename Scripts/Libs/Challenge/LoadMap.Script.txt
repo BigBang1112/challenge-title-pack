@@ -1,9 +1,12 @@
 #Include "Libs/BigBang1112/Map.Script.txt" as Map
+#Include "Libs/BigBang1112/Http.Script.txt" as Http
 
+#Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 #Include "Libs/Challenge/Loading.Script.txt" as Loading
 
 Void UpdateOnComeback() {
-
+	declare Text CHALLENGE_TOKEN for LocalUser;
+	declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php", CHALLENGE_TOKEN);
 }
 
 Void Play(Map::SMapInfo _MapInfo, Text _Gamemode) {

@@ -1,0 +1,139 @@
+#Struct STaskMap {
+	Text OriginalName;
+	Text Uid;
+	Text[] Challenge;
+	Boolean Finished;
+	Boolean[] Completed;
+}
+
+#Struct STasks {
+	Integer Start;
+	Integer Current;
+	Integer End;
+	STaskMap[] Maps;
+}
+
+STaskMap GetCurrentMap() {
+	declare STasks Tasks for Page;
+	foreach(M in Tasks.Maps) {
+		if(M.Uid == Map.MapInfo.MapUid)
+			return M;
+	}
+
+	declare STaskMap M;
+	return M;
+}
+
+Boolean IsCurrentTaskShared() {
+	declare STasks Tasks for Page;
+	for(I, 0, Tasks.Maps.count-1)
+		if(Tasks.Maps[I].Uid == Map.MapInfo.MapUid)
+			return I == 0;
+	return False;
+}
+
+***Start***
+***
+declare Label_Tasks_Expires = (Page.GetFirstChild("LABEL_TASKS_EXPIRES") as CMlLabel);
+
+declare STasks Tasks for Page;
+declare Text StartTaskCounter = "";
+***
+
+***Loop***
+***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::MouseClick: {
+			switch(Event.ControlId) {
+				case "QUAD_TASKS": {
+					if(GetCurrentMap().Uid == "") continue;
+
+					declare Frame = (Page.GetFirstChild("FRAME_TASKS") as CMlFrame);
+
+					if(Frame.DataAttributeGet("open") == "1") {
+						AnimMgr.Add(Frame, "<frame pos=\"177.5 29\" hidden=\"1\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+						Frame.DataAttributeSet("open", "0");
+					}
+					else {
+						AnimMgr.Add(Frame, "<frame pos=\"117.5 29\" hidden=\"0\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+						Frame.DataAttributeSet("open", "1");
+					}
+				}
+			}
+		}
+		case CMlScriptEvent::Type::PluginCustomEvent: {
+			switch(Event.CustomEventType) {
+				case "TaskStartCountTime": {
+					StartTaskCounter = TimeLib::GetCurrent();
+
+					declare CurrentMap = GetCurrentMap();
+
+					if(CurrentMap.Uid == "") {
+						declare Frame = (Page.GetFirstChild("FRAME_TASKS") as CMlFrame);
+						AnimMgr.Add(Frame, "<frame pos=\"177.5 29\" hidden=\"1\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+						Frame.DataAttributeSet("open", "0");
+						continue;
+					}
+
+					if(IsCurrentTaskShared()) {
+						(Page.GetFirstChild("LABEL_TASK_TYPE") as CMlLabel).TextColor = ColorLib::HexToRgb("AFF");
+						(Page.GetFirstChild("LABEL_TASK_TYPE") as CMlLabel).Value = "{{{{SHARED_TASK}}}}";
+					}
+					else {
+						(Page.GetFirstChild("LABEL_TASK_TYPE") as CMlLabel).TextColor = ColorLib::HexToRgb("FFA");
+						(Page.GetFirstChild("LABEL_TASK_TYPE") as CMlLabel).Value = "{{{{YOUR_TASK}}}}";
+					}
+
+					(Page.GetFirstChild("LABEL_TASKS_1") as CMlLabel).Value = "$oFinish "^CurrentMap.OriginalName^"$z$o ("^TextLib::Join(" + ", CurrentMap.Challenge)^") with original car";
+					
+					if(CurrentMap.Finished) {
+						if(CurrentMap.Completed[0])
+							(Page.GetFirstChild("LABEL_TASKS_1_POINTS_MAIN") as CMlLabel).Value = "$0f0$z 1500 AP";
+						else
+							(Page.GetFirstChild("LABEL_TASKS_1_POINTS_MAIN") as CMlLabel).Value = "$f00$z 1500 AP";
+					}
+					else (Page.GetFirstChild("LABEL_TASKS_1_POINTS_MAIN") as CMlLabel).Value = "1500 AP";
+
+					if(CurrentMap.Completed[1])
+						(Page.GetFirstChild("LABEL_TASKS_1_POINTS_SUB1") as CMlLabel).Value = "$0f0$z 800 AP";
+					else
+						(Page.GetFirstChild("LABEL_TASKS_1_POINTS_SUB1") as CMlLabel).Value = "800 AP";
+					
+					if(CurrentMap.Completed[2])
+						(Page.GetFirstChild("LABEL_TASKS_1_POINTS_SUB2") as CMlLabel).Value = "$0f0$z 1200 AP";
+					else
+						(Page.GetFirstChild("LABEL_TASKS_1_POINTS_SUB2") as CMlLabel).Value = "1200 AP";
+						
+					if(CurrentMap.Completed[3])
+						(Page.GetFirstChild("LABEL_TASKS_1_POINTS_SUB3") as CMlLabel).Value = "$0f0$z 500 AP";
+					else
+						(Page.GetFirstChild("LABEL_TASKS_1_POINTS_SUB3") as CMlLabel).Value = "500 AP";
+				}
+				case "TasksError": {
+					
+				}
+			}
+		}
+	}
+}
+
+if(StartTaskCounter == "") {
+	Label_Tasks_Expires.Value = "{{{{WAITING_FOR_RESPONSE}}}}...";
+}
+else {
+	declare PassedDelta = TimeLib::GetDelta(StartTaskCounter, TimeLib::GetCurrent());
+	declare CurrentTime = Tasks.Current-PassedDelta;
+	declare EndTime = Tasks.End;
+
+	if(CurrentTime > EndTime) {
+		SendCustomEvent("TasksRequestNew", []);
+		StartTaskCounter = "";
+	}
+
+	if(CurrentTime >= EndTime) Label_Tasks_Expires.Value = "$o{{{{EXPIRES_SOON}}}}";
+
+	Label_Tasks_Expires.Value = TextLib::ToUpperCase("$o{{{{EXPIRES_IN}}}} "
+	^ TimeLib::FormatDelta(CurrentTime^"", EndTime^"", TimeLib::EDurationFormats::Full));
+}
+***
