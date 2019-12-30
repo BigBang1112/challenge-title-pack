@@ -76,7 +76,7 @@
 					<label pos="25 -67.5" z-index="0" size="15 3" text="1200 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_3_POINTS_SUB2"/>
 					<label pos="25 -71.5" z-index="0" size="15 3" text="500 AP" textsize="1" autonewline="1" textfont="RajdhaniMono" halign="right" valign="center" textcolor="0FF" id="LABEL_TASKS_3_POINTS_SUB3"/>
 					
-					<label pos="-25 -30" z-index="0" size="50 3" text="COMPLETED BY 0 PLAYERS" textsize="1" textfont="Oswald"/>
+					<label pos="-25 -30" z-index="0" size="50 3" text="COMPLETED BY 0 PLAYERS" textsize="1" textfont="Oswald" hidden="1"/>
 				</frame>
 				<label pos="0 -77.5" z-index="0" size="50 3" text="{{{{WAITING_FOR_RESPONSE}}}}..." textsize="1" autonewline="1" textfont="Oswald" halign="center" id="LABEL_TASKS_EXPIRES"/>
 			</frame>

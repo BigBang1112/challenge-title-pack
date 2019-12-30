@@ -136,8 +136,6 @@ foreach(Event,PendingEvents) {
 			switch(Event.ControlId) {
 				case "QUAD_BUTTON_TASKS": {
 					TasksShouldBlink = True;
-					Event.Control.RelativePosition_V3.X = -25.;
-					ShowMore = Null;
 				}
 				case "LABEL_TASKS_1": {
 					Frame_Tasks_Tooltip.Hide();
