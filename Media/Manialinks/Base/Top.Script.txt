@@ -286,8 +286,7 @@ else {
 	}
 
 	if(CurrentTime >= EndTime) Label_Tasks_Expires.Value = "$o{{{{EXPIRES_SOON}}}}";
-
-	Label_Tasks_Expires.Value = TextLib::ToUpperCase("$o{{{{EXPIRES_IN}}}} "
+	else Label_Tasks_Expires.Value = TextLib::ToUpperCase("$o{{{{EXPIRES_IN}}}} "
 	^ TimeLib::FormatDelta(CurrentTime^"", EndTime^"", TimeLib::EDurationFormats::Full));
 }
 
