@@ -433,7 +433,6 @@ if(RefreshTime != -1) {
 	else if(RecordSubmitted) {
 		Page.GetFirstChild("FRAME_FAIL_REFRESH").Hide();
 		if(CurrentShowcase == Showcases.count-1) {
-			CurrentShowcase = 0;
 			RefreshTime = -1;
 			Label_Showcase.RelativeScale = 0.;
 			Page.GetFirstChild("FRAME_RESULTS").Show();
