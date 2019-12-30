@@ -35,7 +35,7 @@ Void Start() {
 	Layers::Show("Top", True);
 	
 	declare Text CHALLENGE_TOKEN for LocalUser;
-	declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php", CHALLENGE_TOKEN);
+	declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php?title="^LoadedTitle.TitleId, CHALLENGE_TOKEN);
 }
 
 declare Boolean VisitMap;
@@ -70,7 +70,7 @@ Void Event(CManiaAppEvent _Event) {
 					}
 					case "TasksRequestNew": {
 						declare Text CHALLENGE_TOKEN for LocalUser;
-						declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php", CHALLENGE_TOKEN);
+						declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php?title="^LoadedTitle.TitleId, CHALLENGE_TOKEN);
 					}
 					case "VisitTaskMap": {
 						VisitTaskMap = Event.CustomEventData[0];

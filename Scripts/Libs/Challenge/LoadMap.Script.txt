@@ -6,7 +6,7 @@
 
 Void UpdateOnComeback() {
 	declare Text CHALLENGE_TOKEN for LocalUser;
-	declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php", CHALLENGE_TOKEN);
+	declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php?title="^LoadedTitle.TitleId, CHALLENGE_TOKEN);
 }
 
 Void Play(Map::SMapInfo _MapInfo, Text _Gamemode) {

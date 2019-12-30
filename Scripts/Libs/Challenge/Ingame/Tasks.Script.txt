@@ -28,7 +28,7 @@ Void Init() {
 
 Void Start() {
 	declare Text CHALLENGE_TOKEN for LocalUser;
-	declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php", CHALLENGE_TOKEN);
+	declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php?title="^LoadedTitle.TitleId, CHALLENGE_TOKEN);
 }
 
 Void Event(CManiaAppEvent _Event) {
@@ -37,7 +37,7 @@ Void Event(CManiaAppEvent _Event) {
 			switch(_Event.CustomEventType) {
 				case "TasksRequestNew": {
 					declare Text CHALLENGE_TOKEN for LocalUser;
-					declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php", CHALLENGE_TOKEN);
+					declare Success = Http::AsyncPOST("TASKS", Service_Status::LastStatus(LocalUser).Global.Service^"/tasks.php?title="^LoadedTitle.TitleId, CHALLENGE_TOKEN);
 				}
 			}
 		}
