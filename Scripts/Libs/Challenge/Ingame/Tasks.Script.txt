@@ -48,7 +48,6 @@ Void Async() {
 	if(Http::IsCompleted("TASKS")) {
 		if(Http::IsSuccessful("TASKS")) {
 			declare STasks Tasks for Layers::Page("Tasks");
-			log(Http::GetResult("TASKS"));
 			declare Json = Tasks.fromjson(Http::GetResult("TASKS"));
 			Layers::SendEvent("Tasks", "TaskStartCountTime");
 		}

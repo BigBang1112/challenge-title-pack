@@ -355,6 +355,7 @@ foreach(Event, PendingEvents) {
 	Ingame_Menu::Event(Event);
 	Ingame_Outro::Event(Event);
 	Ingame_Playsession::Event(Event);
+	Ingame_Tasks::Event(Event);
 }
 
 declare Text[] Exchange for This;
