@@ -98,7 +98,6 @@ Void Async() {
 		if(Http::IsSuccessful("TASKS")) {
 			declare STasks Tasks for Layers::Page("Top");
 			declare Json = Tasks.fromjson(Http::GetResult("TASKS"));
-			log(Tasks);
 			Layers::SendEvent("Top", "TaskStartCountTime");
 		}
 		else {
@@ -114,7 +113,7 @@ Void Loop() {
 		VisitMap = False;
 	}
 	if(VisitTaskMap != "") {
-		LoadMap::Play(Map::FromUid(VisitTaskMap));
+		LoadMap::Play(Map::FromUid(VisitTaskMap), "Modes/TrackMania/ChallengeSolo.Script.txt");
 		VisitTaskMap = "";
 	}
 }
