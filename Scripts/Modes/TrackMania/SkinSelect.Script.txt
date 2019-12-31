@@ -125,7 +125,7 @@ while(True) {
 	
 	if(P_Skin.existskey(VehicleName)) {
 		if(Vehicles.existskey(Client_VehicleIndex)) {
-			if(Map.CollectionName != "Stadium" && TM2Vehicles.exists(VehicleName))
+			if((_Mode.Map.CollectionName != "Stadium" && TM2Vehicles.exists(VehicleName)) || VehicleName == "StadiumCar")
 				Player.ForceModelId = RealVehicles[Client_VehicleIndex].DefaultId;
 			else if(RealVehicles[Client_VehicleIndex].Id.existskey(P_Skin[VehicleName])) // If exact skin doesnt exist
 				Player.ForceModelId = RealVehicles[Client_VehicleIndex].Id[P_Skin[VehicleName]];

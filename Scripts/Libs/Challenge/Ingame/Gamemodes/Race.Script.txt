@@ -54,7 +54,7 @@ Void SetCarModel(CTmPlayer _Player, CUIConfig _UI, CMode _Mode) {
 	
 	if(P_Skin.existskey(VehicleName)) {
 		if(Vehicles.existskey(Server_CurrentVehicle)) {
-			if(_Mode.Map.CollectionName != "Stadium" && TM2Vehicles.exists(VehicleName))
+			if((_Mode.Map.CollectionName != "Stadium" && TM2Vehicles.exists(VehicleName)) || VehicleName == "StadiumCar")
 				_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].DefaultId;
 			else if(RealVehicles[Server_CurrentVehicle].Id.existskey(P_Skin[VehicleName])) // If exact skin doesnt exist
 				_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[P_Skin[VehicleName]];
