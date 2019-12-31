@@ -12,7 +12,8 @@ Void UpdateOnComeback() {
 Void Play(Map::SMapInfo _MapInfo, Text _Gamemode) {
 	Loading::SetLoading(_MapInfo);
 	wait(TitleControl.IsReady);
-	TitleControl.PlayMap(_MapInfo.FileName, _Gamemode, "");
+	if(_MapInfo.FileName != "")
+		TitleControl.PlayMap(_MapInfo.FileName, _Gamemode, "");
 	wait(TitleControl.IsReady);
 	UpdateOnComeback();
 }
@@ -32,7 +33,8 @@ Void Play(CMapInfo _MapInfo) {
 Void Edit(Map::SMapInfo _MapInfo, Text _Plugin, Text _Arguments) {
 	Loading::SetLoading(_MapInfo);
 	wait(TitleControl.IsReady);
-	TitleControl.EditMap(_MapInfo.FileName, _Plugin, _Arguments);
+	if(_MapInfo.FileName != "")
+		TitleControl.EditMap(_MapInfo.FileName, _Plugin, _Arguments);
 	wait(TitleControl.IsReady);
 	UpdateOnComeback();
 }
@@ -44,7 +46,8 @@ Void Edit(CMapInfo _MapInfo, Text _Plugin, Text _Arguments) {
 Void EditFromBase(Map::SMapInfo _MapInfo, Text _MapType, Text _Plugin, Text _Arguments) {
 	Loading::SetLoading(_MapInfo);
 	wait(TitleControl.IsReady);
-	TitleControl.EditNewMapFromBaseMap(_MapInfo.FileName, "", "", _MapType, _Plugin, _Arguments);
+	if(_MapInfo.FileName != "")
+		TitleControl.EditNewMapFromBaseMap(_MapInfo.FileName, "", "", _MapType, _Plugin, _Arguments);
 	wait(TitleControl.IsReady);
 	UpdateOnComeback();
 }
