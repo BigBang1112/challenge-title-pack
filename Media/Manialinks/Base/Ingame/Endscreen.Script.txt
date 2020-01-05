@@ -401,8 +401,12 @@ foreach(Event,PendingEvents) {
 			switch(Event.MenuNavAction) {
 				case CMlScriptEvent::EMenuNavAction::Select: {
 					if(RecordSubmitted || PrivateMap) {
-						if(CurrentShowcase + 1 == Showcases.count)
-							SendCustomEvent("Continue", []);
+						if(CurrentShowcase + 1 == Showcases.count) {
+							if(Now - RefreshTime > 2500)
+								SendCustomEvent("Continue", []);
+							else
+								RefreshTime -= 2500;
+						}
 						else {
 							CurrentShowcase += 1;
 							Label_Showcase.SetText(Showcases[CurrentShowcase]);
