@@ -799,6 +799,62 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode)
 			
 			Respond(_LayerAPI, _Type, [""^Disabled]);
 		}
+		case "Ch_Exists": {
+			declare ModifierBase::SChBlock ChBlock;
+			declare IsBlock = ChBlock.fromjson(_Data[0]);
+			declare ModifierBase::SChItem ChItem;
+			declare IsItem = ChItem.fromjson(_Data[0]);
+
+			if(IsBlock) {
+				foreach(Block in GetBlocks()) {
+					declare B = Conversion::ToSChBlock(Block);
+					if(B.Name == ChBlock.Name
+					&& B.Coord == ChBlock.Coord
+					&& B.Direction == ChBlock.Direction
+					&& B.Id^"" == ChBlock.Id) {
+						Respond(_LayerAPI, _Type, ["True"]);
+						break;
+					}
+				}
+			}
+			else if(IsItem) {
+				foreach(Anchor in AnchorData) {
+					if(Anchor.Position == ChItem.Position) {
+						Respond(_LayerAPI, _Type, ["True"]);
+						break;
+					}
+				}
+			}
+
+			Respond(_LayerAPI, _Type, ["False"]);
+		}
+		case "Ch_ExistsInRadius": {
+			declare ModifierBase::SChBlock ChBlock;
+			declare IsBlock = ChBlock.fromjson(_Data[0]);
+			declare ModifierBase::SChItem ChItem;
+			declare IsItem = ChItem.fromjson(_Data[0]);
+			declare Radius = TextLib::ToReal(_Data[1]);
+			if(IsBlock) {
+				foreach(Block in GetBlocks()) {
+					declare B = Conversion::ToSChBlock(Block);
+					if(B.Name == ChBlock.Name
+					&& MathLib::Distance(Conversion::ToVec3(B.Coord), Conversion::ToVec3(ChBlock.Coord)) <= Radius) {
+						Respond(_LayerAPI, _Type, ["True"]);
+						break;
+					}
+				}
+			}
+			else if(IsItem) {
+				foreach(Anchor in AnchorData) {
+					if(MathLib::Distance(Anchor.Position, ChItem.Position) <= Radius) {
+						Respond(_LayerAPI, _Type, ["True"]);
+						break;
+					}
+				}
+			}
+			
+			Respond(_LayerAPI, _Type, ["False"]);
+		}
 		case "Ch_Problem": {
 			declare ModifierBase::SChProblem Problem;
 			declare JsonSuccess = Problem.fromjson(_Data[0]);

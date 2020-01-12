@@ -438,6 +438,38 @@ Boolean RemoveSpecificBlock(SChBlock _Block) {
 	return Response.Values[0] == "True";
 }
 
+Boolean Exists(SChBlock _Block) {
+	declare Params = [_Block.tojson()];
+	declare Response = Request("Ch_Exists", Params);
+	return Response.Values[0] == "True";
+}
+
+Boolean Exists(SChItem _Item) {
+	declare Params = [_Item.tojson()];
+	declare Response = Request("Ch_Exists", Params);
+	return Response.Values[0] == "True";
+}
+
+Boolean ExistsInRadius(SChBlock _Block, Real _Radius) {
+	declare Params = [_Block.tojson(), _Radius^""];
+	declare Response = Request("Ch_ExistsInRadius", Params);
+	return Response.Values[0] == "True";
+}
+
+Boolean ExistsInRadius(SChItem _Item, Real _Radius) {
+	declare Params = [_Item.tojson(), _Radius^""];
+	declare Response = Request("Ch_ExistsInRadius", Params);
+	return Response.Values[0] == "True";
+}
+
+Boolean ExistsInRadius(SChBlock _Block, Integer _Radius) {
+	return ExistsInRadius(_Block, MathLib::ToReal(_Radius));
+}
+
+Boolean ExistsInRadius(SChItem _Item, Integer _Radius) {
+	return ExistsInRadius(_Item, MathLib::ToReal(_Radius));
+}
+
 Integer Random(Integer _Min, Integer _Max) { // Consistent randomizer
 	RandomProgression += 1;
 	if(RandomSeed == 0) RandomSeed = GetOriginalMapInfo().CopperPrice;

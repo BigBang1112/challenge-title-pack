@@ -1,4 +1,5 @@
 #Include "TextLib" as TextLib
+#Include "MathLib" as MathLib
 
 #Include "Libs/BigBang1112/Map.Script.txt" as Map
 
@@ -19,6 +20,10 @@ Int3 ToInt3(Text _Text) {
 	declare Txts = TextLib::Split(" ",Txt);
 	
 	return <TextLib::ToInteger(Txts[0]),TextLib::ToInteger(Txts[1]),TextLib::ToInteger(Txts[2])>;
+}
+
+Vec3 ToVec3(Int3 _Int3) {
+	return <MathLib::ToReal(_Int3.X), MathLib::ToReal(_Int3.Y), MathLib::ToReal(_Int3.Z)>;
 }
 
 Text GetBlockNameFromMacroblockName(Text _Name) {
