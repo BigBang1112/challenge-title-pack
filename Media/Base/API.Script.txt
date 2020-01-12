@@ -292,6 +292,7 @@ SReplacementResult ReplaceBlock(SChBlock _Block, Text _ReplacementBlockName, Boo
 	declare SReplacementResult Result;
 	Result.Removed = (Response.Values[0] == "True");
 	Result.Placed = (Response.Values[1] == "True");
+	declare Success = Result.Block.fromjson(Response.Values[2]);
 	return Result;
 }   
 

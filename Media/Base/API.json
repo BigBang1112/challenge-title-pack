@@ -208,6 +208,11 @@
 					"Type": "Boolean",
 					"Name": "Placed",
  					"Explanation": "If the new block was successfully placed."
+				},
+				{
+					"Type": "SChBlock",
+					"Name": "Block",
+ 					"Explanation": "The new replaced block."
 				}
 			]
 		},
@@ -1626,6 +1631,90 @@
 							"Type": "SChBlock",
 							"Name": "_Block",
  							"Explanation": ""
+						}
+					]
+				]
+			}
+		],
+		"Exists": [
+			{
+				"Return": "Boolean",
+				"Array": false,
+				"Kind": "Extensive",
+				"Explanation": "Checks if the block does really exist on the map.",
+				"Supported": true,
+				"Parameters": [
+					[
+						{
+							"Type": "SChBlock",
+							"Name": "_Block",
+ 							"Explanation": "Block to be checked"
+						}
+					],
+					[
+						{
+							"Type": "SChItem",
+							"Name": "_Item",
+ 							"Explanation": "Item to be checked"
+						}
+					]
+				]
+			}
+		],
+		"ExistsInRadius": [
+			{
+				"Return": "Boolean",
+				"Array": false,
+				"Kind": "Extensive",
+				"Explanation": "Checks if the block does really exist on the map within certain range.",
+				"Supported": true,
+				"Parameters": [
+					[
+						{
+							"Type": "SChBlock",
+							"Name": "_Block",
+ 							"Explanation": "Block to be checked"
+						},
+						{
+							"Type": "Real",
+							"Name": "_Radius",
+ 							"Explanation": "Radius in units which will accept the block"
+						}
+					],
+					[
+						{
+							"Type": "SChItem",
+							"Name": "_Item",
+ 							"Explanation": "Item to be checked"
+						},
+						{
+							"Type": "Real",
+							"Name": "_Radius",
+ 							"Explanation": "Radius in units which will accept the block"
+						}
+					],
+					[
+						{
+							"Type": "SChBlock",
+							"Name": "_Block",
+ 							"Explanation": "Block to be checked"
+						},
+						{
+							"Type": "Integer",
+							"Name": "_Radius",
+ 							"Explanation": "Radius in units which will accept the block"
+						}
+					],
+					[
+						{
+							"Type": "SChItem",
+							"Name": "_Item",
+ 							"Explanation": "Item to be checked"
+						},
+						{
+							"Type": "Integer",
+							"Name": "_Radius",
+ 							"Explanation": "Radius in units which will accept the block"
 						}
 					]
 				]

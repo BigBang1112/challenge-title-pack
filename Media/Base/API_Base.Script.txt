@@ -70,6 +70,7 @@
 #Struct SReplacementResult {
 	Boolean Removed;
 	Boolean Placed;
+	SChBlock Block;
 }
 
 #Struct SPlaceBlockResult {

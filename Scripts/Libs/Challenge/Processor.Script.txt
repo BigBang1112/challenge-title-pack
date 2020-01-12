@@ -537,8 +537,8 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode)
 			if(OppositeDirection) Direction = MapUnits::GetOpposedDir(Direction);
 			
 			declare Removed = SafeRemoveBlock(Block);
-			declare Placed = PlaceBlockSpecial(Replacement, Coord, Direction);
-			Respond(_LayerAPI, _Type, [""^Removed, ""^Placed.Placed]);
+			declare PlacedBlock = PlaceBlockSpecial(Replacement, Coord, Direction);
+			Respond(_LayerAPI, _Type, [""^Removed, ""^PlacedBlock.Placed, Conversion::ToSChBlock(PlacedBlock.Block).tojson()]);
 		}
 		case "Ch_ReplaceAllBlocks": {
 			declare BlockName = _Data[0];
