@@ -3,7 +3,7 @@
 Script.Name = "Lunatic";
 Script.AuthorLogin = "bigbang1112";
 Script.Description = "Removes approximately 20% of the blocks except the start and finishes.";
-Script.CompatibleCollections = "Canyon,Stadium,Valley,Lagoon";
+Script.Compatibility.Collections = ["Canyon", "Stadium", "Valley", "Lagoon"];
 ***
 
 ***Main***

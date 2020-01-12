@@ -118,12 +118,17 @@
 	Text ThumbnailUrl;
 }
 
+#Struct SChMetadataCompatibility {
+	Text[] Collections;
+}
+
 #Struct SChMetadata {
 	Text Name;
 	Text AuthorLogin;
 	Text AuthorNickname;
 	Text Description;
 	Text CompatibleCollections;
+	SChMetadataCompatibility Compatibility;
 }
 
 #Struct SChScriptInfo {

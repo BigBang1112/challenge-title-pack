@@ -20,12 +20,17 @@
 
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
+#Struct SChMetadataCompatibility {
+	Text[] Collections;
+}
+
 #Struct SMetadata {
 	Text Name;
 	Text AuthorLogin;
 	Text AuthorNickname;
 	Text Description;
 	Text CompatibleCollections;
+	SChMetadataCompatibility Compatibility;
 }
 
 #Struct SScriptInfo {
@@ -124,7 +129,7 @@ Void StartMap(Text _MapLocation, Map::SMapInfo _MapInfo, SScriptInfo[] _Scripts)
 		return;
 	}
 	foreach(Script, _Scripts) {
-		if(!TextLib::Split(",",Script.Metadata.CompatibleCollections).exists(_MapInfo.CollectionName)) {
+		if(!Script.Metadata.Compatibility.Collections.exists(_MapInfo.CollectionName)) {
 			Dialog_Message("Incompatible collection.\nMap's environment is not supported: "^Script.Name);
 			return;
 		}

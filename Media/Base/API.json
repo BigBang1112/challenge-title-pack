@@ -22,7 +22,24 @@
 				{
 					"Type": "Text",
 					"Name": "CompatibleCollections",
- 					"Explanation": "Compatible environments seperated by comma. Modifier will reject the script if it's used on a map with incompatible environment."
+ 					"Explanation": "(Deprecated) Compatible environments seperated by comma. Modifier will reject the script if it's used on a map with incompatible environment."
+				},
+				{
+					"Type": "SChMetadataCompatiblity",
+					"Name": "Compatibility",
+ 					"Explanation": "Compatibility settings of the script."
+				}
+			]
+		},
+		"SChMetadataCompatibility": {
+			"Explanation": "Script compatibility settings.",
+			"Supported": true,
+			"Members": [
+				{
+					"Type": "Text",
+					"Name": "Collections",
+					"Array": true,
+ 					"Explanation": "Collections (environments) that can be used for the script."
 				}
 			]
 		},
