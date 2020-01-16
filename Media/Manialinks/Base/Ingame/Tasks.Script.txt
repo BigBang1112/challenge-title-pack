@@ -37,7 +37,7 @@ Boolean IsCurrentTaskShared() {
 declare Label_Tasks_Expires = (Page.GetFirstChild("LABEL_TASKS_EXPIRES") as CMlLabel);
 
 declare STasks Tasks for Page;
-declare Text StartTaskCounter = "";
+declare StartTaskCounter = -1;
 
 declare CMlLabel ShowMore;
 ***
@@ -82,7 +82,7 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::PluginCustomEvent: {
 			switch(Event.CustomEventType) {
 				case "TaskStartCountTime": {
-					StartTaskCounter = TimeLib::GetCurrent();
+					StartTaskCounter = System.CurrentLocalDate;
 
 					declare CurrentMap = GetCurrentMap();
 
@@ -135,17 +135,17 @@ foreach(Event,PendingEvents) {
 	}
 }
 
-if(StartTaskCounter == "") {
+if(StartTaskCounter == -1) {
 	Label_Tasks_Expires.Value = "{{{{WAITING_FOR_RESPONSE}}}}...";
 }
 else {
-	declare PassedDelta = TimeLib::GetDelta(StartTaskCounter, TimeLib::GetCurrent());
-	declare CurrentTime = Tasks.Current-PassedDelta;
+	declare PassedDelta = System.CurrentLocalDate - StartTaskCounter;
+	declare CurrentTime = Tasks.Current + PassedDelta;
 	declare EndTime = Tasks.End;
 
 	if(CurrentTime > EndTime) {
 		SendCustomEvent("TasksRequestNew", []);
-		StartTaskCounter = "";
+		StartTaskCounter = -1;
 	}
 
 	if(CurrentTime >= EndTime) Label_Tasks_Expires.Value = "$o{{{{EXPIRES_SOON}}}}";

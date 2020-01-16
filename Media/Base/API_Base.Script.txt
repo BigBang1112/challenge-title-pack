@@ -12,11 +12,16 @@
 	Integer Order;
 }
 
+#Struct SChMetadataCompatibility {
+	Text[] Collections;
+}
+
 #Struct SChMetadata {
 	Text Name;
 	Text AuthorLogin;
 	Text Description;
 	Text CompatibleCollections;
+	SChMetadataCompatibility Compatibility;
 }
 
 #Struct SChBlock {

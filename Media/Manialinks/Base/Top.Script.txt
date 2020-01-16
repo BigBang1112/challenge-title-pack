@@ -30,7 +30,7 @@ else
 	(Page.GetFirstChild("QUAD_SETTING_PRIVATE") as CMlQuad).Colorize = <0.0,0.2,0.4>;
 
 declare STasks Tasks for Page;
-declare Text StartTaskCounter = "";
+declare StartTaskCounter = -1;
 
 declare CMlLabel ShowMore;
 ***
@@ -173,7 +173,7 @@ foreach(Event,PendingEvents) {
 					Page.GetFirstChild("FRAME_JOIN").Hide();
 				}
 				case "TaskStartCountTime": {
-					StartTaskCounter = TimeLib::GetCurrent();
+					StartTaskCounter = System.CurrentLocalDate;
 
 					(Page.GetFirstChild("LABEL_TASKS_1") as CMlLabel).Value = "$oFinish "^Tasks.Maps[0].OriginalName^"$z$o ("^TextLib::Join(" + ", Tasks.Maps[0].Challenge)^") with original car";
 					(Page.GetFirstChild("LABEL_TASKS_2") as CMlLabel).Value = "$oFinish "^Tasks.Maps[1].OriginalName^"$z$o ("^TextLib::Join(" + ", Tasks.Maps[1].Challenge)^") with original car";
@@ -270,17 +270,17 @@ else if(Now - End > 500) {
 	End = -1;
 }
 
-if(StartTaskCounter == "") {
+if(StartTaskCounter == -1) {
 	Label_Tasks_Expires.Value = "{{{{WAITING_FOR_RESPONSE}}}}...";
 }
 else {
-	declare PassedDelta = TimeLib::GetDelta(StartTaskCounter, TimeLib::GetCurrent());
+	declare PassedDelta = System.CurrentLocalDate - StartTaskCounter;
 	declare CurrentTime = Tasks.Current-PassedDelta;
 	declare EndTime = Tasks.End;
 
 	if(CurrentTime > EndTime) {
 		SendCustomEvent("TasksRequestNew", []);
-		StartTaskCounter = "";
+		StartTaskCounter = -1;
 		Page.GetFirstChild("FRAME_TASKS_NAMES").Hide();
 		Page.GetFirstChild("FRAME_TASKS_VALUES").Hide();
 	}
