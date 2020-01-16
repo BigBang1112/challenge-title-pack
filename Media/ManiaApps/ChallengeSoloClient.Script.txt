@@ -212,8 +212,8 @@ for(I,0,Server_Vehicles.count-1) {
 		Client_VehicleIndex = I;
 }
 
-Ingame_Menu::Start();
 Ingame_Playsession::Start();
+Ingame_Menu::Start();
 Ingame_Map::Start();
 Ingame_Rating::Start();
 Ingame_Outro::Start();

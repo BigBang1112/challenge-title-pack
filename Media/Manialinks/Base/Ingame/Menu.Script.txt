@@ -399,6 +399,7 @@ foreach(Event,PendingEvents) {
 				}
 				case "Open": {
 					ShowInGameMenu();
+					IsMenuOpen = False;
 				}
 				case "Navigation": {
 					EnableMenuNavigationInputs = Event.CustomEventData[0] == "True";
