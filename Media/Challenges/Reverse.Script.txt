@@ -156,7 +156,7 @@ else {
 }
 
 SetStatusProgress(1.);
-if(FinishLines.count > 1) Problem_MultipleFinishes(FinishLines);
+if(!IsMultilap && FinishLines.count > 1) Problem_MultipleFinishes(FinishLines);
 
 if(FinishLines.count == 1) {
 	declare Finish = FinishLines[0];
