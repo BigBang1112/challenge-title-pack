@@ -235,22 +235,6 @@ Void Event(CManiaAppEvent _Event) {
 						case "FetchRecords": {
 							Zone = _Event.CustomEventData[0];
 
-							declare Boolean Leaderboards_Request for This;
-							declare CTaskResult_NaturalLeaderBoardInfoList[Text] Leaderboards for This;
-							foreach(LB,Leaderboards)
-								if(LB != Null)
-									ScoreMgr.TaskResult_Release(LB.Id);
-							Leaderboards.clear();
-							
-							foreach(Vehicle,VehicleNames) {
-								declare Request = ScoreMgr.MapLeaderBoard_GetPlayerList(NullId, Map.MapInfo.MapUid, Vehicle, Zone, 0, 20);
-								if(Request == Null)
-									log("Records on " ^ Map.MapInfo.MapUid ^ " with car " ^ Vehicle ^ " are not available in this title pack.");
-								else
-									Leaderboards[Vehicle] = Request;
-							}
-							Leaderboards_Request = True;
-
 							declare Success2 = Http::AsyncGET("RECORDS", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/records.php?uid={{{Map.MapInfo.MapUid}}}&car={{{TextLib::Join(",",VehicleNames)}}}&zone={{{Zone}}}""", True);
 						}
 						case "ShowRecords": {
@@ -321,6 +305,26 @@ Void Async() {
 			declare SRecord[][Text] Records for This;
 			declare Success = Records.fromjson(Http::GetResult("RECORDS"));
 			ShowRecords();
+
+			declare Boolean Leaderboards_Request for This;
+			declare CTaskResult_NaturalLeaderBoardInfoList[Text] Leaderboards for This;
+			foreach(LB in Leaderboards) {
+				if(LB != Null) {
+					if(LB.IsProcessing)
+						LB.Cancel();
+					ScoreMgr.TaskResult_Release(LB.Id);
+				}
+			}
+			Leaderboards.clear();
+			
+			foreach(Vehicle in VehicleNames) {
+				declare Request = ScoreMgr.MapLeaderBoard_GetPlayerList(NullId, Map.MapInfo.MapUid, Vehicle, Zone, 0, 20);
+				if(Request == Null)
+					log("Records on " ^ Map.MapInfo.MapUid ^ " with car " ^ Vehicle ^ " in "^Zone^" are not available in this title pack.");
+				else
+					Leaderboards[Vehicle] = Request;
+			}
+			Leaderboards_Request = True;
 		}
 		else {
 			log("Records error " ^ Http::GetStatusCode("RECORDS"));
@@ -387,14 +391,15 @@ Void Async() {
 				Leaderboards_Request = True;
 				if(!L.IsProcessing) {
 					if(L.HasSucceeded) {
-						foreach(Record, L.LeaderBoardInfo) {
-							for(I, 0, LoadedGhosts.count-1) {
+						for(I, 0, LoadedGhosts.count-1) {
+							LoadedGhosts[I].Url = "";
+							LoadedGhosts[I].File = "";
+							foreach(Record, L.LeaderBoardInfo) {
 								if(LoadedGhosts[I].Login == Record.Login && LoadedGhosts[I].Time == Record.Score) {
 									LoadedGhosts[I].Url = Record.ReplayUrl;
 									LoadedGhosts[I].File = Record.FileName;
 								}
 							}
-							//Layers::SendEvent("Menu", "UpdateRecord", [Car, Record.Login, Record.DisplayName, Record.Score^"", Record.ReplayUrl, Record.FileName]);
 						}
 						Layers::SendEvent("Menu", "UpdateLoadedGhosts");
 					}

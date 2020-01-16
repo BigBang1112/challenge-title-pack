@@ -294,6 +294,7 @@ foreach(Event,PendingEvents) {
 
 					Frame_Ghosts.Hide();
 					Quad_Loading.Show();
+					Quad_Scrollbar.Hide();
 
 					if(CurrentSection == 0) {
 						SendCustomEvent("FetchLocalGhosts", []);
@@ -316,6 +317,7 @@ foreach(Event,PendingEvents) {
 
 					Frame_Ghosts.Hide();
 					Quad_Loading.Show();
+					Quad_Scrollbar.Hide();
 					
 					if(CurrentSection == 0) {
 						SendCustomEvent("FetchLocalGhosts", []);
@@ -534,7 +536,7 @@ else {
 		declare ScrollRatio = 0.;
 		if(Frame_Outer_Ghosts.ScrollMax.Y != 0)
 			ScrollRatio = MathLib::NearestInteger(Frame_Outer_Ghosts.ScrollOffset.Y/10)*10 / Frame_Outer_Ghosts.ScrollMax.Y;
-		Quad_Scrollbar.RelativePosition_V3.Y = -ScrollRatio*(56-Quad_Scrollbar.Size.Y);
+		Quad_Scrollbar.RelativePosition_V3.Y = -ScrollRatio*(55-Quad_Scrollbar.Size.Y);
 
 		PreviousScroll = Frame_Outer_Ghosts.ScrollOffset;
 	}
