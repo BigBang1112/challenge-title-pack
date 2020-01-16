@@ -195,8 +195,6 @@ Layers::SendEvent("Loading", "Progress", 1.);
 ReplayBrowser::Init();
 yield;
 Notification::Init();
-
-Layers::Hide("Loading");
 ***
 
 ***Start***
@@ -213,6 +211,7 @@ for(I,0,Server_Vehicles.count-1) {
 }
 
 Ingame_Playsession::Start();
+Layers::Hide("Loading");
 Ingame_Menu::Start();
 Ingame_Map::Start();
 Ingame_Rating::Start();
