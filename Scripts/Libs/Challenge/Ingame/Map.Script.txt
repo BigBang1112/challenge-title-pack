@@ -17,6 +17,9 @@ Void Start() {
 	declare metadata ModifierBase::SChMap OriginalMap for Map;
 	Layers::SendEvent("Map", "MapName", OriginalMap.Name);
 	Layers::SendEvent("Map", "Challenge", TextLib::ToUpperCase(TextLib::Replace(Map.MapStyle, "+", " + ")));
+
+	declare Boolean IsChallenge for Layers::Page("Map");
+	IsChallenge = True;
 }
 
 Void Event(CManiaAppEvent _Event) {

@@ -1,38 +1,38 @@
 <frame>
-	<frame pos="117.5 80">
+	<frame pos="117.5 80" id="FRAME_MAPNAME">
 		<frame pos="40 0" id="FRAME_MAPNAME_BG">
 			<quad z-index="0" size="80 15" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="1" size="80 15" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgGradV"/>
 			<quad z-index="2" size="80 15" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
 		</frame>
 		<frame pos="37.5 7" clip="True" clipposn="-38 -7.5" clipsizen="74.5 15" id="FRAME_LABEL_MAPNAME" z-index="3">
-			<label z-index="0" size="90 12" text="E3" textsize="12" textfont="Oswald" id="LABEL_MAPNAME" halign="right" pos="0 -1.25" textemboss="1"/>
-			<label z-index="0" size="90 12" text="E3" textsize="12" textfont="Oswald" id="LABEL_MAPNAME_2" halign="right" pos="0 -1.25" textemboss="1"/>
+			<label z-index="0" size="90 12" textsize="12" textfont="Oswald" id="LABEL_MAPNAME" halign="right" pos="0 -1.25" textemboss="1"/>
+			<label z-index="0" size="90 12" textsize="12" textfont="Oswald" id="LABEL_MAPNAME_2" halign="right" pos="0 -1.25" textemboss="1"/>
 		</frame>
 	</frame>
-	<frame pos="122.5 67">
+	<frame pos="122.5 67" id="FRAME_CHALLENGE">
 		<frame pos="35 0" id="FRAME_CHALLENGE_BG">
 			<quad z-index="0" size="70 10" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="1" size="70 10" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgGradV"/>
 			<quad z-index="2" size="70 10" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
 		</frame>
 		<frame pos="32.5 4.5" clip="True" clipposn="-32.5 -5" clipsizen="65 10" id="FRAME_LABEL_CHALLENGE" z-index="3">
-			<label z-index="0" size="90 7" text="REVERSE + CHECKPOINTLESS" textsize="6" textfont="Oswald" id="LABEL_CHALLENGE" halign="right" pos="0 -1.25" textemboss="1"/>
-			<label z-index="0" size="90 7" text="REVERSE + CHECKPOINTLESS" textsize="6" textfont="Oswald" id="LABEL_CHALLENGE_2" halign="right" pos="0 -1.25" textemboss="1"/>
+			<label z-index="0" size="90 7" textsize="6" textfont="Oswald" id="LABEL_CHALLENGE" halign="right" pos="0 -1.25" textemboss="1"/>
+			<label z-index="0" size="90 7" textsize="6" textfont="Oswald" id="LABEL_CHALLENGE_2" halign="right" pos="0 -1.25" textemboss="1"/>
 		</frame>
 	</frame>
-	<frame pos="130 57.5">
+	<frame pos="130 57.5" id="FRAME_CAR">
 		<frame pos="27.5 0" id="FRAME_CAR_BG">
 			<quad z-index="0" size="55 8" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="1" size="55 8" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgGradV"/>
 			<quad z-index="2" size="55 8" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgCardInventoryItem" scriptevents="1" colorize="036" opacity=".75"/>
 		</frame>
 		<frame pos="25 4.5" clip="True" clipposn="-25 -5" clipsizen="50 10" id="FRAME_LABEL_CAR" z-index="3">
-			<label z-index="0" size="90 7" text="StadiumCarStadiumCarStadiumCar" textsize="4" textfont="Oswald" id="LABEL_CAR" halign="right" pos="0 -1.9" textprefix="$o"/>
-			<label z-index="0" size="90 7" text="StadiumCarStadiumCarStadiumCar" textsize="4" textfont="Oswald" id="LABEL_CAR_2" halign="right" pos="0 -1.9" textprefix="$o"/>
+			<label z-index="0" size="90 7" textsize="4" textfont="Oswald" id="LABEL_CAR" halign="right" pos="0 -1.9" textprefix="$o"/>
+			<label z-index="0" size="90 7" textsize="4" textfont="Oswald" id="LABEL_CAR_2" halign="right" pos="0 -1.9" textprefix="$o"/>
 		</frame>
 	</frame>
-	<frame pos="130 50.5">
+	<frame pos="130 50.5" id="FRAME_RATE">
 		<frame pos="27.5 0" id="FRAME_RATE_BG">
 			<quad z-index="0" size="25 5" bgcolor="FFFA" valign="center" halign="right" style="Bgs1" substyle="BgCardList"/>
 			<quad z-index="1" size="25 5" bgcolor="FFFA" valign="center" halign="right" style="Bgs1InRace" substyle="BgGradV"/>
@@ -41,6 +41,36 @@
 		<frame pos="25 0.3" clip="True" clipposn="-25 0" clipsizen="50 10" id="FRAME_LABEL_RATE" z-index="3">
 			<label z-index="0" size="20 4" text="{{{{CLICK_TO_RATE}}}}" textsize="1.5" textfont="Oswald" id="LABEL_RATE" halign="right" valign="center"/>
 			<label z-index="0" size="20 4" text="{{{{CLICK_TO_RATE}}}}" textsize="1.5" textfont="Oswald" id="LABEL_RATE_2" halign="right" valign="center"/>
+		</frame>
+	</frame>
+	<quad pos="0 0" z-index="-1" size="320 180" halign="center" valign="center" style="Bgs1" substyle="BgEmpty" scriptevents="1" id="QUAD_BLUR" hidden="1"/>
+	<frame z-index="10" id="FRAME_SPECIALS">
+		<frame id="FRAME_SPECIALS_MAP" hidden="1">
+			<quad pos="0 0" halign="center" z-index="-1" size="100 30" style="Bgs1" substyle="BgCardList" valign="center"/>
+			<quad pos="0 0" halign="center" z-index="-1" size="100 30" style="Bgs1" substyle="BgGradV" valign="center"/>
+			<label z-index="0" size="90 7" textsize="6" textfont="Oswald" id="LABEL_MAP_NAME" pos="0 5" textemboss="1" halign="center" valign="center2"/>
+			<frame pos="42 -7.5">
+				<quad z-index="0" size="10 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="600" id="QUAD_BUTTON_EXIT" valign="center"/>
+				<label z-index="1" size="10 10" text="" valign="center2" textfont="RajdhaniMono" halign="center" pos="0 -0.8" textsize="3"/>
+			</frame>
+		</frame>
+		<frame id="FRAME_SPECIALS_CHALLENGE" hidden="1">
+			<quad pos="0 0" halign="center" z-index="-1" size="100 30" style="Bgs1" substyle="BgCardList" valign="center"/>
+			<quad pos="0 0" halign="center" z-index="-1" size="100 30" style="Bgs1" substyle="BgGradV" valign="center"/>
+			<label z-index="0" size="90 7" textsize="6" textfont="Oswald" id="LABEL_CHALLENGE_NAME" pos="0 5" textemboss="1" halign="center" valign="center2"/>
+			<frame pos="42 -7.5">
+				<quad z-index="0" size="10 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="600" id="QUAD_BUTTON_EXIT" valign="center"/>
+				<label z-index="1" size="10 10" text="" valign="center2" textfont="RajdhaniMono" halign="center" pos="0 -0.8" textsize="3"/>
+			</frame>
+		</frame>
+		<frame id="FRAME_SPECIALS_CAR" hidden="1">
+			<quad pos="0 0" halign="center" z-index="-1" size="100 30" style="Bgs1" substyle="BgCardList" valign="center"/>
+			<quad pos="0 0" halign="center" z-index="-1" size="100 30" style="Bgs1" substyle="BgGradV" valign="center"/>
+			<label z-index="0" size="90 7" textsize="6" textfont="Oswald" id="LABEL_CAR_NAME" pos="0 5" textemboss="1" halign="center" valign="center2"/>
+			<frame pos="42 -7.5">
+				<quad z-index="0" size="10 10" halign="center" style="Bgs1InRace" substyle="BgCard" scriptevents="1" modulatecolor="600" id="QUAD_BUTTON_EXIT" valign="center"/>
+				<label z-index="1" size="10 10" text="" valign="center2" textfont="RajdhaniMono" halign="center" pos="0 -0.8" textsize="3"/>
+			</frame>
 		</frame>
 	</frame>
 </frame>

@@ -1,28 +1,40 @@
 ***Start***
 ***
+declare Frame_MapName = (Page.GetFirstChild("FRAME_MAPNAME") as CMlFrame);
 declare Frame_MapName_Bg = (Page.GetFirstChild("FRAME_MAPNAME_BG") as CMlFrame);
 declare Frame_Label_MapName = (Page.GetFirstChild("FRAME_LABEL_MAPNAME") as CMlFrame);
 declare Label_MapName = (Page.GetFirstChild("LABEL_MAPNAME") as CMlLabel);
 declare Label_MapName2 = (Page.GetFirstChild("LABEL_MAPNAME_2") as CMlLabel);
 
+declare Frame_Challenge = (Page.GetFirstChild("FRAME_CHALLENGE") as CMlFrame);
 declare Frame_Challenge_Bg = (Page.GetFirstChild("FRAME_CHALLENGE_BG") as CMlFrame);
 declare Frame_Label_Challenge = (Page.GetFirstChild("FRAME_LABEL_CHALLENGE") as CMlFrame);
 declare Label_Challenge = (Page.GetFirstChild("LABEL_CHALLENGE") as CMlLabel);
 declare Label_Challenge2 = (Page.GetFirstChild("LABEL_CHALLENGE_2") as CMlLabel);
 
+declare Frame_Car = (Page.GetFirstChild("FRAME_CAR") as CMlFrame);
 declare Frame_Car_Bg = (Page.GetFirstChild("FRAME_CAR_BG") as CMlFrame);
 declare Frame_Label_Car = (Page.GetFirstChild("FRAME_LABEL_CAR") as CMlFrame);
 declare Label_Car = (Page.GetFirstChild("LABEL_CAR") as CMlLabel);
 declare Label_Car2 = (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel);
 
+declare Frame_Rate = (Page.GetFirstChild("FRAME_RATE") as CMlFrame);
 declare Frame_Rate_Bg = (Page.GetFirstChild("FRAME_RATE_BG") as CMlFrame);
 declare Frame_Rate_Car = (Page.GetFirstChild("FRAME_LABEL_RATE") as CMlFrame);
 declare Label_Rate = (Page.GetFirstChild("LABEL_RATE") as CMlLabel);
 declare Label_Rate2 = (Page.GetFirstChild("LABEL_RATE_2") as CMlLabel);
 
+declare Quad_Blur = (Page.GetFirstChild("QUAD_BLUR") as CMlQuad);
+declare Frame_Specials = (Page.GetFirstChild("FRAME_SPECIALS") as CMlFrame);
+declare Frame_Specials_Map = (Page.GetFirstChild("FRAME_SPECIALS_MAP") as CMlFrame);
+declare Frame_Specials_Challenge = (Page.GetFirstChild("FRAME_SPECIALS_CHALLENGE") as CMlFrame);
+declare Frame_Specials_Car = (Page.GetFirstChild("FRAME_SPECIALS_CAR") as CMlFrame);
+
+declare Boolean IsChallenge for Page;
+
 declare LabelDistance = 15;
 
-declare TextLength = Label_Rate.ComputeWidth(Label_Rate.Value);
+declare TextLength = Label_Rate.ComputeWidth("{{{{CLICK_TO_RATE}}}}");
 if(TextLength < 40) {
 	foreach(Control, Frame_Rate_Bg.Controls) {
 		declare Quad <=> (Control as CMlQuad);
@@ -44,13 +56,44 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.Control.Parent.ControlId) {
 				case "FRAME_MAPNAME_BG": {
+					(Frame_Specials_Map.GetFirstChild("LABEL_MAP_NAME") as CMlLabel).Value = Label_MapName.Value;
 
+					Quad_Blur.Show();
+					Frame_Specials_Map.Show();
+					Frame_Specials_Challenge.Hide();
+					Frame_Specials_Car.Hide();
 				}
 				case "FRAME_CHALLENGE_BG": {
-					
+					(Frame_Specials_Challenge.GetFirstChild("LABEL_CHALLENGE_NAME") as CMlLabel).Value = Label_Challenge.Value;
+
+					Quad_Blur.Show();
+					Frame_Specials_Map.Hide();
+					Frame_Specials_Challenge.Show();
+					Frame_Specials_Car.Hide();
+				}
+				case "FRAME_CAR_BG": {
+					(Frame_Specials_Car.GetFirstChild("LABEL_CAR_NAME") as CMlLabel).Value = Label_Car.Value;
+
+					Quad_Blur.Show();
+					Frame_Specials_Map.Hide();
+					Frame_Specials_Challenge.Hide();
+					Frame_Specials_Car.Show();
 				}
 				case "FRAME_RATE_BG": {
+					Quad_Blur.Hide();
+					Frame_Specials_Map.Hide();
+					Frame_Specials_Challenge.Hide();
+					Frame_Specials_Car.Hide();
+
 					SendCustomEvent("RateCombination", []);
+				}
+			}
+			switch(Event.ControlId) {
+				case "QUAD_BUTTON_EXIT": {
+					Quad_Blur.Hide();
+					Frame_Specials_Map.Hide();
+					Frame_Specials_Challenge.Hide();
+					Frame_Specials_Car.Hide();
 				}
 			}
 		}
@@ -116,6 +159,17 @@ foreach(Event,PendingEvents) {
 			}
 		}
 	}
+}
+
+if(IsChallenge) {
+	Frame_Challenge.Visible = True;
+	Frame_Car.RelativePosition_V3 = <130., 57.5>;
+	Frame_Rate.RelativePosition_V3 = <130., 50.5>;
+}
+else {
+	Frame_Challenge.Visible = False;
+	Frame_Car.RelativePosition_V3 = <130., 68.>;
+	Frame_Rate.RelativePosition_V3 = <130., 61.>;
 }
 
 SlideText_Loop(Frame_Label_MapName, Label_MapName, Label_MapName2, LabelDistance, -.01);
