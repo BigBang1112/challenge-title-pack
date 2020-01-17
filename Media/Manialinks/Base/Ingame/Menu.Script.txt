@@ -377,14 +377,22 @@ foreach(Event,PendingEvents) {
 							Label_PB_Time.SetText(TimeToTextWithMilli(BestFinish.Time));
 						}
 
-						declare Text[Text] Validators for Page;
-						if(Validators.existskey(Car)) {
+						declare metadata Integer[Text] Validations for Map;
+						declare Text Car for This;
+						if(Validations.existskey(Car) && Validations[Car] != -1 && Map != Null) {
 							(Page.GetFirstChild("LABEL_VALIDATOR_TEXT") as CMlLabel).SetText("{{{{VALIDATED_BY}}}}:");
-							(Page.GetFirstChild("LABEL_VALIDATOR") as CMlLabel).SetText(Validators[Car]);
+							(Page.GetFirstChild("LABEL_VALIDATOR") as CMlLabel).SetText(Map.AuthorNickName);
 						}
 						else {
-							(Page.GetFirstChild("LABEL_VALIDATOR_TEXT") as CMlLabel).SetText("{{{{NOT_YET_VALIDATED}}}}");
-							(Page.GetFirstChild("LABEL_VALIDATOR") as CMlLabel).SetText("");
+							declare Text[Text] Validators for Page;
+							if(Validators.existskey(Car)) {
+								(Page.GetFirstChild("LABEL_VALIDATOR_TEXT") as CMlLabel).SetText("{{{{VALIDATED_BY}}}}:");
+								(Page.GetFirstChild("LABEL_VALIDATOR") as CMlLabel).SetText(Validators[Car]);
+							}
+							else {
+								(Page.GetFirstChild("LABEL_VALIDATOR_TEXT") as CMlLabel).SetText("{{{{NOT_YET_VALIDATED}}}}");
+								(Page.GetFirstChild("LABEL_VALIDATOR") as CMlLabel).SetText("");
+							}
 						}
 					}
 
