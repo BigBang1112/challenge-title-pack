@@ -185,6 +185,9 @@ Void ShowRecords() {
 		LoadedGhosts.add(Info);
 	}
 
+	declare Boolean Leaderboards_Request for This;
+	Leaderboards_Request = True;
+
 	Layers::SendEvent("Menu", "UpdateLoadedGhosts");
 }
 
@@ -234,14 +237,16 @@ Void Event(CManiaAppEvent _Event) {
 						}
 						case "FetchRecords": {
 							Zone = _Event.CustomEventData[0];
-
-							declare Success2 = Http::AsyncGET("RECORDS", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/records.php?uid={{{Map.MapInfo.MapUid}}}&car={{{TextLib::Join(",",VehicleNames)}}}&zone={{{Zone}}}""", True);
+							
+							Http::Destroy("RECORDS");
+							declare Success2 = Http::AsyncGET("RECORDS", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/records.php?uid={{{Map.MapInfo.MapUid}}}&car={{{TextLib::Join(",",VehicleNames)}}}&zone={{{TextLib::URLEncode(Zone)}}}""", True);
 						}
 						case "ShowRecords": {
 							Zone = _Event.CustomEventData[0];
 							ShowRecords();
 						}
 						case "FetchLocalGhosts": {
+							Http::Destroy("RECORDS");
 							Task::Async_DataFileMgr("LOCAL_GHOSTS", DataFileMgr.Replay_GetGameList("", True));
 							declare SGhostInfo[] LoadedGhosts for Layers::Page("Menu");
 							LoadedGhosts.clear();
@@ -304,10 +309,9 @@ Void Async() {
 		if(Http::IsSuccessful("RECORDS")) {
 			declare SRecord[][Text] Records for This;
 			declare Success = Records.fromjson(Http::GetResult("RECORDS"));
-			ShowRecords();
 
-			declare Boolean Leaderboards_Request for This;
 			declare CTaskResult_NaturalLeaderBoardInfoList[Text] Leaderboards for This;
+			//declare CTaskResult_NaturalLeaderBoardInfoList[Text] LeaderboardsAdditional for This;
 			foreach(LB in Leaderboards) {
 				if(LB != Null) {
 					if(LB.IsProcessing)
@@ -318,13 +322,17 @@ Void Async() {
 			Leaderboards.clear();
 			
 			foreach(Vehicle in VehicleNames) {
-				declare Request = ScoreMgr.MapLeaderBoard_GetPlayerList(NullId, Map.MapInfo.MapUid, Vehicle, Zone, 0, 20);
-				if(Request == Null)
-					log("Records on " ^ Map.MapInfo.MapUid ^ " with car " ^ Vehicle ^ " in "^Zone^" are not available in this title pack.");
-				else
+				declare Request = ScoreMgr.MapLeaderBoard_GetPlayerList(NullId, Map.MapInfo.MapUid, Vehicle, Zone, 1, 10);
+				declare RequestAdditional = ScoreMgr.MapLeaderBoard_GetPlayerList(NullId, Map.MapInfo.MapUid, Vehicle, Zone, 10, 10);
+				if(Request == Null || RequestAdditional == Null)
+					log("Records on " ^ Map.MapInfo.MapUid ^ " with car " ^ Vehicle ^ " in " ^ Zone ^ " are not available in this title pack.");
+				else {
 					Leaderboards[Vehicle] = Request;
+					//LeaderboardsAdditional[Vehicle] = RequestAdditional;
+				}
 			}
-			Leaderboards_Request = True;
+
+			ShowRecords();
 		}
 		else {
 			log("Records error " ^ Http::GetStatusCode("RECORDS"));
@@ -386,26 +394,33 @@ Void Async() {
 	if(Leaderboards_Request) {
 		Leaderboards_Request = False;
 		declare CTaskResult_NaturalLeaderBoardInfoList[Text] Leaderboards for This;
-		foreach(Car => L,Leaderboards) {
-			if(L != Null) {
+		declare netread Vehicle::SVehicle[] Server_Vehicles for UI;
+		declare netread Integer Server_CurrentVehicle for UI;
+		declare Car = Server_Vehicles[Server_CurrentVehicle].Name;
+		if(Leaderboards.existskey(Car)) {
+			//log("Exists " ^ Car);
+			declare L = Leaderboards[Car];
+			if(L.IsProcessing) {
 				Leaderboards_Request = True;
-				if(!L.IsProcessing) {
-					if(L.HasSucceeded) {
-						for(I, 0, LoadedGhosts.count-1) {
-							LoadedGhosts[I].Url = "";
-							LoadedGhosts[I].File = "";
-							foreach(Record, L.LeaderBoardInfo) {
-								if(LoadedGhosts[I].Login == Record.Login && LoadedGhosts[I].Time == Record.Score) {
-									LoadedGhosts[I].Url = Record.ReplayUrl;
-									LoadedGhosts[I].File = Record.FileName;
-								}
+			}
+			else {
+				if(L.HasSucceeded) {
+					//log("Success " ^ Car ^ " (" ^ L.LeaderBoardInfo.count ^ " ghosts found)");
+					for(I, 0, LoadedGhosts.count-1) {
+						LoadedGhosts[I].Url = "";
+						LoadedGhosts[I].File = "";
+						foreach(Record, L.LeaderBoardInfo) {
+							if(LoadedGhosts[I].Login == Record.Login && LoadedGhosts[I].Time == Record.Score) {
+								LoadedGhosts[I].Url = Record.ReplayUrl;
+								LoadedGhosts[I].File = Record.FileName; // should be a proper replay name instead
 							}
 						}
-						Layers::SendEvent("Menu", "UpdateLoadedGhosts");
 					}
-					ScoreMgr.TaskResult_Release(L.Id);
-					Leaderboards[Car] = Null;
 				}
+				else {
+					log("oof");
+				}
+				Layers::SendEvent("Menu", "UpdateLoadedGhosts");
 			}
 		}
 	}

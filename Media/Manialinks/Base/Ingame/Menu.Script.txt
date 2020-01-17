@@ -415,25 +415,6 @@ foreach(Event,PendingEvents) {
 				case "UpdateLoadedGhosts": {
 					UpdateLoadedGhosts();
 				}
-				case "UpdateRecord": {
-					declare _Car = Event.CustomEventData[0];
-					declare _Login = Event.CustomEventData[1];
-					declare _Nickname = Event.CustomEventData[2];
-					declare _Time = TextLib::ToInteger(Event.CustomEventData[3]);
-					declare _Url = Event.CustomEventData[4];
-					declare _FileName = Event.CustomEventData[5];
-
-					declare SGhostInfo[] LoadedGhosts for Page;
-					for(I, 0, LoadedGhosts.count-1) {
-						declare Ghost = LoadedGhosts[I];
-						if(Ghost.Login == _Login && Ghost.Time == _Time) {
-							Ghost.Url = _Url;
-							Ghost.File = _FileName;
-							LoadedGhosts[I] = Ghost;
-						}
-					}
-					UpdateLoadedGhosts();
-				}
 				case "Show": {
 					
 				}
@@ -536,7 +517,7 @@ else {
 		declare ScrollRatio = 0.;
 		if(Frame_Outer_Ghosts.ScrollMax.Y != 0)
 			ScrollRatio = MathLib::NearestInteger(Frame_Outer_Ghosts.ScrollOffset.Y/10)*10 / Frame_Outer_Ghosts.ScrollMax.Y;
-		Quad_Scrollbar.RelativePosition_V3.Y = -ScrollRatio*(55-Quad_Scrollbar.Size.Y);
+		Quad_Scrollbar.RelativePosition_V3.Y = -ScrollRatio*(56-Quad_Scrollbar.Size.Y);
 
 		PreviousScroll = Frame_Outer_Ghosts.ScrollOffset;
 	}
