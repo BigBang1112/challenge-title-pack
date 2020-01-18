@@ -52,16 +52,21 @@ Void SetCarModel(CTmPlayer _Player, CUIConfig _UI, CMode _Mode) {
 	
 	declare TM2Vehicles = ["CanyonCar", "StadiumCar", "ValleyCar", "LagoonCar"];
 	
-	if(P_Skin.existskey(VehicleName)) {
-		if(Vehicles.existskey(Server_CurrentVehicle)) {
-			if((_Mode.Map.CollectionName != "Stadium" && TM2Vehicles.exists(VehicleName)) || VehicleName == "StadiumCar")
-				_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].DefaultId;
-			else if(RealVehicles[Server_CurrentVehicle].Id.existskey(P_Skin[VehicleName])) // If exact skin doesnt exist
-				_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[P_Skin[VehicleName]];
-			else _Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[""];
+	if(_Mode.MapLoaded) {
+		if(P_Skin.existskey(VehicleName)) {
+			if(Vehicles.existskey(Server_CurrentVehicle)) {
+				if((_Mode.Map.CollectionName != "Stadium" && TM2Vehicles.exists(VehicleName)) || VehicleName == "StadiumCar")
+					_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].DefaultId;
+				else if(RealVehicles[Server_CurrentVehicle].Id.existskey(P_Skin[VehicleName])) // If exact skin doesnt exist
+					_Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[P_Skin[VehicleName]];
+				else _Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[""];
+			} else _Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[""];
 		} else _Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[""];
-	} else _Player.ForceModelId = RealVehicles[Server_CurrentVehicle].Id[""];
+	}
 }
+
+declare CGhost[Text] PreloadedGhosts;
+declare Boolean SpawnPlayer;
 
 Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 	declare UI <=> _Mode.UIManager.GetUI(_Player);
@@ -93,9 +98,8 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 		declare Ghost = _Mode.RaceGhost_Add(Performance.Finishes[Performance.BestFinishIndex].Ghost, True);
 		
 	declare netread Text[] SelectedGhostFiles for UI;
-	declare netread Text[] SelectedGhostUrls for UI;
 	
-	foreach(File, SelectedGhostFiles) {
+	foreach(File in SelectedGhostFiles) {
 		declare GhostTask = DataFileMgr.Replay_Load(File);
 		wait(!GhostTask.IsProcessing);
 		if(GhostTask.HasSucceeded) {
@@ -103,6 +107,21 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 			declare Ghost = _Mode.RaceGhost_Add(GhostTask.Ghosts[0], False);
 		}
 		DataFileMgr.TaskResult_Release(GhostTask.Id);
+	}
+
+	declare netread Text[Text] SelectedGhostUrls for UI;
+
+	foreach(Url => File in SelectedGhostUrls) {
+		if(!PreloadedGhosts.existskey(Url)) {
+			declare GhostTask = DataFileMgr.Ghost_Download(File, Url);
+			wait(!GhostTask.IsProcessing);
+			if(GhostTask.HasSucceeded)
+				if(GhostTask.Ghost != Null)
+					PreloadedGhosts[Url] = GhostTask.Ghost;
+			DataFileMgr.TaskResult_Release(GhostTask.Id);
+		}
+		if(PreloadedGhosts.existskey(Url))
+			_Mode.RaceGhost_Add(PreloadedGhosts[Url], False);
 	}
 }
 
@@ -376,8 +395,7 @@ Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
 						case "Continue": {
 							if(Server_Outro) {
 								Server_Outro = False;
-								
-								SpawnEnvimixPlayer(_Mode, Player);
+								SpawnPlayer = True;
 							}
 							else {
 								Server_EndRace = False;
@@ -521,6 +539,11 @@ Void Loop(CTmMode _Mode) {
 		if(Server_Outro) {
 			
 		}
+	}
+
+	if(SpawnPlayer) {
+		SpawnEnvimixPlayer(_Mode, Player);
+		SpawnPlayer = False;
 	}
 }
 

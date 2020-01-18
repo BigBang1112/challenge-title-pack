@@ -6,6 +6,7 @@
 #Include "Libs/BigBang1112/Manialink.Script.txt" as Manialink
 #Include "Libs/BigBang1112/Layers.Script.txt" as Layers
 #Include "Libs/BigBang1112/Task.Script.txt" as Task
+#Include "Libs/BigBang1112/Time.Script.txt" as Time
 
 #Include "Libs/Challenge/ModifierBase.Script.txt" as ModifierBase
 #Include "Libs/Challenge/Vehicle.Script.txt" as Vehicle
@@ -406,13 +407,16 @@ Void Async() {
 			else {
 				if(L.HasSucceeded) {
 					//log("Success " ^ Car ^ " (" ^ L.LeaderBoardInfo.count ^ " ghosts found)");
+					declare metadata ModifierBase::SChMap OriginalMap for Map;
 					for(I, 0, LoadedGhosts.count-1) {
 						LoadedGhosts[I].Url = "";
 						LoadedGhosts[I].File = "";
 						foreach(Record, L.LeaderBoardInfo) {
 							if(LoadedGhosts[I].Login == Record.Login && LoadedGhosts[I].Time == Record.Score) {
 								LoadedGhosts[I].Url = Record.ReplayUrl;
-								LoadedGhosts[I].File = Record.FileName; // should be a proper replay name instead
+								declare Folders = TextLib::Split("\\", Record.FileName);
+								Folders.removekey(Folders.count-1);
+								LoadedGhosts[I].File = """{{{TextLib::Join("\\", Folders)}}}\{{{TextLib::StripFormatting(OriginalMap.Name)}}}_{{{Map.MapStyle}}}_{{{Car}}}_({{{Time::TimeToFileNameSupportedText(Record.Score)}}}).Replay.Gbx""";
 							}
 						}
 					}

@@ -56,7 +56,7 @@ Void UpdateLoadedGhosts() {
 
 	declare SGhostInfo[] LoadedGhosts for Page;
 	declare netwrite Text[] SelectedGhostFiles for UI;
-	declare netwrite Text[] SelectedGhostUrls for UI;
+	declare netwrite Text[Text] SelectedGhostUrls for UI;
 
 	declare SGhostInfo[] VisibleGhosts;
 
@@ -92,6 +92,7 @@ Void UpdateLoadedGhosts() {
 		if(VisibleGhosts.existskey(I+Offset)) {
 			declare Ghost = VisibleGhosts[I+Offset];
 			Frame.DataAttributeSet("file", Ghost.File);
+			Frame.DataAttributeSet("url", Ghost.Url);
 
 			if(TextLib::StartsWith("autosave", Ghost.File, False, False))
 				Frame.GetFirstChild("LABEL_AUTOSAVE").Show();
@@ -127,7 +128,7 @@ Void UpdateLoadedGhosts() {
 
 			declare Quad_Ghost = (Frame.GetFirstChild("QUAD_GHOST") as CMlQuad);
 
-			Quad_Ghost.StyleSelected = SelectedGhostFiles.exists(Ghost.File);
+			Quad_Ghost.StyleSelected = SelectedGhostFiles.exists(Ghost.File) || SelectedGhostUrls.existskey(Ghost.Url);
 			
 			Frame.Show();
 		}
@@ -335,11 +336,18 @@ foreach(Event,PendingEvents) {
 				case "QUAD_GHOST": {
 					declare Selector = (Event.Control.Parent as CMlFrame);
 					declare File = Selector.DataAttributeGet("file");
+					declare Url = Selector.DataAttributeGet("url");
 
 					declare netwrite Text[] SelectedGhostFiles for UI;
-					declare netwrite Text[] SelectedGhostUrls for UI;
-
-					if(File != "") {
+					declare netwrite Text[Text] SelectedGhostUrls for UI;
+					
+					if(Url != "") {
+						if(SelectedGhostUrls.existskey(Url))
+							SelectedGhostUrls.removekey(Url);
+						else
+							SelectedGhostUrls[Url] = File;
+					}
+					else if(File != "") {
 						if(SelectedGhostFiles.exists(File))
 							SelectedGhostFiles.remove(File);
 						else
