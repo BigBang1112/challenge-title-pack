@@ -240,7 +240,7 @@ Void Event(CManiaAppEvent _Event) {
 							Zone = _Event.CustomEventData[0];
 							
 							Http::Destroy("RECORDS");
-							declare Success2 = Http::AsyncGET("RECORDS", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/records.php?uid={{{Map.MapInfo.MapUid}}}&car={{{TextLib::Join(",",VehicleNames)}}}&zone={{{TextLib::URLEncode(Zone)}}}""", True);
+							declare Success2 = Http::AsyncGET("RECORDS", """{{{Service_Status::LastStatus(LocalUser).Global.Service}}}/records.php?uid={{{Map.MapInfo.MapUid}}}&car={{{TextLib::Join(",",VehicleNames)}}}&zone={{{TextLib::URLEncode(Zone)}}}&length=50""", True);
 						}
 						case "ShowRecords": {
 							Zone = _Event.CustomEventData[0];
