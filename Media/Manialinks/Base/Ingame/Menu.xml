@@ -107,6 +107,7 @@
 							<quad pos="31 0" z-index="0" size="8 8" style="UIConstruction_Buttons" substyle="SaveAs" scriptevents="1" halign="center" valign="center" id="QUAD_SAVEGHOST" hidden="1"/>
 						</frame>
 					</frame>
+					<frame />
 				</frame>
 			</frame>
 		</frame>
