@@ -10,7 +10,8 @@ Void Init() {
 }
 
 Void Start() {
-	Layers::Show("Menu", True);
+	if(!Layers::Get("Menu").IsVisible)
+		Layers::Show("Menu", True);
 }
 
 Void Event(CManiaAppEvent _Event) {
