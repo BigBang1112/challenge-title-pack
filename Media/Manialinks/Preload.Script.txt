@@ -1,3 +1,12 @@
+***Start***
+***
+declare End = -1;
+
+declare Gauge_Progress = (Page.GetFirstChild("GAUGE_PROGRESS") as CMlGauge);
+Gauge_Progress.RelativeScale = 0.;
+AnimMgr.Add(Gauge_Progress, "<gauge scale=\"1\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+***
+
 ***Loop***
 ***
 foreach(Event,PendingEvents) {
@@ -5,10 +14,22 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::PluginCustomEvent: {
 			switch(Event.CustomEventType) {
 				case "Progress": {
-					(Page.GetFirstChild("GAUGE_PROGRESS") as CMlGauge).SetRatio(TextLib::ToReal(Event.CustomEventData[0]));
+					Gauge_Progress.SetRatio(TextLib::ToReal(Event.CustomEventData[0]));
+				}
+				case "Hide": {
+					End = Now;
+
+					AnimMgr.Add(Gauge_Progress, "<quad scale=\"0\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
 				}
 			}
 		}
+	}
+}
+
+if(End != -1) {
+	if(End + 500 < Now) {
+		SendCustomEvent("Hide_Response", []);
+		End = -1;
 	}
 }
 ***

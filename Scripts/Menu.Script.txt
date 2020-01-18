@@ -30,7 +30,7 @@
 #Include "Libs/Challenge/Devmode.Script.txt" as Devmode
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
-#Setting S_Devmode True
+#Setting S_Devmode False
 
 Void GetUnauthorizedToken(Service_Status::SStatus _Status) {
 	declare Request = Http::SyncGET("""{{{_Status.Global.Service}}}/auth.php?login={{{LocalUser.Login}}}&token={{{Auth::GetToken().Value}}}""");
@@ -112,7 +112,7 @@ main() {
 			GetUnauthorizedToken(Status);
 		}
 		
-		Layers::Destroy("Loading");
+		Layers::Hide("Loading", True);
 		
 		Menu_Release::Start();
 		wait(Menu_Release::Loop());
@@ -120,6 +120,8 @@ main() {
 		yield;
 		
 		Layers::Create("Preload", Manialink::FromFile("Media/Manialinks/Preload", False, [], Settings::Get().Theme), True);
+		sleep(500);
+		Layers::Destroy("Loading");
 		Menu_Main::Init();
 		Layers::SendEvent("Preload", "Progress", 1/8.);
 		yield;
@@ -144,7 +146,7 @@ main() {
 		Menu_AuthBeta::Init();
 		Layers::SendEvent("Preload", "Progress", 8/8.);
 		sleep(300);
-		Layers::Destroy("Preload");
+		Layers::Hide("Preload", True);
 		sleep(200);
 		
 		Notification::Start(<150.,55.>);

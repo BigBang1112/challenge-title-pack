@@ -1,12 +1,43 @@
 ***Start***
 ***
+declare End = -1;
+
 Page.GetClassChildren("LOADING", Page.MainFrame, True);
+
+declare Loading = (Page.GetClassChildren_Result[0] as CMlFrame);
+Loading.RelativeScale = .5;
+AnimMgr.Add(Loading, "<quad scale=\"1\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+foreach(Control in Loading.Controls) {
+	(Control as CMlQuad).Opacity = 0.;
+	AnimMgr.Add(Control, "<quad opacity=\"1\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+}
 ***
 
 ***Loop***
 ***
+foreach(Event,PendingEvents) {
+	switch(Event.Type) {
+		case CMlScriptEvent::Type::PluginCustomEvent: {
+			switch(Event.CustomEventType) {
+				case "Hide": {
+					End = Now;
 
-foreach(Control,Page.GetClassChildren_Result) {
-	Control.RelativeRotation += Period / 5.0;
+					AnimMgr.Add(Loading, "<quad scale=\"0.5\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+					foreach(Control in Loading.Controls) {
+						AnimMgr.Add(Control, "<quad opacity=\"0\"/>", 500, CAnimManager::EAnimManagerEasing::QuadOut);
+					}
+				}
+			}
+		}
+	}
 }
+
+if(End != -1) {
+	if(End + 500 < Now) {
+		SendCustomEvent("Hide_Response", []);
+		End = -1;
+	}
+}
+
+Loading.RelativeRotation += Period / 5.0;
 ***
