@@ -1,3 +1,39 @@
+#Struct SRatingQuality {
+	Real Average;
+	Real AverageWithoutYou;
+	Real User;
+	Integer Count;
+}
+
+#Struct SRatingDifficulty {
+	Real Average;
+	Real AverageWithoutYou;
+	Real User;
+	Integer Count;
+}
+
+#Struct SRating {
+	SRatingDifficulty Difficulty;
+	SRatingQuality Quality;
+}
+
+#Struct SVehicle {
+	SRating Rating;
+	Text[] Star;
+}
+
+#Struct SPublicMap {
+	Boolean Public;
+	Boolean IsNadeoMap;
+	Text Name;
+	Text Uid;
+	Text Author;
+	Text OriginalName;
+	Text OriginalUid;
+	Text OriginalAuthor;
+	SVehicle[Text] Vehicles;
+}
+
 declare CMlFrame Frame_Inner_Vehicles;
 declare CMlFrame Frame_Vehicles;
 declare CMlLabel Label_Arrow;
@@ -196,6 +232,27 @@ foreach(Event,PendingEvents) {
 					EnableMenuNavigationInputs = Event.CustomEventData[0] == "True";
 					if(EnableMenuNavigationInputs) (Page.GetFirstChild("LABEL_ARROW") as CMlLabel).TextColor = <.0,.2,.4>;
 					else (Page.GetFirstChild("LABEL_ARROW") as CMlLabel).TextColor = <.93,.93,.93>;
+				}
+				case "Update": {
+					declare SPublicMap PublicMap;
+					declare Success = PublicMap.fromjson(Event.CustomEventData[0]);
+					foreach(Control in Frame_Inner_Vehicles.Controls) {
+						declare Veh = (Control as CMlFrame);
+						declare Label_Vehicle = (Veh.GetFirstChild("LABEL_VEHICLE") as CMlLabel);
+						declare Quad_Star = (Veh.GetFirstChild("QUAD_STAR") as CMlQuad);
+
+						if(PublicMap.Vehicles.existskey(Label_Vehicle.Value)) {
+							declare Star = PublicMap.Vehicles[Label_Vehicle.Value].Star;
+							if(Star.count > 0) {
+								Quad_Star.Show();
+							}
+							else
+								Quad_Star.Hide();
+						}
+						else {
+							Quad_Star.Hide();
+						}
+					}
 				}
 			}
 		}

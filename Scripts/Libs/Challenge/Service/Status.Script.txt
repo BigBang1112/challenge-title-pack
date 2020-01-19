@@ -23,6 +23,7 @@
 
 #Struct SVehicle {
 	SRating Rating;
+	Text[] Star;
 }
 
 #Struct SPublicMap {

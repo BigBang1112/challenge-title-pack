@@ -48,6 +48,8 @@ Void Init() {
 
 		<label pos="0 -0.3" z-index="2" size="70 20" text="{{{Dictionary::Get("PREORDER_ENVIMIX_LICENSE")}}}" halign="center" valign="center2" textcolor="FF0" textfont="RajdhaniMono" opacity="1" autonewline="1" hidden="1" id="LABEL_PREORDER"/>
 		<label pos="-37.5 8" z-index="1" size="75 5" text="{{{Dictionary::Get("UNLOCKED_IN")}}}" halign="left" valign="top" textfont="Oswald" textsize="1" textcolor="888" id="LABEL_UNLOCK" hidden="1"/>
+		
+		<quad pos="35 5" z-index="2" size="7.5 7.5" halign="center" valign="center" style="BgRaceScore2" substyle="Fame" id="QUAD_STAR" hidden="1"/>
 	</frame>""";
 
 		if(Vehicle.Name == "CanyonCar"

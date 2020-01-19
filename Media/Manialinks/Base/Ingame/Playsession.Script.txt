@@ -1,3 +1,27 @@
+#Struct SRatingQuality {
+	Real Average;
+	Real AverageWithoutYou;
+	Real User;
+	Integer Count;
+}
+
+#Struct SRatingDifficulty {
+	Real Average;
+	Real AverageWithoutYou;
+	Real User;
+	Integer Count;
+}
+
+#Struct SRating {
+	SRatingDifficulty Difficulty;
+	SRatingQuality Quality;
+}
+
+#Struct SVehicle {
+	SRating Rating;
+	Text[] Star;
+}
+
 #Struct SPublicMap {
 	Boolean Public;
 	Boolean IsNadeoMap;
@@ -7,6 +31,7 @@
 	Text OriginalName;
 	Text OriginalUid;
 	Text OriginalAuthor;
+	SVehicle[Text] Vehicles;
 }
 
 #Struct SUser {
