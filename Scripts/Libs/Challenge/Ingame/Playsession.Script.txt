@@ -87,7 +87,7 @@ Void Start() {
 	if(PublicMap.Public && !Server_IsValidationMode)
 		AsyncPlaysession(PlaysessionSecret, "Playing");
 
-	if(Server_IsValidationMode) Layers::SendEvent("Playsession", "DisablePublish");
+	if(Server_IsValidationMode || !(LoadedTitle.TitleId == "Challenge@bigbang1112" || LoadedTitle.TitleId == "Challenge_Stadium@bigbang1112")) Layers::SendEvent("Playsession", "DisablePublish");
 }
 
 Void Event(CManiaAppEvent _Event) {
