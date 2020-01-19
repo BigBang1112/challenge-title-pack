@@ -20,7 +20,7 @@ declare Label_Car2 = (Page.GetFirstChild("LABEL_CAR_2") as CMlLabel);
 
 declare Frame_Rate = (Page.GetFirstChild("FRAME_RATE") as CMlFrame);
 declare Frame_Rate_Bg = (Page.GetFirstChild("FRAME_RATE_BG") as CMlFrame);
-declare Frame_Rate_Car = (Page.GetFirstChild("FRAME_LABEL_RATE") as CMlFrame);
+declare Frame_Label_Rate = (Page.GetFirstChild("FRAME_LABEL_RATE") as CMlFrame);
 declare Label_Rate = (Page.GetFirstChild("LABEL_RATE") as CMlLabel);
 declare Label_Rate2 = (Page.GetFirstChild("LABEL_RATE_2") as CMlLabel);
 
@@ -34,18 +34,10 @@ declare Boolean IsChallenge for Page;
 
 declare LabelDistance = 15;
 
-declare TextLength = Label_Rate.ComputeWidth("{{{{CLICK_TO_RATE}}}}");
-if(TextLength < 40) {
-	foreach(Control, Frame_Rate_Bg.Controls) {
-		declare Quad <=> (Control as CMlQuad);
-		Quad.Size.X = TextLength+5.1;
-	}
-}
-else {
-	foreach(Control, Frame_Rate_Bg.Controls) {
-		declare Quad <=> (Control as CMlQuad);
-		Quad.Size.X = 45.;
-	}
+declare RateTextLength = Label_Rate.ComputeWidth("{{{{CLICK_TO_RATE}}}}");
+
+foreach(Control, Frame_Rate_Bg.Controls) {
+	(Control as CMlQuad).Size.X = RateTextLength+5;
 }
 ***
 
@@ -106,7 +98,7 @@ foreach(Event,PendingEvents) {
 					if(TextLength < 74.5) {
 						foreach(Control, Frame_MapName_Bg.Controls) {
 							declare Quad <=> (Control as CMlQuad);
-							Quad.Size.X = TextLength+7.;
+							Quad.Size.X = TextLength+6.;
 						}
 					}
 					else {
@@ -125,7 +117,7 @@ foreach(Event,PendingEvents) {
 					if(TextLength < 65) {
 						foreach(Control, Frame_Challenge_Bg.Controls) {
 							declare Quad <=> (Control as CMlQuad);
-							Quad.Size.X = TextLength+6.;
+							Quad.Size.X = TextLength+5.5;
 						}
 					}
 					else {
@@ -144,7 +136,7 @@ foreach(Event,PendingEvents) {
 					if(TextLength < 50) {
 						foreach(Control, Frame_Car_Bg.Controls) {
 							declare Quad <=> (Control as CMlQuad);
-							Quad.Size.X = TextLength+6.;
+							Quad.Size.X = TextLength+5.7;
 						}
 					}
 					else {
