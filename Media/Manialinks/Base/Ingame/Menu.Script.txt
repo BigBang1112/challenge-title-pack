@@ -357,7 +357,8 @@ foreach(Event,PendingEvents) {
 					UpdateLoadedGhosts();
 				}
 				case "QUAD_SAVEGHOST": {
-					declare File = Event.Control.Parent.DataAttributeGet("file");
+					declare Folders = TextLib::Split("\\",Event.Control.Parent.DataAttributeGet("file"));
+					declare File = Folders[Folders.count-1];
 					declare Url = Event.Control.Parent.DataAttributeGet("url");
 					SendCustomEvent("SaveGhost", [File, Url]);
 					CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);

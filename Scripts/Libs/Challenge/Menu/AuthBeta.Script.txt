@@ -84,7 +84,7 @@ Void Async() {
 		if(Http::IsSuccessful("Redirect")) {
 			declare JsonSuccess = Access.fromjson(Http::GetResult("Redirect"));
 			
-			if(!Layers::Get("Menu").IsVisible)
+			if(Layers::Get("Menu") != Null && !Layers::Get("Menu").IsVisible)
 				Layers::Show("Menu", True);
 			Layers::Show("Quickplay", True);
 			Layers::Show("Top", True);

@@ -78,6 +78,23 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 	declare netwrite Boolean Server_NoGravity for UI;
 		
 	declare netread Integer Client_VehicleIndex for UI;
+
+	declare netread Text[Text] SelectedGhostUrls for UI;
+	
+	_Mode.RaceGhost_RemoveAll();
+
+	foreach(Url => File in SelectedGhostUrls) {
+		if(!PreloadedGhosts.existskey(Url)) {
+			declare GhostTask = DataFileMgr.Ghost_Download(File, Url);
+			wait(!GhostTask.IsProcessing);
+			if(GhostTask.HasSucceeded)
+				if(GhostTask.Ghost != Null)
+					PreloadedGhosts[Url] = GhostTask.Ghost;
+			DataFileMgr.TaskResult_Release(GhostTask.Id);
+		}
+		if(PreloadedGhosts.existskey(Url))
+			_Mode.RaceGhost_Add(PreloadedGhosts[Url], False);
+	}
 	
 	Server_VehicleLock = -1;
 	if(!Vehicles.existskey(Client_VehicleIndex)) return;
@@ -88,8 +105,6 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 	else _Player.GravityCoef = 1.;
 	_Mode.SpawnPlayer(_Player, 0, -1);
 	UI.UISequence = CUIConfig::EUISequence::Playing;
-	
-	_Mode.RaceGhost_RemoveAll();
 	
 	declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
 	
@@ -108,21 +123,6 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 			declare Ghost = _Mode.RaceGhost_Add(GhostTask.Ghosts[0], False);
 		}
 		DataFileMgr.TaskResult_Release(GhostTask.Id);
-	}
-
-	declare netread Text[Text] SelectedGhostUrls for UI;
-
-	foreach(Url => File in SelectedGhostUrls) {
-		if(!PreloadedGhosts.existskey(Url)) {
-			declare GhostTask = DataFileMgr.Ghost_Download(File, Url);
-			wait(!GhostTask.IsProcessing);
-			if(GhostTask.HasSucceeded)
-				if(GhostTask.Ghost != Null)
-					PreloadedGhosts[Url] = GhostTask.Ghost;
-			DataFileMgr.TaskResult_Release(GhostTask.Id);
-		}
-		if(PreloadedGhosts.existskey(Url))
-			_Mode.RaceGhost_Add(PreloadedGhosts[Url], False);
 	}
 }
 
