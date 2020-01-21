@@ -255,6 +255,12 @@ Void Event(CManiaAppEvent _Event) {
 						case "UpdateMedals": {
 							UpdateMedals();
 						}
+						case "SaveGhost": {
+							Layers::Show("Replays", True);
+							Layers::Show("ReplayInfo", True);
+							Layers::SendEvent("ReplayInfo", "Mode", "Save");
+							Layers::SendEvent("ReplayInfo", "SetReplay", [_Event.CustomEventData[0], _Event.CustomEventData[1]]);
+						}
 					}
 				}
 				case Layers::Get("OpenMenu"): {

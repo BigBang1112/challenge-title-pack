@@ -67,6 +67,7 @@ Void SetCarModel(CTmPlayer _Player, CUIConfig _UI, CMode _Mode) {
 
 declare CGhost[Text] PreloadedGhosts;
 declare Boolean SpawnPlayer;
+declare Text ReplayFileName;
 
 Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 	declare UI <=> _Mode.UIManager.GetUI(_Player);
@@ -406,15 +407,24 @@ Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
 						}
 						case "Replay": {
 							declare FilePath = _Event.CustomEventData[0];
+							declare Url = _Event.CustomEventData[1];
 							
 							declare SPerformance_Server[Text] Performances_Server for Player.Score;
 							declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
 							
-							if(Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].NicerGhost == Null)
-								Task::Async_DataFileMgr("SAVEREPLAY", DataFileMgr.Replay_Save(FilePath, Map, Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].Ghost));
-							else
-								Task::Async_DataFileMgr("SAVEREPLAY", DataFileMgr.Replay_Save(FilePath, Map, Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].NicerGhost));
-							//Needs some kind of response from the "server" ("server" cuz DataFileMgr is solo mode only anyway)
+							if(Url != "") {
+								if(Http.IsValidUrl(Url)) {
+									ReplayFileName = FilePath;
+									Task::Async_DataFileMgr("SAVELBREPLAY", DataFileMgr.Ghost_Download(FilePath, Url));
+								}
+							}
+							else {
+								if(Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].NicerGhost == Null)
+									Task::Async_DataFileMgr("SAVEREPLAY", DataFileMgr.Replay_Save(FilePath, Map, Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].Ghost));
+								else
+									Task::Async_DataFileMgr("SAVEREPLAY", DataFileMgr.Replay_Save(FilePath, Map, Performances_Server[VehicleName].Finishes[Performances_Server[VehicleName].Finishes.count-1].NicerGhost));
+								//Needs some kind of response from the "server" ("server" cuz DataFileMgr is solo mode only anyway)
+							}
 						}
 					}
 				}
@@ -509,6 +519,11 @@ Void Loop(CTmMode _Mode) {
 			}
 		}
 		
+		if(SpawnPlayer) {
+			SpawnEnvimixPlayer(_Mode, Player);
+			SpawnPlayer = False;
+		}
+		
 		/*declare Integer FixUnchangedTimestamp for Player;
 		log("Ya:"^FixUnchangedTimestamp);
 		if(FixUnchangedTimestamp != -1 && FixUnchangedTimestamp + 500 < _Mode.Now) {
@@ -541,9 +556,11 @@ Void Loop(CTmMode _Mode) {
 		}
 	}
 
-	if(SpawnPlayer) {
-		SpawnEnvimixPlayer(_Mode, Player);
-		SpawnPlayer = False;
+	if(Task::IsCompleted("SAVELBREPLAY")) {
+		if(Task::IsSuccessful("SAVELBREPLAY")) {
+			Task::Async_DataFileMgr("SAVEREPLAY", DataFileMgr.Replay_Save(ReplayFileName, Map, Task::ToGhost(Task::Get("SAVELBREPLAY")).Ghost));
+		}
+		Task::Destroy_DataFileMgr("SAVELBREPLAY");
 	}
 }
 

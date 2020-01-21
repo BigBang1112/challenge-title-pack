@@ -324,16 +324,23 @@ foreach(Event, PendingEvents) {
 						case "Back": {
 							Layers::Hide("Replays", True);
 							Layers::Hide("ReplayInfo", True);
-							Layers::Show("Outro", True);
-							Ingame_Rating::ShowInOutro();
+							if(Server_Outro) {
+								Layers::Show("Outro", True);
+								Ingame_Rating::ShowInOutro();
+							}
 						}
 						case "Save": {
 							declare FilePath = Event.CustomEventData[0];
-							SendCustomEvent("Replay", [FilePath]);
+							declare Url = "";
+							if(Event.CustomEventData.count > 1)
+								Url = Event.CustomEventData[1];
+							SendCustomEvent("Replay", [FilePath, Url]);
 							Layers::Hide("Replays", True);
 							Layers::Hide("ReplayInfo", True);
-							Layers::Show("Outro", True);
-							Ingame_Rating::ShowInOutro();
+							if(Server_Outro) {
+								Layers::Show("Outro", True);
+								Ingame_Rating::ShowInOutro();
+							}
 						}
 					}
 				}

@@ -356,6 +356,12 @@ foreach(Event,PendingEvents) {
 
 					UpdateLoadedGhosts();
 				}
+				case "QUAD_SAVEGHOST": {
+					declare File = Event.Control.Parent.DataAttributeGet("file");
+					declare Url = Event.Control.Parent.DataAttributeGet("url");
+					SendCustomEvent("SaveGhost", [File, Url]);
+					CloseInGameMenu(CMlScriptIngame::EInGameMenuResult::Resume);
+				}
 			}
 		}
 		case CMlScriptEvent::Type::PluginCustomEvent: {
