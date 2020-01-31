@@ -75,6 +75,39 @@ Void Problem_MultipleFinishes(SChWaypoint[] _Finishes) {
 	Problem(Problem_MultipleFinishes);
 }
 
+Void Problem_CannotRemoveStart(SChWaypoint _Start) {
+	declare SChProblem P;
+	P.Name = "CANNOT_REMOVE_START";
+	P.Waypoints.add(_Start);
+	P.ShortDescription = "{{{{PROBLEM_CANNOT_REMOVE_START}}}} - " ^ _Start.Block.Name;
+	P.LongDescription = "This start anchor can't be removed via script. The anchor is possibly ghost block or weirdly placed.";
+	P.Solutions.add(Solution("Replace the start manually with possible finish variant.", "", True));
+	P.Solutions.add(Solution("Replace the start manually with possible finish ghost variant.", "", True));
+	Problem(P);
+}
+
+Void Problem_CannotRemoveFinish(SChWaypoint _Finish) {
+	declare SChProblem P;
+	P.Name = "CANNOT_REMOVE_FINISHLINE";
+	P.Waypoints.add(_Finish);
+	P.ShortDescription = "{{{{CANNOT_REMOVE_FINISHLINE}}}} -  " ^ _Finish.Block.Name;
+	P.LongDescription = "This finish can't be removed via script. The block is possibly ghost or weirdly placed.";
+	P.Solutions.add(Solution("Replace the finish manually with possible start variant.", "", True));
+	P.Solutions.add(Solution("Replace the finish manually with possible start ghost variant.", "", True));
+	Problem(P);
+}
+
+Void Problem_CannotRemoveMultilap(SChWaypoint _Multilap) {
+	declare SChProblem P;
+	P.Name = "CANNOT_REMOVE_MULTILAP";
+	P.Waypoints.add(_Multilap);
+	P.ShortDescription = "{{{{CANNOT_REMOVE_MULTILAP}}}} -  " ^ _Multilap.Block.Name;
+	P.LongDescription = "This multilap can't be removed via script. The block is possibly ghost or weirdly placed.";
+	P.Solutions.add(Solution("Replace the multilap manually with possible finish variant.", "", True));
+	P.Solutions.add(Solution("Replace the multilap manually with possible finish ghost variant.", "", True));
+	Problem(P);
+}
+
 ***Main***
 ***
 SetStatusStage("{{{{ANALYZING}}}}...");
@@ -112,6 +145,7 @@ if(IsOneLapWithFinish) {
 						else Problem_BlockMissing(FinishTwowayBlock.Name, Multilap.Block.Coord, Multilap.Block.Direction);
 					}
 				}
+				else Problem_CannotRemoveMultilap(Multilap);
 			}
 		}
 	}
@@ -149,6 +183,7 @@ else {
 					if(Block.Placed) SetStatusMessage(StartBlock.Name ^ " {{{{replaced_with}}}} " ^ FinishBlock.Name ^ ".");
 					else Problem_BlockMissing(FinishBlock.Name, Start.Block.Coord, OppositeDirection(Start.Block.Direction));
 				}
+				else Problem_CannotRemoveStart(Start);
 			}
 		}
 	}
@@ -174,6 +209,7 @@ if(FinishLines.count == 1) {
 					if(Block.Placed) SetStatusMessage(FinishBlock.Name ^ " {{{{replaced_with}}}} " ^ StartBlock.Name ^ ".");
 					else Problem_BlockMissing(StartBlock.Name, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
 				}
+				else Problem_CannotRemoveFinish(Finish);
 			}
 		}
 	}
