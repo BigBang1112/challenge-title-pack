@@ -141,6 +141,7 @@ SStatus CheckStatus(CUser _User, Text _IngameToken) {
 	}
 	declare JsonSuccess = Status.fromjson(Request.Result);
 	while(!Http::IsSuccessfulStatusCode(Request.StatusCode) || Status.Global.Service == "") {
+		declare Json = Status.fromjson(Request.Result);
 		log("Status code: " ^ Request.StatusCode);
 		if(Status.Global.Service == "") log("Service URL not found.");
 		Http.Destroy(Request);

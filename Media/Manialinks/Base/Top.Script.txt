@@ -175,6 +175,8 @@ foreach(Event,PendingEvents) {
 				case "TaskStartCountTime": {
 					StartTaskCounter = System.CurrentLocalDate;
 
+					if(Tasks.Maps.count < 3) continue;
+
 					(Page.GetFirstChild("LABEL_TASKS_1") as CMlLabel).Value = "$oFinish "^Tasks.Maps[0].OriginalName^"$z$o ("^TextLib::Join(" + ", Tasks.Maps[0].Challenge)^") with original car";
 					(Page.GetFirstChild("LABEL_TASKS_2") as CMlLabel).Value = "$oFinish "^Tasks.Maps[1].OriginalName^"$z$o ("^TextLib::Join(" + ", Tasks.Maps[1].Challenge)^") with original car";
 					(Page.GetFirstChild("LABEL_TASKS_3") as CMlLabel).Value = "$oFinish "^Tasks.Maps[2].OriginalName^"$z$o ("^TextLib::Join(" + ", Tasks.Maps[2].Challenge)^") with original car";
