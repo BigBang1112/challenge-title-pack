@@ -498,15 +498,16 @@ Void Finish() {
 							}
 							else if(Event.Type == CMapEditorPluginEvent::Type::MapModified) {
 								MapModified = True;
-								foreach(Block,Blocks)
-									if(LastBlocks.existskey(Block.BlockScriptId))
-										declare Removed = LastBlocks.removekey(Block.BlockScriptId);
-								foreach(Id => BlockName,LastBlocks) {
+								foreach(Block in Blocks)
+									if(Block != Null)
+										if(LastBlocks.existskey(Block.BlockScriptId))
+											declare Removed = LastBlocks.removekey(Block.BlockScriptId);
+								foreach(Id => BlockName,LastBlocks)
 									BlockModified = BlockName;
-								}
 								LastBlocks.clear();
-								foreach(Block,Blocks)
-									LastBlocks[Block.BlockScriptId] = Block.BlockModel.Name;
+								foreach(Block in Blocks)
+									if(Block != Null)
+										LastBlocks[Block.BlockScriptId] = Block.BlockModel.Name;
 							}
 						}
 						

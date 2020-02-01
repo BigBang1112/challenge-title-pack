@@ -1678,6 +1678,31 @@
 				]
 			}
 		],
+		"ExistsApprox": [
+			{
+				"Return": "Boolean",
+				"Array": false,
+				"Kind": "Extensive",
+				"Explanation": "Checks if the block does really exist on the map.",
+				"Supported": true,
+				"Parameters": [
+					[
+						{
+							"Type": "SChApproxBlock",
+							"Name": "_Block",
+ 							"Explanation": "Block to be checked"
+						}
+					],
+					[
+						{
+							"Type": "SChBlock",
+							"Name": "_Block",
+ 							"Explanation": "Block to be checked"
+						}
+					]
+				]
+			}
+		],
 		"ExistsInRadius": [
 			{
 				"Return": "Boolean",

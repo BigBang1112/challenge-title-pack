@@ -445,6 +445,18 @@ Boolean Exists(SChBlock _Block) {
 	return Response.Values[0] == "True";
 }
 
+Boolean ExistsApprox(SChApproxBlock _Block) {
+	declare Params = [_Block.tojson()];
+	declare Response = Request("Ch_ExistsApprox", Params);
+	return Response.Values[0] == "True";
+}
+
+Boolean ExistsApprox(SChBlock _Block) {
+	declare Params = [_Block.tojson()];
+	declare Response = Request("Ch_ExistsApprox", Params);
+	return Response.Values[0] == "True";
+}
+
 Boolean Exists(SChItem _Item) {
 	declare Params = [_Item.tojson()];
 	declare Response = Request("Ch_Exists", Params);

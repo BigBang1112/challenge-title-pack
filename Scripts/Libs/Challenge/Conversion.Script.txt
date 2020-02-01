@@ -143,7 +143,7 @@ ModifierBase::SChBlock ToSChBlock(SChallengeBlock _Block) {
 		ChBlock.IsRoad = _Block.Block.BlockModel.IsRoad;
 		ChBlock.IsTerrain = _Block.Block.BlockModel.IsTerrain;
 		ChBlock.IsPodium = _Block.Block.BlockModel.IsPodium;
-
+	
 		foreach(Anchor,_Block.Anchors)
 			ChBlock.Anchors.add(ToSChAnchor(Anchor));
 	}
@@ -154,7 +154,7 @@ ModifierBase::SChBlock ToSChBlock(SChallengeBlock _Block) {
 		ChBlock.Direction = ToText(_Block.Macroblock.Dir);
 		ChBlock.Waypoint = _Block.Waypoint;
 		ChBlock.IsSpecial = True;
-
+		
 		foreach(Anchor,_Block.Anchors)
 			ChBlock.Anchors.add(ToSChAnchor(Anchor));
 	}

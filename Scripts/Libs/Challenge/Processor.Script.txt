@@ -807,11 +807,12 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode)
 
 			if(IsBlock) {
 				foreach(Block in GetBlocks()) {
-					declare B = Conversion::ToSChBlock(Block);
-					if(B.Name == ChBlock.Name
-					&& B.Coord == ChBlock.Coord
-					&& B.Direction == ChBlock.Direction
-					&& B.Id^"" == ChBlock.Id) {
+					//declare B = Conversion::ToSChBlock(Block);
+					if(Block.Block != Null)
+					if(Block.Block.BlockModel.Name == ChBlock.Name
+					&& Block.Block.Coord == ChBlock.Coord
+					&& Conversion::ToText(Block.Block.Direction) == ChBlock.Direction
+					&& Block.Block.Id^"" == ChBlock.Id) {
 						Respond(_LayerAPI, _Type, ["True"]);
 						break;
 					}
@@ -823,6 +824,22 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode)
 						Respond(_LayerAPI, _Type, ["True"]);
 						break;
 					}
+				}
+			}
+
+			Respond(_LayerAPI, _Type, ["False"]);
+		}
+		case "Ch_ExistsApprox": {
+			declare ModifierBase::SChApproxBlock ChBlock;
+			declare IsBlock = ChBlock.fromjson(_Data[0]);
+
+			foreach(Block in GetBlocks()) {
+				if(Block.Block != Null)
+				if(Block.Block.BlockModel.Name == ChBlock.Name
+				&& Block.Block.Coord == ChBlock.Coord
+				&& Conversion::ToText(Block.Block.Direction) == ChBlock.Direction) {
+					Respond(_LayerAPI, _Type, ["True"]);
+					break;
 				}
 			}
 
