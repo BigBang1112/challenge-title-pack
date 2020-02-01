@@ -132,6 +132,11 @@ SStatus CheckStatus(CUser _User, Text _IngameToken) {
 	declare Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
 	declare SStatus Status;
 	declare JsonSuccess = Status.fromjson(Request.Result);
+	while(!Http::IsSuccessfulStatusCode(Request.StatusCode) || Status.Global.Service == "") {
+		sleep(1000);
+		Http.Destroy(Request);
+		Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
+	}
 	Http.Destroy(Request);
 	ProcessNotifications(_User, Status);
 	
