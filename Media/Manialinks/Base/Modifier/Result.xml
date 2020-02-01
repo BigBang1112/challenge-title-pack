@@ -42,6 +42,7 @@
 			<label pos="0 -5.25" z-index="1" size="40 10" text="{{{{NOT_COMPUTED}}}}" halign="center" valign="center2" textfont="RajdhaniMono" class="opacity" id="LABEL_BUTTON_SHADOWS" textcolor="EEE"/>
 		</frame>
 		<label pos="-98 -5.25" z-index="1" size="50 5" text="{{{{SHADOW_QUALITY}}}}" valign="center2" textfont="Oswald" halign="left" textsize="2" textcolor="EEE"/>
+		<quad pos="-47 -5" z-index="1" size="10 10" halign="center" valign="center" style="UIConstruction_Buttons" substyle="AirMapping" scriptevents="1" id="QUAD_INTERFACE" hidden="1"/>
 		<quad pos="-37 -5" z-index="1" size="10 10" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Camera" scriptevents="1" id="QUAD_FREECAM"/>
 		<quad pos="-27 -5" z-index="1" size="10 10" halign="center" valign="center" style="UIConstruction_Buttons" substyle="Drive" scriptevents="1" id="QUAD_TEST"/>
 		<frame pos="-20 0" z-index="1">

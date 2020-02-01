@@ -31,6 +31,7 @@ declare Quad_Button_Save_Block = (Page.GetFirstChild("QUAD_BUTTON_SAVE_BLOCK") a
 declare Quad_Button_Validate = (Page.GetFirstChild("QUAD_BUTTON_VALIDATE") as CMlQuad);
 declare Label_Button_Validate = (Page.GetFirstChild("LABEL_BUTTON_VALIDATE") as CMlLabel);
 
+declare Quad_Interface = (Page.GetFirstChild("QUAD_INTERFACE") as CMlQuad);
 declare Quad_FreeCam = (Page.GetFirstChild("QUAD_FREECAM") as CMlQuad);
 declare Quad_Test = (Page.GetFirstChild("QUAD_TEST") as CMlQuad);
 
@@ -39,6 +40,10 @@ declare Boolean HasProblems;
 
 declare Boolean FreeCam for Page;
 declare Boolean TestMode for Page;
+
+if(LocalUser.Login == "bigbang1112")
+	Quad_Interface.Show();
+else Quad_Interface.Hide();
 ***
 
 ***Loop***
@@ -70,6 +75,9 @@ foreach(Event,PendingEvents) {
 		case CMlScriptEvent::Type::MouseClick: {
 			switch(Event.ControlId) {
 				case "LABEL_INTERFACE": {
+					SendCustomEvent("Button_Interface",[]);
+				}
+				case "QUAD_INTERFACE": {
 					SendCustomEvent("Button_Interface",[]);
 				}
 				case "QUAD_BUTTON_SAVE": {
