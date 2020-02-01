@@ -789,7 +789,7 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode)
 			if(Waypoint.IsBlock) {
 				declare Removed = SafeRemoveBlock(Waypoint.Block);
 				declare Placement = PlaceBlockSpecial(Waypoint.Block.Name^"_D", Waypoint.Block.Coord, Conversion::ToDirectionMap(Waypoint.Block.Direction));
-				Disabled = Placement.Placed;
+				Disabled = Removed && Placement.Placed;
 				
 				if(Disabled) {
 					declare metadata Vec3[] DisabledFinishes for Map;
@@ -916,6 +916,22 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode)
 		case "Ch_SetCursorBlock": {
 			CursorBlockModel = GetBlockModelFromName(_Data[0]);
 			Respond(_LayerAPI, _Type, ["True"]);
+		}
+		case "Ch_Focus": {
+			declare ModifierBase::SChBlock ChBlock;
+			declare JsonSuccess = ChBlock.fromjson(_Data[0]);
+			foreach(Block, GetBlocks()) {
+				if(Block.Block != Null && Conversion::SChBlockEquals(ChBlock, Block.Block)) {
+					CameraTargetPosition = GetVec3FromCoord(ChBlock.Coord);
+					CustomSelectionCoords.clear();
+					CustomSelectionCoords.add(Block.Block.Coord);
+					foreach(Unit in Block.Block.BlockUnits)
+						CustomSelectionCoords.add(Unit.Block.Coord);
+					Respond(_LayerAPI, _Type, ["True"]);
+					continue;
+				}
+			}
+			Respond(_LayerAPI, _Type, ["False"]);
 		}
 		default: {
 			log("Unknown request: "^_Type);

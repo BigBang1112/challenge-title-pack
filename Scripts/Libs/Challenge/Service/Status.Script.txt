@@ -163,7 +163,7 @@ SStatus CheckStatus(CUser _User) {
 SStatus LastStatus(CUser _User) {
 	declare SStatus[] States for _User;
 	if(States.count > 0)
-		if(States[States.count-1].Global.Service != "")
+		if(States[States.count-1].Global.Service != "" && States[States.count-1].User.count > 0)
 			return States[States.count-1];
 	return CheckStatus(_User);
 }

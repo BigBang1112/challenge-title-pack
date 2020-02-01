@@ -574,8 +574,10 @@ Void SetStatusColor(Vec3 _Color) {
 	yield;
 }
 
-Void Focus(SChBlock _Block) {
-
+Boolean Focus(SChBlock _Block) {
+	declare Params = [_Block.tojson()];
+	declare Response = Request("Ch_Focus", Params);
+	return Response.Values[0] == "True";
 }
 
 Void Focus(Vec3 _Position) {

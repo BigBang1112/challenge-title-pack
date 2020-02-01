@@ -230,52 +230,81 @@ switch(Solver_Problem.Name) {
 				declare FinishBlock = Relation[1];
 				
 				if(Finish.Block.Name == FinishBlock.Name) {
-					if(RemoveSpecificBlock(Finish.Block)) {
-						declare Block = PlaceBlock(StartBlock.Name, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
-						if(!Block.Placed) {}
+					if(!RemoveSpecificBlock(Finish.Block)) {
+						Editor.EditMode = CMapEditorPlugin::EditMode::Erase;
+						ShowEditor();
+						while(Exists(Finish.Block)) sleep(100);
+						HideEditor();
 					}
-					else {}
+
+					declare Block = PlaceBlock(StartBlock.Name, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
+					if(!Block.Placed) Solver_Success = True;
+					else { 
+						ShowEditor();
+						declare SChApproxBlock B;
+						B.Name = StartBlock.Name;
+						B.Coord = Finish.Block.Coord;
+						B.Direction = OppositeDirection(Finish.Block.Direction);
+						while(ExistsApprox(B)) sleep(100);
+						HideEditor();
+					}
+					break;
 				}
 			}
 		}
 
 		switch(Solver_Solution) {
 			case 0: {
-				
+				Solver_Success = True;
 			}
 			case 1: {
 				declare Removed = Solver_Problem.Waypoints.removekey(Solver_Point);
 				foreach(Finish, Solver_Problem.Waypoints) {
 					if(Finish.IsBlock) {
 						if(!RemoveSpecificBlock(Finish.Block)) {
-
+							Editor.EditMode = CMapEditorPlugin::EditMode::Erase;
+							ShowEditor();
+							Focus(Finish.Block);
+							while(Exists(Finish.Block)) sleep(100);
+							HideEditor();
 						}
 					}
 					else if(Finish.IsItem) {
 						if(!RemoveItem(Finish.Item)) {
-
+							ShowEditor();
+							while(Exists(Finish.Item)) sleep(100);
+							HideEditor();
 						}
 					}
 				}
+				Solver_Success = True;
 			}
 			case 2: {
 				declare Removed = Solver_Problem.Waypoints.removekey(Solver_Point);
 				foreach(Finish, Solver_Problem.Waypoints) {
 					if(Finish.IsBlock) {
-						if(!DisableWaypoint(Finish)) {
-
+						if(!DisableWaypoint(Finish)) { // Then just delete
+							Editor.EditMode = CMapEditorPlugin::EditMode::Erase;
+							ShowEditor();
+							Focus(Finish.Block);
+							while(Exists(Finish.Block)) sleep(100);
+							HideEditor();
+							DisableWaypoint(Finish);
 						}
 					}
 					else if(Finish.IsItem) {
 						if(!RemoveItem(Finish.Item)) {
-
+							ShowEditor();
+							while(Exists(Finish.Item)) sleep(100);
+							HideEditor();
 						}
 					}
 				}
+				Solver_Success = True;
 			}
 		}
 
-		Solver_Success = True;
+		Editor.EditMode = CMapEditorPlugin::EditMode::FreeLook;
 	}
 	case "ITEM_START": {
 		ShowEditor();
@@ -405,7 +434,7 @@ switch(Solver_Problem.Name) {
 	case "BLOCK_MISSING": {
 		switch(Solver_Solution) {
 			case 0: {
-				
+				OpenLink("https://discord.gg/v6TW88m", ::LinkType::ExternalBrowser);
 			}
 			case 1: {
 
