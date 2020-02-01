@@ -339,5 +339,68 @@ switch(Solver_Problem.Name) {
 
 		Solver_Success = True;
 	}
+	case "CANNOT_REMOVE_START": {
+		ShowEditor();
+
+		declare Start = Solver_Problem.Waypoints[0];
+		while(Exists(Start.Block)) sleep(100);
+
+		declare MapInfo = GetMapInfo();
+		declare Environment = MapInfo.CollectionName;
+
+		foreach(Relation, GetRelation_StartFinish()[Environment]) {
+			declare StartBlock = Relation[0];
+			declare FinishBlock = Relation[1];
+
+			if(Start.Block.Name == StartBlock.Name) {
+				declare Block = PlaceBlock(FinishBlock.Name, Start.Block.Coord, OppositeDirection(Start.Block.Direction));
+				if(Block.Placed)
+					Solver_Success = True;
+				else {
+					declare SChApproxBlock B;
+					B.Name = FinishBlock.Name;
+					B.Coord = Start.Block.Coord;
+					B.Direction = OppositeDirection(Start.Block.Direction);
+					while(!ExistsApprox(B)) sleep(100);
+					Solver_Success = True;
+				}
+				break;
+			}
+		}
+
+		HideEditor();
+	}
+	
+	case "CANNOT_REMOVE_FINISHLINE": {
+		ShowEditor();
+
+		declare Finish = Solver_Problem.Waypoints[0];
+		while(Exists(Finish.Block)) sleep(100);
+
+		declare MapInfo = GetMapInfo();
+		declare Environment = MapInfo.CollectionName;
+
+		foreach(Relation, GetRelation_StartFinish()[Environment]) {
+			declare StartBlock = Relation[0];
+			declare FinishBlock = Relation[1];
+
+			if(Finish.Block.Name == FinishBlock.Name) {
+				declare Block = PlaceBlock(StartBlock.Name, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
+				if(Block.Placed)
+					Solver_Success = True;
+				else {
+					declare SChApproxBlock B;
+					B.Name = StartBlock.Name;
+					B.Coord = Finish.Block.Coord;
+					B.Direction = OppositeDirection(Finish.Block.Direction);
+					while(!ExistsApprox(B)) sleep(100);
+					Solver_Success = True;
+				}
+				break;
+			}
+		}
+
+		HideEditor();
+	}
 }
 ***
