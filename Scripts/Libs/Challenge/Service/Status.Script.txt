@@ -134,14 +134,17 @@ SStatus CheckStatus(CUser _User, Text _IngameToken) {
 	declare Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
 	declare SStatus Status;
 	while(TextLib::Find("Web application doesn't work properly", Request.Result, False, False)) {
-		sleep(1000);
+		log("Webhost problems:\n" ^ Request.Result);
 		Http.Destroy(Request);
+		sleep(1000);
 		Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
 	}
 	declare JsonSuccess = Status.fromjson(Request.Result);
 	while(!Http::IsSuccessfulStatusCode(Request.StatusCode) || Status.Global.Service == "") {
-		sleep(1000);
+		log("Status code: " ^ Request.StatusCode);
+		if(Status.Global.Service == "") log("Service URL not found.");
 		Http.Destroy(Request);
+		sleep(1000);
 		Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
 	}
 	Http.Destroy(Request);
