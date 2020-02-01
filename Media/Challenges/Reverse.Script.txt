@@ -237,9 +237,7 @@ switch(Solver_Problem.Name) {
 						HideEditor();
 					}
 
-					declare Block = PlaceBlock(StartBlock.Name, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction));
-					if(!Block.Placed) Solver_Success = True;
-					else { 
+					if(!PlaceBlock(StartBlock.Name, Finish.Block.Coord, OppositeDirection(Finish.Block.Direction)).Placed) { 
 						ShowEditor();
 						declare SChApproxBlock B;
 						B.Name = StartBlock.Name;
