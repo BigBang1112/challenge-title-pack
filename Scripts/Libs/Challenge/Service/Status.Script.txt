@@ -1,3 +1,5 @@
+#Include "TextLib" as TextLib
+
 #Include "Libs/BigBang1112/Http.Script.txt" as Http
 
 #Include "Libs/Challenge/Notification.Script.txt" as Notification
@@ -131,6 +133,11 @@ SStatusParams GetStatusParams(CUser _User, Text _IngameToken) {
 SStatus CheckStatus(CUser _User, Text _IngameToken) {
 	declare Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
 	declare SStatus Status;
+	while(TextLib::Find("Web application doesn't work properly", Request.Result, False, False)) {
+		sleep(1000);
+		Http.Destroy(Request);
+		Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
+	}
 	declare JsonSuccess = Status.fromjson(Request.Result);
 	while(!Http::IsSuccessfulStatusCode(Request.StatusCode) || Status.Global.Service == "") {
 		sleep(1000);
@@ -152,7 +159,8 @@ SStatus CheckStatus(CUser _User) {
 SStatus LastStatus(CUser _User) {
 	declare SStatus[] States for _User;
 	if(States.count > 0)
-		return States[States.count-1];
+		if(States[States.count-1].Global.Service != "")
+			return States[States.count-1];
 	return CheckStatus(_User);
 }
 
