@@ -402,5 +402,29 @@ switch(Solver_Problem.Name) {
 
 		HideEditor();
 	}
+	case "BLOCK_MISSING": {
+		switch(Solver_Solution) {
+			case 0: {
+				
+			}
+			case 1: {
+
+			}
+			case 2: {
+				ShowEditor();
+				declare Finish = Solver_Problem.ApproxBlocks[0];
+				SetCursorBlock(Finish.Name);
+				Editor.EnableMixMapping = True;
+				Editor.PlaceMode = CMapEditorPlugin::PlaceMode::GhostBlock;
+				while(!ExistsApprox(Finish)) sleep(100);
+				Editor.EditMode = CMapEditorPlugin::EditMode::FreeLook;
+				HideEditor();
+				Solver_Success = True;
+			}
+			case 3: {
+
+			}
+		}
+	}
 }
 ***
