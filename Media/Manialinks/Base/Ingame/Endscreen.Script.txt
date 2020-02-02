@@ -349,7 +349,7 @@ foreach(Event,PendingEvents) {
 							}
 
 							declare Label_Record = (Frame_Record.GetFirstChild("LABEL_RECORD") as CMlLabel);
-							Label_Record.SetText(TextLib::FormatInteger(Rank, 2)^")$z "^TimeToTextWithMilli(Record.Time));
+							Label_Record.SetText(RankColor^TextLib::FormatInteger(Rank, 2)^")$z "^TimeToTextWithMilli(Record.Time));
 
 							declare Label_Nickname = (Frame_Record.GetFirstChild("LABEL_NICKNAME") as CMlLabel);
 							if(Record.Nickname == "") Label_Nickname.SetText(Record.Login);
