@@ -8,6 +8,7 @@
 
 #Struct SFinish_Server {
 	Integer Timestamp;
+	Integer MultiplayerTime;
 	CGhost Ghost;
 	CGhost NicerGhost;
 	Real Distance;
@@ -40,6 +41,7 @@
 }
 
 declare Vehicle::SVehicle[] Vehicles;
+declare Vehicle::SVehicle MapVehicle;
 declare Vehicle::SRealVehicle[] RealVehicles;
 declare Vehicle::SRealVehicle RealMapVehicle;
 declare CTmPlayer[] RespawnList;
@@ -69,7 +71,7 @@ declare CGhost[Text] PreloadedGhosts;
 declare Boolean SpawnPlayer;
 declare Text ReplayFileName;
 
-Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
+Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player, Boolean _IsMultiplayer) {
 	declare UI <=> _Mode.UIManager.GetUI(_Player);
 	
 	declare netwrite Boolean Server_Playing for UI;
@@ -81,19 +83,21 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 
 	declare netread Text[Text] SelectedGhostUrls for UI;
 	
-	_Mode.RaceGhost_RemoveAll();
+	if(!_IsMultiplayer) {
+		_Mode.RaceGhost_RemoveAll();
 
-	foreach(Url => File in SelectedGhostUrls) {
-		if(!PreloadedGhosts.existskey(Url)) {
-			declare GhostTask = DataFileMgr.Ghost_Download(File, Url);
-			wait(!GhostTask.IsProcessing);
-			if(GhostTask.HasSucceeded)
-				if(GhostTask.Ghost != Null)
-					PreloadedGhosts[Url] = GhostTask.Ghost;
-			DataFileMgr.TaskResult_Release(GhostTask.Id);
+		foreach(Url => File in SelectedGhostUrls) {
+			if(!PreloadedGhosts.existskey(Url)) {
+				declare GhostTask = DataFileMgr.Ghost_Download(File, Url);
+				wait(!GhostTask.IsProcessing);
+				if(GhostTask.HasSucceeded)
+					if(GhostTask.Ghost != Null)
+						PreloadedGhosts[Url] = GhostTask.Ghost;
+				DataFileMgr.TaskResult_Release(GhostTask.Id);
+			}
+			if(PreloadedGhosts.existskey(Url))
+				_Mode.RaceGhost_Add(PreloadedGhosts[Url], False);
 		}
-		if(PreloadedGhosts.existskey(Url))
-			_Mode.RaceGhost_Add(PreloadedGhosts[Url], False);
 	}
 	
 	Server_VehicleLock = -1;
@@ -106,27 +110,33 @@ Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
 	_Mode.SpawnPlayer(_Player, 0, -1);
 	UI.UISequence = CUIConfig::EUISequence::Playing;
 	
-	declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
+	if(!_IsMultiplayer) {
+		declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
 	
-	declare SPerformance_Server[Text] Performances_Server for _Player.Score;
-	declare Performance = Performances_Server[VehicleName];
-	if(Performance.BestFinishIndex != -1 && Performance.Finishes[Performance.BestFinishIndex].Ghost != Null)
-		declare Ghost = _Mode.RaceGhost_Add(Performance.Finishes[Performance.BestFinishIndex].Ghost, True);
+		declare SPerformance_Server[Text] Performances_Server for _Player.Score;
+		declare Performance = Performances_Server[VehicleName];
+		if(Performance.BestFinishIndex != -1 && Performance.Finishes[Performance.BestFinishIndex].Ghost != Null)
+			declare Ghost = _Mode.RaceGhost_Add(Performance.Finishes[Performance.BestFinishIndex].Ghost, True);
+			
+		declare netread Text[] SelectedGhostFiles for UI;
 		
-	declare netread Text[] SelectedGhostFiles for UI;
-	
-	foreach(File in SelectedGhostFiles) {
-		declare GhostTask = DataFileMgr.Replay_Load(File);
-		wait(!GhostTask.IsProcessing);
-		if(GhostTask.HasSucceeded) {
-			if(GhostTask.Ghosts.count > 0 && GhostTask.Ghosts[0] != Null)
-			declare Ghost = _Mode.RaceGhost_Add(GhostTask.Ghosts[0], False);
+		foreach(File in SelectedGhostFiles) {
+			declare GhostTask = DataFileMgr.Replay_Load(File);
+			wait(!GhostTask.IsProcessing);
+			if(GhostTask.HasSucceeded) {
+				if(GhostTask.Ghosts.count > 0 && GhostTask.Ghosts[0] != Null)
+				declare Ghost = _Mode.RaceGhost_Add(GhostTask.Ghosts[0], False);
+			}
+			DataFileMgr.TaskResult_Release(GhostTask.Id);
 		}
-		DataFileMgr.TaskResult_Release(GhostTask.Id);
 	}
 }
 
-Void InitPerformances(CScore _Score) {
+Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player) {
+	SpawnEnvimixPlayer(_Mode, _Player, False);
+}
+
+Void InitPerformances(CScore _Score, Boolean _IsMultiplayer) {
 	declare SPerformance_Server[Text] Performances_Server for _Score;
 	
 	foreach(Vehicle, RealVehicles) {
@@ -135,18 +145,20 @@ Void InitPerformances(CScore _Score) {
 		Performance_Server.BestFinishIndex = -1;
 		
 		if(Map.MapInfo.MapUid != "") {
-			declare Record = ScoreMgr.Map_GetRecord(NullId, Map.MapInfo.MapUid, Vehicle.Name);
-			if(Record != -1) {
-				declare Task_Ghost = ScoreMgr.Map_GetRecordGhost(NullId, Map.MapInfo.MapUid, Vehicle.Name);
-				wait(!Task_Ghost.IsProcessing);
-				
-				if(Task_Ghost.HasSucceeded) {
-					declare SFinish_Server Finish;
-					Finish.Timestamp = -1;
-					Finish.Ghost <=> Task_Ghost.Ghost;
-					Performance_Server.Finishes.add(Finish);
+			if(!_IsMultiplayer) {
+				declare Record = ScoreMgr.Map_GetRecord(NullId, Map.MapInfo.MapUid, Vehicle.Name);
+				if(Record != -1) {
+					declare Task_Ghost = ScoreMgr.Map_GetRecordGhost(NullId, Map.MapInfo.MapUid, Vehicle.Name);
+					wait(!Task_Ghost.IsProcessing);
 					
-					Performance_Server.BestFinishIndex = 0;
+					if(Task_Ghost.HasSucceeded) {
+						declare SFinish_Server Finish;
+						Finish.Timestamp = -1;
+						Finish.Ghost <=> Task_Ghost.Ghost;
+						Performance_Server.Finishes.add(Finish);
+						
+						Performance_Server.BestFinishIndex = 0;
+					}
 				}
 			}
 		}
@@ -178,13 +190,13 @@ Void Init(CTmMode _Mode) {
 	RealVehicles = Vehicle::Load(Vehicles, _Mode);
 }
 
-Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
+Void Start(CTmMode _Mode, Boolean _IsValidationMode, Boolean _IsMultiplayer) {
 	wait(_Mode.MapLoaded);
 	declare MapModelName = TextLib::Replace(_Mode.MapPlayerModelName, "\\", "/");
 	
 	foreach(Player, _Mode.AllPlayers) {
 		declare UI <=> _Mode.UIManager.GetUI(Player);
-		
+			
 		declare netwrite Boolean Server_IsValidationMode for UI;
 		Server_IsValidationMode = _IsValidationMode;
 
@@ -211,10 +223,9 @@ Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
 		
 		UI.UISequence = CUIConfig::EUISequence::None;
 		
-		InitPerformances(Player.Score);
+		InitPerformances(Player.Score, _IsMultiplayer);
 	}
 					
-	declare Vehicle::SVehicle MapVehicle;
 	for(I, 0, Vehicles.count-1) {
 		declare Vehicle = Vehicles[I];
 		declare RealVehicle = RealVehicles[I];
@@ -224,14 +235,13 @@ Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
 		}
 	}
 	
-	declare metadata Vec3[] DisabledFinishes for Map;
-	
 	foreach(Player, _Mode.AllPlayers) {
 		declare UI <=> _Mode.UIManager.GetUI(Player);
-		
 		declare netwrite Vehicle::SVehicle Server_MapVehicle for UI;
 		Server_MapVehicle = MapVehicle;
 	}
+	
+	declare metadata Vec3[] DisabledFinishes for Map;
 	
 	foreach(Finish,DisabledFinishes) {
 		_Mode.UIManager.UIAll.MarkersXML ^= """
@@ -242,120 +252,183 @@ Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
 	_Mode.CutOffTimeLimit = -1;
 }
 
-Void Event(CTmMode _Mode, CTmModeEvent _Event) {
-	declare UI <=> _Mode.UIManager.GetUI(_Event.Player);
-		
-	declare netwrite Integer Server_VehicleLock for UI;
-	declare netwrite Integer Server_CurrentVehicle for UI;
-	declare netwrite Boolean Server_Playing for UI;
-	declare netwrite Boolean Server_EndRace for UI;
-	declare netwrite Boolean Server_Outro for UI;
-	declare netwrite Boolean Server_IsValidationMode for UI;
-		
-	declare netread Integer Client_VehicleIndex for UI;
-		
-	switch(_Event.Type) {
-		case CTmModeEvent::EType::StartLine: {	
-			if(RealVehicles.existskey(Client_VehicleIndex))
-				Server_VehicleLock = Client_VehicleIndex;
-		}
-		case CTmModeEvent::EType::WayPoint: {
-			if(_Event.IsEndRace) { // Finish
-				if(Server_CurrentVehicle < 0) return;
-				
-				declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
-				
-				// Serverside-only performance saving
-				
-				declare SPerformance_Server[Text] Performances_Server for _Event.Player.Score;
-				
-				declare SFinish_Server Finish_Server;
-				Finish_Server.Timestamp = Now;
-				Finish_Server.Ghost = ScoreMgr.Playground_GetPlayerGhost(_Event.Player);
-				Finish_Server.Distance = _Event.Distance;
-				
-				declare metadata Integer StuntTimeLimit for Map;
-				if(StuntTimeLimit == 0)
-					Finish_Server.Stunts = -1;
-				else {
-					declare StuntPenalty = MathLib::FloorInteger((Finish_Server.Ghost.Result.Time-StuntTimeLimit)/100.);
-					Finish_Server.Stunts = _Event.StuntsScore-MathLib::Max(0, StuntPenalty);
-				}
-				
-				declare SPerformance_Server Performance_Server;
-				Performance_Server.BestFinishIndex = -1;
-				if(Performances_Server.existskey(VehicleName)) Performance_Server = Performances_Server[VehicleName];
-				Performance_Server.Finishes.add(Finish_Server);
-				
-				Performance_Server.Vehicle = RealVehicles[Server_CurrentVehicle];
-				if(Performance_Server.BestFinishIndex == -1 || (Performance_Server.Finishes.existskey(Performance_Server.BestFinishIndex) && Performance_Server.Finishes[Performance_Server.BestFinishIndex].Ghost.Result.Time > Finish_Server.Ghost.Result.Time))
-					Performance_Server.BestFinishIndex = Performance_Server.Finishes.count-1;
-				
-				Performances_Server[VehicleName] = Performance_Server;
-				
-				// Shared performance saving
-				
-				declare SFinish Finish;
-				Finish.Timestamp = Finish_Server.Timestamp;
-				Finish.Time = Finish_Server.Ghost.Result.Time;
-				foreach(Checkpoint, Finish_Server.Ghost.Result.Checkpoints)
-					Finish.Checkpoints.add(Checkpoint);
-				Finish.Distance = Finish_Server.Distance;
-				Finish.Stunts = Finish_Server.Stunts;
-				
-				declare netwrite SPerformance[Text] Performances for _Event.Player.Score;
-				declare SPerformance Performance;
-				Performance.Vehicle = VehicleName;
-				Performance.BestFinishIndex = Performance_Server.BestFinishIndex;
-				foreach(Finish_Ser,Performance_Server.Finishes) {
+Void Start(CTmMode _Mode, Boolean _IsValidationMode) {
+	Start(_Mode, _IsValidationMode, False);
+}
+
+Void Event(CTmMode _Mode, CTmModeEvent _Event, Boolean _IsMultiplayer, Boolean _IsValidationMode) {
+	if(_Event.Player != Null) {
+		declare UI <=> _Mode.UIManager.GetUI(_Event.Player);
+			
+		declare netwrite Integer Server_VehicleLock for UI;
+		declare netwrite Integer Server_CurrentVehicle for UI;
+		declare netwrite Boolean Server_Playing for UI;
+		declare netwrite Boolean Server_EndRace for UI;
+		declare netwrite Boolean Server_Outro for UI;
+		declare netwrite Boolean Server_IsValidationMode for UI;
+			
+		declare netread Integer Client_VehicleIndex for UI;
+			
+		switch(_Event.Type) {
+			case CTmModeEvent::EType::StartLine: {	
+				if(RealVehicles.existskey(Client_VehicleIndex))
+					Server_VehicleLock = Client_VehicleIndex;
+			}
+			case CTmModeEvent::EType::WayPoint: {
+				if(_Event.IsEndRace) { // Finish
+					if(Server_CurrentVehicle < 0) return;
+					
+					declare VehicleName = RealVehicles[Server_CurrentVehicle].Name;
+					
+					// Serverside-only performance saving
+					
+					declare SPerformance_Server[Text] Performances_Server for _Event.Player.Score;
+					
+					declare SFinish_Server Finish_Server;
+					Finish_Server.Timestamp = Now;
+					
+					if(_IsMultiplayer) {
+						Finish_Server.MultiplayerTime = _Event.RaceTime;
+					}
+					else
+						Finish_Server.Ghost = ScoreMgr.Playground_GetPlayerGhost(_Event.Player);
+					Finish_Server.Distance = _Event.Distance;
+					
+					declare metadata Integer StuntTimeLimit for Map;
+					if(StuntTimeLimit == 0)
+						Finish_Server.Stunts = -1;
+					else {
+						declare StuntPenalty = MathLib::FloorInteger((Finish_Server.Ghost.Result.Time-StuntTimeLimit)/100.);
+						Finish_Server.Stunts = _Event.StuntsScore-MathLib::Max(0, StuntPenalty);
+					}
+					
+					declare SPerformance_Server Performance_Server;
+					Performance_Server.BestFinishIndex = -1;
+					if(Performances_Server.existskey(VehicleName)) Performance_Server = Performances_Server[VehicleName];
+					Performance_Server.Finishes.add(Finish_Server);
+					
+					Performance_Server.Vehicle = RealVehicles[Server_CurrentVehicle];
+					if(_IsMultiplayer) {
+						if(Performance_Server.BestFinishIndex == -1 || (Performance_Server.Finishes.existskey(Performance_Server.BestFinishIndex) && Performance_Server.Finishes[Performance_Server.BestFinishIndex].MultiplayerTime > Finish_Server.MultiplayerTime))
+							Performance_Server.BestFinishIndex = Performance_Server.Finishes.count-1;
+					}
+					else {
+						if(Performance_Server.BestFinishIndex == -1 || (Performance_Server.Finishes.existskey(Performance_Server.BestFinishIndex) && Performance_Server.Finishes[Performance_Server.BestFinishIndex].Ghost.Result.Time > Finish_Server.Ghost.Result.Time))
+							Performance_Server.BestFinishIndex = Performance_Server.Finishes.count-1;
+					}
+					
+					Performances_Server[VehicleName] = Performance_Server;
+					
+					// Shared performance saving
+					
 					declare SFinish Finish;
-					Finish.Timestamp = Finish_Ser.Timestamp;
-					Finish.Time = Finish_Ser.Ghost.Result.Time;
-					foreach(Checkpoint, Finish_Ser.Ghost.Result.Checkpoints)
-						Finish.Checkpoints.add(Checkpoint);
-					Performance.Finishes.add(Finish);
-				}
-				Performances[VehicleName] = Performance;
-				
-				if(Server_IsValidationMode) {
-					declare Boolean Validated for This;
-					declare Integer Validated_Time for This;
-					declare Text Validated_Car for This;
-					declare Text Validated_MapCar for This;
+					Finish.Timestamp = Finish_Server.Timestamp;
+					if(_IsMultiplayer)
+						Finish.Time = Finish_Server.MultiplayerTime;
+					else
+						Finish.Time = Finish_Server.Ghost.Result.Time;
+					if(!_IsMultiplayer) {
+						foreach(Checkpoint, Finish_Server.Ghost.Result.Checkpoints)
+							Finish.Checkpoints.add(Checkpoint);
+					}
+					Finish.Distance = Finish_Server.Distance;
+					Finish.Stunts = Finish_Server.Stunts;
 					
-					Validated = True;
-					Validated_Time = Finish.Time;
-					Validated_Car = VehicleName;
-					Validated_MapCar = RealMapVehicle.Name;
+					declare netwrite SPerformance[Text] Performances for _Event.Player.Score;
+					declare SPerformance Performance;
+					Performance.Vehicle = VehicleName;
+					Performance.BestFinishIndex = Performance_Server.BestFinishIndex;
+					foreach(Finish_Ser,Performance_Server.Finishes) {
+						declare SFinish Finish;
+						Finish.Timestamp = Finish_Ser.Timestamp;
+						if(Finish_Ser.Ghost == Null)
+							Finish.Time = Finish_Ser.MultiplayerTime;
+						else
+							Finish.Time = Finish_Ser.Ghost.Result.Time;
+						if(!_IsMultiplayer) {
+							foreach(Checkpoint, Finish_Ser.Ghost.Result.Checkpoints)
+								Finish.Checkpoints.add(Checkpoint);
+						}
+						Performance.Finishes.add(Finish);
+					}
+					Performances[VehicleName] = Performance;
+					
+					if(Server_IsValidationMode) {
+						declare Boolean Validated for This;
+						declare Integer Validated_Time for This;
+						declare Text Validated_Car for This;
+						declare Text Validated_MapCar for This;
+						
+						Validated = True;
+						Validated_Time = Finish.Time;
+						Validated_Car = VehicleName;
+						Validated_MapCar = RealMapVehicle.Name;
+					}
+					else {
+						if(!_IsMultiplayer)
+							declare Task = ScoreMgr.Map_SetNewRecord(NullId, Map.MapInfo.MapUid, VehicleName, Finish_Server.Ghost);
+						
+						declare netwrite SEndRaceInfo Server_EndRaceInfo for UI;
+						Server_EndRaceInfo.Vehicle = VehicleName;
+						Server_EndRaceInfo.Finish = Finish;
+					}
+					
+					Server_EndRace = True;
 				}
+				else if(_Event.IsEndLap) { // Lap
+					
+				}
+				else { // Checkpoint
+				
+				}
+			}
+			case CTmModeEvent::EType::GiveUp: {
+				if(Server_EndRace)
+					_Mode.Discard(_Event);
 				else {
-					declare Task = ScoreMgr.Map_SetNewRecord(NullId, Map.MapInfo.MapUid, VehicleName, Finish_Server.Ghost);
 					
-					declare netwrite SEndRaceInfo Server_EndRaceInfo for UI;
-					Server_EndRaceInfo.Vehicle = VehicleName;
-					Server_EndRaceInfo.Finish = Finish;
 				}
-				
-				Server_EndRace = True;
 			}
-			else if(_Event.IsEndLap) { // Lap
-				
-			}
-			else { // Checkpoint
+			case CTmModeEvent::EType::OnPlayerAdded: {
+				declare UI <=> _Mode.UIManager.GetUI(_Event.Player);
 			
-			}
-		}
-		case CTmModeEvent::EType::GiveUp: {
-			if(Server_EndRace)
-				_Mode.Discard(_Event);
-			else {
+				declare netwrite Boolean Server_IsValidationMode for UI;
+				Server_IsValidationMode = _IsValidationMode;
+
+				declare netwrite Vehicle::SVehicle[] Server_Vehicles for UI;
+				Server_Vehicles = Vehicles;
 				
+				declare netwrite Integer Server_VehicleLock for UI;
+				Server_VehicleLock = -1;
+				
+				declare netwrite Integer Server_CurrentVehicle for UI;
+				Server_CurrentVehicle = -1;
+				
+				declare netwrite Boolean Server_Playing for UI;
+				Server_Playing = False;
+				
+				declare netwrite Boolean Server_EndRace for UI;
+				Server_EndRace = False;
+				
+				declare netwrite Boolean Server_Outro for UI;
+				Server_Outro = False;
+				
+				declare netwrite Boolean Server_NoGravity for UI;
+				Server_NoGravity = False;
+				
+				UI.UISequence = CUIConfig::EUISequence::None;
+				
+				InitPerformances(_Event.Player.Score, _IsMultiplayer);
+
+				declare netwrite Vehicle::SVehicle Server_MapVehicle for UI;
+				Server_MapVehicle = MapVehicle;
 			}
-		}
-		case CTmModeEvent::EType::OnPlayerAdded: {
-			
 		}
 	}
+}
+
+Void Event(CTmMode _Mode, CTmModeEvent _Event) {
+	Event(_Mode, _Event, False, False);
 }
 
 Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
@@ -433,7 +506,7 @@ Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
 	}
 }
 
-Void Loop(CTmMode _Mode) {	
+Void Loop(CTmMode _Mode, Boolean _IsMultiplayer) {	
 	foreach(Player,RespawnList) {
 		_Mode.SpawnPlayer(Player, 0, -1);
 		Player.RaceStartTime = -1;
@@ -511,16 +584,18 @@ Void Loop(CTmMode _Mode) {
 				declare Finishes = Performances_Server[VehicleName].Finishes;
 				if(Finishes[Finishes.count-1].NicerGhost == Null && Finishes[Finishes.count-1].Timestamp != -1 && _Mode.Now - Finishes[Finishes.count-1].Timestamp >= 1000) {
 					if(Player.IsSpawned) {
-						declare Ghost = ScoreMgr.Playground_GetPlayerGhost(Player);
-						if(Ghost != Null && Ghost.Result != Null && Ghost.Result.Time != -1)
-							Performances_Server[VehicleName].Finishes[Finishes.count-1].NicerGhost = Ghost;
+						if(!_IsMultiplayer) {
+							declare Ghost = ScoreMgr.Playground_GetPlayerGhost(Player);
+							if(Ghost != Null && Ghost.Result != Null && Ghost.Result.Time != -1)
+								Performances_Server[VehicleName].Finishes[Finishes.count-1].NicerGhost = Ghost;
+						}
 					}
 				}
 			}
 		}
 		
 		if(SpawnPlayer) {
-			SpawnEnvimixPlayer(_Mode, Player);
+			SpawnEnvimixPlayer(_Mode, Player, _IsMultiplayer);
 			SpawnPlayer = False;
 		}
 		
@@ -548,7 +623,7 @@ Void Loop(CTmMode _Mode) {
 		Server_VehicleLock = -1;
 		
 		if(Server_Playing && !Server_EndRace && !Server_Outro) {
-			SpawnEnvimixPlayer(_Mode, Player);
+			SpawnEnvimixPlayer(_Mode, Player, _IsMultiplayer);
 		}
 		
 		if(Server_Outro) {
@@ -562,6 +637,10 @@ Void Loop(CTmMode _Mode) {
 		}
 		Task::Destroy_DataFileMgr("SAVELBREPLAY");
 	}
+}
+
+Void Loop(CTmMode _Mode) {	
+	Loop(_Mode, False);
 }
 
 Void End() {
