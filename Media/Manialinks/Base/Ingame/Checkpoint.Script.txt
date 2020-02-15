@@ -66,65 +66,67 @@ foreach(Event,PendingEvents) {
 foreach(Event,RaceEvents) {
 	switch(Event.Type) {
 		case CTmRaceClientEvent::EType::WayPoint: {
-			if(Event.IsEndRace) {
+			if(Event.Player.User.Login == LocalUser.Login) {
+				if(Event.IsEndRace) {
 
-			}
-			else {
-				Label_Checkpoint_Time.SetText(TimeToTextWithMilli(Event.RaceTime));
-
-				if(Event.IsEndLap) Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 1, 1.);
-				else Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 0, 1.);
-				Frame_Checkpoint.Show();
-
-				foreach(Control in (Frame_Checkpoint_Time.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls) {
-					Control.Size.X = 0.;
-					AnimMgr.Add(Control, """<quad size="40 9"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
-				}
-				(Page.GetFirstChild("FRAME_INNER_CHECKPOINT_TIME") as CMlFrame).ClipWindowSize.X = 0.;
-
-				CheckpointShowTime = Now;
-
-				declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
-
-				if(Event.RaceTime != Event.LapTime) {
-					Label_Lap_Time.SetText(TimeToTextWithMilli(Event.LapTime));
-					Frame_Lap.Show();
-				}
-				else Frame_Lap.Hide();
-				
-				if(Performances.existskey(VehicleName) && Performances[VehicleName].BestFinishIndex != -1) {
-					declare Performance = Performances[VehicleName];
-
-					declare BestFinish = Performance.Finishes[Performance.BestFinishIndex];
-					if(!BestFinish.Checkpoints.existskey(Event.CheckpointInRace)) {
-						Frame_Differences.Hide();
-						continue;
-					}
-					declare ThisCheckpoint = BestFinish.Checkpoints[Event.CheckpointInRace];
-
-					declare Frame_Time = ((Frame_Differences.Controls[0] as CMlFrame).GetFirstChild("FRAME_TIME") as CMlFrame);
-					declare Label_Time = (Frame_Time.GetFirstChild("LABEL_TIME") as CMlLabel);
-					declare Quad_Color = ((Frame_Time.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).GetFirstChild("QUAD_COLOR") as CMlQuad);
-
-					declare Difference = Event.RaceTime - ThisCheckpoint; // Time difference
-
-					if(Difference > 0) {
-						Label_Time.SetText("+"^TimeToTextWithMilli(Difference));
-						Quad_Color.ModulateColor = <1.,.1,0.>;
-					}
-					else if(Difference == 0) {
-						Label_Time.SetText(TimeToTextWithMilli(Difference));
-						Quad_Color.ModulateColor = <1.,.0,1.>;
-					}
-					else {
-						Label_Time.SetText(TimeToTextWithMilli(Difference));
-						Quad_Color.ModulateColor = <0.,.1,1.>;
-					}
-
-					Frame_Differences.Show();
 				}
 				else {
-					Frame_Differences.Hide();
+					Label_Checkpoint_Time.SetText(TimeToTextWithMilli(Event.RaceTime));
+
+					if(Event.IsEndLap) Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 1, 1.);
+					else Audio.PlaySoundEvent(CAudioManager::ELibSound::Checkpoint, 0, 1.);
+					Frame_Checkpoint.Show();
+
+					foreach(Control in (Frame_Checkpoint_Time.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).Controls) {
+						Control.Size.X = 0.;
+						AnimMgr.Add(Control, """<quad size="40 9"/>""", 300, CAnimManager::EAnimManagerEasing::QuadOut);
+					}
+					(Page.GetFirstChild("FRAME_INNER_CHECKPOINT_TIME") as CMlFrame).ClipWindowSize.X = 0.;
+
+					CheckpointShowTime = Now;
+
+					declare VehicleName = Server_Vehicles[Server_CurrentVehicle].Name;
+
+					if(Event.RaceTime != Event.LapTime) {
+						Label_Lap_Time.SetText(TimeToTextWithMilli(Event.LapTime));
+						Frame_Lap.Show();
+					}
+					else Frame_Lap.Hide();
+					
+					if(Performances.existskey(VehicleName) && Performances[VehicleName].BestFinishIndex != -1) {
+						declare Performance = Performances[VehicleName];
+
+						declare BestFinish = Performance.Finishes[Performance.BestFinishIndex];
+						if(!BestFinish.Checkpoints.existskey(Event.CheckpointInRace)) {
+							Frame_Differences.Hide();
+							continue;
+						}
+						declare ThisCheckpoint = BestFinish.Checkpoints[Event.CheckpointInRace];
+
+						declare Frame_Time = ((Frame_Differences.Controls[0] as CMlFrame).GetFirstChild("FRAME_TIME") as CMlFrame);
+						declare Label_Time = (Frame_Time.GetFirstChild("LABEL_TIME") as CMlLabel);
+						declare Quad_Color = ((Frame_Time.GetFirstChild("FRAME_BACKGROUND") as CMlFrame).GetFirstChild("QUAD_COLOR") as CMlQuad);
+
+						declare Difference = Event.RaceTime - ThisCheckpoint; // Time difference
+
+						if(Difference > 0) {
+							Label_Time.SetText("+"^TimeToTextWithMilli(Difference));
+							Quad_Color.ModulateColor = <1.,.1,0.>;
+						}
+						else if(Difference == 0) {
+							Label_Time.SetText(TimeToTextWithMilli(Difference));
+							Quad_Color.ModulateColor = <1.,.0,1.>;
+						}
+						else {
+							Label_Time.SetText(TimeToTextWithMilli(Difference));
+							Quad_Color.ModulateColor = <0.,.1,1.>;
+						}
+
+						Frame_Differences.Show();
+					}
+					else {
+						Frame_Differences.Hide();
+					}
 				}
 			}
 		}

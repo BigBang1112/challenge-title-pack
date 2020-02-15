@@ -85,84 +85,88 @@ foreach(Event,PendingEvents) {
 foreach(Event,RaceEvents) {
 	switch(Event.Type) {
 		case CTmRaceClientEvent::EType::WayPoint: {
-			if(Event.IsEndRace) {
-				PlayerTime = Event.RaceTime;
-			}
-			else {
-				CPCounter += 1;
-				//PlayAudio(Sound_TimeChange);
-				for(I,0,8) {
-					Audio.PlaySoundEvent(CAudioManager::ELibSound::ScoreIncrease, 0, .5, I*80);
-				}
-
-				if(Event.Player.Score != Null)
-				if(Event.Player.Score.BestRace.Checkpoints.count == 0) {
-					SlowSetText(Label_CP_Start,TimeToTextWithMilli(Event.RaceTime),500);
-					Label_CP_Start.Show();
-
-					Label_CP_Red.Hide();
-					Quad_CP_Red.Hide();
-					Label_CP_Blue.Hide();
-					Quad_CP_Blue.Hide();
-					Label_CP_Purple.Hide();
-					Quad_CP_Purple.Hide();
+			if(Event.Player.User.Login == LocalUser.Login) {
+				if(Event.IsEndRace) {
+					PlayerTime = Event.RaceTime;
 				}
 				else {
-					declare Difference = Event.RaceTime - Event.Player.Score.BestRace.Checkpoints[Event.CheckpointInRace];
-
-					if(Difference > 0) {
-						Label_CP_Red.Show();
-						Label_CP_Red.SetText("+"^TimeToTextWithMilli(Difference));
-						Quad_CP_Red.Show();
-
-						Label_CP_Blue.Hide();
-						Quad_CP_Blue.Hide();
-						Label_CP_Purple.Hide();
-						Quad_CP_Purple.Hide();
+					CPCounter += 1;
+					//PlayAudio(Sound_TimeChange);
+					for(I,0,8) {
+						Audio.PlaySoundEvent(CAudioManager::ELibSound::ScoreIncrease, 0, .5, I*80);
 					}
-					else if(Difference < 0) {
-						Label_CP_Blue.Show();
-						Label_CP_Blue.SetText(TimeToTextWithMilli(Difference));
-						Quad_CP_Blue.Show();
+
+					if(Event.Player.Score != Null)
+					if(Event.Player.Score.BestRace.Checkpoints.count == 0) {
+						SlowSetText(Label_CP_Start,TimeToTextWithMilli(Event.RaceTime),500);
+						Label_CP_Start.Show();
 
 						Label_CP_Red.Hide();
 						Quad_CP_Red.Hide();
+						Label_CP_Blue.Hide();
+						Quad_CP_Blue.Hide();
 						Label_CP_Purple.Hide();
 						Quad_CP_Purple.Hide();
 					}
 					else {
-						Label_CP_Purple.Show();
-						Label_CP_Purple.SetText(TimeToTextWithMilli(Difference));
-						Quad_CP_Purple.Show();
+						declare Difference = Event.RaceTime - Event.Player.Score.BestRace.Checkpoints[Event.CheckpointInRace];
 
-						Label_CP_Red.Hide();
-						Quad_CP_Red.Hide();
-						Label_CP_Blue.Hide();
-						Quad_CP_Blue.Hide();
+						if(Difference > 0) {
+							Label_CP_Red.Show();
+							Label_CP_Red.SetText("+"^TimeToTextWithMilli(Difference));
+							Quad_CP_Red.Show();
+
+							Label_CP_Blue.Hide();
+							Quad_CP_Blue.Hide();
+							Label_CP_Purple.Hide();
+							Quad_CP_Purple.Hide();
+						}
+						else if(Difference < 0) {
+							Label_CP_Blue.Show();
+							Label_CP_Blue.SetText(TimeToTextWithMilli(Difference));
+							Quad_CP_Blue.Show();
+
+							Label_CP_Red.Hide();
+							Quad_CP_Red.Hide();
+							Label_CP_Purple.Hide();
+							Quad_CP_Purple.Hide();
+						}
+						else {
+							Label_CP_Purple.Show();
+							Label_CP_Purple.SetText(TimeToTextWithMilli(Difference));
+							Quad_CP_Purple.Show();
+
+							Label_CP_Red.Hide();
+							Quad_CP_Red.Hide();
+							Label_CP_Blue.Hide();
+							Quad_CP_Blue.Hide();
+						}
+
+						Label_CP_Start.Hide();
 					}
-
-					Label_CP_Start.Hide();
 				}
 			}
 		}
 		case CTmRaceClientEvent::EType::Respawn: {
-			if(Event.Player.CurRace.Time == -1) { // If fully respawned to start
-				//PlayAudio(Sound_TimeReset);
-				for(I,0,8) {
-					Audio.PlaySoundEvent(CAudioManager::ELibSound::ScoreIncrease, 0, .5, I*80);
+			if(Event.Player.User.Login == LocalUser.Login) {
+				if(Event.Player.CurRace.Time == -1) { // If fully respawned to start
+					//PlayAudio(Sound_TimeReset);
+					for(I,0,8) {
+						Audio.PlaySoundEvent(CAudioManager::ELibSound::ScoreIncrease, 0, .5, I*80);
+					}
+
+					SlowSetText(Label_CP_Start,"-:--.---",500);
+					Label_CP_Start.Show();
+
+					CPCounter = 0;
+
+					Label_CP_Blue.Hide();
+					Label_CP_Red.Hide();
+					Label_CP_Purple.Hide();
+					Quad_CP_Blue.Hide();
+					Quad_CP_Red.Hide();
+					Quad_CP_Purple.Hide();
 				}
-
-				SlowSetText(Label_CP_Start,"-:--.---",500);
-				Label_CP_Start.Show();
-
-				CPCounter = 0;
-
-				Label_CP_Blue.Hide();
-				Label_CP_Red.Hide();
-				Label_CP_Purple.Hide();
-				Quad_CP_Blue.Hide();
-				Quad_CP_Red.Hide();
-				Quad_CP_Purple.Hide();
 			}
 		}
 	}

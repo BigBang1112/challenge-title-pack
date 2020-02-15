@@ -68,7 +68,6 @@ Void SetCarModel(CTmPlayer _Player, CUIConfig _UI, CMode _Mode) {
 }
 
 declare CGhost[Text] PreloadedGhosts;
-declare Boolean SpawnPlayer;
 declare Text ReplayFileName;
 
 Void SpawnEnvimixPlayer(CTmMode _Mode, CTmPlayer _Player, Boolean _IsMultiplayer) {
@@ -469,6 +468,7 @@ Void EventUI(CTmMode _Mode, CUIConfigEvent _Event) {
 						case "Continue": {
 							if(Server_Outro) {
 								Server_Outro = False;
+								declare Boolean SpawnPlayer for Player;
 								SpawnPlayer = True;
 							}
 							else {
@@ -559,14 +559,16 @@ Void Loop(CTmMode _Mode, Boolean _IsMultiplayer) {
 			if(Server_Outro) {
 				declare SPerformance_Server[Text] Performances_Server for Player.Score;
 				declare Finishes = Performances_Server[RealVehicles[Server_CurrentVehicle].Name].Finishes;
-				_Mode.RaceGhost_RemoveAll();
-				OutroGhost = _Mode.RaceGhost_AddWithOffset(Finishes[Finishes.count-1].Ghost, -2500);
-				UI.SpectatorForcedTarget = OutroGhost;
-				UI.SpectatorForceCameraType = 1;
+				if(!_IsMultiplayer) {
+					_Mode.RaceGhost_RemoveAll();
+					OutroGhost = _Mode.RaceGhost_AddWithOffset(Finishes[Finishes.count-1].Ghost, -2500);
+					UI.SpectatorForcedTarget = OutroGhost;
+					UI.SpectatorForceCameraType = 1;
+				}
 				
 				_Mode.UnspawnPlayer(Player);
 			}
-			else {
+			else if(!_IsMultiplayer) {
 				UI.SpectatorForcedTarget = NullId;
 				UI.SpectatorForceCameraType = 0;
 				if(OutroGhost != NullId)
@@ -594,6 +596,7 @@ Void Loop(CTmMode _Mode, Boolean _IsMultiplayer) {
 			}
 		}
 		
+		declare Boolean SpawnPlayer for Player;
 		if(SpawnPlayer) {
 			SpawnEnvimixPlayer(_Mode, Player, _IsMultiplayer);
 			SpawnPlayer = False;
