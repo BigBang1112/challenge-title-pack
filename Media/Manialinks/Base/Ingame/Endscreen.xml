@@ -100,7 +100,7 @@
 			<frame pos="0 -17.5" id="FRAME_PANEL1_ZONE">
 				<quad pos="0 0" z-index="0" size="55 7" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".25"/>
 				<quad pos="0.1 -0.1" z-index="1" size="55 7" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_ZONE"/>
-				<label pos="0 0.2" z-index="2" size="55 7" text="World" halign="center" valign="center" textsize="1.5" style="TextButtonBig" id="LABEL_ZONE"/>
+				<label pos="0 0.2" z-index="2" size="55 7" text="|Zone|World" halign="center" valign="center" textsize="1.5" style="TextButtonBig" id="LABEL_ZONE" translate="1"/>
 			</frame>
 			<quad pos="0 -70" size="20 20" halign="center" valign="center" style="BgRaceScore2" substyle="SandTimer" class="LOADING" id="QUAD_LOADING_PANEL1"/>
 			<frame pos="-30 -60" id="FRAME_LB_SHORTEST_DISTANCE">
@@ -233,7 +233,7 @@
 			<frame pos="0 -17.5" id="FRAME_PANEL2_ZONE">
 				<quad pos="0 0" z-index="0" size="55 7" style="Bgs1" substyle="BgCard3" halign="center" valign="center" opacity=".25"/>
 				<quad pos="0.1 -0.1" z-index="1" size="55 7" halign="center" valign="center2" style="Bgs1" substyle="BgCardInventoryItem" scriptevents="1" modulatecolor="8BF" opacity=".5" id="QUAD_ZONE"/>
-				<label pos="0 0.2" z-index="2" size="55 7" text="World" halign="center" valign="center" textsize="1.5" style="TextButtonBig" id="LABEL_ZONE"/>
+				<label pos="0 0.2" z-index="2" size="55 7" text="|Zone|World" halign="center" valign="center" textsize="1.5" style="TextButtonBig" id="LABEL_ZONE" translate="1"/>
 			</frame>
 			<quad pos="0 -70" size="20 20" halign="center" valign="center" style="BgRaceScore2" substyle="SandTimer" class="LOADING" id="QUAD_LOADING_PANEL2"/>
 			<frame pos="-30 -60" id="FRAME_LB_GLOBAL_RECORDS">

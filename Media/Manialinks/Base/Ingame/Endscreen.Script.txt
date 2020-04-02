@@ -274,7 +274,7 @@ foreach(Event,PendingEvents) {
 						else {
 							foreach(Zone => Ranking, Result_Time.Rankings) {
 								declare Zones = TextLib::Split("|", Zone);
-								Showcases.add(TextLib::ToUpperCase(Zones[Zones.count-1])^": "^Ranking.Rank^"/"^Ranking.Count);
+								Showcases.add(TextLib::ToUpperCase(TextLib::GetTranslatedText("|Zone|"^Zones[Zones.count-1]))^": "^Ranking.Rank^"/"^Ranking.Count);
 							}
 						}
 					}
@@ -296,7 +296,7 @@ foreach(Event,PendingEvents) {
 
 						foreach(Zone => Ranking, RecordSet.Rankings) {
 							declare Zones = TextLib::Split("|", Zone);
-							Ranks.add(Zones[Zones.count-1]^": "^Ranking.Rank^"/"^Ranking.Count);
+							Ranks.add(TextLib::GetTranslatedText("|Zone|"^Zones[Zones.count-1])^": "^Ranking.Rank^"/"^Ranking.Count);
 						}
 
 						if(Type == "Time") {

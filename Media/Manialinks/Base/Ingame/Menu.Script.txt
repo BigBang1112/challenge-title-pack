@@ -550,7 +550,10 @@ else {
 
 if(Page.GetFirstChild("FRAME_TOOLTIP").Visible) Page.GetFirstChild("FRAME_TOOLTIP").RelativePosition_V3 = <MouseX, MouseY>;
 
-Label_GhostSection.Value = GhostSections[CurrentSection];
+if(CurrentSection == 0)
+	Label_GhostSection.Value = GhostSections[CurrentSection];
+else
+	Label_GhostSection.Value = "|Zone|"^GhostSections[CurrentSection];
 
 if(IsBlurred) Page.GetFirstChild("QUAD_BACKGROUND").Show();
 else Page.GetFirstChild("QUAD_BACKGROUND").Hide();
