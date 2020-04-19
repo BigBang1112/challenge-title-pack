@@ -40,8 +40,10 @@ Boolean Loop() {
 		declare Delta = TimeLib::GetDelta(CampaignRelease, TimeLib::GetCurrent());
 		if(Delta < 0) {
 			Layers::Hide("Release");
+			EnableMenuNavigationInputs = True;
 			return True;
 		}
+		else EnableMenuNavigationInputs = False;
 	}
 	
 	if(Result.Access) Layers::Hide("Release");
