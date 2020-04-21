@@ -1,0 +1,72 @@
+Void Problem_ItemMultilap(SChItem _Item) {
+	declare SChProblem Problem_ItemMultilap;
+	Problem_ItemMultilap.Name = "ITEM_MULTILAP";
+	Problem_ItemMultilap.Items.add(_Item);
+	Problem_ItemMultilap.ShortDescription = "{{{{PROBLEM_MULTILAP_TRACK}}}}";
+	Problem_ItemMultilap.LongDescription = "{{{{PROBLEM_MULTILAP_TRACK_LONG_REVERSE}}}}";
+	Problem(Problem_ItemMultilap);
+}
+
+Void Problem_ItemFinish(SChItem _Item) {
+	declare SChProblem Problem_ItemFinish;
+	Problem_ItemFinish.Name = "ITEM_FINISH";
+	Problem_ItemFinish.Items.add(_Item);
+	Problem_ItemFinish.ShortDescription = "{{{{PROBLEM_CANNOT_REPLACE_FINISH}}}}";
+	Problem_ItemFinish.LongDescription = "{{{{PROBLEM_CANNOT_REPLACE_FINISH_LONG}}}}";
+	Problem_ItemFinish.Solutions.add(Solution("{{{{PROBLEM_CANNOT_REPLACE_FINISH_SOLUTION_1}}}}", "", True));
+	Problem(Problem_ItemFinish);
+}
+
+***Metadata***
+***
+Script.Name = "1UP";
+Script.AuthorLogin = "bigbang1112";
+Script.Description = "Moves finish/multilap one coord up.";
+Script.Compatibility.Collections = ["Canyon", "Stadium", "Valley", "Lagoon"];
+***
+
+***Main***
+***
+SetStatusStage("{{{{ANALYZING}}}}...");
+SetStatusMessage("{{{{SEARCHING_ALL_MULTILAPS}}}}...");
+declare Multilaps = GetMultilaps();
+SetStatusMessage("{{{{SEARCHING_ALL_FINISHES}}}}...");
+declare FinishLines = GetFinishLines();
+SetStatusMessage("{{{{SEARCHING_MAP_INFO}}}}...");
+declare MapInfo = GetMapInfo();
+declare Environment = MapInfo.CollectionName;
+
+declare IsOneLapWithFinish = Multilaps.count == 1 && FinishLines.count > 0 && MapInfo.TMObjective_NbLaps == 1;
+declare IsMultilap = Multilaps.count == 1 && !IsOneLapWithFinish;
+
+SetStatusStage("{{{{MODIFYING}}}}...");
+
+declare SChBlock[] RemovedBlocks;
+
+if(IsOneLapWithFinish || IsMultilap) {
+	foreach(Multilap in Multilaps) {
+		if(Multilap.IsItem) Problem_ItemMultilap(Multilap.Item);
+		else if(Multilap.IsBlock) {
+			declare Removed = RemoveSpecificBlock(Multilap.Block);
+			RemovedBlocks.add(Multilap.Block);
+		}
+		else Problem();
+	}
+}
+else {
+	foreach(Finish in FinishLines) {
+		if(Finish.IsItem) Problem_ItemFinish(Finish.Item);
+		else if(Finish.IsBlock) {
+			declare Removed = RemoveSpecificBlock(Finish.Block);
+			RemovedBlocks.add(Finish.Block);
+		}
+	}
+}
+
+foreach(Block in RemovedBlocks)
+	declare Placed = PlaceGhostBlock(Block.Name, Block.Coord + <0, 1, 0>, Block.Direction);
+
+FinishLines = GetFinishLines();
+Multilaps = GetMultilaps();
+if(FinishLines.count == 0 && Multilaps.count == 0) Problem();
+***
