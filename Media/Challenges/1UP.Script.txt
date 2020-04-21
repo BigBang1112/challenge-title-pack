@@ -43,7 +43,7 @@ SetStatusStage("{{{{MODIFYING}}}}...");
 
 declare SChBlock[] RemovedBlocks;
 
-if(IsOneLapWithFinish || IsMultilap) {
+if(IsMultilap) {
 	foreach(Multilap in Multilaps) {
 		if(Multilap.IsItem) Problem_ItemMultilap(Multilap.Item);
 		else if(Multilap.IsBlock) {
