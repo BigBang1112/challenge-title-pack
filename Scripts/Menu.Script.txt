@@ -30,7 +30,7 @@
 #Include "Libs/Challenge/Devmode.Script.txt" as Devmode
 #Include "Libs/Challenge/Service/Status.Script.txt" as Service_Status
 
-#Setting S_Devmode False
+#Setting S_Devmode True
 
 Void GetUnauthorizedToken(Service_Status::SStatus _Status) {
 	declare Request = Http::SyncGET("""{{{_Status.Global.Service}}}/auth.php?login={{{LocalUser.Login}}}&token={{{Auth::GetToken().Value}}}""");
@@ -116,6 +116,7 @@ main() {
 		
 		Menu_Release::Start();
 		wait(Menu_Release::Loop());
+		EnableMenuNavigationInputs = False;
 		
 		yield;
 		
