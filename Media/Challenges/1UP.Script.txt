@@ -43,7 +43,7 @@ SetStatusStage("{{{{MODIFYING}}}}...");
 
 declare SChBlock[] RemovedBlocks;
 
-if(IsMultilap) {
+if(!IsOneLapWithFinish) {
 	foreach(Multilap in Multilaps) {
 		if(Multilap.IsItem) Problem_ItemMultilap(Multilap.Item);
 		else if(Multilap.IsBlock) {
@@ -53,13 +53,12 @@ if(IsMultilap) {
 		else Problem();
 	}
 }
-else {
-	foreach(Finish in FinishLines) {
-		if(Finish.IsItem) Problem_ItemFinish(Finish.Item);
-		else if(Finish.IsBlock) {
-			declare Removed = RemoveSpecificBlock(Finish.Block);
-			RemovedBlocks.add(Finish.Block);
-		}
+
+foreach(Finish in FinishLines) {
+	if(Finish.IsItem) Problem_ItemFinish(Finish.Item);
+	else if(Finish.IsBlock) {
+		declare Removed = RemoveSpecificBlock(Finish.Block);
+		RemovedBlocks.add(Finish.Block);
 	}
 }
 
