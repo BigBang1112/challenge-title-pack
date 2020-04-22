@@ -120,7 +120,7 @@ Boolean SafeRemoveBlock(ModifierBase::SChBlock _ChBlock) {
 	}
 	
 	for(i,0,Blocks.count-1)
-		if(Blocks[i].Id^"" == _ChBlock.Id) return SafeRemoveBlock(Blocks[i]);
+		if(Blocks[i].Id^"" == _ChBlock.Id && Blocks[i].BlockModel.Name == _ChBlock.Name) return SafeRemoveBlock(Blocks[i]);
 	return False;
 }
 
@@ -914,7 +914,18 @@ Boolean Command(CUILayer _LayerAPI, Text _Type, Text[] _Data, Boolean _FastMode)
 			Respond(_LayerAPI, _Type, []);
 		}
 		case "Ch_SetCursorBlock": {
-			CursorBlockModel = GetBlockModelFromName(_Data[0]);
+			declare BlockName = _Data[0];
+			declare Coord = Conversion::ToInt3(_Data[1]);
+			if(IsSpecialBlock(BlockName)) {
+				declare MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\{{{BlockName}}}-{{{GetVariant(Coord)}}}.Macroblock.Gbx""");
+				if(MacroblockModel == Null)
+					MacroblockModel = GetMacroblockModelFromFilePath("""{{{Map.CollectionName}}}\{{{BlockName}}}-Air.Macroblock.Gbx""");
+				PlaceMode = ::PlaceMode::Macroblock;
+				CursorMacroblockModel = MacroblockModel;
+			}
+			else {
+				CursorBlockModel = GetBlockModelFromName(BlockName);
+			}
 			Respond(_LayerAPI, _Type, ["True"]);
 		}
 		case "Ch_Focus": {
