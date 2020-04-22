@@ -92,6 +92,7 @@
 
 #Struct SStatusParams {
 	Text TitleId;
+	Text MapUid;
 	Text UserToken;
 	
 	Text Login; // Unauthorized but still indentifiable status check
@@ -114,9 +115,10 @@ Void ProcessNotifications(CUser _User, SStatus _Status) {
 	Notification::Update();
 }
 
-SStatusParams GetStatusParams(CUser _User, Text _IngameToken) {
+SStatusParams GetStatusParams(CUser _User, Text _IngameToken, Text _CurrentMapUid) {
 	declare SStatusParams Params;
 	Params.TitleId = LoadedTitle.TitleId;
+	Params.MapUid = _CurrentMapUid;
 	if(_User != Null) {
 		if(_IngameToken == "") {
 			declare Text CHALLENGE_TOKEN for _User;
@@ -130,14 +132,14 @@ SStatusParams GetStatusParams(CUser _User, Text _IngameToken) {
 	return Params;
 }
 
-SStatus CheckStatus(CUser _User, Text _IngameToken) {
-	declare Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
+SStatus CheckStatus(CUser _User, Text _IngameToken, Text _CurrentMapUid) {
+	declare Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken, _CurrentMapUid).tojson());
 	declare SStatus Status;
 	while(TextLib::Find("Web application doesn't work properly", Request.Result, False, False)) {
 		log("Webhost problems:\n" ^ Request.Result);
 		Http.Destroy(Request);
 		sleep(1000);
-		Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
+		Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken, _CurrentMapUid).tojson());
 	}
 	declare JsonSuccess = Status.fromjson(Request.Result);
 	while(!Http::IsSuccessfulStatusCode(Request.StatusCode) || Status.Global.Service == "") {
@@ -146,7 +148,7 @@ SStatus CheckStatus(CUser _User, Text _IngameToken) {
 		if(Status.Global.Service == "") log("Service URL not found.");
 		Http.Destroy(Request);
 		sleep(1000);
-		Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson());
+		Request = Http::SyncPOST(C_Host^"/status.php", GetStatusParams(_User, _IngameToken, _CurrentMapUid).tojson());
 	}
 	Http.Destroy(Request);
 	ProcessNotifications(_User, Status);
@@ -154,6 +156,10 @@ SStatus CheckStatus(CUser _User, Text _IngameToken) {
 	declare SStatus[] States for _User;
 	States.add(Status);
 	return Status;
+}
+
+SStatus CheckStatus(CUser _User, Text _IngameToken) {
+	return CheckStatus(_User, _IngameToken, "");
 }
 
 SStatus CheckStatus(CUser _User) {
@@ -264,12 +270,12 @@ Text AsyncGetResult(Text _Name) {
 	return Http::GetResult(_Name);
 }
 
-Boolean AsyncCheckStatus(Text _Name, CUser _User, Text _IngameToken) {
-	return Http::AsyncPOST(_Name, C_Host^"/status.php", GetStatusParams(_User, _IngameToken).tojson(), "", True);
+Boolean AsyncCheckStatus(Text _Name, CUser _User, Text _IngameToken, Text _CurrentMapUid) {
+	return Http::AsyncPOST(_Name, C_Host^"/status.php", GetStatusParams(_User, _IngameToken, _CurrentMapUid).tojson(), "", True);
 }
 
 Boolean AsyncCheckStatus(Text _Name, CUser _User) {
-	return AsyncCheckStatus(_Name, _User, "");
+	return AsyncCheckStatus(_Name, _User, "", "");
 }
 
 SStatus GetAsyncCheckStatusResult(Text _Name, CUser _User) {
@@ -277,6 +283,7 @@ SStatus GetAsyncCheckStatusResult(Text _Name, CUser _User) {
 	
 	if(AsyncIsCompleted(_Name, True)) {
 		if(AsyncIsSuccessful(_Name)) {
+			log(AsyncGetResult(_Name));
 			declare JsonSuccess = Status.fromjson(AsyncGetResult(_Name));
 			ProcessNotifications(_User, Status);
 			declare SStatus[] States for _User;

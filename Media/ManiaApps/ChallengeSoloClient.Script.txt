@@ -82,7 +82,7 @@ Void CheckStatus() {
 
 	if(!Time::Stamp_CreateOnce("STATUS", 10*1000)) {
 		if(Time::Stamp_Reached("STATUS")) {
-			declare Success = Service_Status::AsyncCheckStatus("STATUS", LocalUser);
+			declare Success = Service_Status::AsyncCheckStatus("STATUS", LocalUser, "", Map.MapInfo.MapUid);
 		}
 	}
 
@@ -91,18 +91,20 @@ Void CheckStatus() {
 			declare Status = Service_Status::GetAsyncCheckStatusResult("STATUS", LocalUser);
 			
 			declare ContainsThisMap = False;
-			foreach(Playsession, Status.Titles[LoadedTitle.TitleId].Playsessions) {
-				if(Playsession.Map.Uid == Map.MapInfo.MapUid) {
-					ContainsThisMap = True;
-					Layers::SendEvent("Playsession", "Count", Playsession.Users.count^"");
-					Layers::SendEvent("Playsession", "Users", Playsession.Users.tojson());
-					Layers::SendEvent("Playsession", "UpdateChat", Playsession.Chat.tojson());
+			foreach(Title in Status.Titles) {
+				foreach(Playsession in Title.Playsessions) {
+					if(Playsession.Map.Uid == Map.MapInfo.MapUid) {
+						ContainsThisMap = True;
+						Layers::SendEvent("Playsession", "Count", Playsession.Users.count^"");
+						Layers::SendEvent("Playsession", "Users", Playsession.Users.tojson());
+						Layers::SendEvent("Playsession", "UpdateChat", Playsession.Chat.tojson());
 
-					declare Text PlaysessionSecret for This;
-					
-					declare netread Boolean Server_IsValidationMode for UI;
-					if(!Server_IsValidationMode)
-						declare Success = Ingame_Playsession::AsyncPlaysession(PlaysessionSecret, "Playing");
+						declare Text PlaysessionSecret for This;
+						
+						declare netread Boolean Server_IsValidationMode for UI;
+						if(!Server_IsValidationMode)
+							declare Success = Ingame_Playsession::AsyncPlaysession(PlaysessionSecret, "Playing");
+					}
 				}
 			}
 

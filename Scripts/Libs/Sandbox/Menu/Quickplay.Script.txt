@@ -182,7 +182,8 @@ Void Start() {
 		"Checkpointless.Script.txt",
 		"Comeback.Script.txt",
 		"Lunatic.Script.txt",
-		"NoCP.Script.txt"
+		"NoCP.Script.txt",
+		"1UP.Script.txt"
 	];
 	
 	declare SMapInfoFilter Filter;

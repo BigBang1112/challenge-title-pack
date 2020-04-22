@@ -165,7 +165,7 @@ Void Async() {
 
 	if(Http::IsCompleted("MESSAGE")) {
 		if(Http::IsSuccessful("MESSAGE")) {
-			declare Success = Service_Status::AsyncCheckStatus("STATUS", LocalUser);
+			declare Success = Service_Status::AsyncCheckStatus("STATUS", LocalUser, "", Map.MapInfo.MapUid);
 		}
 		Http::Destroy("MESSAGE");
 	}
